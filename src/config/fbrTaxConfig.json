@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "version": "FY2026-27",
+    "fiscalYear": "FBR Fiscal Year 2026-2027",
+    "title": "Federal Board of Revenue (FBR) Property & Rental Tax Schedule",
+    "lastUpdated": "2026-07-01",
+    "authority": "Federal Board of Revenue (FBR) - Government of Pakistan",
+    "description": "Centralized dynamic tax configuration rules governing Property Purchase/Sale Advance Tax, Rental Income Withholding Tax, and Capital Gains Tax (CGT) sliding scale."
+  },
+  "rentalIncomeTax": {
+    "localFilerRatePct": 15.0,
+    "localNonFilerRatePct": 30.0,
+    "overseasFilerRatePct": 15.0,
+    "overseasNonFilerRatePct": 30.0
+  },
+  "advanceTaxProperty": {
+    "purchase": {
+      "filerRatePct": 3.0,
+      "nonFilerRatePct": 12.0,
+      "lateFilerRatePct": 6.0
+    },
+    "sale": {
+      "filerRatePct": 3.0,
+      "nonFilerRatePct": 10.0,
+      "lateFilerRatePct": 5.0
+    }
+  },
+  "capitalGainsTax": {
+    "baseSlidingScale": [
+      {
+        "holdingPeriodYears": 1,
+        "filerRatePct": 15.0,
+        "description": "Under 1 Year Holding Period"
+      },
+      {
+        "holdingPeriodYears": 2,
+        "filerRatePct": 10.0,
+        "description": "1 to 2 Years Holding Period"
+      },
+      {
+        "holdingPeriodYears": 3,
+        "filerRatePct": 7.5,
+        "description": "2 to 3 Years Holding Period"
+      },
+      {
+        "holdingPeriodYears": 4,
+        "filerRatePct": 0.0,
+        "description": "4+ Years Holding Period (Tax Exempt)"
+      }
+    ],
+    "nonFilerMultiplier": 2.0
+  },
+  "atlVerificationMockDb": [
+    {
+      "identifier": "12345-6789012-3",
+      "name": "Tariq Malik",
+      "status": "FILER",
+      "category": "LOCAL_FILER",
+      "ntn": "7891234-5",
+      "taxOffice": "RTO Lahore"
+    },
+    {
+      "identifier": "98765-4321098-7",
+      "name": "Ayesha Khan",
+      "status": "FILER",
+      "category": "OVERSEAS_FILER",
+      "ntn": "6543210-9",
+      "taxOffice": "RTO Karachi / Overseas Cell"
+    },
+    {
+      "identifier": "42101-1234567-1",
+      "name": "Bilal Ahmed",
+      "status": "NON_FILER",
+      "category": "LOCAL_NON_FILER",
+      "ntn": "3219876-4",
+      "taxOffice": "RTO Islamabad"
+    },
+    {
+      "identifier": "35202-9876543-2",
+      "name": "Zainab Raza",
+      "status": "NON_FILER",
+      "category": "OVERSEAS_NON_FILER",
+      "ntn": "5432198-7",
+      "taxOffice": "RTO Rawalpindi"
+    }
+  ]
+}

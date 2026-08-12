@@ -1,0 +1,303 @@
+// This is your Prisma schema file, // Updated with FinancialLedger, Expense, RentCollection models for Phase 3
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  PUBLIC_USER
+  AGENCY_AGENT
+  AGENCY_MANAGER
+  SUPER_ADMIN
+}
+
+enum ListingStatus {
+  DRAFT
+  ACTIVE
+  SHIELDED
+  LOCKED
+  SOLD
+}
+
+enum LedgerType {
+  INCOME
+  EXPENSE
+}
+
+enum LedgerCategory {
+  RENT
+  COMMISSION
+  SALARY
+  MARKETING
+  MAINTENANCE
+  UTILITIES
+  OTHER
+}
+
+enum DealStatus {
+  PENDING
+  LOCKED
+  ESCROW
+  CLOSED
+  CANCELLED
+}
+
+// Phase 2 enums
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  PLOT
+  COMMERCIAL
+  VILLA
+}
+
+enum ListingSource {
+  PUBLIC_SELF  // Owner submitted directly
+  AGENCY_LISTED
+}
+
+// ─── Core Models ─────────────────────────────────────────────────────────────
+
+model User {
+  id                  String            @id @default(uuid())
+  email               String            @unique
+  password            String?
+  name                String?
+  role                Role              @default(PUBLIC_USER)
+  nicopNumber         String?           // Overseas NICOP / National ID
+  passportNumber      String?           // Overseas Passport Number for Foreign KYC
+  isOverseasVerified  Boolean           @default(false)   // Overseas KYC status
+
+  agencyId            String?
+  agency              Agency?           @relation(fields: [agencyId], references: [id])
+
+  listings            Listing[]
+  clients             Client[]
+  ledgers             FinancialLedger[]
+
+  dealsBuyer          Deal[]            @relation("BuyerAgentRelation")
+  dealsSeller         Deal[]            @relation("SellerAgentRelation")
+  expenses            Expense[]
+  rentCollections     RentCollection[]
+
+}
+
+model Agency {
+  id                  String            @id @default(uuid())
+  name                String
+  licenseNumber       String?           @unique
+  verified            Boolean           @default(false)    // Agency verified (Phase 1)
+  verifiedLicense     Boolean           @default(false)    // Phase 2: Official license badge
+  logo                String?
+  phone               String?
+  address             String?
+  description         String?                              // Phase 2: Public profile bio
+  ntn                 String?           // Legal Tax Registration Number (NTN)
+  latitude            Float?            // Map location Latitude
+  longitude           Float?            // Map location Longitude
+  storefrontPhoto     String?           // Agency Storefront photo URL
+  ownerPhoto          String?           // Agency Owner Passport/Identity photo URL
+
+  users               User[]
+  listings            Listing[]
+  publicListings      PublicListing[]
+  clients             Client[]
+  ledgers             FinancialLedger[]
+  expenses          Expense[]
+  rentCollections   RentCollection[]
+  agencyReviews       AgencyReview[]
+  deals               Deal[]
+
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+model Listing {
+  id                  String            @id @default(uuid())
+  title               String
+  description         String?
+  price               Float
+  address             String
+  latitude            Float?
+  longitude           Float?
+  area                Float?
+  roomCount           Int?
+  verifiedDoc         Boolean           @default(false)
+
+  agencyId            String
+  agency              Agency            @relation(fields: [agencyId], references: [id])
+
+  agentId             String
+  agent               User              @relation(fields: [agentId], references: [id])
+
+  status              ListingStatus     @default(DRAFT)
+  deals               Deal[]
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+// ─── Phase 2 Models ──────────────────────────────────────────────────────────
+
+/// Public self-listing: submitted by property owners without an agency account.
+model PublicListing {
+  id                  String            @id @default(uuid())
+  title               String
+  description         String?
+  propertyType        PropertyType      @default(HOUSE)
+  source              ListingSource     @default(PUBLIC_SELF)
+  price               Float
+  address             String
+  city                String?
+  latitude            Float?
+  longitude           Float?
+  areaSqFt            Float?
+  bedrooms            Int?
+  bathrooms           Int?
+  images              String[]          // Cloudinary/S3 URLs (Phase 3 integration)
+  contactName         String
+  contactPhone        String
+  contactEmail        String?
+
+  // Verification badges
+  verifiedProperty    Boolean           @default(false)   // Admin-verified legal docs
+  aiExtracted         Boolean           @default(false)   // AI auto-filled fields
+  aiConfidence        Float?                              // 0–1 confidence score
+  aiRawData           String?                             // JSON blob of extracted metadata
+
+  // Optional agency association (for agency-sourced public listings)
+  agencyId            String?
+  agency              Agency?           @relation(fields: [agencyId], references: [id])
+
+  isActive            Boolean           @default(true)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+/// Public reviews left by users on agencies.
+model AgencyReview {
+  id                  String            @id @default(uuid())
+  agencyId            String
+  agency              Agency            @relation(fields: [agencyId], references: [id])
+
+  reviewerName        String
+  reviewerEmail       String?
+  rating              Int               // 1 to 5
+  comment             String?
+  isVerified          Boolean           @default(false)   // Admin-verified review
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+// ─── Existing Phase 1 Models (unchanged) ─────────────────────────────────────
+
+model Client {
+  id                  String            @id @default(uuid())
+  name                String
+  phone               String
+  email               String?
+  requirements        String?
+  budget              Float?
+
+  agencyId            String
+  agency              Agency            @relation(fields: [agencyId], references: [id])
+
+  agentId             String
+  agent               User              @relation(fields: [agentId], references: [id])
+
+  status              String            @default("LEAD")
+  deals               Deal[]
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+model FinancialLedger {
+  id                  String            @id @default(uuid())
+  type                LedgerType
+  category            LedgerCategory
+  amount              Float
+  description         String?
+  date                DateTime          @default(now())
+
+  agencyId            String
+  agency              Agency            @relation(fields: [agencyId], references: [id])
+
+  createdById         String
+  createdBy           User              @relation(fields: [createdById], references: [id])
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+model Deal {
+  id                  String            @id @default(uuid())
+  listingId           String
+  listing             Listing           @relation(fields: [listingId], references: [id])
+
+  buyerClientId       String?
+  buyerClient         Client?           @relation(fields: [buyerClientId], references: [id])
+
+  buyerAgentId        String?
+  buyerAgent          User?             @relation("BuyerAgentRelation", fields: [buyerAgentId], references: [id])
+
+  sellerAgentId       String
+  sellerAgent         User              @relation("SellerAgentRelation", fields: [sellerAgentId], references: [id])
+
+  agencyId            String
+  agency              Agency            @relation(fields: [agencyId], references: [id])
+
+  status              DealStatus        @default(PENDING)
+  agreementDoc        String?
+  tokenAmount         Float?
+  commissionSeller    Float?
+  commissionBuyer     Float?
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+// ─── Phase 3 Models ──────────────────────────────────────────────────────────
+model Expense {
+  id            String   @id @default(uuid())
+  amount        Float
+  description   String?
+  date          DateTime @default(now())
+
+  agencyId      String
+  agency        Agency   @relation(fields: [agencyId], references: [id])
+
+  createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model RentCollection {
+  id            String   @id @default(uuid())
+  amount        Float
+  month         Int      // e.g., 1-12
+  year          Int
+  description   String?
+  dateCollected DateTime @default(now())
+
+  agencyId      String
+  agency        Agency   @relation(fields: [agencyId], references: [id])
+
+  collectedById String
+  collectedBy   User     @relation(fields: [collectedById], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

@@ -21,36 +21,81 @@ export async function POST(req: Request) {
       ownerPhoto,
       passportNumber,
       nicopNumber,
+      cnicNumber,
+      cnicFrontPhoto,
+      cnicBackPhoto,
+      overseasCountry,
+      overseasCity,
+      overseasPostalCode,
+      overseasDocNumber,
+      overseasDocPhoto,
     } = body
 
-    // Mandatory fields validation
+    const isAgencyRole = ['AGENCY_ADMIN', 'AGENCY_AGENT', 'AGENCY_MANAGER', 'OVERSEAS_AGENCY'].includes(role)
+    const isLocalRole = ['BUYER', 'LOCAL_PUBLIC'].includes(role)
+    const isOverseasRole = ['OVERSEAS_BUYER', 'OVERSEAS_INVESTOR', 'OVERSEAS_AGENCY', 'OVERSEAS_LOCAL_PUBLIC'].includes(role)
+
+    // Mandatory base fields
     const missingFields: string[] = []
     if (!name) missingFields.push('Full Name')
-    if (!agencyName) missingFields.push('Agency Name')
     if (!email) missingFields.push('Email Address')
     if (!password) missingFields.push('Password')
-    if (!ntn) missingFields.push('NTN / Tax Registration Number')
-    if (!address) missingFields.push('Complete Physical Address')
-    if (latitude === undefined || latitude === null || latitude === '') missingFields.push('Latitude Coordinate')
-    if (longitude === undefined || longitude === null || longitude === '') missingFields.push('Longitude Coordinate')
-    if (!logo) missingFields.push('Agency Brand Logo')
-    if (!storefrontPhoto) missingFields.push('Agency Storefront Photo')
-    if (!ownerPhoto) missingFields.push('Agency Owner Identity Photo')
+
+    // Conditional role fields
+    if (isAgencyRole) {
+      if (!agencyName) missingFields.push('Agency Brand Name')
+      if (!ntn) missingFields.push('NTN / Tax Registration Number')
+      if (!address) missingFields.push('Complete Physical Address')
+      if (latitude === undefined || latitude === null || latitude === '') missingFields.push('Latitude Coordinate')
+      if (longitude === undefined || longitude === null || longitude === '') missingFields.push('Longitude Coordinate')
+      if (!logo) missingFields.push('Agency Brand Logo')
+      if (!storefrontPhoto) missingFields.push('Agency Storefront Photo')
+      if (!ownerPhoto) missingFields.push('Agency Owner Identity Photo')
+    }
+
+    if (isLocalRole) {
+      if (!cnicNumber) missingFields.push('CNIC Number')
+      if (!cnicFrontPhoto) missingFields.push('CNIC Front Photo')
+      if (!cnicBackPhoto) missingFields.push('CNIC Back Photo')
+    }
+
+    if (isOverseasRole) {
+      if (!overseasCountry) missingFields.push('Country')
+      if (!overseasCity) missingFields.push('City')
+      if (!overseasPostalCode) missingFields.push('Postal Code')
+      if (!overseasDocNumber && !passportNumber && !nicopNumber) missingFields.push('Overseas NICOP / Passport Number')
+      if (!overseasDocPhoto) missingFields.push('Overseas Identity Document Photo')
+    }
 
     if (missingFields.length > 0) {
       return NextResponse.json(
         {
-          error: `Missing required mandatory registration fields: ${missingFields.join(', ')}. All legal, branding, and map location fields are strictly required.`,
+          error: `Missing required mandatory registration fields: ${missingFields.join(', ')}.`,
         },
         { status: 400 }
       )
     }
 
-    const assignedRole: Role = (role as Role) || 'AGENCY_MANAGER'
+    // Map incoming role string to valid system Role enum
+    let assignedRole: Role = 'PUBLIC_USER'
+    if (['AGENCY_ADMIN', 'AGENCY_MANAGER', 'OVERSEAS_AGENCY'].includes(role)) {
+      assignedRole = 'AGENCY_MANAGER'
+    } else if (role === 'AGENCY_AGENT') {
+      assignedRole = 'AGENCY_AGENT'
+    } else if (['OVERSEAS_BUYER', 'OVERSEAS_INVESTOR'].includes(role)) {
+      assignedRole = 'PUBLIC_USER'
+    }
+
     const newUserId = `usr_${Date.now()}`
     const newAgencyId = `ag_${Date.now()}`
-    const parsedLat = parseFloat(latitude)
-    const parsedLng = parseFloat(longitude)
+    const finalAgencyName = agencyName || (isOverseasRole ? `${name}'s Overseas Agency` : `${name}'s Portfolio`)
+    const finalNtn = ntn || 'N/A'
+    const finalAddress = address || (isOverseasRole ? `${overseasCity}, ${overseasCountry}` : 'Pakistan')
+    const parsedLat = latitude ? parseFloat(latitude) : 33.7215
+    const parsedLng = longitude ? parseFloat(longitude) : 73.0565
+    const finalLogo = logo || cnicFrontPhoto || overseasDocPhoto || ''
+    const finalStorefrontPhoto = storefrontPhoto || cnicBackPhoto || overseasDocPhoto || ''
+    const finalOwnerPhoto = ownerPhoto || cnicFrontPhoto || overseasDocPhoto || ''
 
     let userObj = {
       id: newUserId,
@@ -58,33 +103,37 @@ export async function POST(req: Request) {
       name,
       password,
       role: assignedRole,
+      accountRoleType: role,
       agencyId: newAgencyId,
-      agencyName,
-      ntn,
-      address,
+      agencyName: finalAgencyName,
+      ntn: finalNtn,
+      address: finalAddress,
       latitude: parsedLat,
       longitude: parsedLng,
-      logo,
-      storefrontPhoto,
-      ownerPhoto,
-      passportNumber: passportNumber || null,
-      nicopNumber: nicopNumber || null,
+      logo: finalLogo,
+      storefrontPhoto: finalStorefrontPhoto,
+      ownerPhoto: finalOwnerPhoto,
+      passportNumber: passportNumber || overseasDocNumber || null,
+      nicopNumber: nicopNumber || cnicNumber || overseasDocNumber || null,
+      overseasCountry: overseasCountry || null,
+      overseasCity: overseasCity || null,
+      overseasPostalCode: overseasPostalCode || null,
     }
 
     // Try persisting to Prisma DB if accessible
     try {
       const createdAgency = await prisma.agency.create({
         data: {
-          name: agencyName,
+          name: finalAgencyName,
           verified: true,
           verifiedLicense: true,
-          address,
-          logo,
-          ntn,
+          address: finalAddress,
+          logo: finalLogo,
+          ntn: finalNtn,
           latitude: parsedLat,
           longitude: parsedLng,
-          storefrontPhoto,
-          ownerPhoto,
+          storefrontPhoto: finalStorefrontPhoto,
+          ownerPhoto: finalOwnerPhoto,
         },
       })
 
@@ -99,22 +148,9 @@ export async function POST(req: Request) {
       })
 
       userObj = {
+        ...userObj,
         id: createdUser.id,
-        email: createdUser.email,
-        name: createdUser.name || name,
-        password: createdUser.password || password,
-        role: createdUser.role,
         agencyId: createdAgency.id,
-        agencyName: createdAgency.name,
-        ntn: createdAgency.ntn || ntn,
-        address: createdAgency.address || address,
-        latitude: createdAgency.latitude || parsedLat,
-        longitude: createdAgency.longitude || parsedLng,
-        logo: createdAgency.logo || logo,
-        storefrontPhoto: createdAgency.storefrontPhoto || storefrontPhoto,
-        ownerPhoto: createdAgency.ownerPhoto || ownerPhoto,
-        passportNumber: passportNumber ?? null,
-        nicopNumber: nicopNumber ?? null,
       }
     } catch (dbError) {
       console.warn('Database insert skipped or failed during register, using in-memory store:', dbError)
@@ -130,18 +166,15 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        message: 'Account and agency registered successfully with verified NTN and location metadata',
+        message: 'Account registered successfully with role-based verification metadata',
         user: {
           id: userObj.id,
           name: userObj.name,
           email: userObj.email,
           role: userObj.role,
+          accountRoleType: userObj.accountRoleType,
           agencyId: userObj.agencyId,
           agencyName: userObj.agencyName,
-          ntn: userObj.ntn,
-          address: userObj.address,
-          coordinates: { lat: userObj.latitude, lng: userObj.longitude },
-          logo: userObj.logo,
         },
       },
       { status: 201 }

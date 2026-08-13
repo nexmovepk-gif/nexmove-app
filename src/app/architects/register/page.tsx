@@ -3,6 +3,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import {
+  validateName,
+  validateEmail,
+  validatePassword,
+  validatePhone,
+  validateExperienceYears,
+  validateURL,
+} from '@/lib/validation'
 
 const SPECIALIZATIONS = ['3D Visualizer', 'BIM Specialist', 'Revit Technician', 'Interior Designer', 'Landscape Architect']
 const DEGREES_OPTIONS = ['B.Arch', 'B.Sc Architecture', 'B.Sc Interior Design', 'B.Sc Landscape Architecture', 'B.Sc Civil Technology', 'M.Arch', 'M.Sc BIM', 'M.Sc Urban Design', 'PhD Architecture', 'Diploma in Visualization']
@@ -23,6 +31,29 @@ export default function ArchitectRegisterPage() {
   const [step, setStep] = useState<Step>('personal')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+
+  const liveValidate = (key: string, value: string) => {
+    let msg = ''
+    if (key === 'fullName') msg = validateName(value).message
+    if (key === 'email') msg = validateEmail(value).message
+    if (key === 'password') msg = validatePassword(value).message
+    if (key === 'phone' && value.trim()) msg = validatePhone(value).message
+    if (key === 'experienceYears') msg = validateExperienceYears(value).message
+    setFieldErrors((prev) => ({ ...prev, [key]: msg }))
+  }
+
+  const validatePortfolioLinks = (): boolean => {
+    const errors: Record<string, string> = {}
+    portfolioLinks.forEach((link, idx) => {
+      if (link.trim()) {
+        const res = validateURL(link)
+        if (!res.valid) errors[`portfolioLink_${idx}`] = res.message
+      }
+    })
+    setFieldErrors((prev) => ({ ...prev, ...errors }))
+    return Object.keys(errors).length === 0
+  }
 
   // Form state
   const [fullName, setFullName] = useState('')
@@ -198,29 +229,76 @@ export default function ArchitectRegisterPage() {
                 <p className="text-xs text-slate-500 mt-0.5">Your basic contact details and account credentials.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Full Name *</label>
-                  <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Aisha Rahman" required className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Email Address *</label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="aisha@example.com" required className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Password *</label>
-                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" minLength={6} required className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Phone Number</label>
-                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+92-300-1234567" className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
-                </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">Full Name *</label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => { setFullName(e.target.value); liveValidate('fullName', e.target.value) }}
+                      placeholder="Aisha Rahman"
+                      required
+                      className={`bg-slate-800 border ${fieldErrors.fullName ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
+                    />
+                    {fieldErrors.fullName && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.fullName}</span>}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">Email Address *</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => { setEmail(e.target.value); liveValidate('email', e.target.value) }}
+                      placeholder="aisha@example.com"
+                      required
+                      className={`bg-slate-800 border ${fieldErrors.email ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
+                    />
+                    {fieldErrors.email && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.email}</span>}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">Password *</label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => { setPassword(e.target.value); liveValidate('password', e.target.value) }}
+                      placeholder="••••••••"
+                      minLength={8}
+                      required
+                      className={`bg-slate-800 border ${fieldErrors.password ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
+                    />
+                    {fieldErrors.password && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.password}</span>}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => { setPhone(e.target.value); liveValidate('phone', e.target.value) }}
+                      placeholder="+92-300-1234567"
+                      className={`bg-slate-800 border ${fieldErrors.phone ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
+                    />
+                    {fieldErrors.phone && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.phone}</span>}
+                  </div>
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <label className="text-xs font-bold text-slate-300">City / Location</label>
                   <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Karachi, Pakistan" className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
                 </div>
               </div>
-              <button onClick={() => { if (fullName && email && password) setStep('credentials'); else setError('Please fill in all required fields.') }}
-                className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs py-3 rounded-xl transition">
+              <button
+                onClick={() => {
+                  const nameV = validateName(fullName)
+                  const emailV = validateEmail(email)
+                  const passV = validatePassword(password)
+                  const phoneV = phone.trim() ? validatePhone(phone) : { valid: true, message: '' }
+                  const errors: Record<string, string> = {}
+                  if (!nameV.valid) errors.fullName = nameV.message
+                  if (!emailV.valid) errors.email = emailV.message
+                  if (!passV.valid) errors.password = passV.message
+                  if (!phoneV.valid) errors.phone = phoneV.message
+                  setFieldErrors((prev) => ({ ...prev, ...errors }))
+                  if (Object.keys(errors).length === 0) { setError(null); setStep('credentials') }
+                  else setError('Incorrect format detected in one or more fields. Please fix highlighted errors.')
+                }}
+                className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs py-3 rounded-xl transition"
+              >
                 Continue to Credentials →
               </button>
             </div>
@@ -246,10 +324,20 @@ export default function ArchitectRegisterPage() {
                   <input type="text" value={councilLicenseNo} onChange={(e) => setCouncilLicenseNo(e.target.value)} placeholder="PCATP-2020-XXXXX / PEC-XXXX / PILA-XXXX" className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition font-mono" />
                   <p className="text-[10px] text-slate-500">Accepted: PCATP, PEC, PILA, IAPD registration numbers</p>
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Years of Experience *</label>
-                  <input type="number" min="0" max="50" value={experienceYears} onChange={(e) => setExperienceYears(e.target.value)} placeholder="e.g. 8" required className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
-                </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-slate-300">Years of Experience *</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="60"
+                      value={experienceYears}
+                      onChange={(e) => { setExperienceYears(e.target.value); liveValidate('experienceYears', e.target.value) }}
+                      placeholder="e.g. 8"
+                      required
+                      className={`bg-slate-800 border ${fieldErrors.experienceYears ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
+                    />
+                    {fieldErrors.experienceYears && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.experienceYears}</span>}
+                  </div>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-slate-300">Primary Specialization *</label>
                   <select value={specialization} onChange={(e) => setSpecialization(e.target.value)} required className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 transition">
@@ -281,8 +369,18 @@ export default function ArchitectRegisterPage() {
 
               <div className="flex gap-3">
                 <button onClick={() => setStep('personal')} className="flex-1 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-3 rounded-xl transition font-medium">← Back</button>
-                <button onClick={() => { if (specialization && experienceYears) { setError(null); setStep('skills') } else setError('Please fill specialization and experience.') }}
-                  className="flex-1 text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl transition">
+                <button
+                  onClick={() => {
+                    const expV = validateExperienceYears(experienceYears)
+                    const errors: Record<string, string> = {}
+                    if (!expV.valid) errors.experienceYears = expV.message
+                    if (!specialization) errors.specialization = 'Please select a specialization.'
+                    setFieldErrors((prev) => ({ ...prev, ...errors }))
+                    if (Object.keys(errors).length === 0) { setError(null); setStep('skills') }
+                    else setError('Incorrect format detected. Please fix highlighted fields.')
+                  }}
+                  className="flex-1 text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl transition"
+                >
                   Continue to Skills →
                 </button>
               </div>
@@ -358,10 +456,21 @@ export default function ArchitectRegisterPage() {
                     <input
                       type="url"
                       value={link}
-                      onChange={(e) => updatePortfolioLink(idx, e.target.value)}
+                      onChange={(e) => {
+                        updatePortfolioLink(idx, e.target.value)
+                        if (e.target.value.trim()) {
+                          const res = validateURL(e.target.value)
+                          setFieldErrors((prev) => ({ ...prev, [`portfolioLink_${idx}`]: res.message }))
+                        } else {
+                          setFieldErrors((prev) => { const u = { ...prev }; delete u[`portfolioLink_${idx}`]; return u })
+                        }
+                      }}
                       placeholder={idx === 0 ? 'https://behance.net/yourprofile' : idx === 1 ? 'https://linkedin.com/in/yourname' : 'https://yourwebsite.com'}
-                      className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition"
+                      className={`bg-slate-800 border ${fieldErrors[`portfolioLink_${idx}`] ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
                     />
+                    {fieldErrors[`portfolioLink_${idx}`] && (
+                      <span className="text-[10px] text-red-400 font-semibold">{fieldErrors[`portfolioLink_${idx}`]}</span>
+                    )}
                   </div>
                 ))}
                 <button type="button" onClick={() => setPortfolioLinks([...portfolioLinks, ''])}
@@ -378,7 +487,15 @@ export default function ArchitectRegisterPage() {
 
               <div className="flex gap-3">
                 <button onClick={() => setStep('skills')} className="flex-1 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-3 rounded-xl transition font-medium">← Back</button>
-                <button onClick={() => { setError(null); setStep('review') }} className="flex-1 text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl transition">
+                <button
+                  onClick={() => {
+                    const hasErrors = !validatePortfolioLinks()
+                    if (hasErrors) { setError('Incorrect format detected: one or more portfolio URLs are invalid. Enter a valid https:// link.'); return }
+                    setError(null)
+                    setStep('review')
+                  }}
+                  className="flex-1 text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl transition"
+                >
                   Review Application →
                 </button>
               </div>
@@ -451,7 +568,11 @@ export default function ArchitectRegisterPage() {
 
               <div className="flex gap-3">
                 <button onClick={() => setStep('portfolio')} className="flex-1 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-3 rounded-xl transition font-medium">← Back</button>
-                <button onClick={handleSubmit} disabled={loading} className="flex-1 text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl transition disabled:opacity-50">
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading || !validateName(fullName).valid || !validateEmail(email).valid || !validatePassword(password).valid || !validateExperienceYears(experienceYears).valid || !specialization}
+                  className="flex-1 text-xs bg-teal-600 hover:bg-teal-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition disabled:opacity-60"
+                >
                   {loading ? 'Submitting...' : 'Submit for Verification ✓'}
                 </button>
               </div>

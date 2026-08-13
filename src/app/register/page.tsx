@@ -6,6 +6,18 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import {
+  validateName,
+  validateEmail,
+  validatePassword,
+  validateNTN,
+  validateLatitude,
+  validateLongitude,
+  validateRequired,
+  validateCNIC,
+  validatePassport,
+  validateImageFile,
+} from '@/lib/validation'
 
 // Preset coordinates helper for quick selection
 const CITY_COORDINATES: { name: string; lat: number; lng: number }[] = [
@@ -42,59 +54,86 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  // File upload helper converts file to base64 Data URL for instant preview & persistence
+  // Live field validation — runs on every change and updates fieldErrors immediately
+  const liveValidate = (key: string, value: string) => {
+    let msg = ''
+    if (key === 'name') msg = validateName(value).message
+    if (key === 'agencyName') msg = validateRequired(value, 'Agency Name').message
+    if (key === 'email') msg = validateEmail(value).message
+    if (key === 'password') msg = validatePassword(value).message
+    if (key === 'ntn') msg = validateNTN(value).message
+    if (key === 'address') msg = validateRequired(value, 'Physical Address').message
+    if (key === 'latitude') msg = validateLatitude(value).message
+    if (key === 'longitude') msg = validateLongitude(value).message
+    if (key === 'nicopNumber' && value.trim()) msg = validateCNIC(value).message
+    if (key === 'passportNumber' && value.trim()) msg = validatePassport(value).message
+    setFieldErrors((prev) => ({
+      ...prev,
+      [key]: msg,
+    }))
+  }
+
+  // File upload helper — validates image file type, MIME, and size before preview
   const handleFileUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: (val: string) => void,
     fieldKey: string
   ) => {
     const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setFieldErrors((prev) => ({
-          ...prev,
-          [fieldKey]: 'File size must be under 5MB',
-        }))
-        return
-      }
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setter(reader.result as string)
-        setFieldErrors((prev) => {
-          const updated = { ...prev }
-          delete updated[fieldKey]
-          return updated
-        })
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+    const result = validateImageFile(file, 5)
+    if (!result.valid) {
+      setFieldErrors((prev) => ({ ...prev, [fieldKey]: result.message }))
+      return
     }
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setter(reader.result as string)
+      setFieldErrors((prev) => {
+        const updated = { ...prev }
+        delete updated[fieldKey]
+        return updated
+      })
+    }
+    reader.readAsDataURL(file)
   }
+
+  // Computed form validity — submit stays disabled until all required fields pass
+  const isFormValid =
+    validateName(name).valid &&
+    validateRequired(agencyName, 'Agency Name').valid &&
+    validateEmail(email).valid &&
+    validatePassword(password).valid &&
+    validateNTN(ntn).valid &&
+    validateRequired(address, 'Physical Address').valid &&
+    validateLatitude(latitude).valid &&
+    validateLongitude(longitude).valid &&
+    !!logo &&
+    !!storefrontPhoto &&
+    !!ownerPhoto &&
+    (nicopNumber ? validateCNIC(nicopNumber).valid : true) &&
+    (passportNumber ? validatePassport(passportNumber).valid : true)
 
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {}
+    const checks: [string, string][] = [
+      ['name', validateName(name).message],
+      ['agencyName', validateRequired(agencyName, 'Agency Name').message],
+      ['email', validateEmail(email).message],
+      ['password', validatePassword(password).message],
+      ['ntn', validateNTN(ntn).message],
+      ['address', validateRequired(address, 'Physical Address').message],
+      ['latitude', validateLatitude(latitude).message],
+      ['longitude', validateLongitude(longitude).message],
+    ]
+    if (nicopNumber.trim()) checks.push(['nicopNumber', validateCNIC(nicopNumber).message])
+    if (passportNumber.trim()) checks.push(['passportNumber', validatePassport(passportNumber).message])
 
-    if (!name.trim()) errors.name = 'Full Name is required.'
-    if (!agencyName.trim()) errors.agencyName = 'Agency Name is required.'
-    if (!email.trim()) errors.email = 'Email Address is required.'
-    if (!password || password.length < 6)
-      errors.password = 'Password must be at least 6 characters.'
+    checks.forEach(([key, msg]) => { if (msg) errors[key] = msg })
 
-    // Mandatory Legal, Location & Photo validations
-    if (!ntn.trim())
-      errors.ntn = 'NTN / Tax Registration Number is required for AI legal contract generation.'
-    if (!address.trim())
-      errors.address = 'Complete Agency Physical Address is required.'
-    if (!latitude.trim() || isNaN(Number(latitude)))
-      errors.latitude = 'Exact Latitude coordinate is required for client navigation.'
-    if (!longitude.trim() || isNaN(Number(longitude)))
-      errors.longitude = 'Exact Longitude coordinate is required for client navigation.'
-
-    if (!logo)
-      errors.logo = 'Agency Brand Logo is required.'
-    if (!storefrontPhoto)
-      errors.storefrontPhoto = 'Agency Storefront / Front-Side Photo is required.'
-    if (!ownerPhoto)
-      errors.ownerPhoto = 'Agency Owner Passport / Identity Photo is required.'
+    if (!logo) errors.logo = 'Agency Brand Logo is required.'
+    if (!storefrontPhoto) errors.storefrontPhoto = 'Agency Storefront / Front-Side Photo is required.'
+    if (!ownerPhoto) errors.ownerPhoto = 'Agency Owner Passport / Identity Photo is required.'
 
     setFieldErrors(errors)
     return Object.keys(errors).length === 0
@@ -197,7 +236,7 @@ export default function RegisterPage() {
                   id="name-input"
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => { setName(e.target.value); liveValidate('name', e.target.value) }}
                   placeholder="e.g. John Doe"
                   required
                   className={`bg-white border ${
@@ -217,7 +256,7 @@ export default function RegisterPage() {
                   id="agency-input"
                   type="text"
                   value={agencyName}
-                  onChange={(e) => setAgencyName(e.target.value)}
+                  onChange={(e) => { setAgencyName(e.target.value); liveValidate('agencyName', e.target.value) }}
                   placeholder="Premier Properties Agency"
                   required
                   className={`bg-white border ${
@@ -237,7 +276,7 @@ export default function RegisterPage() {
                   id="email-input"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); liveValidate('email', e.target.value) }}
                   placeholder="owner@agency.com"
                   required
                   className={`bg-white border ${
@@ -257,7 +296,7 @@ export default function RegisterPage() {
                   id="password-input"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); liveValidate('password', e.target.value) }}
                   placeholder="••••••••"
                   required
                   minLength={6}
@@ -297,7 +336,7 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       value={nicopNumber}
-                      onChange={(e) => setNicopNumber(e.target.value)}
+                      onChange={(e) => { setNicopNumber(e.target.value); liveValidate('nicopNumber', e.target.value) }}
                       placeholder="e.g. 42101-9988771-3"
                       className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500 transition"
                     />
@@ -307,7 +346,7 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       value={passportNumber}
-                      onChange={(e) => setPassportNumber(e.target.value)}
+                      onChange={(e) => { setPassportNumber(e.target.value); liveValidate('passportNumber', e.target.value) }}
                       placeholder="e.g. A9823412 (UK / UAE / US)"
                       className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500 transition"
                     />
@@ -333,7 +372,7 @@ export default function RegisterPage() {
                   id="ntn-input"
                   type="text"
                   value={ntn}
-                  onChange={(e) => setNtn(e.target.value)}
+                  onChange={(e) => { setNtn(e.target.value); liveValidate('ntn', e.target.value) }}
                   placeholder="e.g. NTN-4829103-7"
                   required
                   className={`bg-white border ${
@@ -356,7 +395,7 @@ export default function RegisterPage() {
                 <textarea
                   id="address-input"
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={(e) => { setAddress(e.target.value); liveValidate('address', e.target.value) }}
                   placeholder="Suite 402, 4th Floor, Main Boulevard, Bahria Town, Rawalpindi / Islamabad"
                   rows={2}
                   required
@@ -411,7 +450,7 @@ export default function RegisterPage() {
                       type="number"
                       step="any"
                       value={latitude}
-                      onChange={(e) => setLatitude(e.target.value)}
+                      onChange={(e) => { setLatitude(e.target.value); liveValidate('latitude', e.target.value) }}
                       placeholder="e.g. 33.5256"
                       required
                       className={`bg-white border ${
@@ -428,7 +467,7 @@ export default function RegisterPage() {
                       type="number"
                       step="any"
                       value={longitude}
-                      onChange={(e) => setLongitude(e.target.value)}
+                      onChange={(e) => { setLongitude(e.target.value); liveValidate('longitude', e.target.value) }}
                       placeholder="e.g. 73.0984"
                       required
                       className={`bg-white border ${
@@ -555,10 +594,15 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          {!isFormValid && (
+            <div className="bg-amber-50 border border-amber-300 text-amber-800 text-[10px] p-3 rounded-xl font-semibold text-center">
+              ⚠️ All required fields must pass format validation before submitting. Check highlighted fields above.
+            </div>
+          )}
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3.5 rounded-xl transition shadow-md disabled:opacity-50 mt-2 flex items-center justify-center gap-2"
+            disabled={loading || !isFormValid}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white font-bold text-xs py-3.5 rounded-xl transition shadow-md disabled:opacity-60 mt-2 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>

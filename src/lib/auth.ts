@@ -96,6 +96,15 @@ const MOCK_USERS: RegisteredUser[] = [
     agencyId: null,
     agencyName: null,
   },
+  {
+    id: 'investor-user-id',
+    email: 'investor@nexmove.com',
+    name: 'Tariq Mehmood (Overseas Investor)',
+    password: 'investor123',
+    role: 'PUBLIC_USER' as Role,
+    agencyId: null,
+    agencyName: 'Global Investor Asset Vault',
+  },
 ]
 
 export const authOptions: NextAuthOptions = {

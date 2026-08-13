@@ -149,7 +149,7 @@ export default function GlobalHeader() {
           href="/register"
           className="text-xs bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-lg transition font-medium hidden sm:inline"
         >
-          Register Agency
+          Register Now
         </Link>
 
         {/* Persistent "Agency Dashboard" button */}

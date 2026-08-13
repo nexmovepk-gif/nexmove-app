@@ -2,6 +2,8 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
+import Link from 'next/link'
+import { useSession, signIn, signOut } from 'next-auth/react'
 import { useCurrency } from '@/components/CurrencyContext'
 import { CURRENCIES, CurrencyCode } from '@/lib/currency'
 import TaxCalculator from './components/TaxCalculator'
@@ -313,6 +315,13 @@ const TIMEZONES = [
 
 export default function InvestorPortalPage() {
   const { currency, setCurrency, formatPrice } = useCurrency()
+  const { data: session, status } = useSession()
+
+  // Login Gate State
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [loginError, setLoginError] = useState<string | null>(null)
+  const [loginLoading, setLoginLoading] = useState(false)
 
   // Main Dashboard Tab State
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'PORTFOLIO' | 'LEDGER' | 'ESCROW' | 'TAX_CALCULATOR'>('OVERVIEW')
@@ -398,38 +407,169 @@ export default function InvestorPortalPage() {
                   NEXMOVE ENTERPRISE ASSET VAULT
                     OFFICIAL INVESTMENT AGREEMENT
 ===================================================================
-Contract ID:         ${item.id}
-Property Title:      ${item.propertyTitle}
-Location:            ${item.location}, ${item.city}
-Agency Partner:      ${item.agencyName}
-
-CONTRACT TERMS & ROLES:
--------------------------------------------------------------------
-- Status:            ${item.status}
-- Agreement Start:   ${item.startDate}
-- Maturity Date:     ${item.maturityDate}
-- Invested Capital:  ${item.investedAmountPKR.toLocaleString()} PKR
-- Equity Ownership:  ${item.equitySharePct}%
-- Fixed ROI Target:  ${item.fixedRoiPct}% p.a.
-- Monthly Yield:     ${item.monthlyYieldPKR.toLocaleString()} PKR / mo
-
-GUARANTEE & ESCROW CLAUSE:
--------------------------------------------------------------------
-This agreement is backed by SBP Escrow Trustee Protocols. Rental cashflows
-are distributed on the 1st of every month directly to the verified wallet.
-
-Generated via NexMove Global Investor Portal on ${new Date().toISOString()}
+Contract Reference : ${item.id}
+Property           : ${item.propertyTitle}
+Location           : ${item.location}, ${item.city}
+Agency             : ${item.agencyName}
+Invested Amount    : PKR ${item.investedAmountPKR.toLocaleString()}
+Current Value      : PKR ${item.currentValuePKR.toLocaleString()}
+Maturity Date      : ${item.maturityDate}
+Status             : ${item.status}
 ===================================================================
-`
+    `
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = item.contractPdfName || `${item.id}_Agreement.txt`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = item.contractPdfName
+    a.click()
     URL.revokeObjectURL(url)
+  }
+
+  // Direct Investor Sign-In Handlers
+  const handleDirectInvestorLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoginError(null)
+    setLoginLoading(true)
+
+    const res = await signIn('credentials', {
+      email: loginEmail,
+      password: loginPassword,
+      redirect: false,
+    })
+
+    setLoginLoading(false)
+
+    if (res?.error) {
+      setLoginError('Invalid investor credentials. Please check your email and password.')
+    }
+  }
+
+  const handleQuickInvestorLogin = async () => {
+    setLoginError(null)
+    setLoginLoading(true)
+    const res = await signIn('credentials', {
+      email: 'investor@nexmove.com',
+      password: 'investor123',
+      redirect: false,
+    })
+    setLoginLoading(false)
+    if (res?.error) {
+      setLoginError('Failed to sign in with quick investor account.')
+    }
+  }
+
+  // Direct Login Gateway View for Unauthenticated Users
+  if (status === 'loading') {
+    return (
+      <main className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs text-slate-400 font-semibold">Verifying Investor Session...</span>
+        </div>
+      </main>
+    )
+  }
+
+  if (status === 'unauthenticated' || !session) {
+    return (
+      <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col gap-6">
+          {/* Header */}
+          <div className="flex flex-col items-center text-center gap-2">
+            <span className="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">
+              🌐 Direct Investor Sign-In Gateway
+            </span>
+            <h1 className="text-2xl font-black text-slate-50 mt-1">Investor Portal Sign In</h1>
+            <p className="text-xs text-slate-400 leading-relaxed max-w-xs">
+              Sign in with your registered investor account to access your overseas asset vault, escrow portfolio &amp; legal contracts.
+            </p>
+          </div>
+
+          {loginError && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3.5 rounded-2xl text-center font-semibold leading-relaxed">
+              {loginError}
+            </div>
+          )}
+
+          <form onSubmit={handleDirectInvestorLogin} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-300">Email Address</label>
+              <input
+                type="email"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                placeholder="investor@nexmove.com"
+                required
+                className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-slate-300">Password</label>
+              <input
+                type="password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loginLoading}
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs py-3.5 rounded-xl transition shadow-lg disabled:opacity-50 mt-1 flex items-center justify-center gap-2"
+            >
+              {loginLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                  <span>Authenticating Vault...</span>
+                </>
+              ) : (
+                <span>Sign In to Investor Dashboard →</span>
+              )}
+            </button>
+          </form>
+
+          <div className="relative flex items-center justify-center my-1">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-800"></div>
+            </div>
+            <span className="relative bg-slate-900 px-3 text-[10px] text-slate-500 uppercase font-bold tracking-wider">
+              Quick Investor Sign-In
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleQuickInvestorLogin}
+            disabled={loginLoading}
+            className="w-full bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-amber-500/50 rounded-2xl p-3.5 text-left transition flex items-center justify-between group"
+          >
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-bold text-slate-200 group-hover:text-amber-400 transition">
+                Tariq Mehmood (Overseas Investor)
+              </span>
+              <span className="text-[10px] text-slate-500">investor@nexmove.com • Dubai / UK Portfolio</span>
+            </div>
+            <span className="text-xs bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-lg">
+              Quick Sign In →
+            </span>
+          </button>
+
+          <div className="text-center pt-3 border-t border-slate-800/80">
+            <p className="text-xs text-slate-400">
+              Don&apos;t have an investor account yet?{' '}
+              <Link href="/register" className="text-amber-400 hover:underline font-bold">
+                Register Now →
+              </Link>
+            </p>
+          </div>
+        </div>
+      </main>
+    )
   }
 
   const handlePayoutSubmit = (e: React.FormEvent) => {
@@ -496,6 +636,24 @@ Generated via NexMove Global Investor Portal on ${new Date().toISOString()}
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-8">
 
         {/* Global AIEscrowGuard Header Trust Status */}
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <span className="text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full uppercase tracking-wider">
+                🛡️ Verified Asset Vault &amp; Escrow Gateway
+              </span>
+              {session?.user && (
+                <div className="flex items-center gap-2 bg-slate-900/80 border border-slate-700/80 rounded-full px-3 py-1">
+                  <span className="text-[10px] text-slate-300 font-medium">
+                    Signed in as <strong className="text-amber-300 font-bold">{session.user.name || session.user.email}</strong>
+                  </span>
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/investors' })}
+                    className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 px-2 py-0.5 rounded-full font-bold transition"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
         <AIEscrowGuard mode="escrow_protection" title="Global Investor Escrow Guard & Trust Portal" subtitle="Automated AI Document Verification, NICOP/Passport authentication, and SBP Escrow Trustee Security." />
 
         {/* Global Alert Banners */}

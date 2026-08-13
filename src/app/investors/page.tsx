@@ -5,6 +5,9 @@ import { useState } from 'react'
 import { useCurrency } from '@/components/CurrencyContext'
 import { CURRENCIES, CurrencyCode } from '@/lib/currency'
 import TaxCalculator from './components/TaxCalculator'
+import AIDocumentKYCVerifier from './components/AIDocumentKYCVerifier'
+import SmartEscrowMilestoneTracker from './components/SmartEscrowMilestoneTracker'
+import AILegalContractGenerator from './components/AILegalContractGenerator'
 import { getFBRMetadata, getRentalWithholdingTaxRate } from '@/lib/services/fbrService'
 
 // --- Interfaces ---
@@ -954,16 +957,16 @@ Generated via NexMove Global Investor Portal on ${new Date().toISOString()}
           </div>
         )}
 
-        {/* TAB 4: ESCROW WALLET & PAYOUT REQUESTS */}
+        {/* TAB 4: ESCROW WALLET & AI TRUST MODULE */}
         {activeTab === 'ESCROW' && (
           <div className="flex flex-col gap-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
               <div>
                 <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-                  <span>🏦</span> SBP Protected Escrow Wallet
+                  <span>🏦</span> AI Escrow &amp; Foreign Investor Trust Module
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Instant rental withdrawals, overseas bank account linking, and State Bank repatriation management.
+                  Automated AI identity verification, 3-stage milestone release tracker, PDF legal contract generator &amp; State Bank escrow wallet.
                 </p>
               </div>
               <button
@@ -974,6 +977,16 @@ Generated via NexMove Global Investor Portal on ${new Date().toISOString()}
               </button>
             </div>
 
+            {/* 1. AI Document & KYC Verifier */}
+            <AIDocumentKYCVerifier />
+
+            {/* 2. Smart Escrow Milestone Tracker */}
+            <SmartEscrowMilestoneTracker propertyTitle="Executive High-Floor Residence — Gulberg III" totalPricePKR={42000000} currency={currency} />
+
+            {/* 3. AI Legal Contract Generator */}
+            <AILegalContractGenerator initialDealTitle="Executive High-Floor Residence — Gulberg III" initialPricePKR={42000000} initialAgency="Prime Realty Group" activeCurrency={currency} />
+
+            {/* Escrow Balance & Wallet Operations Card */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Wallet Card */}
               <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white rounded-3xl p-6 shadow-xl flex flex-col justify-between min-h-[260px]">

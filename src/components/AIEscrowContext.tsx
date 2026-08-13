@@ -98,17 +98,20 @@ export function AIEscrowProvider({ children }: { children: React.ReactNode }) {
 
   const updateKYCResult = (data: KYCData) => {
     setKycData(data)
-    setVerificationStatus('VERIFIED')
-    setRiskScorePct(data.riskScorePct)
-    setEscrowSecured(data.escrowStatus === 'ESCROW_SECURED')
+    const isRejected = data.escrowStatus === 'REJECTED' || !!data.validationError
+    const newStatus: VerificationStatus = isRejected ? 'REJECTED' : 'VERIFIED'
+
+    setVerificationStatus(newStatus)
+    setRiskScorePct(isRejected ? null : data.riskScorePct)
+    setEscrowSecured(isRejected ? false : data.escrowStatus === 'ESCROW_SECURED')
 
     const newDoc: UploadedDocumentRecord = {
       id: `doc-${Date.now()}`,
-      fileName: `${data.documentType}_Verified_Document.pdf`,
+      fileName: `${data.documentType}_${isRejected ? 'Rejected' : 'Verified'}_Document.pdf`,
       docType: data.documentType,
       uploadedAt: data.extractedAt,
-      riskScorePct: data.riskScorePct,
-      status: 'APPROVED',
+      riskScorePct: isRejected ? 0 : data.riskScorePct,
+      status: isRejected ? 'IN_REVIEW' : 'APPROVED',
     }
 
     setUploadedDocuments((prev) => [newDoc, ...prev.filter((d) => d.docType !== data.documentType)])
@@ -117,10 +120,10 @@ export function AIEscrowProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(
         'nexmove_escrow_kyc',
         JSON.stringify({
-          verificationStatus: 'VERIFIED',
+          verificationStatus: newStatus,
           kycData: data,
-          riskScorePct: data.riskScorePct,
-          escrowSecured: data.escrowStatus === 'ESCROW_SECURED',
+          riskScorePct: isRejected ? null : data.riskScorePct,
+          escrowSecured: isRejected ? false : data.escrowStatus === 'ESCROW_SECURED',
           uploadedDocuments: [newDoc, ...uploadedDocuments],
         })
       )

@@ -27,6 +27,16 @@ export default function AIEscrowGuard({
 
   // --- Compact Badge Mode ---
   if (mode === 'compact') {
+    if (verificationStatus === 'REJECTED' || !escrowSecured) {
+      return (
+        <div className={`inline-flex items-center gap-2 bg-red-950 text-white px-3.5 py-1.5 rounded-xl border border-red-800 shadow-sm text-xs ${className}`}>
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+          <span className="font-bold text-red-400">⚠️ AI Escrow Guard: Validation Failed</span>
+          <span className="text-red-300 font-mono text-[10px]">Document Mismatch</span>
+        </div>
+      )
+    }
+
     return (
       <div className={`inline-flex items-center gap-2 bg-slate-900 text-white px-3.5 py-1.5 rounded-xl border border-slate-800 shadow-sm text-xs ${className}`}>
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -56,9 +66,15 @@ export default function AIEscrowGuard({
                 <span className="text-[10px] font-black bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                   AI Agency KYC &amp; RERA License Verification
                 </span>
-                <span className="text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  Verified Active
-                </span>
+                {verificationStatus === 'REJECTED' ? (
+                  <span className="text-[10px] font-black bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                    Validation Failed: Mismatch
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                    Verified Active
+                  </span>
+                )}
               </div>
               <h4 className="text-base font-black text-white">
                 {title || 'AIEscrowGuard — Agency Trust & Verification Status'}
@@ -70,12 +86,20 @@ export default function AIEscrowGuard({
           </div>
 
           <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
-            <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-3.5 py-1.5 rounded-xl text-xs font-bold font-mono">
-              Risk Score: Low ({riskScorePct || 98.4}%)
-            </div>
-            <div className="bg-teal-500/20 border border-teal-500/40 text-teal-300 px-3.5 py-1.5 rounded-xl text-xs font-bold">
-              ✓ Escrow Secure
-            </div>
+            {verificationStatus === 'REJECTED' || !escrowSecured ? (
+              <div className="bg-red-600/90 border border-red-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1">
+                <span>⚠️</span> Validation Failed: Document Mismatch
+              </div>
+            ) : (
+              <>
+                <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-3.5 py-1.5 rounded-xl text-xs font-bold font-mono">
+                  Risk Score: Low ({riskScorePct || 98.4}%)
+                </div>
+                <div className="bg-teal-500/20 border border-teal-500/40 text-teal-300 px-3.5 py-1.5 rounded-xl text-xs font-bold">
+                  ✓ Escrow Secure
+                </div>
+              </>
+            )}
             <button
               onClick={() => setShowScannerModal(true)}
               className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow"
@@ -131,9 +155,15 @@ export default function AIEscrowGuard({
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-xs font-mono bg-slate-800 text-teal-400 border border-slate-700 px-3 py-1.5 rounded-xl font-bold">
-              Status: {verificationStatus === 'VERIFIED' ? 'Escrow Secure ✓' : 'Verification Pending'}
-            </span>
+            {verificationStatus === 'REJECTED' || !escrowSecured ? (
+              <span className="text-xs font-mono bg-red-950 text-red-400 border border-red-800 px-3 py-1.5 rounded-xl font-bold">
+                ⚠️ Validation Failed: Document Mismatch
+              </span>
+            ) : (
+              <span className="text-xs font-mono bg-slate-800 text-teal-400 border border-slate-700 px-3 py-1.5 rounded-xl font-bold">
+                Status: Escrow Secure ✓
+              </span>
+            )}
             <button
               onClick={() => setShowScannerModal(true)}
               className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow"

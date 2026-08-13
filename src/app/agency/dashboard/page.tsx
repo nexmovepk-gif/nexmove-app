@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import ActivityCenter, { ActivityNotification } from '@/components/ActivityCenter';
 import VerifiedBadge, { VerificationTier } from '@/components/VerifiedBadge';
+import AIEscrowGuard from '@/components/AIEscrowGuard';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -147,6 +148,9 @@ export default function DashboardClient() {
             </Link>
           </div>
         </div>
+
+        {/* ── AIEscrowGuard Agency KYC Banner ────────────────────────────── */}
+        <AIEscrowGuard mode="agency_kyc" className="mb-8" />
 
         {/* ── KPI Cards ──────────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

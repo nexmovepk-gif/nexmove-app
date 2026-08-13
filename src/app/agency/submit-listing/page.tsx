@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import AIEscrowGuard from '@/components/AIEscrowGuard';
 
 export default function AgencySubmitListingPage() {
   const [title, setTitle] = useState('');
@@ -152,6 +153,9 @@ export default function AgencySubmitListingPage() {
             ← Back to Dashboard
           </Link>
         </div>
+
+        {/* ── AIEscrowGuard Property Title Banner ────────────────────────── */}
+        <AIEscrowGuard mode="property_title" className="mb-8" title="AI Property Title Deed & Allotment Verification" subtitle="Upload property allotment letter or title deed for instant AI Vision spec extraction & title authentication." />
 
         {submitted ? (
           <div className="bg-white rounded-2xl p-8 shadow border border-emerald-200 text-center flex flex-col items-center gap-4">

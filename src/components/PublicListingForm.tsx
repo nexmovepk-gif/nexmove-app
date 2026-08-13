@@ -2,6 +2,7 @@
 // src/components/PublicListingForm.tsx
 
 import { useState, useRef } from 'react'
+import AIEscrowGuard from '@/components/AIEscrowGuard'
 
 interface FormData {
   title: string
@@ -339,6 +340,7 @@ export default function PublicListingForm() {
       {/* Step 2 — Upload & AI Extraction */}
       {step === 2 && (
         <div className="flex flex-col gap-4">
+          <AIEscrowGuard mode="property_title" className="mb-2" />
           <div
             className="border-2 border-dashed border-slate-700 hover:border-teal-500/50 rounded-2xl p-8 flex flex-col items-center gap-3 cursor-pointer transition duration-200 text-center group"
             onClick={() => fileRef.current?.click()}

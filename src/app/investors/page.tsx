@@ -8,6 +8,7 @@ import TaxCalculator from './components/TaxCalculator'
 import AIDocumentKYCVerifier from './components/AIDocumentKYCVerifier'
 import SmartEscrowMilestoneTracker from './components/SmartEscrowMilestoneTracker'
 import AILegalContractGenerator from './components/AILegalContractGenerator'
+import AIEscrowGuard from '@/components/AIEscrowGuard'
 import { getFBRMetadata, getRentalWithholdingTaxRate } from '@/lib/services/fbrService'
 
 // --- Interfaces ---
@@ -491,6 +492,9 @@ Generated via NexMove Global Investor Portal on ${new Date().toISOString()}
 
       {/* Main Container */}
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-8">
+
+        {/* Global AIEscrowGuard Header Trust Status */}
+        <AIEscrowGuard mode="escrow_protection" title="Global Investor Escrow Guard & Trust Portal" subtitle="Automated AI Document Verification, NICOP/Passport authentication, and SBP Escrow Trustee Security." />
 
         {/* Global Alert Banners */}
         {renewalSuccessMsg && (

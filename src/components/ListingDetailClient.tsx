@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import AIEscrowGuard from '@/components/AIEscrowGuard';
 
 export interface PublicListingItem {
   id: string;
@@ -431,6 +432,8 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
                       <option value="CRYPTO">🪙 Crypto / USDT Escrow</option>
                     </select>
                   </div>
+
+                  <AIEscrowGuard mode="compact" className="w-full justify-between my-1" />
 
                   <label className="flex items-start gap-2 pt-1 cursor-pointer">
                     <input

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import AIEscrowGuard from '@/components/AIEscrowGuard';
 
 interface DealItem {
   id: string;
@@ -291,6 +292,9 @@ export default function ShieldedDealsPage() {
             ← Back to Dashboard
           </Link>
         </div>
+
+        {/* AIEscrowGuard Escrow Protection Banner */}
+        <AIEscrowGuard mode="escrow_protection" className="mb-8" title="Escrow Vault & Deal Protection Matrix" subtitle="State Bank of Pakistan Trustee compliance — all deposits and contracts are locked under AIEscrowGuard security." />
 
         {/* AI Cross-Agency Matcher Engine Banner */}
         <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl mb-8 border border-teal-800/50">

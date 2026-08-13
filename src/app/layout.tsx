@@ -5,6 +5,7 @@ import SessionProvider from "@/components/SessionProvider";
 import GlobalHeader from "@/components/GlobalHeader";
 import AIAssistant from "@/components/AIAssistant";
 import { CurrencyProvider } from "@/components/CurrencyContext";
+import { AIEscrowProvider } from "@/components/AIEscrowContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,9 +35,11 @@ export default function RootLayout({
       >
         <SessionProvider>
           <CurrencyProvider>
-            <GlobalHeader />
-            {children}
-            <AIAssistant />
+            <AIEscrowProvider>
+              <GlobalHeader />
+              {children}
+              <AIAssistant />
+            </AIEscrowProvider>
           </CurrencyProvider>
         </SessionProvider>
       </body>

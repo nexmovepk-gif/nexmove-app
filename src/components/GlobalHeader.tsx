@@ -126,6 +126,12 @@ export default function GlobalHeader() {
           Architects & Designers
         </Link>
         <Link
+          href="/pricing"
+          className="text-xs text-emerald-400 hover:text-emerald-300 font-bold transition hidden sm:inline"
+        >
+          Pricing
+        </Link>
+        <Link
           href="/investors"
           className="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
         >

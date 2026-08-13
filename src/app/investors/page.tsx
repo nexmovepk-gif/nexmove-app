@@ -9,6 +9,7 @@ import AIDocumentKYCVerifier from './components/AIDocumentKYCVerifier'
 import SmartEscrowMilestoneTracker from './components/SmartEscrowMilestoneTracker'
 import AILegalContractGenerator from './components/AILegalContractGenerator'
 import AIEscrowGuard from '@/components/AIEscrowGuard'
+import BankTransferCheckoutModal from '@/components/BankTransferCheckoutModal'
 import { getFBRMetadata, getRentalWithholdingTaxRate } from '@/lib/services/fbrService'
 
 // --- Interfaces ---
@@ -315,6 +316,7 @@ export default function InvestorPortalPage() {
 
   // Main Dashboard Tab State
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'PORTFOLIO' | 'LEDGER' | 'ESCROW' | 'TAX_CALCULATOR'>('OVERVIEW')
+  const [showBankModal, setShowBankModal] = useState(false)
 
   // Overview Filters & Meeting Modal State
   const [filterTab, setFilterTab] = useState<'ALL' | 'OFF_MARKET' | 'DISTRESS' | 'HIGH_YIELD'>('ALL')
@@ -551,6 +553,13 @@ Generated via NexMove Global Investor Portal on ${new Date().toISOString()}
               )}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setShowBankModal(true)}
+            className="text-xs font-bold py-3 px-4 rounded-xl bg-purple-700 hover:bg-purple-800 text-white transition flex items-center justify-center gap-1.5 shadow"
+          >
+            <span>🏦</span> Upgrade Plan (Meezan Bank)
+          </button>
         </div>
 
         {/* TAB 1: OVERVIEW & DEALS */}
@@ -1327,6 +1336,14 @@ Generated via NexMove Global Investor Portal on ${new Date().toISOString()}
           </div>
         </div>
       )}
+
+      {/* Meezan Bank Checkout Modal for Investor Subscriptions */}
+      <BankTransferCheckoutModal
+        isOpen={showBankModal}
+        onClose={() => setShowBankModal(false)}
+        selectedPlanTitle="Investor Escrow Vault Subscription"
+        selectedPlanPricePKR={15000}
+      />
     </main>
   )
 }

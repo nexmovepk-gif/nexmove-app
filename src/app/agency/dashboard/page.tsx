@@ -5,6 +5,7 @@ import Link from 'next/link';
 import ActivityCenter, { ActivityNotification } from '@/components/ActivityCenter';
 import VerifiedBadge, { VerificationTier } from '@/components/VerifiedBadge';
 import AIEscrowGuard from '@/components/AIEscrowGuard';
+import BankTransferCheckoutModal from '@/components/BankTransferCheckoutModal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -62,6 +63,9 @@ export default function DashboardClient() {
   const [activeTab, setActiveTab]          = useState<'active' | 'archived'>('active');
   const [agencyTier, setAgencyTier]        = useState<VerificationTier>('GOLD');
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showBankCheckout, setShowBankCheckout] = useState(false);
+  const [checkoutPlanTitle, setCheckoutPlanTitle] = useState('Professional Plan');
+  const [checkoutPlanPrice, setCheckoutPlanPrice] = useState(15000);
 
   const activeListings   = listings.filter((l) => l.isActive);
   const archivedListings = listings.filter((l) => !l.isActive);
@@ -339,7 +343,7 @@ export default function DashboardClient() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Silver Plan */}
+            {/* Starter Plan */}
             <div className={`border-2 rounded-2xl p-5 flex flex-col gap-3 cursor-pointer transition ${
               agencyTier === 'SILVER'
                 ? 'border-slate-500 bg-slate-50'
@@ -352,8 +356,8 @@ export default function DashboardClient() {
                 )}
               </div>
               <div>
-                <p className="font-black text-slate-900 text-base">Silver Verified</p>
-                <p className="text-2xl font-black text-slate-700 mt-0.5">$99<span className="text-xs font-semibold text-slate-500">/mo</span></p>
+                <p className="font-black text-slate-900 text-base">Starter Plan</p>
+                <p className="text-xl font-black text-slate-700 mt-0.5">PKR 5,000<span className="text-xs font-semibold text-slate-500">/mo</span></p>
               </div>
               <ul className="text-xs text-slate-600 space-y-1.5 flex-1">
                 <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Trade License Verified Badge</li>
@@ -363,14 +367,20 @@ export default function DashboardClient() {
                 <li className="flex items-center gap-2"><span className="text-slate-300 font-bold">✗</span> AI Cross-Matching</li>
               </ul>
               <button
-                onClick={() => { setAgencyTier('SILVER'); setShowUpgradeModal(false); }}
+                onClick={() => {
+                  setAgencyTier('SILVER');
+                  setShowUpgradeModal(false);
+                  setCheckoutPlanTitle('Starter Plan');
+                  setCheckoutPlanPrice(5000);
+                  setShowBankCheckout(true);
+                }}
                 className="mt-auto text-xs bg-slate-700 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl transition"
               >
-                {agencyTier === 'SILVER' ? 'Current Plan' : 'Select Silver'}
+                Pay PKR 5,000 via Meezan Bank
               </button>
             </div>
 
-            {/* Gold Plan */}
+            {/* Professional Plan */}
             <div className={`border-2 rounded-2xl p-5 flex flex-col gap-3 cursor-pointer transition relative ${
               agencyTier === 'GOLD'
                 ? 'border-amber-500 bg-amber-50'
@@ -386,25 +396,31 @@ export default function DashboardClient() {
                 )}
               </div>
               <div>
-                <p className="font-black text-amber-900 text-base">Gold Elite</p>
-                <p className="text-2xl font-black text-amber-700 mt-0.5">$299<span className="text-xs font-semibold text-amber-600">/mo</span></p>
+                <p className="font-black text-amber-900 text-base">Professional Plan</p>
+                <p className="text-xl font-black text-amber-700 mt-0.5">PKR 15,000<span className="text-xs font-semibold text-amber-600">/mo</span></p>
               </div>
               <ul className="text-xs text-slate-600 space-y-1.5 flex-1">
                 <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> RERA / DLD Verified Badge</li>
-                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Priority Marketplace Search</li>
+                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Full AIEscrowGuard Suite</li>
                 <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> 50% Co-Brokering Match Priority</li>
-                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Monthly Analytics Report</li>
+                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> AI Legal SPA Generator (PDF)</li>
                 <li className="flex items-center gap-2"><span className="text-slate-300 font-bold">✗</span> Zero Commission Cap</li>
               </ul>
               <button
-                onClick={() => { setAgencyTier('GOLD'); setShowUpgradeModal(false); }}
+                onClick={() => {
+                  setAgencyTier('GOLD');
+                  setShowUpgradeModal(false);
+                  setCheckoutPlanTitle('Professional Plan');
+                  setCheckoutPlanPrice(15000);
+                  setShowBankCheckout(true);
+                }}
                 className="mt-auto text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl transition"
               >
-                {agencyTier === 'GOLD' ? 'Current Plan' : 'Select Gold Elite'}
+                Pay PKR 15,000 via Meezan Bank
               </button>
             </div>
 
-            {/* Platinum Plan */}
+            {/* Enterprise Plan */}
             <div className={`border-2 rounded-2xl p-5 flex flex-col gap-3 cursor-pointer transition ${
               agencyTier === 'PLATINUM'
                 ? 'border-purple-500 bg-purple-50'
@@ -417,31 +433,45 @@ export default function DashboardClient() {
                 )}
               </div>
               <div>
-                <p className="font-black text-purple-900 text-base">Platinum Enterprise</p>
-                <p className="text-2xl font-black text-purple-700 mt-0.5">$599<span className="text-xs font-semibold text-purple-500">/mo</span></p>
+                <p className="font-black text-purple-900 text-base">Enterprise Plan</p>
+                <p className="text-xl font-black text-purple-700 mt-0.5">PKR 40,000<span className="text-xs font-semibold text-purple-500">/mo</span></p>
               </div>
               <ul className="text-xs text-slate-600 space-y-1.5 flex-1">
                 <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Full Audit Verified Badge</li>
                 <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Priority AI Cross-Matching</li>
                 <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Zero Commission Cap</li>
-                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Top Search Indexing</li>
+                <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Unlimited Developer Access</li>
                 <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Dedicated Account Manager</li>
               </ul>
               <button
-                onClick={() => { setAgencyTier('PLATINUM'); setShowUpgradeModal(false); }}
+                onClick={() => {
+                  setAgencyTier('PLATINUM');
+                  setShowUpgradeModal(false);
+                  setCheckoutPlanTitle('Enterprise Plan');
+                  setCheckoutPlanPrice(40000);
+                  setShowBankCheckout(true);
+                }}
                 className="mt-auto text-xs bg-purple-700 hover:bg-purple-800 text-white font-bold py-2.5 rounded-xl transition"
               >
-                {agencyTier === 'PLATINUM' ? 'Current Plan' : 'Upgrade to Platinum'}
+                Pay PKR 40,000 via Meezan Bank
               </button>
             </div>
           </div>
 
           <p className="text-[11px] text-slate-400 text-center mt-5">
-            All plans are billed monthly. Tier badges are activated instantly upon subscription confirmation.
+            All plans support direct bank transfer into Meezan Bank. Receipts are verified manually by admin.
           </p>
         </div>
       </div>
     )}
+
+    {/* Bank Transfer Checkout Modal */}
+    <BankTransferCheckoutModal
+      isOpen={showBankCheckout}
+      onClose={() => setShowBankCheckout(false)}
+      selectedPlanTitle={checkoutPlanTitle}
+      selectedPlanPricePKR={checkoutPlanPrice}
+    />
     </>
   );
 }

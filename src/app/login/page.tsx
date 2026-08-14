@@ -45,22 +45,6 @@ function LoginForm() {
     }
   }
 
-  const handleQuickLogin = async (mockEmail: string, mockPass: string, defaultRedirectPath: string) => {
-    setError(null)
-    setLoading(true)
-    const result = await signIn('credentials', {
-      email: mockEmail,
-      password: mockPass,
-      redirect: false,
-    })
-    setLoading(false)
-    if (result?.error) {
-      setError('Failed to login with quick account.')
-    } else {
-      router.push(callbackUrl || defaultRedirectPath)
-    }
-  }
-
   return (
     <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col gap-6">
       {/* Header */}
@@ -132,55 +116,6 @@ function LoginForm() {
           )}
         </button>
       </form>
-
-      <div className="relative flex items-center justify-center my-1">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200"></div>
-        </div>
-        <span className="relative bg-white px-3 text-[11px] text-slate-500 uppercase font-bold">
-          Quick Sign-In Switch
-        </span>
-      </div>
-
-      {/* Quick Logins */}
-      <div className="flex flex-col gap-2">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <button
-            onClick={() => handleQuickLogin('investor@nexmove.com', 'investor123', '/investors')}
-            className="bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-950 rounded-xl p-2.5 text-left transition flex flex-col gap-0.5"
-          >
-            <span className="text-xs font-bold flex items-center justify-between">
-              <span>Overseas Investor</span>
-              <span className="text-[10px]">🌐</span>
-            </span>
-            <span className="text-[10px] text-amber-800 font-medium">Tariq Mehmood (NRP Vault)</span>
-          </button>
-
-          <button
-            onClick={() => handleQuickLogin('manager1@agency1.com', 'manager123', '/agency/dashboard')}
-            className="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 rounded-xl p-2.5 text-left transition flex flex-col gap-0.5"
-          >
-            <span className="text-xs font-bold">Agency Manager</span>
-            <span className="text-[10px] text-emerald-800 font-medium">Apex Real Estate</span>
-          </button>
-
-          <button
-            onClick={() => handleQuickLogin('superadmin@nexmove.com', 'admin123', '/admin/dashboard')}
-            className="bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 rounded-xl p-2.5 text-left transition flex flex-col gap-0.5"
-          >
-            <span className="text-xs font-bold">Super Admin</span>
-            <span className="text-[10px] text-purple-700 font-medium">Ali Hamza (CEO)</span>
-          </button>
-
-          <button
-            onClick={() => handleQuickLogin('agent1@agency1.com', 'agent123', '/agency/dashboard')}
-            className="bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-900 rounded-xl p-2.5 text-left transition flex flex-col gap-0.5"
-          >
-            <span className="text-xs font-bold">Agency Agent</span>
-            <span className="text-[10px] text-teal-800 font-medium">Sales &amp; Pipeline</span>
-          </button>
-        </div>
-      </div>
 
       {/* Link to Register */}
       <div className="text-center pt-3 border-t border-slate-100">

@@ -28,87 +28,9 @@ interface CoBrokerListing {
   commissionRate: number;
 }
 
-const INITIAL_DEALS: DealItem[] = [
-  {
-    id: 'DEAL-101',
-    title: 'Downtown Villa Acquisition',
-    stage: 'NEGOTIATION',
-    value: 1450000,
-    clientAlias: 'Buyer #408 (Shielded)',
-    clientPrivateName: 'Marcus Vance',
-    clientContact: '+971 50 999 8877',
-    privateNotes: 'Seller agreed to 2% discount if token deposited before Aug 15. Keep seller identity private.',
-    property: 'Exclusive 4-Bed Luxury Villa',
-    matchScore: 98,
-  },
-  {
-    id: 'DEAL-102',
-    title: 'Marina Penthouse Lease Deal',
-    stage: 'ESCROW',
-    value: 520000,
-    clientAlias: 'Tenant #204 (Shielded)',
-    clientPrivateName: 'Sarah Jenkins',
-    clientContact: '+971 52 111 2233',
-    privateNotes: 'Security deposit held in escrow account #9823. Awaiting NOC certificate.',
-    property: 'Marina Tower Penthouse',
-    matchScore: 94,
-  },
-  {
-    id: 'DEAL-103',
-    title: 'Business Bay Office Suite',
-    stage: 'AGREEMENT_SIGNED',
-    value: 380000,
-    clientAlias: 'Investor #812 (Shielded)',
-    clientPrivateName: 'David Chen',
-    clientContact: '+971 55 333 4455',
-    privateNotes: 'SPA contracts executed. Deed transfer scheduled at Land Department.',
-    property: 'Business Bay Tower Office',
-    matchScore: 91,
-  },
-];
+const INITIAL_DEALS: DealItem[] = [];
 
-const CO_BROKER_NETWORK_DATA: CoBrokerListing[] = [
-  {
-    id: 'cb-1',
-    title: '5-Bed Palm Jumeirah Beachfront Villa',
-    agencyName: 'Apex Real Estate',
-    agencyVerified: true,
-    city: 'Dubai',
-    price: 3200000,
-    propertyType: 'VILLA',
-    commissionRate: 0.04,
-  },
-  {
-    id: 'cb-2',
-    title: 'Luxury 2-Bed Sky Residence',
-    agencyName: 'Skyline Properties',
-    agencyVerified: true,
-    city: 'Dubai',
-    price: 890000,
-    propertyType: 'APARTMENT',
-    commissionRate: 0.05,
-  },
-  {
-    id: 'cb-3',
-    title: 'Prime 1-Kanal Plot DHA Phase 8',
-    agencyName: 'Elite Properties',
-    agencyVerified: true,
-    city: 'Lahore',
-    price: 650000,
-    propertyType: 'PLOT',
-    commissionRate: 0.03,
-  },
-  {
-    id: 'cb-4',
-    title: 'Commercial Plaza Sector F-6',
-    agencyName: 'Capital Realtors',
-    agencyVerified: true,
-    city: 'Islamabad',
-    price: 1800000,
-    propertyType: 'COMMERCIAL',
-    commissionRate: 0.04,
-  },
-];
+const CO_BROKER_NETWORK_DATA: CoBrokerListing[] = [];
 
 export default function ShieldedDealsPage() {
   const [deals, setDeals] = useState<DealItem[]>(INITIAL_DEALS);
@@ -383,49 +305,59 @@ export default function ShieldedDealsPage() {
             </button>
           </form>
 
-          {/* Co-Broker Listings Results Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {coBrokerResults.map((item) => {
-              const totalCommission = item.price * item.commissionRate;
-              const splitShare = totalCommission / 2;
-              return (
-                <div key={item.id} className="bg-purple-50/60 border border-purple-200 rounded-xl p-4 flex flex-col justify-between gap-3">
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-bold bg-white text-purple-900 px-2 py-0.5 rounded border border-purple-200">
-                        {item.propertyType}
-                      </span>
-                      <span className="text-xs font-bold text-gray-600">{item.city}</span>
-                    </div>
-                    <h3 className="text-base font-bold text-gray-900">{item.title}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-700 font-semibold">Listing Agency: {item.agencyName}</span>
-                      {item.agencyVerified && (
-                        <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full font-bold">
-                          ✓ Verified Agency
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="pt-2 border-t border-purple-200/60 flex items-center justify-between">
+          {coBrokerResults.length === 0 ? (
+            <div className="p-8 text-center bg-purple-50/50 rounded-2xl border border-dashed border-purple-200">
+              <span className="text-3xl">🤝</span>
+              <p className="font-bold text-gray-800 text-sm mt-2">No co-broker listings currently active</p>
+              <p className="text-xs text-gray-500 mt-0.5">Partner agencies have not broadcasted co-brokering inventory in this territory yet.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {coBrokerResults.map((item) => {
+                const totalCommission = item.price * item.commissionRate;
+                const splitShare = totalCommission / 2;
+                return (
+                  <div
+                    key={item.id}
+                    className="p-4 bg-purple-50/40 rounded-xl border border-purple-200 hover:border-purple-300 transition flex flex-col justify-between gap-3 shadow-sm"
+                  >
                     <div>
-                      <span className="text-lg font-black text-gray-900">${item.price.toLocaleString()}</span>
-                      <p className="text-[10px] text-purple-900 font-bold">
-                        50% Split Share: <span className="text-emerald-700 font-black">${splitShare.toLocaleString()}</span>
-                      </p>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-bold uppercase bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
+                          {item.propertyType}
+                        </span>
+                        <span className="text-xs font-bold text-gray-600">{item.city}</span>
+                      </div>
+                      <h3 className="text-base font-bold text-gray-900">{item.title}</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-gray-700 font-semibold">Listing Agency: {item.agencyName}</span>
+                        {item.agencyVerified && (
+                          <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full font-bold">
+                            ✓ Verified Agency
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <button
-                      onClick={() => initiateCoBrokeredDeal(item)}
-                      className="bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow"
-                    >
-                      🤝 Initiate Co-Brokered Deal
-                    </button>
+
+                    <div className="pt-2 border-t border-purple-200/60 flex items-center justify-between">
+                      <div>
+                        <span className="text-lg font-black text-gray-900">${item.price.toLocaleString()}</span>
+                        <p className="text-[10px] text-purple-900 font-bold">
+                          50% Split Share: <span className="text-emerald-700 font-black">${splitShare.toLocaleString()}</span>
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => initiateCoBrokeredDeal(item)}
+                        className="bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow"
+                      >
+                        🤝 Initiate Co-Brokered Deal
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Pipeline Filters */}
@@ -454,87 +386,103 @@ export default function ShieldedDealsPage() {
 
         {/* Deals Cards */}
         <div className="grid grid-cols-1 gap-6 mb-10">
-          {filteredDeals.map((deal) => {
-            const isUnmasked = showPrivateDetails[deal.id];
-            return (
-              <div
-                key={deal.id}
-                className="bg-white rounded-2xl p-6 shadow border border-gray-200 hover:shadow-md transition flex flex-col gap-4"
+          {filteredDeals.length === 0 ? (
+            <div className="bg-white rounded-2xl p-12 text-center shadow border border-gray-200 flex flex-col items-center gap-3">
+              <span className="text-4xl">🛡️</span>
+              <div>
+                <p className="font-bold text-gray-900 text-base">No active deals in pipeline</p>
+                <p className="text-xs text-gray-500 mt-1">Your shielded deal pipeline is clean and ready for new client acquisitions.</p>
+              </div>
+              <Link
+                href="/agency/submit-listing"
+                className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow transition"
               >
-                <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-gray-100 gap-3">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md">
-                        {deal.id}
-                      </span>
-                      <h3 className="text-xl font-bold text-gray-900">{deal.title}</h3>
-                      {getStageBadge(deal.stage)}
-                    </div>
-                    <p className="text-sm text-gray-700 font-medium mt-1">Property: {deal.property}</p>
-                  </div>
-                  <div className="text-right flex flex-col items-end gap-1">
-                    <span className="text-2xl font-black text-gray-900">
-                      ${deal.value.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                    {(deal.stage === 'AGREEMENT_SIGNED' || deal.stage === 'CLOSED') ? (
-                      <button
-                        onClick={() => setContractDeal(deal)}
-                        className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-lg transition shadow flex items-center gap-1 mt-1"
-                      >
-                        <span>📄</span> Generate AI Legal Contract
-                      </button>
-                    ) : (
-                      <span className="text-[11px] bg-amber-100 border border-amber-300 text-amber-800 font-bold px-2.5 py-1 rounded-lg mt-1">
-                        Contract available at SPA Signed / Closed stage
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Privacy & Shield Details */}
-                <div className="pt-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-gray-900 uppercase">Client Identity Shield</span>
-                      <button
-                        onClick={() => togglePrivateDetails(deal.id)}
-                        className="text-xs font-bold text-blue-600 hover:underline"
-                      >
-                        {isUnmasked ? '🔒 Mask Details' : '🔓 Unmask (Agency Admin Only)'}
-                      </button>
-                    </div>
-
-                    <div className="text-sm">
-                      <div className="font-semibold text-gray-900">
-                        Public / External Alias:{' '}
-                        <span className="font-bold text-emerald-700">{deal.clientAlias}</span>
+                + List Property to Create Deals
+              </Link>
+            </div>
+          ) : (
+            filteredDeals.map((deal) => {
+              const isUnmasked = showPrivateDetails[deal.id];
+              return (
+                <div
+                  key={deal.id}
+                  className="bg-white rounded-2xl p-6 shadow border border-gray-200 hover:shadow-md transition flex flex-col gap-4"
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-gray-100 gap-3">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md">
+                          {deal.id}
+                        </span>
+                        <h3 className="text-xl font-bold text-gray-900">{deal.title}</h3>
+                        {getStageBadge(deal.stage)}
                       </div>
-                      {isUnmasked ? (
-                        <div className="mt-2 pt-2 border-t border-gray-200 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-                          <p className="text-xs font-bold text-amber-900">Internal Unmasked Client Data:</p>
-                          <p className="text-xs text-gray-900 font-medium">Name: {deal.clientPrivateName}</p>
-                          <p className="text-xs text-gray-900 font-medium">Phone: {deal.clientContact}</p>
-                        </div>
+                      <p className="text-sm text-gray-700 font-medium mt-1">Property: {deal.property}</p>
+                    </div>
+                    <div className="text-right flex flex-col items-end gap-1">
+                      <span className="text-2xl font-black text-gray-900">
+                        ${deal.value.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                      {(deal.stage === 'AGREEMENT_SIGNED' || deal.stage === 'CLOSED') ? (
+                        <button
+                          onClick={() => setContractDeal(deal)}
+                          className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-lg transition shadow flex items-center gap-1 mt-1"
+                        >
+                          <span>📄</span> Generate AI Legal Contract
+                        </button>
                       ) : (
-                        <p className="text-xs text-gray-600 mt-1 italic">
-                          Real client name and phone contact details are encrypted and hidden from third parties.
-                        </p>
+                        <span className="text-[11px] bg-amber-100 border border-amber-300 text-amber-800 font-bold px-2.5 py-1 rounded-lg mt-1">
+                          Contract available at SPA Signed / Closed stage
+                        </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-slate-900 text-slate-100 p-4 rounded-xl border border-slate-800">
-                    <span className="text-xs font-bold text-teal-400 uppercase tracking-wider block mb-2">
-                      🔒 Confidential Negotiation Notes
-                    </span>
-                    <p className="text-xs text-slate-300 leading-relaxed font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800">
-                      &quot;{deal.privateNotes}&quot;
-                    </p>
+                  {/* Privacy & Shield Details */}
+                  <div className="pt-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold text-gray-900 uppercase">Client Identity Shield</span>
+                        <button
+                          onClick={() => togglePrivateDetails(deal.id)}
+                          className="text-xs font-bold text-blue-600 hover:underline"
+                        >
+                          {isUnmasked ? '🔒 Mask Details' : '🔓 Unmask (Agency Admin Only)'}
+                        </button>
+                      </div>
+
+                      <div className="text-sm">
+                        <div className="font-semibold text-gray-900">
+                          Public / External Alias:{' '}
+                          <span className="font-bold text-emerald-700">{deal.clientAlias}</span>
+                        </div>
+                        {isUnmasked ? (
+                          <div className="mt-2 pt-2 border-t border-gray-200 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+                            <p className="text-xs font-bold text-amber-900">Internal Unmasked Client Data:</p>
+                            <p className="text-xs text-gray-900 font-medium">Name: {deal.clientPrivateName}</p>
+                            <p className="text-xs text-gray-900 font-medium">Phone: {deal.clientContact}</p>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-gray-600 mt-1 italic">
+                            Real client name and phone contact details are encrypted and hidden from third parties.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-900 text-slate-100 p-4 rounded-xl border border-slate-800">
+                      <span className="text-xs font-bold text-teal-400 uppercase tracking-wider block mb-2">
+                        🔒 Confidential Negotiation Notes
+                      </span>
+                      <p className="text-xs text-slate-300 leading-relaxed font-mono bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                        &quot;{deal.privateNotes}&quot;
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* Bottom Nav */}

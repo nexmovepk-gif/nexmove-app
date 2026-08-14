@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useCurrency } from '@/components/CurrencyContext'
 import {
   getFBRMetadata,
@@ -18,8 +18,8 @@ interface TaxCalculatorProps {
 }
 
 export default function TaxCalculator({
-  initialInvestmentPKR = 50000000,
-  initialRentalYieldPct = 9.5,
+  initialInvestmentPKR = 0,
+  initialRentalYieldPct = 0,
 }: TaxCalculatorProps) {
   const { currency, formatPrice } = useCurrency()
 
@@ -35,14 +35,9 @@ export default function TaxCalculator({
   const [mgmtFeePct, setMgmtFeePct] = useState<number>(5.0)
 
   // ATL Verification Simulator state
-  const [cnicInput, setCnicInput] = useState<string>('98765-4321098-7')
+  const [cnicInput, setCnicInput] = useState<string>('')
   const [isVerifying, setIsVerifying] = useState<boolean>(false)
   const [verificationResult, setVerificationResult] = useState<ATLVerificationResult | null>(null)
-
-  // Trigger initial verification lookup on mount for default mock CNIC
-  useEffect(() => {
-    handleVerifyATL('98765-4321098-7', false)
-  }, [])
 
   const handleVerifyATL = async (inputVal: string, autoUpdateCategory: boolean = true) => {
     setIsVerifying(true)

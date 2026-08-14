@@ -128,12 +128,20 @@ export default function AgenciesPage() {
             Loading agency directory...
           </div>
         ) : filteredAgencies.length === 0 ? (
-          <div className="text-center py-16 text-slate-500 text-sm flex flex-col gap-2 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+          <div className="text-center py-16 text-slate-500 text-sm flex flex-col items-center gap-3 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
             <span className="text-4xl">🏢</span>
-            <p className="font-bold text-slate-800">No agencies match your current search.</p>
-            <p className="text-xs text-slate-500">
-              Try clearing your search terms or toggling the verification filter.
-            </p>
+            <div>
+              <p className="font-bold text-slate-800 text-base">No verified agencies registered yet</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Register your agency profile, upload NTN and license credentials to join the directory.
+              </p>
+            </div>
+            <Link
+              href="/register"
+              className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow transition"
+            >
+              + Register First Agency
+            </Link>
           </div>
         ) : (
           <div className="flex flex-col gap-4">

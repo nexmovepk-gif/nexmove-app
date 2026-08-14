@@ -11,14 +11,14 @@ export default function AgencySubmitListingPage() {
   const [monthlyRent, setMonthlyRent] = useState('');
   const [isRental, setIsRental] = useState(false);
   const [address, setAddress] = useState('');
-  const [city, setCity] = useState('Dubai');
-  const [bedrooms, setBedrooms] = useState('2');
-  const [bathrooms, setBathrooms] = useState('2');
-  const [areaSqFt, setAreaSqFt] = useState('1200');
+  const [city, setCity] = useState('');
+  const [bedrooms, setBedrooms] = useState('');
+  const [bathrooms, setBathrooms] = useState('');
+  const [areaSqFt, setAreaSqFt] = useState('');
   const [description, setDescription] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
-  const [virtualTourUrl, setVirtualTourUrl] = useState('https://my.matterport.com/show/?m=sample3d');
+  const [virtualTourUrl, setVirtualTourUrl] = useState('');
 
   // AI Extraction State
   const [isAiExtracting, setIsAiExtracting] = useState(false);

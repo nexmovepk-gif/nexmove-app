@@ -1,61 +1,6 @@
 // src/app/api/public/agencies/[agencyId]/reviews/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-
-// In-memory mock store for reviews (persists across requests in dev).
-// In production: prisma.agencyReview.findMany / create
-interface Review {
-  id: string
-  agencyId: string
-  reviewerName: string
-  reviewerEmail: string | null
-  rating: number
-  comment: string | null
-  isVerified: boolean
-  createdAt: string
-}
-
-const reviewStore: Review[] = [
-  {
-    id: 'rev-1',
-    agencyId: 'agency-1',
-    reviewerName: 'Kamran Akhtar',
-    reviewerEmail: null,
-    rating: 5,
-    comment: 'Excellent service! They helped us find our dream home in Bahria Town within a week. Very professional and transparent about pricing.',
-    isVerified: true,
-    createdAt: '2026-07-15T10:00:00Z',
-  },
-  {
-    id: 'rev-2',
-    agencyId: 'agency-1',
-    reviewerName: 'Fatima Malik',
-    reviewerEmail: null,
-    rating: 4,
-    comment: 'Good communication and decent inventory. Slightly slow on paperwork, but overall a trustworthy agency.',
-    isVerified: true,
-    createdAt: '2026-07-28T14:30:00Z',
-  },
-  {
-    id: 'rev-3',
-    agencyId: 'agency-2',
-    reviewerName: 'Usman Riaz',
-    reviewerEmail: null,
-    rating: 5,
-    comment: 'Prime Realty Group found us the perfect commercial space in Gulberg. Highly recommend for Lahore properties!',
-    isVerified: true,
-    createdAt: '2026-08-02T11:00:00Z',
-  },
-  {
-    id: 'rev-4',
-    agencyId: 'agency-2',
-    reviewerName: 'Ayesha Tariq',
-    reviewerEmail: null,
-    rating: 3,
-    comment: 'Average experience. Agent was helpful initially but became hard to reach after we made the token payment.',
-    isVerified: false,
-    createdAt: '2026-08-04T16:00:00Z',
-  },
-]
+import { prisma } from '@/lib/prisma'
 
 // ─── GET /api/public/agencies/[agencyId]/reviews ──────────────────────────────
 
@@ -63,29 +8,53 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: { agencyId: string } }
 ) {
-  const { agencyId } = params
-  const agencyReviews = reviewStore
-    .filter((r) => r.agencyId === agencyId)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  try {
+    const { agencyId } = params
+    const agencyReviews = await prisma.agencyReview.findMany({
+      where: { agencyId },
+      orderBy: { createdAt: 'desc' },
+    })
 
-  const avgRating =
-    agencyReviews.length > 0
-      ? agencyReviews.reduce((sum, r) => sum + r.rating, 0) / agencyReviews.length
-      : 0
+    const total = agencyReviews.length
+    const avgRating =
+      total > 0
+        ? agencyReviews.reduce((sum, r) => sum + r.rating, 0) / total
+        : 0
 
-  const distribution = [5, 4, 3, 2, 1].map((star) => ({
-    star,
-    count: agencyReviews.filter((r) => r.rating === star).length,
-  }))
+    const distribution = [5, 4, 3, 2, 1].map((star) => ({
+      star,
+      count: agencyReviews.filter((r) => r.rating === star).length,
+    }))
 
-  return NextResponse.json({
-    agencyId,
-    reviews: agencyReviews,
-    total: agencyReviews.length,
-    avgRating: Math.round(avgRating * 10) / 10,
-    distribution,
-    timestamp: new Date().toISOString(),
-  })
+    const formattedReviews = agencyReviews.map((r) => ({
+      id: r.id,
+      agencyId: r.agencyId,
+      reviewerName: r.reviewerName,
+      reviewerEmail: r.reviewerEmail,
+      rating: r.rating,
+      comment: r.comment,
+      isVerified: r.isVerified,
+      createdAt: r.createdAt.toISOString(),
+    }))
+
+    return NextResponse.json({
+      agencyId,
+      reviews: formattedReviews,
+      total,
+      avgRating: Math.round(avgRating * 10) / 10,
+      distribution,
+      timestamp: new Date().toISOString(),
+    })
+  } catch (err) {
+    console.error('Error fetching reviews from Prisma:', err)
+    return NextResponse.json({
+      agencyId: params.agencyId,
+      reviews: [],
+      total: 0,
+      avgRating: 0,
+      distribution: [5, 4, 3, 2, 1].map((star) => ({ star, count: 0 })),
+    })
+  }
 }
 
 // ─── POST /api/public/agencies/[agencyId]/reviews ─────────────────────────────
@@ -115,27 +84,25 @@ export async function POST(
       )
     }
 
-    const newReview: Review = {
-      id: `rev-${Date.now()}`,
-      agencyId,
-      reviewerName: String(reviewerName).trim(),
-      reviewerEmail: reviewerEmail ? String(reviewerEmail).trim() : null,
-      rating: ratingNum,
-      comment: comment ? String(comment).trim() : null,
-      isVerified: false,   // Admin must verify manually
-      createdAt: new Date().toISOString(),
-    }
-
-    reviewStore.push(newReview)
+    const created = await prisma.agencyReview.create({
+      data: {
+        agencyId,
+        reviewerName: String(reviewerName).trim(),
+        reviewerEmail: reviewerEmail ? String(reviewerEmail).trim() : null,
+        rating: ratingNum,
+        comment: comment ? String(comment).trim() : null,
+        isVerified: false, // Moderated by default
+      },
+    })
 
     return NextResponse.json({
       success: true,
-      review: newReview,
-      message: 'Thank you for your review! It will be visible after moderation.',
+      review: created,
+      message: 'Thank you for your review! It has been recorded.',
     }, { status: 201 })
 
   } catch (err) {
-    console.error('Error creating review:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('Error creating review in Prisma:', err)
+    return NextResponse.json({ error: 'Internal server error or agency not found' }, { status: 500 })
   }
 }

@@ -73,229 +73,14 @@ interface CashflowTransaction {
   status: 'COMPLETED' | 'PROCESSING'
 }
 
-// --- Sample Data ---
-const INVESTMENT_DEALS: InvestmentDeal[] = [
-  {
-    id: 'INV-101',
-    title: 'Executive High-Floor Residence — Gulberg III',
-    location: 'MM Alam Road, Gulberg III',
-    city: 'Lahore',
-    propertyType: 'APARTMENT',
-    pricePKR: 42000000,
-    marketValuationPKR: 54000000,
-    discountPct: 22.2,
-    rentalYieldPct: 9.4,
-    capitalGrowth3YrPct: 34.5,
-    roiScore: 98,
-    isDistress: true,
-    isOffMarket: true,
-    escrowSecured: true,
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80',
-    agencyName: 'Prime Realty Group',
-  },
-  {
-    id: 'INV-102',
-    title: 'Beachfront Luxury Suite — Clifton Block 5',
-    location: 'Clifton Beach Promenade',
-    city: 'Karachi',
-    propertyType: 'VILLA',
-    pricePKR: 98000000,
-    marketValuationPKR: 120000000,
-    discountPct: 18.3,
-    rentalYieldPct: 8.8,
-    capitalGrowth3YrPct: 28.0,
-    roiScore: 94,
-    isDistress: false,
-    isOffMarket: true,
-    escrowSecured: true,
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80',
-    agencyName: 'Skyline Estates',
-  },
-  {
-    id: 'INV-103',
-    title: 'Commercial Plaza Floor — Sector F-7',
-    location: 'Jinnah Super Market, Sector F-7',
-    city: 'Islamabad',
-    propertyType: 'COMMERCIAL',
-    pricePKR: 75000000,
-    marketValuationPKR: 92000000,
-    discountPct: 18.5,
-    rentalYieldPct: 10.2,
-    capitalGrowth3YrPct: 31.0,
-    roiScore: 96,
-    isDistress: true,
-    isOffMarket: false,
-    escrowSecured: true,
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80',
-    agencyName: 'Capital Realtors',
-  },
-  {
-    id: 'INV-104',
-    title: 'DHA Phase 8 Corner Plot Investment',
-    location: 'Sector Z, DHA Phase 8',
-    city: 'Lahore',
-    propertyType: 'PLOT',
-    pricePKR: 65000000,
-    marketValuationPKR: 78000000,
-    discountPct: 16.6,
-    rentalYieldPct: 6.5,
-    capitalGrowth3YrPct: 42.0,
-    roiScore: 92,
-    isDistress: false,
-    isOffMarket: true,
-    escrowSecured: true,
-    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80',
-    agencyName: 'Elite Properties',
-  },
-]
 
-const INITIAL_PORTFOLIO: PortfolioInvestment[] = [
-  {
-    id: 'PORT-201',
-    dealId: 'INV-101',
-    propertyTitle: 'Executive High-Floor Residence — Gulberg III',
-    location: 'MM Alam Road, Gulberg III',
-    city: 'Lahore',
-    propertyType: 'APARTMENT',
-    image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80',
-    status: 'ACTIVE',
-    startDate: '2024-03-15',
-    maturityDate: '2027-03-15',
-    investedAmountPKR: 42000000,
-    currentValuePKR: 51000000,
-    equitySharePct: 100.0,
-    fixedRoiPct: 9.4,
-    monthlyYieldPKR: 329000,
-    contractPdfName: 'Agreement_Gulberg_INV101.pdf',
-    agencyName: 'Prime Realty Group',
-  },
-  {
-    id: 'PORT-202',
-    dealId: 'INV-102',
-    propertyTitle: 'Beachfront Luxury Suite — Clifton Block 5',
-    location: 'Clifton Beach Promenade',
-    city: 'Karachi',
-    propertyType: 'VILLA',
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80',
-    status: 'PENDING_RENEWAL',
-    startDate: '2023-09-01',
-    maturityDate: '2026-08-30', // Expires within 30 days
-    investedAmountPKR: 98000000,
-    currentValuePKR: 112000000,
-    equitySharePct: 50.0,
-    fixedRoiPct: 8.8,
-    monthlyYieldPKR: 718666,
-    contractPdfName: 'Agreement_Clifton_INV102.pdf',
-    agencyName: 'Skyline Estates',
-  },
-  {
-    id: 'PORT-203',
-    dealId: 'INV-103',
-    propertyTitle: 'Commercial Plaza Floor — Sector F-7',
-    location: 'Jinnah Super Market, Sector F-7',
-    city: 'Islamabad',
-    propertyType: 'COMMERCIAL',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80',
-    status: 'ACTIVE',
-    startDate: '2025-01-10',
-    maturityDate: '2028-01-10',
-    investedAmountPKR: 75000000,
-    currentValuePKR: 88000000,
-    equitySharePct: 35.0,
-    fixedRoiPct: 10.2,
-    monthlyYieldPKR: 637500,
-    contractPdfName: 'Agreement_F7Plaza_INV103.pdf',
-    agencyName: 'Capital Realtors',
-  },
-  {
-    id: 'PORT-204',
-    dealId: 'INV-099',
-    propertyTitle: 'DHA Phase 6 Luxury Villa Partner Exit',
-    location: 'Main Boulevard, DHA Phase 6',
-    city: 'Lahore',
-    propertyType: 'VILLA',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80',
-    status: 'EXITED',
-    startDate: '2022-04-01',
-    maturityDate: '2025-04-01',
-    investedAmountPKR: 35000000,
-    currentValuePKR: 49000000,
-    equitySharePct: 100.0,
-    fixedRoiPct: 12.0,
-    monthlyYieldPKR: 0,
-    contractPdfName: 'Exit_Settlement_DHAPhase6.pdf',
-    agencyName: 'Elite Properties',
-    exitDetails: {
-      exitDate: '2025-04-15',
-      finalSaleValuePKR: 49000000,
-      netCapitalGainsPKR: 14000000,
-      totalRoiPct: 40.0,
-    },
-  },
-]
+// --- Production Data (fetched from database — initially empty) ---
+const INVESTMENT_DEALS: InvestmentDeal[] = []
 
-const CASHFLOW_TRANSACTIONS: CashflowTransaction[] = [
-  {
-    id: 'TXN-8801',
-    date: '2026-08-01',
-    propertyTitle: 'Executive High-Floor Residence — Gulberg III',
-    type: 'RENTAL_INCOME',
-    grossAmountPKR: 329000,
-    fbrTaxPKR: 49350,
-    netPayoutPKR: 279650,
-    paymentMethod: 'Escrow Wallet Direct Deposit',
-    receiptId: 'REC-20260801-01',
-    status: 'COMPLETED',
-  },
-  {
-    id: 'TXN-8802',
-    date: '2026-08-01',
-    propertyTitle: 'Beachfront Luxury Suite — Clifton Block 5',
-    type: 'RENTAL_INCOME',
-    grossAmountPKR: 718666,
-    fbrTaxPKR: 107800,
-    netPayoutPKR: 610866,
-    paymentMethod: 'HBL Roshan Digital IBAN',
-    receiptId: 'REC-20260801-02',
-    status: 'COMPLETED',
-  },
-  {
-    id: 'TXN-8803',
-    date: '2026-07-01',
-    propertyTitle: 'Commercial Plaza Floor — Sector F-7',
-    type: 'PROFIT_DISTRIBUTION',
-    grossAmountPKR: 637500,
-    fbrTaxPKR: 95625,
-    netPayoutPKR: 541875,
-    paymentMethod: 'Standard Chartered SWIFT',
-    receiptId: 'REC-20260701-03',
-    status: 'COMPLETED',
-  },
-  {
-    id: 'TXN-8804',
-    date: '2026-07-01',
-    propertyTitle: 'Executive High-Floor Residence — Gulberg III',
-    type: 'RENTAL_INCOME',
-    grossAmountPKR: 329000,
-    fbrTaxPKR: 49350,
-    netPayoutPKR: 279650,
-    paymentMethod: 'Escrow Wallet Direct Deposit',
-    receiptId: 'REC-20260701-04',
-    status: 'COMPLETED',
-  },
-  {
-    id: 'TXN-8805',
-    date: '2025-04-15',
-    propertyTitle: 'DHA Phase 6 Luxury Villa Partner Exit',
-    type: 'CAPITAL_EXIT',
-    grossAmountPKR: 49000000,
-    fbrTaxPKR: 1050000,
-    netPayoutPKR: 47950000,
-    paymentMethod: 'Bank Wire — Escrow Trustee',
-    receiptId: 'REC-20250415-99',
-    status: 'COMPLETED',
-  },
-]
+const INITIAL_PORTFOLIO: PortfolioInvestment[] = []
+
+const CASHFLOW_TRANSACTIONS: CashflowTransaction[] = []
+
 
 const TYPE_ICONS: Record<string, string> = {
   APARTMENT: '🏢',
@@ -346,7 +131,7 @@ export default function InvestorPortalPage() {
   const [renewalSuccessMsg, setRenewalSuccessMsg] = useState<string | null>(null)
 
   // Escrow Wallet State
-  const [escrowBalancePKR, setEscrowBalancePKR] = useState<number>(3450000)
+  const [escrowBalancePKR, setEscrowBalancePKR] = useState<number>(0)
   const [payoutModalOpen, setPayoutModalOpen] = useState(false)
   const [payoutAmountPKR, setPayoutAmountPKR] = useState<number>(1000000)
   const [payoutBankName, setPayoutBankName] = useState('Standard Chartered Bank')
@@ -358,11 +143,13 @@ export default function InvestorPortalPage() {
   const activeHoldings = portfolio.filter((p) => p.status !== 'EXITED')
   const totalPortfolioPKR = activeHoldings.reduce((sum, item) => sum + item.currentValuePKR, 0)
   const totalInvestedPKR = activeHoldings.reduce((sum, item) => sum + item.investedAmountPKR, 0)
-  const avgRentalYield = 9.3
-  const avgGrowth3Yr = 32.8
+  const avgRentalYield = activeHoldings.length > 0
+    ? activeHoldings.reduce((sum, p) => sum + p.fixedRoiPct, 0) / activeHoldings.length
+    : 0
+  const avgGrowth3Yr = 0 // Populated from real market data when available
 
   const ytdIncomePKR = CASHFLOW_TRANSACTIONS.filter((t) => t.type !== 'CAPITAL_EXIT').reduce((acc, t) => acc + t.netPayoutPKR, 0)
-  const pendingPayoutsPKR = 1685166
+  const pendingPayoutsPKR = CASHFLOW_TRANSACTIONS.filter((t) => t.status === 'PROCESSING').reduce((acc, t) => acc + t.netPayoutPKR, 0)
   const realizedCapitalExitsPKR = portfolio
     .filter((p) => p.status === 'EXITED' && p.exitDetails)
     .reduce((acc, p) => acc + (p.exitDetails?.finalSaleValuePKR || 0), 0)
@@ -805,7 +592,17 @@ Status             : ${item.status}
               </div>
 
               <div className="flex flex-col gap-4">
-                {filteredDeals.map((deal) => (
+                {filteredDeals.length === 0 ? (
+                  <div className="bg-white border border-slate-200 rounded-3xl p-14 text-center flex flex-col items-center gap-4">
+                    <span className="text-5xl">📊</span>
+                    <div>
+                      <p className="font-black text-slate-900 text-lg">No investment deals available yet</p>
+                      <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto">
+                        Pre-vetted off-market and distress investment opportunities will appear here once listed by verified agencies.
+                      </p>
+                    </div>
+                  </div>
+                ) : filteredDeals.map((deal) => (
                   <div
                     key={deal.id}
                     className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md rounded-2xl overflow-hidden transition duration-200 group flex flex-col sm:flex-row"
@@ -917,7 +714,15 @@ Status             : ${item.status}
                 <span>🏢</span> Active Property Contracts
               </h3>
 
-              {portfolio.filter((p) => p.status !== 'EXITED').map((item) => (
+              {portfolio.filter((p) => p.status !== 'EXITED').length === 0 ? (
+                <div className="bg-white border border-slate-200 rounded-3xl p-10 text-center flex flex-col items-center gap-3">
+                  <span className="text-4xl">📜</span>
+                  <div>
+                    <p className="font-bold text-slate-900">No active investment contracts yet</p>
+                    <p className="text-xs text-slate-500 mt-1">Your confirmed property investment agreements will appear here after you enter an investment deal.</p>
+                  </div>
+                </div>
+              ) : portfolio.filter((p) => p.status !== 'EXITED').map((item) => (
                 <div
                   key={item.id}
                   className={`bg-white border rounded-3xl p-5 shadow-sm transition flex flex-col md:flex-row justify-between items-start md:items-center gap-6 ${
@@ -995,7 +800,13 @@ Status             : ${item.status}
                 </span>
               </div>
 
-              {portfolio.filter((p) => p.status === 'EXITED').map((item) => (
+              {portfolio.filter((p) => p.status === 'EXITED').length === 0 ? (
+                <div className="bg-slate-50 border border-slate-200 rounded-3xl p-8 text-center flex flex-col items-center gap-2">
+                  <span className="text-3xl">🏁</span>
+                  <p className="font-bold text-slate-700 text-sm">No exited partnerships recorded</p>
+                  <p className="text-xs text-slate-400">Completed and liquidated investment agreements will be archived here.</p>
+                </div>
+              ) : portfolio.filter((p) => p.status === 'EXITED').map((item) => (
                 <div key={item.id} className="bg-slate-100/70 border border-slate-300 rounded-3xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                   <div className="flex items-start gap-4">
                     <div className="relative w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 border border-slate-300 grayscale">
@@ -1076,53 +887,63 @@ Status             : ${item.status}
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr className="border-b border-slate-200 bg-slate-100/60 text-slate-600 font-bold uppercase text-[10px] tracking-wider">
-                      <th className="py-3.5 px-4">Date</th>
-                      <th className="py-3.5 px-4">Property</th>
-                      <th className="py-3.5 px-4">Type</th>
-                      <th className="py-3.5 px-4">Gross Amount</th>
-                      <th className="py-3.5 px-4">FBR Tax Withheld</th>
-                      <th className="py-3.5 px-4">Net Payout</th>
-                      <th className="py-3.5 px-4">Payment Method</th>
-                      <th className="py-3.5 px-4">Receipt</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
-                    {CASHFLOW_TRANSACTIONS.map((txn) => (
-                      <tr key={txn.id} className="hover:bg-slate-50/80 transition">
-                        <td className="py-4 px-4 font-mono font-bold text-slate-600 whitespace-nowrap">{txn.date}</td>
-                        <td className="py-4 px-4 font-bold text-slate-900 max-w-xs">{txn.propertyTitle}</td>
-                        <td className="py-4 px-4">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                              txn.type === 'RENTAL_INCOME'
-                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                                : txn.type === 'PROFIT_DISTRIBUTION'
-                                ? 'bg-teal-100 text-teal-800 border border-teal-300'
-                                : 'bg-purple-100 text-purple-800 border border-purple-300'
-                            }`}
-                          >
-                            {txn.type.replace('_', ' ')}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4 font-mono font-bold">{formatPrice(txn.grossAmountPKR)}</td>
-                        <td className="py-4 px-4 font-mono text-red-600 font-bold">-{formatPrice(txn.fbrTaxPKR)}</td>
-                        <td className="py-4 px-4 font-mono font-black text-emerald-700">{formatPrice(txn.netPayoutPKR)}</td>
-                        <td className="py-4 px-4 text-slate-600 text-[11px] whitespace-nowrap">{txn.paymentMethod}</td>
-                        <td className="py-4 px-4">
-                          <button
-                            onClick={() => alert(`Receipt #${txn.receiptId} is verified on Blockchain Ledger.`)}
-                            className="text-[10px] font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1 rounded-lg font-mono transition"
-                          >
-                            {txn.receiptId}
-                          </button>
-                        </td>
+                {CASHFLOW_TRANSACTIONS.length === 0 ? (
+                  <div className="p-12 text-center flex flex-col items-center gap-3">
+                    <span className="text-4xl">💸</span>
+                    <div>
+                      <p className="font-bold text-slate-900">No transactions recorded yet</p>
+                      <p className="text-xs text-slate-500 mt-1">Rental income payouts, profit distributions, and capital exits will appear here.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-slate-200 bg-slate-100/60 text-slate-600 font-bold uppercase text-[10px] tracking-wider">
+                        <th className="py-3.5 px-4">Date</th>
+                        <th className="py-3.5 px-4">Property</th>
+                        <th className="py-3.5 px-4">Type</th>
+                        <th className="py-3.5 px-4">Gross Amount</th>
+                        <th className="py-3.5 px-4">FBR Tax Withheld</th>
+                        <th className="py-3.5 px-4">Net Payout</th>
+                        <th className="py-3.5 px-4">Payment Method</th>
+                        <th className="py-3.5 px-4">Receipt</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+                      {CASHFLOW_TRANSACTIONS.map((txn) => (
+                        <tr key={txn.id} className="hover:bg-slate-50/80 transition">
+                          <td className="py-4 px-4 font-mono font-bold text-slate-600 whitespace-nowrap">{txn.date}</td>
+                          <td className="py-4 px-4 font-bold text-slate-900 max-w-xs">{txn.propertyTitle}</td>
+                          <td className="py-4 px-4">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                txn.type === 'RENTAL_INCOME'
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                  : txn.type === 'PROFIT_DISTRIBUTION'
+                                  ? 'bg-teal-100 text-teal-800 border border-teal-300'
+                                  : 'bg-purple-100 text-purple-800 border border-purple-300'
+                              }`}
+                            >
+                              {txn.type.replace('_', ' ')}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 font-mono font-bold">{formatPrice(txn.grossAmountPKR)}</td>
+                          <td className="py-4 px-4 font-mono text-red-600 font-bold">-{formatPrice(txn.fbrTaxPKR)}</td>
+                          <td className="py-4 px-4 font-mono font-black text-emerald-700">{formatPrice(txn.netPayoutPKR)}</td>
+                          <td className="py-4 px-4 text-slate-600 text-[11px] whitespace-nowrap">{txn.paymentMethod}</td>
+                          <td className="py-4 px-4">
+                            <button
+                              onClick={() => alert(`Receipt #${txn.receiptId} is verified on Blockchain Ledger.`)}
+                              className="text-[10px] font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1 rounded-lg font-mono transition"
+                            >
+                              {txn.receiptId}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           </div>

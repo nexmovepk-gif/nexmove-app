@@ -20,28 +20,11 @@ interface Listing {
   createdAt: string;
 }
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
+// ─── Initial Empty State ──────────────────────────────────────────────────────
 
-const INITIAL_LISTINGS: Listing[] = [
-  { id: 'lst-1', title: '5 Marla House – Bahria Town Phase 4', propertyType: 'HOUSE',     price: 17500000, city: 'Rawalpindi', bedrooms: 3, isActive: true, createdAt: '2026-08-01' },
-  { id: 'lst-2', title: 'Marina Tower Penthouse',               propertyType: 'APARTMENT', price: 52000000, city: 'Dubai',      bedrooms: 4, isActive: true, createdAt: '2026-08-03' },
-  { id: 'lst-3', title: 'Business Bay Office Suite',            propertyType: 'COMMERCIAL',price: 38000000, city: 'Dubai',      bedrooms: null, isActive: true, createdAt: '2026-08-05' },
-  { id: 'lst-4', title: 'DHA Phase 6 – 10 Marla Corner Plot',  propertyType: 'PLOT',      price: 42000000, city: 'Lahore',     bedrooms: null, isActive: true, createdAt: '2026-08-07' },
-];
+const INITIAL_LISTINGS: Listing[] = [];
 
-const INITIAL_NOTIFICATIONS: ActivityNotification[] = [
-  { id: 'n-1', category: 'DEAL',    unread: true,  title: 'Deal #102 updated privately',         body: 'Stage moved from Negotiation → Escrow. Client identity remains fully shielded.',   timestamp: '2 min ago' },
-  { id: 'n-2', category: 'RENT',    unread: true,  title: 'Rent reminder sent',                  body: 'Automated reminder dispatched to Tenant #3 (Unit 12A). $1,850 due Aug 10.',        timestamp: '14 min ago' },
-  { id: 'n-3', category: 'LISTING', unread: false, title: 'Listing archived automatically',      body: '"Marina Tower Penthouse" marked as Sold and removed from public marketplace.',       timestamp: '1 hr ago' },
-  { id: 'n-4', category: 'DEAL',    unread: false, title: 'AI Matcher found a new lead match',   body: 'Buyer Requirement #408 matched 98% with inventory item LST-002. No PII shared.',   timestamp: '3 hrs ago' },
-  { id: 'n-5', category: 'SYSTEM',  unread: false, title: 'Data shield integrity check passed',  body: 'Multi-tenant privacy shield verified. 0 cross-agency data leaks detected.',          timestamp: '6 hrs ago' },
-];
-
-// ─── KPI cards ────────────────────────────────────────────────────────────────
-
-const MOCK_INCOME   = 120000;
-const MOCK_EXPENSE  = 80000;
-const MOCK_NET      = MOCK_INCOME - MOCK_EXPENSE;
+const INITIAL_NOTIFICATIONS: ActivityNotification[] = [];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -60,12 +43,16 @@ const TYPE_ICONS: Record<string, string> = {
 export default function DashboardClient() {
   const [listings, setListings]           = useState<Listing[]>(INITIAL_LISTINGS);
   const [notifications, setNotifications]  = useState<ActivityNotification[]>(INITIAL_NOTIFICATIONS);
+  const [income]                          = useState<number>(0);
+  const [expense]                         = useState<number>(0);
   const [activeTab, setActiveTab]          = useState<'active' | 'archived'>('active');
   const [agencyTier, setAgencyTier]        = useState<VerificationTier>('GOLD');
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showBankCheckout, setShowBankCheckout] = useState(false);
   const [checkoutPlanTitle, setCheckoutPlanTitle] = useState('Professional Plan');
   const [checkoutPlanPrice, setCheckoutPlanPrice] = useState(15000);
+
+  const netCashFlow = income - expense;
 
   const activeListings   = listings.filter((l) => l.isActive);
   const archivedListings = listings.filter((l) => !l.isActive);
@@ -161,19 +148,19 @@ export default function DashboardClient() {
           <div className="p-6 bg-white rounded-2xl shadow border border-gray-200">
             <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Total Income</h2>
             <p className="mt-2 text-3xl font-black text-emerald-700">
-              ${MOCK_INCOME.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              ${income.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </p>
           </div>
           <div className="p-6 bg-white rounded-2xl shadow border border-gray-200">
             <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Total Expenses</h2>
             <p className="mt-2 text-3xl font-black text-red-700">
-              ${MOCK_EXPENSE.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              ${expense.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </p>
           </div>
           <div className="p-6 bg-white rounded-2xl shadow border border-gray-200">
             <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Net Cash Flow</h2>
-            <p className={`mt-2 text-3xl font-black ${MOCK_NET >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
-              ${MOCK_NET.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            <p className={`mt-2 text-3xl font-black ${netCashFlow >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+              ${netCashFlow.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </p>
           </div>
         </div>

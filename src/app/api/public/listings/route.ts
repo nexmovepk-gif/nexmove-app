@@ -1,141 +1,95 @@
 // src/app/api/public/listings/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { extractFromMetadata } from '@/lib/aiExtraction'
-
-// ─── Mock In-Memory Store (replace with Prisma queries once DB is connected) ──
-
-export interface MockPublicListing {
-  id: string
-  title: string
-  description: string
-  propertyType: string
-  price: number
-  address: string
-  city: string
-  areaSqFt: number | null
-  bedrooms: number | null
-  bathrooms: number | null
-  contactName: string
-  contactPhone: string
-  contactEmail: string | null
-  verifiedProperty: boolean
-  aiExtracted: boolean
-  aiConfidence: number | null
-  isActive: boolean
-  agencyId: string | null
-  agencyName: string | null
-  agencyVerified: boolean
-  createdAt: string
-}
-
-// Seeded demo data — kept outside the function so it persists across requests in dev
-const mockStore: MockPublicListing[] = [
-  {
-    id: 'pub-1',
-    title: '5 Marla House in Bahria Town Phase 4',
-    description: 'Well-maintained 5 marla house with gas, electricity, and broadband. Near masjid and commercial market.',
-    propertyType: 'HOUSE',
-    price: 17500000,
-    address: 'Street 12, Bahria Town Phase 4',
-    city: 'Rawalpindi',
-    areaSqFt: 1360,
-    bedrooms: 3,
-    bathrooms: 2,
-    contactName: 'Muhammad Tariq',
-    contactPhone: '+92-300-0000001',
-    contactEmail: null,
-    verifiedProperty: true,
-    aiExtracted: true,
-    aiConfidence: 0.75,
-    isActive: true,
-    agencyId: 'agency-1',
-    agencyName: 'Elite Properties',
-    agencyVerified: true,
-    createdAt: '2026-08-01T10:00:00Z',
-  },
-  {
-    id: 'pub-2',
-    title: '10 Marla Corner Plot — DHA Phase 6 Lahore',
-    description: 'Ideal investment plot. All dues clear, possession available immediately.',
-    propertyType: 'PLOT',
-    price: 42000000,
-    address: 'Block M, DHA Phase 6',
-    city: 'Lahore',
-    areaSqFt: 2720,
-    bedrooms: null,
-    bathrooms: null,
-    contactName: 'Asif Khan',
-    contactPhone: '+92-321-0000002',
-    contactEmail: 'asif@example.com',
-    verifiedProperty: false,
-    aiExtracted: true,
-    aiConfidence: 0.55,
-    isActive: true,
-    agencyId: null,
-    agencyName: null,
-    agencyVerified: false,
-    createdAt: '2026-08-03T14:00:00Z',
-  },
-  {
-    id: 'pub-3',
-    title: 'Modern 2-Bed Apartment — Gulberg III',
-    description: 'High-rise apartment with gym, rooftop access, and 24/7 security.',
-    propertyType: 'APARTMENT',
-    price: 22000000,
-    address: 'Liberty Towers, Gulberg III',
-    city: 'Lahore',
-    areaSqFt: 950,
-    bedrooms: 2,
-    bathrooms: 2,
-    contactName: 'Sana Ahmed',
-    contactPhone: '+92-333-0000003',
-    contactEmail: 'sana@example.com',
-    verifiedProperty: true,
-    aiExtracted: false,
-    aiConfidence: null,
-    isActive: true,
-    agencyId: 'agency-2',
-    agencyName: 'Prime Realty Group',
-    agencyVerified: true,
-    createdAt: '2026-08-05T09:00:00Z',
-  },
-]
+import { prisma } from '@/lib/prisma'
+import { PropertyType } from '@/generated/client/enums'
 
 // ─── GET /api/public/listings ─────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const city = searchParams.get('city')
-  const type = searchParams.get('type')
-  const minPrice = searchParams.get('minPrice')
-  const maxPrice = searchParams.get('maxPrice')
-  const minBeds = searchParams.get('minBeds')
-  const verifiedOnly = searchParams.get('verifiedOnly') === 'true'
+  try {
+    const { searchParams } = new URL(req.url)
+    const city = searchParams.get('city')
+    const type = searchParams.get('type')
+    const minPrice = searchParams.get('minPrice')
+    const maxPrice = searchParams.get('maxPrice')
+    const minBeds = searchParams.get('minBeds')
+    const verifiedOnly = searchParams.get('verifiedOnly') === 'true'
 
-  let listings = mockStore.filter((l) => l.isActive)
-
-  if (city) listings = listings.filter((l) => l.city.toLowerCase().includes(city.toLowerCase()))
-  if (type) listings = listings.filter((l) => l.propertyType === type.toUpperCase())
-  if (minPrice) listings = listings.filter((l) => l.price >= Number(minPrice))
-  if (maxPrice) listings = listings.filter((l) => l.price <= Number(maxPrice))
-  if (minBeds) listings = listings.filter((l) => l.bedrooms != null && l.bedrooms >= Number(minBeds))
-  if (verifiedOnly) listings = listings.filter((l) => l.verifiedProperty)
-
-  // Strip sensitive contact data from list view
-  const safeListings = listings.map((l) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { contactPhone, contactEmail: _ce, ...rest } = l
-    return {
-      ...rest,
-      contactPhoneMasked: contactPhone.slice(0, -4) + '****',
+    const where: Record<string, unknown> = {
+      isActive: true,
     }
-  })
 
-  return NextResponse.json({
-    listings: safeListings,
-    total: safeListings.length,
-    timestamp: new Date().toISOString(),
-  })
+    if (city) {
+      where.city = { contains: city, mode: 'insensitive' }
+    }
+    if (type && Object.values(PropertyType).includes(type.toUpperCase() as PropertyType)) {
+      where.propertyType = type.toUpperCase() as PropertyType
+    }
+    if (minPrice || maxPrice) {
+      where.price = {
+        ...(minPrice ? { gte: Number(minPrice) } : {}),
+        ...(maxPrice ? { lte: Number(maxPrice) } : {}),
+      }
+    }
+    if (minBeds) {
+      where.bedrooms = { gte: Number(minBeds) }
+    }
+    if (verifiedOnly) {
+      where.verifiedProperty = true
+    }
+
+    let listings: Awaited<ReturnType<typeof prisma.publicListing.findMany<{ include: { agency: true } }>>> = []
+    try {
+      listings = await prisma.publicListing.findMany({
+        where,
+        include: {
+          agency: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+    } catch (dbErr) {
+      console.warn('Prisma publicListing fetch error:', dbErr)
+      listings = []
+    }
+
+    // Strip sensitive contact data from public list view
+    const safeListings = listings.map((l) => {
+      const contactPhone = l.contactPhone || ''
+      return {
+        id: l.id,
+        title: l.title,
+        description: l.description,
+        propertyType: l.propertyType,
+        price: l.price,
+        address: l.address,
+        city: l.city,
+        areaSqFt: l.areaSqFt,
+        bedrooms: l.bedrooms,
+        bathrooms: l.bathrooms,
+        verifiedProperty: l.verifiedProperty,
+        aiExtracted: l.aiExtracted,
+        aiConfidence: l.aiConfidence,
+        isActive: l.isActive,
+        agencyId: l.agencyId,
+        agencyName: l.agency?.name || null,
+        agencyVerified: l.agency?.verified || false,
+        contactPhoneMasked: contactPhone ? contactPhone.slice(0, -4) + '****' : '',
+        createdAt: l.createdAt ? new Date(l.createdAt).toISOString() : new Date().toISOString(),
+      }
+    })
+
+    return NextResponse.json({
+      listings: safeListings,
+      total: safeListings.length,
+      timestamp: new Date().toISOString(),
+    })
+  } catch (err) {
+    console.error('Error in GET /api/public/listings:', err)
+    return NextResponse.json({ listings: [], total: 0, error: 'Failed to fetch listings' }, { status: 500 })
+  }
 }
 
 // ─── POST /api/public/listings ────────────────────────────────────────────────
@@ -157,6 +111,7 @@ export async function POST(req: NextRequest) {
       contactName,
       contactPhone,
       contactEmail,
+      agencyId,
       // AI extraction inputs
       uploadedFileName,
       uploadedFileType,
@@ -173,11 +128,11 @@ export async function POST(req: NextRequest) {
 
     // Run AI extraction if a file was uploaded
     let aiResult = null
-    let resolvedBedrooms = bedrooms ?? null
-    let resolvedArea = areaSqFt ?? null
-    let resolvedBathrooms = bathrooms ?? null
+    let resolvedBedrooms = bedrooms ? Number(bedrooms) : null
+    let resolvedArea = areaSqFt ? Number(areaSqFt) : null
+    let resolvedBathrooms = bathrooms ? Number(bathrooms) : null
     let aiExtracted = false
-    let aiConfidence = null
+    let aiConfidence: number | null = null
 
     if (uploadedFileName && uploadedFileType) {
       aiResult = extractFromMetadata({
@@ -196,50 +151,46 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const newListing: MockPublicListing = {
-      id: `pub-${Date.now()}`,
-      title,
-      description: description ?? '',
-      propertyType,
-      price: Number(price),
-      address,
-      city: city ?? '',
-      areaSqFt: resolvedArea ? Number(resolvedArea) : null,
-      bedrooms: resolvedBedrooms ? Number(resolvedBedrooms) : null,
-      bathrooms: resolvedBathrooms ? Number(resolvedBathrooms) : null,
-      contactName,
-      contactPhone,
-      contactEmail: contactEmail ?? null,
-      verifiedProperty: false,   // Starts unverified; admin sets this
-      aiExtracted,
-      aiConfidence,
-      isActive: true,
-      agencyId: null,
-      agencyName: null,
-      agencyVerified: false,
-      createdAt: new Date().toISOString(),
-    }
+    const validPropertyType = Object.values(PropertyType).includes(propertyType.toUpperCase() as PropertyType)
+      ? (propertyType.toUpperCase() as PropertyType)
+      : PropertyType.HOUSE
 
-    mockStore.push(newListing)
+    const created = await prisma.publicListing.create({
+      data: {
+        title,
+        description: description ?? '',
+        propertyType: validPropertyType,
+        price: Number(price),
+        address,
+        city: city ?? '',
+        areaSqFt: resolvedArea,
+        bedrooms: resolvedBedrooms,
+        bathrooms: resolvedBathrooms,
+        contactName,
+        contactPhone,
+        contactEmail: contactEmail ?? null,
+        verifiedProperty: false, // Starts unverified; admin sets this
+        aiExtracted,
+        aiConfidence,
+        isActive: true,
+        agencyId: agencyId ?? null,
+      },
+    })
 
     return NextResponse.json({
       success: true,
-      listing: newListing,
+      listing: created,
       aiExtraction: aiResult,
       message: 'Listing submitted successfully! It will appear on the marketplace shortly.',
     }, { status: 201 })
 
   } catch (err) {
-    console.error('Error creating public listing:', err)
+    console.error('Error creating public listing in Prisma:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // ─── PATCH /api/public/listings ───────────────────────────────────────────────
-// Body: { id: string; isActive: boolean }
-// Used by the agency dashboard "Mark as Sold / Restore" toggle.
-// When isActive=false, the listing is archived and automatically excluded from
-// the GET handler above (which already filters l.isActive === true).
 
 export async function PATCH(req: NextRequest) {
   try {
@@ -248,22 +199,20 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'id and isActive (boolean) are required' }, { status: 400 })
     }
 
-    const idx = mockStore.findIndex((l) => l.id === id)
-    if (idx === -1) {
-      return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
-    }
-
-    mockStore[idx] = { ...mockStore[idx], isActive }
+    const updated = await prisma.publicListing.update({
+      where: { id },
+      data: { isActive },
+    })
 
     return NextResponse.json({
       success: true,
-      listing: mockStore[idx],
+      listing: updated,
       message: isActive
         ? 'Listing restored to marketplace.'
         : 'Listing archived. It is no longer visible on the public marketplace.',
     })
   } catch (err) {
     console.error('Error updating listing status:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error or listing not found' }, { status: 500 })
   }
 }

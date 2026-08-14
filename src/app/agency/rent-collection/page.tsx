@@ -20,15 +20,9 @@ interface ToastMsg {
   type: 'success' | 'warning';
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+// ─── Initial State (Clean Production Zero State) ───────────────────────────────
 
-const INITIAL_COLLECTIONS: RentPayment[] = [
-  { id: '1', tenantName: 'Sarah Jenkins',  property: 'Apt 4B – Oakwood Manor',        amount: 2200, dueDate: '2026-08-01', status: 'Paid'    },
-  { id: '2', tenantName: 'Marcus Vance',   property: 'Suite 102 – Tech Park Plaza',    amount: 3500, dueDate: '2026-08-05', status: 'Paid'    },
-  { id: '3', tenantName: 'Elena Rostova',  property: 'Unit 12A – Horizon Towers',      amount: 1850, dueDate: '2026-08-10', status: 'Pending' },
-  { id: '4', tenantName: 'David Chen',     property: '742 Evergreen Terrace',          amount: 2900, dueDate: '2026-07-28', status: 'Overdue' },
-  { id: '5', tenantName: 'Amara Okafor',  property: 'Studio 3C – Pine Ridge',         amount: 1400, dueDate: '2026-08-15', status: 'Pending' },
-];
+const INITIAL_COLLECTIONS: RentPayment[] = [];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -155,7 +149,7 @@ export default function RentCollectionPage() {
           </div>
           <div className="bg-white rounded-2xl p-5 shadow border border-gray-200">
             <p className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-1">Overdue</p>
-            <p className="text-3xl font-black text-red-700">
+            <p className="text-3xl font-black text-red-600">
               ${totalOverdue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </p>
             <p className="text-xs text-gray-500 mt-1">{collections.filter((c) => c.status === 'Overdue').length} payments overdue</p>
@@ -169,56 +163,66 @@ export default function RentCollectionPage() {
             <span className="text-xs text-gray-500">{collections.length} tenants total</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50">
-                <tr>
-                  {['Tenant', 'Property', 'Amount', 'Due Date', 'Status', 'Actions'].map((h) => (
-                    <th key={h} className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
-                {collections.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <p className="text-sm font-bold text-gray-900">{item.tenantName}</p>
-                      <p className="text-xs text-gray-500">Tenant #{item.id}</p>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-800 font-medium">{item.property}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                      ${item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{item.dueDate}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{statusBadge(item.status)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        {/* Download Invoice */}
-                        <button
-                          onClick={() => downloadInvoice(item)}
-                          title="Download Invoice PDF"
-                          className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1"
-                        >
-                          <span>📄</span> Invoice
-                        </button>
-
-                        {/* Send Reminder – only for non-Paid */}
-                        {item.status !== 'Paid' && (
-                          <button
-                            onClick={() => sendReminder(item)}
-                            title="Send Payment Reminder"
-                            className="text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1"
-                          >
-                            <span>📨</span> Remind
-                          </button>
-                        )}
-                      </div>
-                    </td>
+            {collections.length === 0 ? (
+              <div className="p-12 text-center flex flex-col items-center gap-3">
+                <span className="text-4xl">💳</span>
+                <div>
+                  <p className="font-bold text-gray-800 text-base">No rent collections recorded yet</p>
+                  <p className="text-xs text-gray-500 mt-1">Tenant invoices, rent ledgers, and automated payment receipts will appear here.</p>
+                </div>
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-100">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {['Tenant', 'Property', 'Amount', 'Due Date', 'Status', 'Actions'].map((h) => (
+                      <th key={h} className="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {collections.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <p className="text-sm font-bold text-gray-900">{item.tenantName}</p>
+                        <p className="text-xs text-gray-500">Tenant #{item.id}</p>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-800 font-medium">{item.property}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                        ${item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{item.dueDate}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{statusBadge(item.status)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          {/* Download Invoice */}
+                          <button
+                            onClick={() => downloadInvoice(item)}
+                            title="Download Invoice PDF"
+                            className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1"
+                          >
+                            <span>📄</span> Invoice
+                          </button>
+
+                          {/* Send Reminder – only for non-Paid */}
+                          {item.status !== 'Paid' && (
+                            <button
+                              onClick={() => sendReminder(item)}
+                              title="Send Payment Reminder"
+                              className="text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold px-3.5 py-1.5 rounded-lg transition flex items-center gap-1"
+                            >
+                              <span>📨</span> Remind
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 

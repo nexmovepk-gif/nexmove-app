@@ -129,10 +129,18 @@ export default function MarketplacePage() {
             Loading marketplace listings...
           </div>
         ) : listings.length === 0 ? (
-          <div className="text-center py-16 text-slate-500 text-sm flex flex-col gap-2 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-            <span className="text-4xl">🔍</span>
-            <p className="font-bold text-slate-800">No properties match your current filters.</p>
-            <p className="text-xs text-slate-500">Try broadening your city search or property type filter.</p>
+          <div className="text-center py-16 text-slate-500 text-sm flex flex-col items-center gap-3 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+            <span className="text-4xl">🏠</span>
+            <div>
+              <p className="font-bold text-slate-800 text-base">No properties registered yet</p>
+              <p className="text-xs text-slate-500 mt-1">Be the first to list a verified property or broadcast an investment asset.</p>
+            </div>
+            <Link
+              href="/agency/submit-listing"
+              className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow transition"
+            >
+              + List First Property
+            </Link>
           </div>
         ) : (
           <div className="flex flex-col gap-4">

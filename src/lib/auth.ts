@@ -41,71 +41,7 @@ export interface RegisteredUser {
 
 export const REGISTERED_USERS: RegisteredUser[] = []
 
-const MOCK_USERS: RegisteredUser[] = [
-  {
-    id: 'super-admin-id',
-    email: 'superadmin@nexmove.com',
-    name: 'Ali Hamza (Super Admin)',
-    password: 'admin123',
-    role: 'SUPER_ADMIN' as Role,
-    agencyId: null,
-    agencyName: 'NexMove Admin HQ',
-  },
-  {
-    id: 'manager-1-id',
-    email: 'manager1@agency1.com',
-    name: 'Manager One',
-    password: 'manager123',
-    role: 'AGENCY_MANAGER' as Role,
-    agencyId: 'agency-1',
-    agencyName: 'Apex Real Estate',
-  },
-  {
-    id: 'agent-1-id',
-    email: 'agent1@agency1.com',
-    name: 'Agent One',
-    password: 'agent123',
-    role: 'AGENCY_AGENT' as Role,
-    agencyId: 'agency-1',
-    agencyName: 'Apex Real Estate',
-  },
-  {
-    id: 'manager-2-id',
-    email: 'manager2@agency2.com',
-    name: 'Manager Two',
-    password: 'manager123',
-    role: 'AGENCY_MANAGER' as Role,
-    agencyId: 'agency-2',
-    agencyName: 'Skyline Properties',
-  },
-  {
-    id: 'agent-2-id',
-    email: 'agent2@agency2.com',
-    name: 'Agent Two',
-    password: 'agent123',
-    role: 'AGENCY_AGENT' as Role,
-    agencyId: 'agency-2',
-    agencyName: 'Skyline Properties',
-  },
-  {
-    id: 'public-user-id',
-    email: 'user@public.com',
-    name: 'Public User',
-    password: 'user123',
-    role: 'PUBLIC_USER' as Role,
-    agencyId: null,
-    agencyName: null,
-  },
-  {
-    id: 'investor-user-id',
-    email: 'investor@nexmove.com',
-    name: 'Tariq Mehmood (Overseas Investor)',
-    password: 'investor123',
-    role: 'PUBLIC_USER' as Role,
-    agencyId: null,
-    agencyName: 'Global Investor Asset Vault',
-  },
-]
+const MOCK_USERS: RegisteredUser[] = []
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -136,7 +72,7 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        // 2. Check static MOCK_USERS
+        // 2. Check static MOCK_USERS (empty in production)
         const mockUser = MOCK_USERS.find(
           (u) => u.email.toLowerCase() === credentials.email.toLowerCase() && u.password === credentials.password
         )
@@ -169,7 +105,7 @@ export const authOptions: NextAuthOptions = {
             }
           }
         } catch (error) {
-          console.warn('Database connection failed, using mock auth flow only', error)
+          console.warn('Database query failed during authorize:', error)
         }
 
         return null

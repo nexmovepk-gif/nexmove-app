@@ -12,15 +12,9 @@ interface LedgerItem {
   type: 'INCOME' | 'EXPENSE';
 }
 
-const INITIAL_INCOME: LedgerItem[] = [
-  { id: 'inc-1', date: new Date().toISOString(), amount: 5000, description: 'Commission - Apt 4B Sale', category: 'COMMISSION', type: 'INCOME' },
-  { id: 'inc-2', date: new Date().toISOString(), amount: 3200, description: 'August Rent Collection', category: 'RENT', type: 'INCOME' },
-];
+const INITIAL_INCOME: LedgerItem[] = [];
 
-const INITIAL_EXPENSES: LedgerItem[] = [
-  { id: 'exp-1', date: new Date().toISOString(), amount: 1500, description: 'Digital Marketing Campaign', category: 'MARKETING', type: 'EXPENSE' },
-  { id: 'exp-2', date: new Date().toISOString(), amount: 800, description: 'Office Utilities & Maintenance', category: 'UTILITIES', type: 'EXPENSE' },
-];
+const INITIAL_EXPENSES: LedgerItem[] = [];
 
 export default function LedgerPage() {
   const [incomeEntries, setIncomeEntries] = useState<LedgerItem[]>(INITIAL_INCOME);

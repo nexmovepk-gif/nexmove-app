@@ -25,43 +25,42 @@ interface ReviewData {
   distribution: { star: number; count: number }[]
 }
 
-const AGENCY_DIRECTORY: Record<string, {
-  name: string; verified: boolean; verifiedLicense: boolean; tier?: VerificationTier;
-  description: string; phone: string; address: string; activeListings: number;
-}> = {
-  'agency-1': {
-    name: 'Elite Properties',
-    verified: true, verifiedLicense: true, tier: 'PLATINUM',
-    description: 'Premium real estate brokerage serving Rawalpindi & Islamabad since 2010. Specializing in luxury residential and commercial properties.',
-    phone: '+92-51-1111111',
-    address: 'Main Boulevard, Bahria Town, Rawalpindi',
-    activeListings: 12,
-  },
-  'agency-2': {
-    name: 'Prime Realty Group',
-    verified: true, verifiedLicense: true, tier: 'GOLD',
-    description: "Lahore's most trusted property consultants with 15 years of market expertise. Full-service agency for buy, sell, and rent.",
-    phone: '+92-42-2222222',
-    address: 'MM Alam Road, Gulberg III, Lahore',
-    activeListings: 9,
-  },
-  'agency-3': {
-    name: 'Skyline Estates',
-    verified: false, verifiedLicense: false, tier: 'SILVER',
-    description: "Emerging boutique agency in Karachi's high-rise sector. Focused on apartment investments and rental management.",
-    phone: '+92-21-3333333',
-    address: 'Clifton Block 5, Karachi',
-    activeListings: 5,
-  },
+interface AgencyInfo {
+  id: string
+  name: string
+  verified: boolean
+  verifiedLicense: boolean
+  tier?: VerificationTier
+  description: string
+  phone: string
+  address: string
+  activeListings: number
+  latitude?: number
+  longitude?: number
 }
 
 export default function AgencyProfilePage({ params }: { params: { agencyId: string } }) {
   const { agencyId } = params
-  const agency = AGENCY_DIRECTORY[agencyId]
-
+  const [agency, setAgency] = useState<AgencyInfo | null>(null)
+  const [agencyLoading, setAgencyLoading] = useState(true)
   const [reviewData, setReviewData] = useState<ReviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+
+  const fetchAgency = useCallback(async () => {
+    setAgencyLoading(true)
+    try {
+      const res = await fetch('/api/public/agencies')
+      const data = await res.json()
+      const found = (data.agencies || []).find((a: AgencyInfo) => a.id === agencyId)
+      setAgency(found || null)
+    } catch (err) {
+      console.error('Failed to fetch agency info:', err)
+      setAgency(null)
+    } finally {
+      setAgencyLoading(false)
+    }
+  }, [agencyId])
 
   const fetchReviews = useCallback(async () => {
     setLoading(true)
@@ -77,16 +76,28 @@ export default function AgencyProfilePage({ params }: { params: { agencyId: stri
   }, [agencyId])
 
   useEffect(() => {
+    fetchAgency()
     fetchReviews()
-  }, [fetchReviews])
+  }, [fetchAgency, fetchReviews])
+
+  if (agencyLoading) {
+    return (
+      <main className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center p-6">
+        <div className="flex items-center gap-3 text-slate-500 text-sm">
+          <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+          <span>Loading agency profile...</span>
+        </div>
+      </main>
+    )
+  }
 
   if (!agency) {
     return (
       <main className="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center p-6">
-        <div className="text-center flex flex-col gap-4 bg-white border border-slate-200 shadow-sm rounded-2xl p-8 max-w-sm">
+        <div className="text-center flex flex-col items-center gap-4 bg-white border border-slate-200 shadow-sm rounded-2xl p-8 max-w-sm">
           <span className="text-4xl">🏢</span>
           <h1 className="text-xl font-bold text-slate-900">Agency Not Found</h1>
-          <p className="text-xs text-slate-500">The agency profile you requested does not exist or has been removed.</p>
+          <p className="text-xs text-slate-500">The agency profile you requested does not exist or has not been registered yet.</p>
           <Link href="/agencies" className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition">
             ← Back to Agency Directory
           </Link>
@@ -146,7 +157,7 @@ export default function AgencyProfilePage({ params }: { params: { agencyId: stri
           </p>
 
           {/* Rating Summary */}
-          {reviewData && reviewData.total > 0 && (
+          {reviewData && reviewData.total > 0 ? (
             <div className="flex items-center gap-6 pt-3 border-t border-slate-100">
               <div className="flex flex-col items-center justify-center gap-1 bg-slate-50 border border-slate-200 rounded-xl p-3 min-w-[100px]">
                 <span className="text-3xl font-black text-amber-500">{reviewData.avgRating}</span>
@@ -170,17 +181,23 @@ export default function AgencyProfilePage({ params }: { params: { agencyId: stri
                 ))}
               </div>
             </div>
+          ) : (
+            <div className="text-xs text-slate-500 italic border-t border-slate-100 pt-3">
+              No ratings submitted yet for this agency.
+            </div>
           )}
 
           {/* Contact */}
-          <div className="pt-2">
-            <a
-              href={`tel:${agency.phone}`}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl transition text-xs font-bold shadow"
-            >
-              📞 Contact Agency ({agency.phone})
-            </a>
-          </div>
+          {agency.phone && (
+            <div className="pt-2">
+              <a
+                href={`tel:${agency.phone}`}
+                className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl transition text-xs font-bold shadow"
+              >
+                📞 Contact Agency ({agency.phone})
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Reviews Section */}

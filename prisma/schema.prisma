@@ -73,9 +73,19 @@ model User {
   password            String?
   name                String?
   role                Role              @default(PUBLIC_USER)
+  accountRoleType     String?           // e.g. BUYER, LOCAL_PUBLIC, OVERSEAS_BUYER, OVERSEAS_INVESTOR, AGENCY_ADMIN, AGENCY_AGENT
+  cnicNumber          String?           // CNIC / National ID
+  cnicFrontUrl        String?           // CNIC Front Photo URL / Storage Reference
+  cnicBackUrl         String?           // CNIC Back Photo URL / Storage Reference
   nicopNumber         String?           // Overseas NICOP / National ID
   passportNumber      String?           // Overseas Passport Number for Foreign KYC
+  overseasCountry     String?           // Overseas Country of residence
+  overseasCity        String?           // Overseas City
+  overseasPostalCode  String?           // Overseas Postal Code
+  overseasDocPhoto    String?           // Overseas Document Photo URL
   isOverseasVerified  Boolean           @default(false)   // Overseas KYC status
+  phone               String?
+  address             String?
 
   agencyId            String?
   agency              Agency?           @relation(fields: [agencyId], references: [id])
@@ -89,6 +99,8 @@ model User {
   expenses            Expense[]
   rentCollections     RentCollection[]
 
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
 }
 
 model Agency {
@@ -102,6 +114,9 @@ model Agency {
   address             String?
   description         String?                              // Phase 2: Public profile bio
   ntn                 String?           // Legal Tax Registration Number (NTN)
+  cnicNumber          String?           // Agency Owner CNIC Number
+  cnicFrontUrl        String?           // Agency Owner CNIC Front Photo URL
+  cnicBackUrl         String?           // Agency Owner CNIC Back Photo URL
   latitude            Float?            // Map location Latitude
   longitude           Float?            // Map location Longitude
   storefrontPhoto     String?           // Agency Storefront photo URL

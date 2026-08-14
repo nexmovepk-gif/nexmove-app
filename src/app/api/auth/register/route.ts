@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { REGISTERED_USERS } from '@/lib/auth'
 import { Role } from '@/generated/client/enums'
 
 export async function POST(req: Request) {
@@ -76,6 +75,20 @@ export async function POST(req: Request) {
       )
     }
 
+    const normalizedEmail = email.toLowerCase().trim()
+
+    // Ensure user does not already exist in Supabase DB
+    const existingUser = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    })
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: 'An account with this email address already exists. Please log in or use a different email.' },
+        { status: 409 }
+      )
+    }
+
     // Map incoming role string to valid system Role enum
     let assignedRole: Role = 'PUBLIC_USER'
     if (['AGENCY_ADMIN', 'AGENCY_MANAGER', 'OVERSEAS_AGENCY'].includes(role)) {
@@ -86,101 +99,85 @@ export async function POST(req: Request) {
       assignedRole = 'PUBLIC_USER'
     }
 
-    const newUserId = `usr_${Date.now()}`
-    const newAgencyId = `ag_${Date.now()}`
-    const finalAgencyName = agencyName || (isOverseasRole ? `${name}'s Overseas Agency` : `${name}'s Portfolio`)
-    const finalNtn = ntn || 'N/A'
-    const finalAddress = address || (isOverseasRole ? `${overseasCity}, ${overseasCountry}` : 'Pakistan')
     const parsedLat = latitude ? parseFloat(latitude) : 33.7215
     const parsedLng = longitude ? parseFloat(longitude) : 73.0565
-    const finalLogo = logo || cnicFrontPhoto || overseasDocPhoto || ''
-    const finalStorefrontPhoto = storefrontPhoto || cnicBackPhoto || overseasDocPhoto || ''
-    const finalOwnerPhoto = ownerPhoto || cnicFrontPhoto || overseasDocPhoto || ''
 
-    let userObj = {
-      id: newUserId,
-      email: email.toLowerCase(),
-      name,
-      password,
-      role: assignedRole,
-      accountRoleType: role,
-      agencyId: newAgencyId,
-      agencyName: finalAgencyName,
-      ntn: finalNtn,
-      address: finalAddress,
-      latitude: parsedLat,
-      longitude: parsedLng,
-      logo: finalLogo,
-      storefrontPhoto: finalStorefrontPhoto,
-      ownerPhoto: finalOwnerPhoto,
-      passportNumber: passportNumber || overseasDocNumber || null,
-      nicopNumber: nicopNumber || cnicNumber || overseasDocNumber || null,
-      overseasCountry: overseasCountry || null,
-      overseasCity: overseasCity || null,
-      overseasPostalCode: overseasPostalCode || null,
-    }
+    let createdAgencyId: string | null = null
+    let createdAgencyName: string | null = null
 
-    // Try persisting to Prisma DB if accessible
-    try {
+    if (isAgencyRole) {
+      const finalAgencyName = agencyName || `${name}'s Agency`
+      const finalAddress = address || (isOverseasRole ? `${overseasCity}, ${overseasCountry}` : 'Pakistan')
+
       const createdAgency = await prisma.agency.create({
         data: {
           name: finalAgencyName,
           verified: true,
           verifiedLicense: true,
           address: finalAddress,
-          logo: finalLogo,
-          ntn: finalNtn,
+          logo: logo || null,
+          ntn: ntn || null,
+          cnicNumber: cnicNumber || null,
+          cnicFrontUrl: cnicFrontPhoto || null,
+          cnicBackUrl: cnicBackPhoto || null,
           latitude: parsedLat,
           longitude: parsedLng,
-          storefrontPhoto: finalStorefrontPhoto,
-          ownerPhoto: finalOwnerPhoto,
+          storefrontPhoto: storefrontPhoto || null,
+          ownerPhoto: ownerPhoto || null,
         },
       })
-
-      const createdUser = await prisma.user.create({
-        data: {
-          name,
-          email: email.toLowerCase(),
-          password,
-          role: assignedRole,
-          agencyId: createdAgency.id,
-        },
-      })
-
-      userObj = {
-        ...userObj,
-        id: createdUser.id,
-        agencyId: createdAgency.id,
-      }
-    } catch (dbError) {
-      console.warn('Database insert skipped or failed during register, using in-memory store:', dbError)
+      createdAgencyId = createdAgency.id
+      createdAgencyName = createdAgency.name
     }
 
-    // Push to REGISTERED_USERS cache for instant NextAuth credential validation
-    const existingIndex = REGISTERED_USERS.findIndex((u) => u.email.toLowerCase() === email.toLowerCase())
-    if (existingIndex >= 0) {
-      REGISTERED_USERS[existingIndex] = userObj
-    } else {
-      REGISTERED_USERS.push(userObj)
-    }
+    const finalPassport = passportNumber || (isOverseasRole ? overseasDocNumber : null)
+    const finalNicop = nicopNumber || (isOverseasRole ? overseasDocNumber : null)
+    const finalDocPhoto = overseasDocPhoto || null
+
+    const createdUser = await prisma.user.create({
+      data: {
+        name,
+        email: normalizedEmail,
+        password,
+        role: assignedRole,
+        accountRoleType: role,
+        cnicNumber: cnicNumber || null,
+        cnicFrontUrl: cnicFrontPhoto || null,
+        cnicBackUrl: cnicBackPhoto || null,
+        nicopNumber: finalNicop,
+        passportNumber: finalPassport,
+        overseasCountry: overseasCountry || null,
+        overseasCity: overseasCity || null,
+        overseasPostalCode: overseasPostalCode || null,
+        overseasDocPhoto: finalDocPhoto,
+        isOverseasVerified: isOverseasRole ? true : false,
+        address: address || null,
+        agencyId: createdAgencyId,
+      },
+      include: {
+        agency: true,
+      },
+    })
 
     return NextResponse.json(
       {
-        message: 'Account registered successfully with role-based verification metadata',
+        message: 'Account registered successfully with direct database persistence',
         user: {
-          id: userObj.id,
-          name: userObj.name,
-          email: userObj.email,
-          role: userObj.role,
-          accountRoleType: userObj.accountRoleType,
-          agencyId: userObj.agencyId,
-          agencyName: userObj.agencyName,
+          id: createdUser.id,
+          name: createdUser.name,
+          email: createdUser.email,
+          role: createdUser.role,
+          accountRoleType: createdUser.accountRoleType,
+          agencyId: createdUser.agencyId,
+          agencyName: createdUser.agency?.name || createdAgencyName || null,
+          cnicFrontUrl: createdUser.cnicFrontUrl,
+          cnicBackUrl: createdUser.cnicBackUrl,
         },
       },
       { status: 201 }
     )
   } catch (error: unknown) {
-    console.error('Registration handler error:', error)
+    console.error('Registration database transaction error:', error)
     const errMsg = error instanceof Error ? error.message : 'An error occurred during registration'
     return NextResponse.json(
       { error: errMsg },
@@ -188,3 +185,4 @@ export async function POST(req: Request) {
     )
   }
 }
+

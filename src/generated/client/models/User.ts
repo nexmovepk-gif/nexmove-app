@@ -30,10 +30,22 @@ export type UserMinAggregateOutputType = {
   password: string | null
   name: string | null
   role: $Enums.Role | null
+  accountRoleType: string | null
+  cnicNumber: string | null
+  cnicFrontUrl: string | null
+  cnicBackUrl: string | null
   nicopNumber: string | null
   passportNumber: string | null
+  overseasCountry: string | null
+  overseasCity: string | null
+  overseasPostalCode: string | null
+  overseasDocPhoto: string | null
   isOverseasVerified: boolean | null
+  phone: string | null
+  address: string | null
   agencyId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -42,10 +54,22 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   name: string | null
   role: $Enums.Role | null
+  accountRoleType: string | null
+  cnicNumber: string | null
+  cnicFrontUrl: string | null
+  cnicBackUrl: string | null
   nicopNumber: string | null
   passportNumber: string | null
+  overseasCountry: string | null
+  overseasCity: string | null
+  overseasPostalCode: string | null
+  overseasDocPhoto: string | null
   isOverseasVerified: boolean | null
+  phone: string | null
+  address: string | null
   agencyId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -54,10 +78,22 @@ export type UserCountAggregateOutputType = {
   password: number
   name: number
   role: number
+  accountRoleType: number
+  cnicNumber: number
+  cnicFrontUrl: number
+  cnicBackUrl: number
   nicopNumber: number
   passportNumber: number
+  overseasCountry: number
+  overseasCity: number
+  overseasPostalCode: number
+  overseasDocPhoto: number
   isOverseasVerified: number
+  phone: number
+  address: number
   agencyId: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -68,10 +104,22 @@ export type UserMinAggregateInputType = {
   password?: true
   name?: true
   role?: true
+  accountRoleType?: true
+  cnicNumber?: true
+  cnicFrontUrl?: true
+  cnicBackUrl?: true
   nicopNumber?: true
   passportNumber?: true
+  overseasCountry?: true
+  overseasCity?: true
+  overseasPostalCode?: true
+  overseasDocPhoto?: true
   isOverseasVerified?: true
+  phone?: true
+  address?: true
   agencyId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -80,10 +128,22 @@ export type UserMaxAggregateInputType = {
   password?: true
   name?: true
   role?: true
+  accountRoleType?: true
+  cnicNumber?: true
+  cnicFrontUrl?: true
+  cnicBackUrl?: true
   nicopNumber?: true
   passportNumber?: true
+  overseasCountry?: true
+  overseasCity?: true
+  overseasPostalCode?: true
+  overseasDocPhoto?: true
   isOverseasVerified?: true
+  phone?: true
+  address?: true
   agencyId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -92,10 +152,22 @@ export type UserCountAggregateInputType = {
   password?: true
   name?: true
   role?: true
+  accountRoleType?: true
+  cnicNumber?: true
+  cnicFrontUrl?: true
+  cnicBackUrl?: true
   nicopNumber?: true
   passportNumber?: true
+  overseasCountry?: true
+  overseasCity?: true
+  overseasPostalCode?: true
+  overseasDocPhoto?: true
   isOverseasVerified?: true
+  phone?: true
+  address?: true
   agencyId?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -177,10 +249,22 @@ export type UserGroupByOutputType = {
   password: string | null
   name: string | null
   role: $Enums.Role
+  accountRoleType: string | null
+  cnicNumber: string | null
+  cnicFrontUrl: string | null
+  cnicBackUrl: string | null
   nicopNumber: string | null
   passportNumber: string | null
+  overseasCountry: string | null
+  overseasCity: string | null
+  overseasPostalCode: string | null
+  overseasDocPhoto: string | null
   isOverseasVerified: boolean
+  phone: string | null
+  address: string | null
   agencyId: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -210,10 +294,22 @@ export type UserWhereInput = {
   password?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  accountRoleType?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicFrontUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicBackUrl?: Prisma.StringNullableFilter<"User"> | string | null
   nicopNumber?: Prisma.StringNullableFilter<"User"> | string | null
   passportNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasCountry?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasCity?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasPostalCode?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasDocPhoto?: Prisma.StringNullableFilter<"User"> | string | null
   isOverseasVerified?: Prisma.BoolFilter<"User"> | boolean
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
+  address?: Prisma.StringNullableFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   agency?: Prisma.XOR<Prisma.AgencyNullableScalarRelationFilter, Prisma.AgencyWhereInput> | null
   listings?: Prisma.ListingListRelationFilter
   clients?: Prisma.ClientListRelationFilter
@@ -230,10 +326,22 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  accountRoleType?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   nicopNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   passportNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasPostalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasDocPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   isOverseasVerified?: Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
   agencyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   agency?: Prisma.AgencyOrderByWithRelationInput
   listings?: Prisma.ListingOrderByRelationAggregateInput
   clients?: Prisma.ClientOrderByRelationAggregateInput
@@ -253,10 +361,22 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  accountRoleType?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicFrontUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicBackUrl?: Prisma.StringNullableFilter<"User"> | string | null
   nicopNumber?: Prisma.StringNullableFilter<"User"> | string | null
   passportNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasCountry?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasCity?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasPostalCode?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasDocPhoto?: Prisma.StringNullableFilter<"User"> | string | null
   isOverseasVerified?: Prisma.BoolFilter<"User"> | boolean
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
+  address?: Prisma.StringNullableFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   agency?: Prisma.XOR<Prisma.AgencyNullableScalarRelationFilter, Prisma.AgencyWhereInput> | null
   listings?: Prisma.ListingListRelationFilter
   clients?: Prisma.ClientListRelationFilter
@@ -273,10 +393,22 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
+  accountRoleType?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   nicopNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   passportNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasPostalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  overseasDocPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   isOverseasVerified?: Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
   agencyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -291,10 +423,22 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
+  accountRoleType?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cnicNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cnicFrontUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cnicBackUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   nicopNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   passportNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  overseasCountry?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  overseasCity?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  overseasPostalCode?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  overseasDocPhoto?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   isOverseasVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  address?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
 
 export type UserCreateInput = {
@@ -303,9 +447,21 @@ export type UserCreateInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
@@ -322,10 +478,22 @@ export type UserUncheckedCreateInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
@@ -341,9 +509,21 @@ export type UserUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
@@ -360,10 +540,22 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -379,10 +571,22 @@ export type UserCreateManyInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type UserUpdateManyMutationInput = {
@@ -391,9 +595,21 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -402,10 +618,22 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -414,10 +642,22 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  accountRoleType?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrder
   nicopNumber?: Prisma.SortOrder
   passportNumber?: Prisma.SortOrder
+  overseasCountry?: Prisma.SortOrder
+  overseasCity?: Prisma.SortOrder
+  overseasPostalCode?: Prisma.SortOrder
+  overseasDocPhoto?: Prisma.SortOrder
   isOverseasVerified?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -426,10 +666,22 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  accountRoleType?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrder
   nicopNumber?: Prisma.SortOrder
   passportNumber?: Prisma.SortOrder
+  overseasCountry?: Prisma.SortOrder
+  overseasCity?: Prisma.SortOrder
+  overseasPostalCode?: Prisma.SortOrder
+  overseasDocPhoto?: Prisma.SortOrder
   isOverseasVerified?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -438,10 +690,22 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
+  accountRoleType?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrder
   nicopNumber?: Prisma.SortOrder
   passportNumber?: Prisma.SortOrder
+  overseasCountry?: Prisma.SortOrder
+  overseasCity?: Prisma.SortOrder
+  overseasPostalCode?: Prisma.SortOrder
+  overseasDocPhoto?: Prisma.SortOrder
   isOverseasVerified?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  address?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type UserListRelationFilter = {
@@ -478,6 +742,10 @@ export type EnumRoleFieldUpdateOperationsInput = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
 }
 
 export type UserCreateNestedManyWithoutAgencyInput = {
@@ -628,9 +896,21 @@ export type UserCreateWithoutAgencyInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutCreatedByInput
@@ -646,9 +926,21 @@ export type UserUncheckedCreateWithoutAgencyInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
@@ -693,10 +985,22 @@ export type UserScalarWhereInput = {
   password?: Prisma.StringNullableFilter<"User"> | string | null
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
+  accountRoleType?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicFrontUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  cnicBackUrl?: Prisma.StringNullableFilter<"User"> | string | null
   nicopNumber?: Prisma.StringNullableFilter<"User"> | string | null
   passportNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasCountry?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasCity?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasPostalCode?: Prisma.StringNullableFilter<"User"> | string | null
+  overseasDocPhoto?: Prisma.StringNullableFilter<"User"> | string | null
   isOverseasVerified?: Prisma.BoolFilter<"User"> | boolean
+  phone?: Prisma.StringNullableFilter<"User"> | string | null
+  address?: Prisma.StringNullableFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
 
 export type UserCreateWithoutListingsInput = {
@@ -705,9 +1009,21 @@ export type UserCreateWithoutListingsInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutCreatedByInput
@@ -723,10 +1039,22 @@ export type UserUncheckedCreateWithoutListingsInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
   dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
@@ -757,9 +1085,21 @@ export type UserUpdateWithoutListingsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutCreatedByNestedInput
@@ -775,10 +1115,22 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
   dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
@@ -793,9 +1145,21 @@ export type UserCreateWithoutClientsInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutCreatedByInput
@@ -811,10 +1175,22 @@ export type UserUncheckedCreateWithoutClientsInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
   dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
@@ -845,9 +1221,21 @@ export type UserUpdateWithoutClientsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutCreatedByNestedInput
@@ -863,10 +1251,22 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
   dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
@@ -881,9 +1281,21 @@ export type UserCreateWithoutLedgersInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
@@ -899,10 +1311,22 @@ export type UserUncheckedCreateWithoutLedgersInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
@@ -933,9 +1357,21 @@ export type UserUpdateWithoutLedgersInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
@@ -951,10 +1387,22 @@ export type UserUncheckedUpdateWithoutLedgersInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
@@ -969,9 +1417,21 @@ export type UserCreateWithoutDealsBuyerInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
@@ -987,10 +1447,22 @@ export type UserUncheckedCreateWithoutDealsBuyerInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1010,9 +1482,21 @@ export type UserCreateWithoutDealsSellerInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
@@ -1028,10 +1512,22 @@ export type UserUncheckedCreateWithoutDealsSellerInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1062,9 +1558,21 @@ export type UserUpdateWithoutDealsBuyerInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
@@ -1080,10 +1588,22 @@ export type UserUncheckedUpdateWithoutDealsBuyerInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1109,9 +1629,21 @@ export type UserUpdateWithoutDealsSellerInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
@@ -1127,10 +1659,22 @@ export type UserUncheckedUpdateWithoutDealsSellerInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1145,9 +1689,21 @@ export type UserCreateWithoutExpensesInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
@@ -1163,10 +1719,22 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1197,9 +1765,21 @@ export type UserUpdateWithoutExpensesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
@@ -1215,10 +1795,22 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1233,9 +1825,21 @@ export type UserCreateWithoutRentCollectionsInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
@@ -1251,10 +1855,22 @@ export type UserUncheckedCreateWithoutRentCollectionsInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
   agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1285,9 +1901,21 @@ export type UserUpdateWithoutRentCollectionsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
@@ -1303,10 +1931,22 @@ export type UserUncheckedUpdateWithoutRentCollectionsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1321,9 +1961,21 @@ export type UserCreateManyAgencyInput = {
   password?: string | null
   name?: string | null
   role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   nicopNumber?: string | null
   passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
   isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type UserUpdateWithoutAgencyInput = {
@@ -1332,9 +1984,21 @@ export type UserUpdateWithoutAgencyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutCreatedByNestedInput
@@ -1350,9 +2014,21 @@ export type UserUncheckedUpdateWithoutAgencyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1368,9 +2044,21 @@ export type UserUncheckedUpdateManyWithoutAgencyInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1464,10 +2152,22 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   name?: boolean
   role?: boolean
+  accountRoleType?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   nicopNumber?: boolean
   passportNumber?: boolean
+  overseasCountry?: boolean
+  overseasCity?: boolean
+  overseasPostalCode?: boolean
+  overseasDocPhoto?: boolean
   isOverseasVerified?: boolean
+  phone?: boolean
+  address?: boolean
   agencyId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   agency?: boolean | Prisma.User$agencyArgs<ExtArgs>
   listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
   clients?: boolean | Prisma.User$clientsArgs<ExtArgs>
@@ -1485,10 +2185,22 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   name?: boolean
   role?: boolean
+  accountRoleType?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   nicopNumber?: boolean
   passportNumber?: boolean
+  overseasCountry?: boolean
+  overseasCity?: boolean
+  overseasPostalCode?: boolean
+  overseasDocPhoto?: boolean
   isOverseasVerified?: boolean
+  phone?: boolean
+  address?: boolean
   agencyId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   agency?: boolean | Prisma.User$agencyArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1498,10 +2210,22 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   name?: boolean
   role?: boolean
+  accountRoleType?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   nicopNumber?: boolean
   passportNumber?: boolean
+  overseasCountry?: boolean
+  overseasCity?: boolean
+  overseasPostalCode?: boolean
+  overseasDocPhoto?: boolean
   isOverseasVerified?: boolean
+  phone?: boolean
+  address?: boolean
   agencyId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   agency?: boolean | Prisma.User$agencyArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1511,13 +2235,25 @@ export type UserSelectScalar = {
   password?: boolean
   name?: boolean
   role?: boolean
+  accountRoleType?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   nicopNumber?: boolean
   passportNumber?: boolean
+  overseasCountry?: boolean
+  overseasCity?: boolean
+  overseasPostalCode?: boolean
+  overseasDocPhoto?: boolean
   isOverseasVerified?: boolean
+  phone?: boolean
+  address?: boolean
   agencyId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "nicopNumber" | "passportNumber" | "isOverseasVerified" | "agencyId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "accountRoleType" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "nicopNumber" | "passportNumber" | "overseasCountry" | "overseasCity" | "overseasPostalCode" | "overseasDocPhoto" | "isOverseasVerified" | "phone" | "address" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.User$agencyArgs<ExtArgs>
   listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
@@ -1554,10 +2290,22 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string | null
     name: string | null
     role: $Enums.Role
+    accountRoleType: string | null
+    cnicNumber: string | null
+    cnicFrontUrl: string | null
+    cnicBackUrl: string | null
     nicopNumber: string | null
     passportNumber: string | null
+    overseasCountry: string | null
+    overseasCity: string | null
+    overseasPostalCode: string | null
+    overseasDocPhoto: string | null
     isOverseasVerified: boolean
+    phone: string | null
+    address: string | null
     agencyId: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1994,10 +2742,22 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
+  readonly accountRoleType: Prisma.FieldRef<"User", 'String'>
+  readonly cnicNumber: Prisma.FieldRef<"User", 'String'>
+  readonly cnicFrontUrl: Prisma.FieldRef<"User", 'String'>
+  readonly cnicBackUrl: Prisma.FieldRef<"User", 'String'>
   readonly nicopNumber: Prisma.FieldRef<"User", 'String'>
   readonly passportNumber: Prisma.FieldRef<"User", 'String'>
+  readonly overseasCountry: Prisma.FieldRef<"User", 'String'>
+  readonly overseasCity: Prisma.FieldRef<"User", 'String'>
+  readonly overseasPostalCode: Prisma.FieldRef<"User", 'String'>
+  readonly overseasDocPhoto: Prisma.FieldRef<"User", 'String'>
   readonly isOverseasVerified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly phone: Prisma.FieldRef<"User", 'String'>
+  readonly address: Prisma.FieldRef<"User", 'String'>
   readonly agencyId: Prisma.FieldRef<"User", 'String'>
+  readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

@@ -47,6 +47,9 @@ export type AgencyMinAggregateOutputType = {
   address: string | null
   description: string | null
   ntn: string | null
+  cnicNumber: string | null
+  cnicFrontUrl: string | null
+  cnicBackUrl: string | null
   latitude: number | null
   longitude: number | null
   storefrontPhoto: string | null
@@ -66,6 +69,9 @@ export type AgencyMaxAggregateOutputType = {
   address: string | null
   description: string | null
   ntn: string | null
+  cnicNumber: string | null
+  cnicFrontUrl: string | null
+  cnicBackUrl: string | null
   latitude: number | null
   longitude: number | null
   storefrontPhoto: string | null
@@ -85,6 +91,9 @@ export type AgencyCountAggregateOutputType = {
   address: number
   description: number
   ntn: number
+  cnicNumber: number
+  cnicFrontUrl: number
+  cnicBackUrl: number
   latitude: number
   longitude: number
   storefrontPhoto: number
@@ -116,6 +125,9 @@ export type AgencyMinAggregateInputType = {
   address?: true
   description?: true
   ntn?: true
+  cnicNumber?: true
+  cnicFrontUrl?: true
+  cnicBackUrl?: true
   latitude?: true
   longitude?: true
   storefrontPhoto?: true
@@ -135,6 +147,9 @@ export type AgencyMaxAggregateInputType = {
   address?: true
   description?: true
   ntn?: true
+  cnicNumber?: true
+  cnicFrontUrl?: true
+  cnicBackUrl?: true
   latitude?: true
   longitude?: true
   storefrontPhoto?: true
@@ -154,6 +169,9 @@ export type AgencyCountAggregateInputType = {
   address?: true
   description?: true
   ntn?: true
+  cnicNumber?: true
+  cnicFrontUrl?: true
+  cnicBackUrl?: true
   latitude?: true
   longitude?: true
   storefrontPhoto?: true
@@ -260,6 +278,9 @@ export type AgencyGroupByOutputType = {
   address: string | null
   description: string | null
   ntn: string | null
+  cnicNumber: string | null
+  cnicFrontUrl: string | null
+  cnicBackUrl: string | null
   latitude: number | null
   longitude: number | null
   storefrontPhoto: string | null
@@ -302,6 +323,9 @@ export type AgencyWhereInput = {
   address?: Prisma.StringNullableFilter<"Agency"> | string | null
   description?: Prisma.StringNullableFilter<"Agency"> | string | null
   ntn?: Prisma.StringNullableFilter<"Agency"> | string | null
+  cnicNumber?: Prisma.StringNullableFilter<"Agency"> | string | null
+  cnicFrontUrl?: Prisma.StringNullableFilter<"Agency"> | string | null
+  cnicBackUrl?: Prisma.StringNullableFilter<"Agency"> | string | null
   latitude?: Prisma.FloatNullableFilter<"Agency"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Agency"> | number | null
   storefrontPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
@@ -330,6 +354,9 @@ export type AgencyOrderByWithRelationInput = {
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   ntn?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   latitude?: Prisma.SortOrderInput | Prisma.SortOrder
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -361,6 +388,9 @@ export type AgencyWhereUniqueInput = Prisma.AtLeast<{
   address?: Prisma.StringNullableFilter<"Agency"> | string | null
   description?: Prisma.StringNullableFilter<"Agency"> | string | null
   ntn?: Prisma.StringNullableFilter<"Agency"> | string | null
+  cnicNumber?: Prisma.StringNullableFilter<"Agency"> | string | null
+  cnicFrontUrl?: Prisma.StringNullableFilter<"Agency"> | string | null
+  cnicBackUrl?: Prisma.StringNullableFilter<"Agency"> | string | null
   latitude?: Prisma.FloatNullableFilter<"Agency"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Agency"> | number | null
   storefrontPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
@@ -389,6 +419,9 @@ export type AgencyOrderByWithAggregationInput = {
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   ntn?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   latitude?: Prisma.SortOrderInput | Prisma.SortOrder
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -416,6 +449,9 @@ export type AgencyScalarWhereWithAggregatesInput = {
   address?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   ntn?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  cnicNumber?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  cnicFrontUrl?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  cnicBackUrl?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   latitude?: Prisma.FloatNullableWithAggregatesFilter<"Agency"> | number | null
   longitude?: Prisma.FloatNullableWithAggregatesFilter<"Agency"> | number | null
   storefrontPhoto?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
@@ -435,6 +471,9 @@ export type AgencyCreateInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -463,6 +502,9 @@ export type AgencyUncheckedCreateInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -491,6 +533,9 @@ export type AgencyUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -519,6 +564,9 @@ export type AgencyUncheckedUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -547,6 +595,9 @@ export type AgencyCreateManyInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -566,6 +617,9 @@ export type AgencyUpdateManyMutationInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -585,6 +639,9 @@ export type AgencyUncheckedUpdateManyInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -609,6 +666,9 @@ export type AgencyCountOrderByAggregateInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   ntn?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrder
@@ -633,6 +693,9 @@ export type AgencyMaxOrderByAggregateInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   ntn?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrder
@@ -652,6 +715,9 @@ export type AgencyMinOrderByAggregateInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   ntn?: Prisma.SortOrder
+  cnicNumber?: Prisma.SortOrder
+  cnicFrontUrl?: Prisma.SortOrder
+  cnicBackUrl?: Prisma.SortOrder
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrder
@@ -692,10 +758,6 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
 }
 
 export type AgencyCreateNestedOneWithoutListingsInput = {
@@ -823,6 +885,9 @@ export type AgencyCreateWithoutUsersInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -850,6 +915,9 @@ export type AgencyUncheckedCreateWithoutUsersInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -893,6 +961,9 @@ export type AgencyUpdateWithoutUsersInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -920,6 +991,9 @@ export type AgencyUncheckedUpdateWithoutUsersInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -947,6 +1021,9 @@ export type AgencyCreateWithoutListingsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -974,6 +1051,9 @@ export type AgencyUncheckedCreateWithoutListingsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1017,6 +1097,9 @@ export type AgencyUpdateWithoutListingsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1044,6 +1127,9 @@ export type AgencyUncheckedUpdateWithoutListingsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1071,6 +1157,9 @@ export type AgencyCreateWithoutPublicListingsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1098,6 +1187,9 @@ export type AgencyUncheckedCreateWithoutPublicListingsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1141,6 +1233,9 @@ export type AgencyUpdateWithoutPublicListingsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1168,6 +1263,9 @@ export type AgencyUncheckedUpdateWithoutPublicListingsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1195,6 +1293,9 @@ export type AgencyCreateWithoutAgencyReviewsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1222,6 +1323,9 @@ export type AgencyUncheckedCreateWithoutAgencyReviewsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1265,6 +1369,9 @@ export type AgencyUpdateWithoutAgencyReviewsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1292,6 +1399,9 @@ export type AgencyUncheckedUpdateWithoutAgencyReviewsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1319,6 +1429,9 @@ export type AgencyCreateWithoutClientsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1346,6 +1459,9 @@ export type AgencyUncheckedCreateWithoutClientsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1389,6 +1505,9 @@ export type AgencyUpdateWithoutClientsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1416,6 +1535,9 @@ export type AgencyUncheckedUpdateWithoutClientsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1443,6 +1565,9 @@ export type AgencyCreateWithoutLedgersInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1470,6 +1595,9 @@ export type AgencyUncheckedCreateWithoutLedgersInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1513,6 +1641,9 @@ export type AgencyUpdateWithoutLedgersInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1540,6 +1671,9 @@ export type AgencyUncheckedUpdateWithoutLedgersInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1567,6 +1701,9 @@ export type AgencyCreateWithoutDealsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1594,6 +1731,9 @@ export type AgencyUncheckedCreateWithoutDealsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1637,6 +1777,9 @@ export type AgencyUpdateWithoutDealsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1664,6 +1807,9 @@ export type AgencyUncheckedUpdateWithoutDealsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1691,6 +1837,9 @@ export type AgencyCreateWithoutExpensesInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1718,6 +1867,9 @@ export type AgencyUncheckedCreateWithoutExpensesInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1761,6 +1913,9 @@ export type AgencyUpdateWithoutExpensesInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1788,6 +1943,9 @@ export type AgencyUncheckedUpdateWithoutExpensesInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1815,6 +1973,9 @@ export type AgencyCreateWithoutRentCollectionsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1842,6 +2003,9 @@ export type AgencyUncheckedCreateWithoutRentCollectionsInput = {
   address?: string | null
   description?: string | null
   ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
   latitude?: number | null
   longitude?: number | null
   storefrontPhoto?: string | null
@@ -1885,6 +2049,9 @@ export type AgencyUpdateWithoutRentCollectionsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1912,6 +2079,9 @@ export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2042,6 +2212,9 @@ export type AgencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   address?: boolean
   description?: boolean
   ntn?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   latitude?: boolean
   longitude?: boolean
   storefrontPhoto?: boolean
@@ -2071,6 +2244,9 @@ export type AgencySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   address?: boolean
   description?: boolean
   ntn?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   latitude?: boolean
   longitude?: boolean
   storefrontPhoto?: boolean
@@ -2090,6 +2266,9 @@ export type AgencySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   address?: boolean
   description?: boolean
   ntn?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   latitude?: boolean
   longitude?: boolean
   storefrontPhoto?: boolean
@@ -2109,6 +2288,9 @@ export type AgencySelectScalar = {
   address?: boolean
   description?: boolean
   ntn?: boolean
+  cnicNumber?: boolean
+  cnicFrontUrl?: boolean
+  cnicBackUrl?: boolean
   latitude?: boolean
   longitude?: boolean
   storefrontPhoto?: boolean
@@ -2117,7 +2299,7 @@ export type AgencySelectScalar = {
   updatedAt?: boolean
 }
 
-export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "logo" | "phone" | "address" | "description" | "ntn" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
+export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "logo" | "phone" | "address" | "description" | "ntn" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
 export type AgencyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
   listings?: boolean | Prisma.Agency$listingsArgs<ExtArgs>
@@ -2157,6 +2339,9 @@ export type $AgencyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     address: string | null
     description: string | null
     ntn: string | null
+    cnicNumber: string | null
+    cnicFrontUrl: string | null
+    cnicBackUrl: string | null
     latitude: number | null
     longitude: number | null
     storefrontPhoto: string | null
@@ -2605,6 +2790,9 @@ export interface AgencyFieldRefs {
   readonly address: Prisma.FieldRef<"Agency", 'String'>
   readonly description: Prisma.FieldRef<"Agency", 'String'>
   readonly ntn: Prisma.FieldRef<"Agency", 'String'>
+  readonly cnicNumber: Prisma.FieldRef<"Agency", 'String'>
+  readonly cnicFrontUrl: Prisma.FieldRef<"Agency", 'String'>
+  readonly cnicBackUrl: Prisma.FieldRef<"Agency", 'String'>
   readonly latitude: Prisma.FieldRef<"Agency", 'Float'>
   readonly longitude: Prisma.FieldRef<"Agency", 'Float'>
   readonly storefrontPhoto: Prisma.FieldRef<"Agency", 'String'>

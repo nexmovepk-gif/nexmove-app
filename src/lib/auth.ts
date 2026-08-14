@@ -39,10 +39,6 @@ export interface RegisteredUser {
   agencyName?: string | null
 }
 
-export const REGISTERED_USERS: RegisteredUser[] = []
-
-const MOCK_USERS: RegisteredUser[] = []
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -57,40 +53,12 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // 1. Check in-memory registered users first
-        const regUser = REGISTERED_USERS.find(
-          (u) => u.email.toLowerCase() === credentials.email.toLowerCase() && u.password === credentials.password
-        )
-        if (regUser) {
-          return {
-            id: regUser.id,
-            email: regUser.email,
-            name: regUser.name,
-            role: String(regUser.role),
-            agencyId: regUser.agencyId ?? null,
-            agencyName: regUser.agencyName ?? null,
-          }
-        }
+        const email = credentials.email.toLowerCase().trim()
 
-        // 2. Check static MOCK_USERS (empty in production)
-        const mockUser = MOCK_USERS.find(
-          (u) => u.email.toLowerCase() === credentials.email.toLowerCase() && u.password === credentials.password
-        )
-        if (mockUser) {
-          return {
-            id: mockUser.id,
-            email: mockUser.email,
-            name: mockUser.name,
-            role: String(mockUser.role),
-            agencyId: mockUser.agencyId ?? null,
-            agencyName: mockUser.agencyName ?? null,
-          }
-        }
-
-        // 3. Check database
         try {
+          // Direct Supabase PostgreSQL database query
           const dbUser = await prisma.user.findUnique({
-            where: { email: credentials.email },
+            where: { email },
             include: { agency: true },
           })
 
@@ -105,7 +73,7 @@ export const authOptions: NextAuthOptions = {
             }
           }
         } catch (error) {
-          console.warn('Database query failed during authorize:', error)
+          console.error('Database query failed during NextAuth authorize:', error)
         }
 
         return null

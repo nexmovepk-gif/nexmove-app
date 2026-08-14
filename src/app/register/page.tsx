@@ -267,6 +267,30 @@ export default function RegisterPage() {
         throw new Error(data.error || 'Registration failed')
       }
 
+      // 🚀 AUTOMATED MASTER OWNER ALERT EMAIL (Resend Call)
+      try {
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: 'nexmove.pk@gmail.com',
+            subject: `🚨 New ${role} Registered on NexMove`,
+            body: `A new user has just registered on your platform:
+
+• Full Name: ${name}
+• Email: ${email}
+• Account Role: ${role}
+${isAgencyRole ? `• Agency Brand: ${agencyName}` : ''}
+${isOverseasRole ? `• Country: ${overseasCountry}` : ''}
+• Registration Time: ${new Date().toLocaleString()}
+
+Log in to your admin panel to review and verify this user.`,
+          }),
+        })
+      } catch (emailErr) {
+        console.error('Owner Email Notification Alert Failed:', emailErr)
+      }
+
       const signInRes = await signIn('credentials', {
         email,
         password,
@@ -339,9 +363,8 @@ export default function RegisterPage() {
                   }}
                   placeholder="e.g. Tariq Mehmood"
                   required
-                  className={`bg-white border ${
-                    fieldErrors.name ? 'border-red-500' : 'border-slate-300'
-                  } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
+                  className={`bg-white border ${fieldErrors.name ? 'border-red-500' : 'border-slate-300'
+                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
                 />
                 {fieldErrors.name && (
                   <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.name}</span>
@@ -362,9 +385,8 @@ export default function RegisterPage() {
                   }}
                   placeholder="user@example.com"
                   required
-                  className={`bg-white border ${
-                    fieldErrors.email ? 'border-red-500' : 'border-slate-300'
-                  } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
+                  className={`bg-white border ${fieldErrors.email ? 'border-red-500' : 'border-slate-300'
+                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
                 />
                 {fieldErrors.email && (
                   <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.email}</span>
@@ -386,9 +408,8 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   required
                   minLength={8}
-                  className={`bg-white border ${
-                    fieldErrors.password ? 'border-red-500' : 'border-slate-300'
-                  } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
+                  className={`bg-white border ${fieldErrors.password ? 'border-red-500' : 'border-slate-300'
+                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
                 />
                 {fieldErrors.password && (
                   <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.password}</span>
@@ -446,9 +467,8 @@ export default function RegisterPage() {
                     }}
                     placeholder="e.g. 35201-1234567-1"
                     required
-                    className={`bg-white border ${
-                      fieldErrors.cnicNumber ? 'border-red-500' : 'border-slate-300'
-                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
+                    className={`bg-white border ${fieldErrors.cnicNumber ? 'border-red-500' : 'border-slate-300'
+                      } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
                   />
                   {fieldErrors.cnicNumber && (
                     <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.cnicNumber}</span>
@@ -550,9 +570,8 @@ export default function RegisterPage() {
                       setOverseasCountry(e.target.value)
                       liveValidate('overseasCountry', e.target.value)
                     }}
-                    className={`bg-white border ${
-                      fieldErrors.overseasCountry ? 'border-red-500' : 'border-slate-300'
-                    } rounded-xl px-3 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
+                    className={`bg-white border ${fieldErrors.overseasCountry ? 'border-red-500' : 'border-slate-300'
+                      } rounded-xl px-3 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
                   >
                     <option value="">Select Country</option>
                     {OVERSEAS_COUNTRIES.map((c) => (
@@ -578,9 +597,8 @@ export default function RegisterPage() {
                     }}
                     placeholder="e.g. London / Dubai"
                     required
-                    className={`bg-white border ${
-                      fieldErrors.overseasCity ? 'border-red-500' : 'border-slate-300'
-                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
+                    className={`bg-white border ${fieldErrors.overseasCity ? 'border-red-500' : 'border-slate-300'
+                      } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
                   />
                   {fieldErrors.overseasCity && (
                     <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.overseasCity}</span>
@@ -601,9 +619,8 @@ export default function RegisterPage() {
                     }}
                     placeholder="e.g. SW1A 1AA / 90210"
                     required
-                    className={`bg-white border ${
-                      fieldErrors.overseasPostalCode ? 'border-red-500' : 'border-slate-300'
-                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
+                    className={`bg-white border ${fieldErrors.overseasPostalCode ? 'border-red-500' : 'border-slate-300'
+                      } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
                   />
                   {fieldErrors.overseasPostalCode && (
                     <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.overseasPostalCode}</span>
@@ -624,9 +641,8 @@ export default function RegisterPage() {
                     }}
                     placeholder="e.g. 42101-9988771-3 (NICOP) or A9823412 (Passport)"
                     required
-                    className={`bg-white border ${
-                      fieldErrors.overseasDocNumber ? 'border-red-500' : 'border-slate-300'
-                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
+                    className={`bg-white border ${fieldErrors.overseasDocNumber ? 'border-red-500' : 'border-slate-300'
+                      } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
                   />
                   {fieldErrors.overseasDocNumber && (
                     <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.overseasDocNumber}</span>
@@ -696,9 +712,8 @@ export default function RegisterPage() {
                       }}
                       placeholder="Premier Properties Agency"
                       required
-                      className={`bg-white border ${
-                        fieldErrors.agencyName ? 'border-red-500' : 'border-slate-300'
-                      } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
+                      className={`bg-white border ${fieldErrors.agencyName ? 'border-red-500' : 'border-slate-300'
+                        } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition`}
                     />
                     {fieldErrors.agencyName && (
                       <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.agencyName}</span>
@@ -719,9 +734,8 @@ export default function RegisterPage() {
                       }}
                       placeholder="e.g. NTN-4829103-7"
                       required
-                      className={`bg-white border ${
-                        fieldErrors.ntn ? 'border-red-500' : 'border-slate-300'
-                      } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
+                      className={`bg-white border ${fieldErrors.ntn ? 'border-red-500' : 'border-slate-300'
+                        } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
                     />
                     {fieldErrors.ntn && (
                       <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.ntn}</span>
@@ -744,9 +758,8 @@ export default function RegisterPage() {
                     placeholder="Suite 402, 4th Floor, Main Boulevard, Bahria Town, Rawalpindi / Islamabad"
                     rows={2}
                     required
-                    className={`bg-white border ${
-                      fieldErrors.address ? 'border-red-500' : 'border-slate-300'
-                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition resize-none`}
+                    className={`bg-white border ${fieldErrors.address ? 'border-red-500' : 'border-slate-300'
+                      } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition resize-none`}
                   />
                   {fieldErrors.address && (
                     <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.address}</span>
@@ -801,9 +814,8 @@ export default function RegisterPage() {
                         }}
                         placeholder="e.g. 33.5256"
                         required
-                        className={`bg-white border ${
-                          fieldErrors.latitude ? 'border-red-500' : 'border-slate-300'
-                        } rounded-xl px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500 transition`}
+                        className={`bg-white border ${fieldErrors.latitude ? 'border-red-500' : 'border-slate-300'
+                          } rounded-xl px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500 transition`}
                       />
                       {fieldErrors.latitude && (
                         <span className="text-[9px] text-red-600 font-semibold">{fieldErrors.latitude}</span>
@@ -821,9 +833,8 @@ export default function RegisterPage() {
                         }}
                         placeholder="e.g. 73.0984"
                         required
-                        className={`bg-white border ${
-                          fieldErrors.longitude ? 'border-red-500' : 'border-slate-300'
-                        } rounded-xl px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500 transition`}
+                        className={`bg-white border ${fieldErrors.longitude ? 'border-red-500' : 'border-slate-300'
+                          } rounded-xl px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500 transition`}
                       />
                       {fieldErrors.longitude && (
                         <span className="text-[9px] text-red-600 font-semibold">{fieldErrors.longitude}</span>

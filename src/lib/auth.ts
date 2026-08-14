@@ -181,12 +181,20 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const u = user as AdaptedUser
         token.id = u.id
+
+        // 👑 Master Super Admin Override
+        if (u.email === 'nexmove.pk@gmail.com') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ; (token as any).role = 'SUPER_ADMIN'
+        } else {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ; (token as any).role = u.role ?? null
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(token as any).role = u.role ?? null
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(token as any).agencyId = u.agencyId ?? null
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(token as any).agencyName = u.agencyName ?? null
+        ; (token as any).agencyId = u.agencyId ?? null
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ; (token as any).agencyName = u.agencyName ?? null
       }
       return token
     },

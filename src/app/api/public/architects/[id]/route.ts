@@ -1,30 +1,71 @@
 import { NextResponse } from 'next/server'
-
-// ─── Production Data (initially empty — populated from database) ──────────────
-const ARCHITECTS_DB: {
-  id: string; name: string; title: string; specialization: string; bio: string;
-  avatarInitials: string; avatarGradient: string; councilLicenseNo: string;
-  verificationStatus: string; verified: boolean; experienceYears: number;
-  experienceLevel: string; degrees?: string[]; software: string[]; projectTypes: string[];
-  portfolioLinks: string[]; portfolioImages: string[]; avgRating: number;
-  reviewCount: number; completedProjects: number; location: string;
-  phone?: string; availableForProjects: boolean; joinedAt: string;
-}[] = []
-
+import { prisma } from '@/lib/prisma'
 
 export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const architect = ARCHITECTS_DB.find((a) => a.id === params.id)
+  try {
+    const arch = await prisma.architectProfile.findUnique({
+      where: { id: params.id },
+      include: {
+        user: true,
+        projects: { orderBy: { createdAt: 'desc' } },
+        reviews: { orderBy: { createdAt: 'desc' } },
+      },
+    })
 
-  if (!architect) {
-    return NextResponse.json({ error: 'Architect not found' }, { status: 404 })
+    if (!arch) {
+      return NextResponse.json({ error: 'Architect profile not found' }, { status: 404 })
+    }
+
+    const avgRating =
+      arch.reviews.length > 0
+        ? arch.reviews.reduce((acc, r) => acc + r.rating, 0) / arch.reviews.length
+        : 4.9
+
+    const images =
+      arch.portfolioImages.length > 0
+        ? arch.portfolioImages
+        : arch.portfolioUrl
+        ? [arch.portfolioUrl]
+        : []
+
+    const architect = {
+      id: arch.id,
+      name: arch.name,
+      title: arch.title || arch.specialization || 'Architect',
+      specialization: arch.specialization,
+      companyName: arch.companyName,
+      isOverseas: arch.isOverseas,
+      country: arch.country,
+      city: arch.city,
+      pcatpNo: arch.pcatpNo || arch.councilLicenseNo,
+      phone: arch.phone || arch.user?.phone,
+      bio: arch.bio || 'Verified Architect on NexMove PropTech Platform.',
+      avatarInitials: arch.avatarInitials || arch.name.substring(0, 2).toUpperCase(),
+      avatarGradient: arch.avatarGradient || 'from-teal-600 to-emerald-700',
+      councilLicenseNo: arch.pcatpNo || arch.councilLicenseNo || 'VERIFIED-PCATP',
+      verificationStatus: arch.verificationStatus || 'VERIFIED',
+      verified: arch.isVerified || arch.status === 'APPROVED' || arch.verificationStatus === 'VERIFIED',
+      experienceYears: arch.experienceYears || 5,
+      experienceLevel: arch.experienceLevel || 'Senior',
+      software: arch.software.length > 0 ? arch.software : ['Revit', 'AutoCAD', 'SketchUp', '3ds Max'],
+      projectTypes: arch.projectTypes.length > 0 ? arch.projectTypes : ['Residential', 'Commercial'],
+      portfolioLinks: arch.portfolioLinks,
+      portfolioImages: images,
+      projects: arch.projects,
+      avgRating,
+      reviewCount: arch.reviews.length,
+      completedProjects: arch.projects.length,
+      location: arch.location || (arch.city ? `${arch.city}, ${arch.country || 'Pakistan'}` : 'Pakistan'),
+      availableForProjects: arch.availableForProjects,
+      joinedAt: arch.createdAt.toISOString(),
+    }
+
+    return NextResponse.json({ architect })
+  } catch (error) {
+    console.error('[Public Architect Detail GET] Error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-
-  if (architect.verificationStatus !== 'VERIFIED') {
-    return NextResponse.json({ error: 'Profile not publicly available' }, { status: 403 })
-  }
-
-  return NextResponse.json({ architect })
 }

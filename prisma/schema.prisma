@@ -386,14 +386,19 @@ model ArchitectReview {
 
 /// Project record linked to an architect profile, used for portfolio and stats aggregation.
 model ArchitectProject {
-  id          String           @id @default(uuid())
-  architectId String
-  architect   ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
-  title       String
-  description String?
-  status      ProjectStatus    @default(PENDING)
-  completedAt DateTime?
+  id            String           @id @default(uuid())
+  architectId   String
+  architect     ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  category      String?
+  software      String[]         @default([])
+  imageUrl      String?
+  imageUrls     String[]         @default([])
+  completedYear Int?
+  status        ProjectStatus    @default(COMPLETED)
+  completedAt   DateTime?
 
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 }

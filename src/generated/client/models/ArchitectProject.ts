@@ -20,8 +20,18 @@ export type ArchitectProjectModel = runtime.Types.Result.DefaultSelection<Prisma
 
 export type AggregateArchitectProject = {
   _count: ArchitectProjectCountAggregateOutputType | null
+  _avg: ArchitectProjectAvgAggregateOutputType | null
+  _sum: ArchitectProjectSumAggregateOutputType | null
   _min: ArchitectProjectMinAggregateOutputType | null
   _max: ArchitectProjectMaxAggregateOutputType | null
+}
+
+export type ArchitectProjectAvgAggregateOutputType = {
+  completedYear: number | null
+}
+
+export type ArchitectProjectSumAggregateOutputType = {
+  completedYear: number | null
 }
 
 export type ArchitectProjectMinAggregateOutputType = {
@@ -29,6 +39,9 @@ export type ArchitectProjectMinAggregateOutputType = {
   architectId: string | null
   title: string | null
   description: string | null
+  category: string | null
+  imageUrl: string | null
+  completedYear: number | null
   status: $Enums.ProjectStatus | null
   completedAt: Date | null
   createdAt: Date | null
@@ -40,6 +53,9 @@ export type ArchitectProjectMaxAggregateOutputType = {
   architectId: string | null
   title: string | null
   description: string | null
+  category: string | null
+  imageUrl: string | null
+  completedYear: number | null
   status: $Enums.ProjectStatus | null
   completedAt: Date | null
   createdAt: Date | null
@@ -51,6 +67,11 @@ export type ArchitectProjectCountAggregateOutputType = {
   architectId: number
   title: number
   description: number
+  category: number
+  software: number
+  imageUrl: number
+  imageUrls: number
+  completedYear: number
   status: number
   completedAt: number
   createdAt: number
@@ -59,11 +80,22 @@ export type ArchitectProjectCountAggregateOutputType = {
 }
 
 
+export type ArchitectProjectAvgAggregateInputType = {
+  completedYear?: true
+}
+
+export type ArchitectProjectSumAggregateInputType = {
+  completedYear?: true
+}
+
 export type ArchitectProjectMinAggregateInputType = {
   id?: true
   architectId?: true
   title?: true
   description?: true
+  category?: true
+  imageUrl?: true
+  completedYear?: true
   status?: true
   completedAt?: true
   createdAt?: true
@@ -75,6 +107,9 @@ export type ArchitectProjectMaxAggregateInputType = {
   architectId?: true
   title?: true
   description?: true
+  category?: true
+  imageUrl?: true
+  completedYear?: true
   status?: true
   completedAt?: true
   createdAt?: true
@@ -86,6 +121,11 @@ export type ArchitectProjectCountAggregateInputType = {
   architectId?: true
   title?: true
   description?: true
+  category?: true
+  software?: true
+  imageUrl?: true
+  imageUrls?: true
+  completedYear?: true
   status?: true
   completedAt?: true
   createdAt?: true
@@ -131,6 +171,18 @@ export type ArchitectProjectAggregateArgs<ExtArgs extends runtime.Types.Extensio
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ArchitectProjectAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ArchitectProjectSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ArchitectProjectMinAggregateInputType
@@ -161,6 +213,8 @@ export type ArchitectProjectGroupByArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   _count?: ArchitectProjectCountAggregateInputType | true
+  _avg?: ArchitectProjectAvgAggregateInputType
+  _sum?: ArchitectProjectSumAggregateInputType
   _min?: ArchitectProjectMinAggregateInputType
   _max?: ArchitectProjectMaxAggregateInputType
 }
@@ -170,11 +224,18 @@ export type ArchitectProjectGroupByOutputType = {
   architectId: string
   title: string
   description: string | null
+  category: string | null
+  software: string[]
+  imageUrl: string | null
+  imageUrls: string[]
+  completedYear: number | null
   status: $Enums.ProjectStatus
   completedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ArchitectProjectCountAggregateOutputType | null
+  _avg: ArchitectProjectAvgAggregateOutputType | null
+  _sum: ArchitectProjectSumAggregateOutputType | null
   _min: ArchitectProjectMinAggregateOutputType | null
   _max: ArchitectProjectMaxAggregateOutputType | null
 }
@@ -202,6 +263,11 @@ export type ArchitectProjectWhereInput = {
   architectId?: Prisma.StringFilter<"ArchitectProject"> | string
   title?: Prisma.StringFilter<"ArchitectProject"> | string
   description?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  category?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  software?: Prisma.StringNullableListFilter<"ArchitectProject">
+  imageUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  completedYear?: Prisma.IntNullableFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableFilter<"ArchitectProject"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ArchitectProject"> | Date | string
@@ -214,6 +280,11 @@ export type ArchitectProjectOrderByWithRelationInput = {
   architectId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  software?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
+  completedYear?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -229,6 +300,11 @@ export type ArchitectProjectWhereUniqueInput = Prisma.AtLeast<{
   architectId?: Prisma.StringFilter<"ArchitectProject"> | string
   title?: Prisma.StringFilter<"ArchitectProject"> | string
   description?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  category?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  software?: Prisma.StringNullableListFilter<"ArchitectProject">
+  imageUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  completedYear?: Prisma.IntNullableFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableFilter<"ArchitectProject"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ArchitectProject"> | Date | string
@@ -241,13 +317,20 @@ export type ArchitectProjectOrderByWithAggregationInput = {
   architectId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  software?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
+  completedYear?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ArchitectProjectCountOrderByAggregateInput
+  _avg?: Prisma.ArchitectProjectAvgOrderByAggregateInput
   _max?: Prisma.ArchitectProjectMaxOrderByAggregateInput
   _min?: Prisma.ArchitectProjectMinOrderByAggregateInput
+  _sum?: Prisma.ArchitectProjectSumOrderByAggregateInput
 }
 
 export type ArchitectProjectScalarWhereWithAggregatesInput = {
@@ -258,6 +341,11 @@ export type ArchitectProjectScalarWhereWithAggregatesInput = {
   architectId?: Prisma.StringWithAggregatesFilter<"ArchitectProject"> | string
   title?: Prisma.StringWithAggregatesFilter<"ArchitectProject"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProject"> | string | null
+  category?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProject"> | string | null
+  software?: Prisma.StringNullableListFilter<"ArchitectProject">
+  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProject"> | string | null
+  imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  completedYear?: Prisma.IntNullableWithAggregatesFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusWithAggregatesFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ArchitectProject"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ArchitectProject"> | Date | string
@@ -268,6 +356,11 @@ export type ArchitectProjectCreateInput = {
   id?: string
   title: string
   description?: string | null
+  category?: string | null
+  software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
+  imageUrl?: string | null
+  imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
   createdAt?: Date | string
@@ -280,6 +373,11 @@ export type ArchitectProjectUncheckedCreateInput = {
   architectId: string
   title: string
   description?: string | null
+  category?: string | null
+  software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
+  imageUrl?: string | null
+  imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
   createdAt?: Date | string
@@ -290,6 +388,11 @@ export type ArchitectProjectUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -302,6 +405,11 @@ export type ArchitectProjectUncheckedUpdateInput = {
   architectId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -313,6 +421,11 @@ export type ArchitectProjectCreateManyInput = {
   architectId: string
   title: string
   description?: string | null
+  category?: string | null
+  software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
+  imageUrl?: string | null
+  imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
   createdAt?: Date | string
@@ -323,6 +436,11 @@ export type ArchitectProjectUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -334,6 +452,11 @@ export type ArchitectProjectUncheckedUpdateManyInput = {
   architectId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -355,10 +478,19 @@ export type ArchitectProjectCountOrderByAggregateInput = {
   architectId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  software?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
+  imageUrls?: Prisma.SortOrder
+  completedYear?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ArchitectProjectAvgOrderByAggregateInput = {
+  completedYear?: Prisma.SortOrder
 }
 
 export type ArchitectProjectMaxOrderByAggregateInput = {
@@ -366,6 +498,9 @@ export type ArchitectProjectMaxOrderByAggregateInput = {
   architectId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
+  completedYear?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -377,10 +512,17 @@ export type ArchitectProjectMinOrderByAggregateInput = {
   architectId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
+  completedYear?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ArchitectProjectSumOrderByAggregateInput = {
+  completedYear?: Prisma.SortOrder
 }
 
 export type ArchitectProjectCreateNestedManyWithoutArchitectInput = {
@@ -425,6 +567,24 @@ export type ArchitectProjectUncheckedUpdateManyWithoutArchitectNestedInput = {
   deleteMany?: Prisma.ArchitectProjectScalarWhereInput | Prisma.ArchitectProjectScalarWhereInput[]
 }
 
+export type ArchitectProjectCreatesoftwareInput = {
+  set: string[]
+}
+
+export type ArchitectProjectCreateimageUrlsInput = {
+  set: string[]
+}
+
+export type ArchitectProjectUpdatesoftwareInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ArchitectProjectUpdateimageUrlsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type EnumProjectStatusFieldUpdateOperationsInput = {
   set?: $Enums.ProjectStatus
 }
@@ -437,6 +597,11 @@ export type ArchitectProjectCreateWithoutArchitectInput = {
   id?: string
   title: string
   description?: string | null
+  category?: string | null
+  software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
+  imageUrl?: string | null
+  imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
   createdAt?: Date | string
@@ -447,6 +612,11 @@ export type ArchitectProjectUncheckedCreateWithoutArchitectInput = {
   id?: string
   title: string
   description?: string | null
+  category?: string | null
+  software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
+  imageUrl?: string | null
+  imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
   createdAt?: Date | string
@@ -487,6 +657,11 @@ export type ArchitectProjectScalarWhereInput = {
   architectId?: Prisma.StringFilter<"ArchitectProject"> | string
   title?: Prisma.StringFilter<"ArchitectProject"> | string
   description?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  category?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  software?: Prisma.StringNullableListFilter<"ArchitectProject">
+  imageUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  completedYear?: Prisma.IntNullableFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableFilter<"ArchitectProject"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ArchitectProject"> | Date | string
@@ -497,6 +672,11 @@ export type ArchitectProjectCreateManyArchitectInput = {
   id?: string
   title: string
   description?: string | null
+  category?: string | null
+  software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
+  imageUrl?: string | null
+  imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
   createdAt?: Date | string
@@ -507,6 +687,11 @@ export type ArchitectProjectUpdateWithoutArchitectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -517,6 +702,11 @@ export type ArchitectProjectUncheckedUpdateWithoutArchitectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -527,6 +717,11 @@ export type ArchitectProjectUncheckedUpdateManyWithoutArchitectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -540,6 +735,11 @@ export type ArchitectProjectSelect<ExtArgs extends runtime.Types.Extensions.Inte
   architectId?: boolean
   title?: boolean
   description?: boolean
+  category?: boolean
+  software?: boolean
+  imageUrl?: boolean
+  imageUrls?: boolean
+  completedYear?: boolean
   status?: boolean
   completedAt?: boolean
   createdAt?: boolean
@@ -552,6 +752,11 @@ export type ArchitectProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   architectId?: boolean
   title?: boolean
   description?: boolean
+  category?: boolean
+  software?: boolean
+  imageUrl?: boolean
+  imageUrls?: boolean
+  completedYear?: boolean
   status?: boolean
   completedAt?: boolean
   createdAt?: boolean
@@ -564,6 +769,11 @@ export type ArchitectProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   architectId?: boolean
   title?: boolean
   description?: boolean
+  category?: boolean
+  software?: boolean
+  imageUrl?: boolean
+  imageUrls?: boolean
+  completedYear?: boolean
   status?: boolean
   completedAt?: boolean
   createdAt?: boolean
@@ -576,13 +786,18 @@ export type ArchitectProjectSelectScalar = {
   architectId?: boolean
   title?: boolean
   description?: boolean
+  category?: boolean
+  software?: boolean
+  imageUrl?: boolean
+  imageUrls?: boolean
+  completedYear?: boolean
   status?: boolean
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ArchitectProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "architectId" | "title" | "description" | "status" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProject"]>
+export type ArchitectProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "architectId" | "title" | "description" | "category" | "software" | "imageUrl" | "imageUrls" | "completedYear" | "status" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProject"]>
 export type ArchitectProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   architect?: boolean | Prisma.ArchitectProfileDefaultArgs<ExtArgs>
 }
@@ -603,6 +818,11 @@ export type $ArchitectProjectPayload<ExtArgs extends runtime.Types.Extensions.In
     architectId: string
     title: string
     description: string | null
+    category: string | null
+    software: string[]
+    imageUrl: string | null
+    imageUrls: string[]
+    completedYear: number | null
     status: $Enums.ProjectStatus
     completedAt: Date | null
     createdAt: Date
@@ -1035,6 +1255,11 @@ export interface ArchitectProjectFieldRefs {
   readonly architectId: Prisma.FieldRef<"ArchitectProject", 'String'>
   readonly title: Prisma.FieldRef<"ArchitectProject", 'String'>
   readonly description: Prisma.FieldRef<"ArchitectProject", 'String'>
+  readonly category: Prisma.FieldRef<"ArchitectProject", 'String'>
+  readonly software: Prisma.FieldRef<"ArchitectProject", 'String[]'>
+  readonly imageUrl: Prisma.FieldRef<"ArchitectProject", 'String'>
+  readonly imageUrls: Prisma.FieldRef<"ArchitectProject", 'String[]'>
+  readonly completedYear: Prisma.FieldRef<"ArchitectProject", 'Int'>
   readonly status: Prisma.FieldRef<"ArchitectProject", 'ProjectStatus'>
   readonly completedAt: Prisma.FieldRef<"ArchitectProject", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ArchitectProject", 'DateTime'>

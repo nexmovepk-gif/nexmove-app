@@ -1,4 +1,4 @@
-﻿// src/app/api/public/architects/stats/route.ts
+// src/app/api/public/architects/stats/route.ts
 // Returns aggregated stats for the Architects & Designers page stats bar.
 
 import { NextResponse } from 'next/server'
@@ -8,9 +8,15 @@ export async function GET() {
   try {
     const [verifiedCount, specializationRows, ratingAgg, completedProjectsCount] =
       await Promise.all([
-        // Count profiles where isVerified = true
+        // Count profiles where status = APPROVED or isVerified = true
         prisma.architectProfile.count({
-          where: { isVerified: true },
+          where: {
+            OR: [
+              { status: 'APPROVED' },
+              { verificationStatus: 'VERIFIED' },
+              { isVerified: true },
+            ],
+          },
         }),
 
         // Get distinct specialization values

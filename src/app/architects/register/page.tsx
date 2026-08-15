@@ -60,7 +60,12 @@ export default function ArchitectRegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('')
+  const [companyName, setCompanyName] = useState('')
+  const [isOverseas, setIsOverseas] = useState(false)
+  const [country, setCountry] = useState('Pakistan')
+  const [city, setCity] = useState('')
   const [location, setLocation] = useState('')
+  const [pcatpNo, setPcatpNo] = useState('')
   const [councilLicenseNo, setCouncilLicenseNo] = useState('')
   const [selectedDegrees, setSelectedDegrees] = useState<string[]>([])
   const [customDegree, setCustomDegree] = useState('')
@@ -69,6 +74,7 @@ export default function ArchitectRegisterPage() {
   const [selectedSoftware, setSelectedSoftware] = useState<string[]>([])
   const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([])
   const [bio, setBio] = useState('')
+  const [portfolioUrl, setPortfolioUrl] = useState('')
   const [portfolioLinks, setPortfolioLinks] = useState<string[]>(['', '', ''])
 
   const toggleItem = (arr: string[], setArr: (v: string[]) => void, item: string) => {
@@ -88,32 +94,47 @@ export default function ArchitectRegisterPage() {
     setLoading(true)
     setError(null)
     try {
+      const activePortfolioUrl = portfolioUrl || portfolioLinks.filter(Boolean)[0] || ''
+      const activePcatp = pcatpNo || councilLicenseNo
+
+      const payload = {
+        fullName,
+        name: fullName,
+        email,
+        password,
+        phone,
+        companyName,
+        pcatpNo: activePcatp,
+        councilLicenseNo: activePcatp,
+        isOverseas,
+        country: isOverseas ? country : (country || 'Pakistan'),
+        city,
+        location: location || (isOverseas ? `${city}, ${country}` : (city ? `${city}, Pakistan` : 'Pakistan')),
+        degrees: allDegrees,
+        experienceYears: Number(experienceYears),
+        specialization,
+        software: selectedSoftware,
+        projectTypes: selectedProjectTypes,
+        bio,
+        portfolioUrl: activePortfolioUrl,
+        portfolioLinks: portfolioLinks.filter(Boolean),
+      }
+
       const res = await fetch('/api/architects/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName,
-          email,
-          password,
-          phone,
-          location,
-          councilLicenseNo,
-          degrees: allDegrees,
-          experienceYears: Number(experienceYears),
-          specialization,
-          software: selectedSoftware,
-          projectTypes: selectedProjectTypes,
-          bio,
-          portfolioLinks: portfolioLinks.filter(Boolean),
-        }),
+        body: JSON.stringify(payload),
       })
+
       if (!res.ok) {
         const data = await res.json()
-        throw new Error(data.error || 'Registration failed')
+        throw new Error(data.error || 'Registration submission failed. Please review highlighted fields.')
       }
+
+      // DO NOT trigger success screen until res.ok is TRUE
       setStep('success')
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(err instanceof Error ? err.message : 'An error occurred during submission')
     } finally {
       setLoading(false)
     }
@@ -267,19 +288,77 @@ export default function ArchitectRegisterPage() {
                     {fieldErrors.password && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.password}</span>}
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-slate-300">Phone Number</label>
+                    <label className="text-xs font-bold text-slate-300">Phone Number *</label>
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => { setPhone(e.target.value); liveValidate('phone', e.target.value) }}
-                      placeholder="+92-300-1234567"
+                      placeholder="+92-300-1234567 or +1-415-555-0199"
+                      required
                       className={`bg-slate-800 border ${fieldErrors.phone ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
                     />
                     {fieldErrors.phone && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.phone}</span>}
                   </div>
+
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
-                  <label className="text-xs font-bold text-slate-300">City / Location</label>
-                  <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Karachi, Pakistan" className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
+                  <label className="text-xs font-bold text-slate-300">Company / Firm Name (Optional)</label>
+                  <input
+                    type="text"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="Rahman & Associates Architects"
+                    className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition"
+                  />
+                </div>
+
+                {/* ── Overseas Architect Toggle ─────────────────────── */}
+                <div className="flex items-center gap-3 bg-slate-800/80 border border-teal-500/30 p-3.5 rounded-xl sm:col-span-2">
+                  <input
+                    id="isOverseas-toggle"
+                    type="checkbox"
+                    checked={isOverseas}
+                    onChange={(e) => {
+                      const checked = e.target.checked
+                      setIsOverseas(checked)
+                      if (checked) {
+                        if (country === 'Pakistan') setCountry('')
+                      } else {
+                        setCountry('Pakistan')
+                      }
+                    }}
+                    className="w-4 h-4 text-teal-600 rounded border-slate-700 bg-slate-900 focus:ring-teal-500 cursor-pointer"
+                  />
+                  <label htmlFor="isOverseas-toggle" className="text-xs font-bold text-slate-200 cursor-pointer flex items-center gap-1.5">
+                    <span>🌐</span>
+                    <span>Overseas Architect / International Practice (Foreign Firm or Non-Pakistan Practice)</span>
+                  </label>
+                </div>
+
+                {/* Country and City Inputs */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-300">Country {isOverseas && '*'}</label>
+                  <input
+                    type="text"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    placeholder={isOverseas ? 'United Arab Emirates, UK, USA...' : 'Pakistan'}
+                    required={isOverseas}
+                    className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-300">City {isOverseas && '*'}</label>
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => {
+                      setCity(e.target.value)
+                      setLocation(e.target.value ? `${e.target.value}, ${country || 'Pakistan'}` : '')
+                    }}
+                    placeholder={isOverseas ? 'Dubai, London, Toronto...' : 'Karachi, Lahore, Islamabad...'}
+                    required={isOverseas}
+                    className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition"
+                  />
                 </div>
               </div>
               <button
@@ -287,15 +366,18 @@ export default function ArchitectRegisterPage() {
                   const nameV = validateName(fullName)
                   const emailV = validateEmail(email)
                   const passV = validatePassword(password)
-                  const phoneV = phone.trim() ? validatePhone(phone) : { valid: true, message: '' }
+                  const phoneV = validatePhone(phone)
                   const errors: Record<string, string> = {}
                   if (!nameV.valid) errors.fullName = nameV.message
                   if (!emailV.valid) errors.email = emailV.message
                   if (!passV.valid) errors.password = passV.message
                   if (!phoneV.valid) errors.phone = phoneV.message
+                  if (isOverseas && (!country || !country.trim())) errors.country = 'Country is required for overseas practice'
+                  if (isOverseas && (!city || !city.trim())) errors.city = 'City is required for overseas practice'
+
                   setFieldErrors((prev) => ({ ...prev, ...errors }))
                   if (Object.keys(errors).length === 0) { setError(null); setStep('credentials') }
-                  else setError('Incorrect format detected in one or more fields. Please fix highlighted errors.')
+                  else setError('Please fill in all required fields accurately.')
                 }}
                 className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs py-3 rounded-xl transition"
               >
@@ -314,15 +396,24 @@ export default function ArchitectRegisterPage() {
 
               <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
                 <p className="text-xs text-amber-300 font-medium leading-relaxed">
-                  🔒 <strong>Council License No.</strong> is required for the Verified Architect badge. Profiles without a verified license will remain in Pending status.
+                  🔒 <strong>PCATP / License No.</strong> is required for the Verified Architect badge. Profiles without a verified license will remain in Pending status.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
-                  <label className="text-xs font-bold text-slate-300">Council License No.</label>
-                  <input type="text" value={councilLicenseNo} onChange={(e) => setCouncilLicenseNo(e.target.value)} placeholder="PCATP-2020-XXXXX / PEC-XXXX / PILA-XXXX" className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition font-mono" />
-                  <p className="text-[10px] text-slate-500">Accepted: PCATP, PEC, PILA, IAPD registration numbers</p>
+                  <label className="text-xs font-bold text-slate-300">PCATP / Council License No.</label>
+                  <input
+                    type="text"
+                    value={pcatpNo || councilLicenseNo}
+                    onChange={(e) => {
+                      setPcatpNo(e.target.value)
+                      setCouncilLicenseNo(e.target.value)
+                    }}
+                    placeholder="PCATP-2020-XXXXX / RIBA-XXXX / AIA-XXXX / PEC-XXXX"
+                    className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition font-mono"
+                  />
+                  <p className="text-[10px] text-slate-500">Accepted: PCATP, RIBA, AIA, PEC, PILA, IAPD registration numbers</p>
                 </div>
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-slate-300">Years of Experience *</label>

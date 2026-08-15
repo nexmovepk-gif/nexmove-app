@@ -12,14 +12,22 @@ interface PendingArchitect {
   name: string;
   title?: string | null;
   specialization: string;
+  companyName?: string | null;
+  isOverseas?: boolean;
+  country?: string | null;
+  city?: string | null;
+  pcatpNo?: string | null;
+  councilLicenseNo?: string | null;
+  phone?: string | null;
   experienceLevel?: string | null;
   location?: string | null;
-  councilLicenseNo?: string | null;
   verificationStatus: string;
   isVerified: boolean;
   bio?: string | null;
+  portfolioUrl?: string | null;
   software?: string[];
   projectTypes?: string[];
+  user?: { email?: string | null; phone?: string | null } | null;
   createdAt: string;
 }
 
@@ -347,6 +355,19 @@ export default function AdminDashboard() {
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-bold text-sm text-slate-100">{arch.name}</span>
+                        {arch.companyName && (
+                          <span className="text-xs font-semibold text-slate-400">({arch.companyName})</span>
+                        )}
+                        {/* Overseas Badge */}
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                            arch.isOverseas
+                              ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+                              : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          }`}
+                        >
+                          {arch.isOverseas ? "🌐 OVERSEAS" : "🇵🇰 PAKISTAN"}
+                        </span>
                         {/* Verification Status Badge */}
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
@@ -360,20 +381,29 @@ export default function AdminDashboard() {
                           {arch.isVerified ? "VERIFIED" : arch.verificationStatus}
                         </span>
                       </div>
+
                       <span className="text-xs text-slate-400 truncate">
                         {arch.title ?? arch.specialization}
-                        {arch.location ? ` · ${arch.location}` : ""}
+                        {(arch.city || arch.country || arch.location) ? ` · ${arch.city ? `${arch.city}, ` : ""}${arch.country || arch.location || ""}` : ""}
                       </span>
+
+                      {/* Contact & License Info */}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400 mt-0.5">
+                        {arch.user?.email && <span>📧 {arch.user.email}</span>}
+                        {(arch.phone || arch.user?.phone) && <span>📞 {arch.phone || arch.user?.phone}</span>}
+                        {(arch.pcatpNo || arch.councilLicenseNo) && (
+                          <span className="font-mono text-amber-400">📜 PCATP: {arch.pcatpNo || arch.councilLicenseNo}</span>
+                        )}
+                      </div>
+
                       {/* Bio excerpt */}
                       {arch.bio && (
-                        <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">{arch.bio}</p>
+                        <p className="text-[11px] text-slate-500 line-clamp-2 mt-1">{arch.bio}</p>
                       )}
-                      <div className="flex flex-wrap gap-1.5 mt-1">
+
+                      <div className="flex flex-wrap gap-1.5 mt-1.5">
                         {arch.experienceLevel && (
                           <Chip color="teal">{arch.experienceLevel}</Chip>
-                        )}
-                        {arch.councilLicenseNo && (
-                          <Chip color="amber">License: {arch.councilLicenseNo}</Chip>
                         )}
                         {arch.software?.slice(0, 3).map((s) => (
                           <Chip key={s} color="indigo">{s}</Chip>

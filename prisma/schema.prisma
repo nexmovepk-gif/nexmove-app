@@ -100,6 +100,7 @@ model User {
   dealsSeller         Deal[]            @relation("SellerAgentRelation")
   expenses            Expense[]
   rentCollections     RentCollection[]
+  architectProfile    ArchitectProfile?
 
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
@@ -333,10 +334,19 @@ enum ProjectStatus {
 /// Professional architect/designer profile submitted via the registration flow.
 model ArchitectProfile {
   id                   String             @id @default(uuid())
+  userId               String?            @unique
+  user                 User?              @relation(fields: [userId], references: [id])
   name                 String
   title                String?
   specialization       String
+  companyName          String?
   bio                  String?
+  phone                String?
+  isOverseas           Boolean            @default(false)
+  country              String?
+  city                 String?
+  pcatpNo              String?
+  status               String             @default("PENDING") // PENDING, APPROVED, REJECTED
   isVerified           Boolean            @default(false)
   verificationStatus   String             @default("PENDING") // PENDING | VERIFIED | REJECTED
   experienceYears      Int?
@@ -346,6 +356,7 @@ model ArchitectProfile {
   projectTypes         String[]
   portfolioImages      String[]
   portfolioLinks       String[]
+  portfolioUrl         String?
   availableForProjects Boolean            @default(true)
   councilLicenseNo     String?
   avatarInitials       String?

@@ -334,6 +334,7 @@ export type UserWhereInput = {
   dealsSeller?: Prisma.DealListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
   rentCollections?: Prisma.RentCollectionListRelationFilter
+  architectProfile?: Prisma.XOR<Prisma.ArchitectProfileNullableScalarRelationFilter, Prisma.ArchitectProfileWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -368,6 +369,7 @@ export type UserOrderByWithRelationInput = {
   dealsSeller?: Prisma.DealOrderByRelationAggregateInput
   expenses?: Prisma.ExpenseOrderByRelationAggregateInput
   rentCollections?: Prisma.RentCollectionOrderByRelationAggregateInput
+  architectProfile?: Prisma.ArchitectProfileOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -405,6 +407,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   dealsSeller?: Prisma.DealListRelationFilter
   expenses?: Prisma.ExpenseListRelationFilter
   rentCollections?: Prisma.RentCollectionListRelationFilter
+  architectProfile?: Prisma.XOR<Prisma.ArchitectProfileNullableScalarRelationFilter, Prisma.ArchitectProfileWhereInput> | null
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -496,6 +499,7 @@ export type UserCreateInput = {
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -529,6 +533,7 @@ export type UserUncheckedCreateInput = {
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -562,6 +567,7 @@ export type UserUpdateInput = {
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -595,6 +601,7 @@ export type UserUncheckedUpdateInput = {
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -934,6 +941,22 @@ export type UserUpdateOneRequiredWithoutRentCollectionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRentCollectionsInput, Prisma.UserUpdateWithoutRentCollectionsInput>, Prisma.UserUncheckedUpdateWithoutRentCollectionsInput>
 }
 
+export type UserCreateNestedOneWithoutArchitectProfileInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArchitectProfileInput, Prisma.UserUncheckedCreateWithoutArchitectProfileInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArchitectProfileInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutArchitectProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutArchitectProfileInput, Prisma.UserUncheckedCreateWithoutArchitectProfileInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutArchitectProfileInput
+  upsert?: Prisma.UserUpsertWithoutArchitectProfileInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutArchitectProfileInput, Prisma.UserUpdateWithoutArchitectProfileInput>, Prisma.UserUncheckedUpdateWithoutArchitectProfileInput>
+}
+
 export type UserCreateWithoutAgencyInput = {
   id?: string
   email: string
@@ -964,6 +987,7 @@ export type UserCreateWithoutAgencyInput = {
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAgencyInput = {
@@ -996,6 +1020,7 @@ export type UserUncheckedCreateWithoutAgencyInput = {
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAgencyInput = {
@@ -1083,6 +1108,7 @@ export type UserCreateWithoutListingsInput = {
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutListingsInput = {
@@ -1115,6 +1141,7 @@ export type UserUncheckedCreateWithoutListingsInput = {
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutListingsInput = {
@@ -1163,6 +1190,7 @@ export type UserUpdateWithoutListingsInput = {
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutListingsInput = {
@@ -1195,6 +1223,7 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutClientsInput = {
@@ -1227,6 +1256,7 @@ export type UserCreateWithoutClientsInput = {
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClientsInput = {
@@ -1259,6 +1289,7 @@ export type UserUncheckedCreateWithoutClientsInput = {
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClientsInput = {
@@ -1307,6 +1338,7 @@ export type UserUpdateWithoutClientsInput = {
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientsInput = {
@@ -1339,6 +1371,7 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLedgersInput = {
@@ -1371,6 +1404,7 @@ export type UserCreateWithoutLedgersInput = {
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLedgersInput = {
@@ -1403,6 +1437,7 @@ export type UserUncheckedCreateWithoutLedgersInput = {
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLedgersInput = {
@@ -1451,6 +1486,7 @@ export type UserUpdateWithoutLedgersInput = {
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLedgersInput = {
@@ -1483,6 +1519,7 @@ export type UserUncheckedUpdateWithoutLedgersInput = {
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDealsBuyerInput = {
@@ -1515,6 +1552,7 @@ export type UserCreateWithoutDealsBuyerInput = {
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDealsBuyerInput = {
@@ -1547,6 +1585,7 @@ export type UserUncheckedCreateWithoutDealsBuyerInput = {
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDealsBuyerInput = {
@@ -1584,6 +1623,7 @@ export type UserCreateWithoutDealsSellerInput = {
   dealsBuyer?: Prisma.DealCreateNestedManyWithoutBuyerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDealsSellerInput = {
@@ -1616,6 +1656,7 @@ export type UserUncheckedCreateWithoutDealsSellerInput = {
   dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDealsSellerInput = {
@@ -1664,6 +1705,7 @@ export type UserUpdateWithoutDealsBuyerInput = {
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDealsBuyerInput = {
@@ -1696,6 +1738,7 @@ export type UserUncheckedUpdateWithoutDealsBuyerInput = {
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutDealsSellerInput = {
@@ -1739,6 +1782,7 @@ export type UserUpdateWithoutDealsSellerInput = {
   dealsBuyer?: Prisma.DealUpdateManyWithoutBuyerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDealsSellerInput = {
@@ -1771,6 +1815,7 @@ export type UserUncheckedUpdateWithoutDealsSellerInput = {
   dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExpensesInput = {
@@ -1803,6 +1848,7 @@ export type UserCreateWithoutExpensesInput = {
   dealsBuyer?: Prisma.DealCreateNestedManyWithoutBuyerAgentInput
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExpensesInput = {
@@ -1835,6 +1881,7 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExpensesInput = {
@@ -1883,6 +1930,7 @@ export type UserUpdateWithoutExpensesInput = {
   dealsBuyer?: Prisma.DealUpdateManyWithoutBuyerAgentNestedInput
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExpensesInput = {
@@ -1915,6 +1963,7 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRentCollectionsInput = {
@@ -1947,6 +1996,7 @@ export type UserCreateWithoutRentCollectionsInput = {
   dealsBuyer?: Prisma.DealCreateNestedManyWithoutBuyerAgentInput
   dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRentCollectionsInput = {
@@ -1979,6 +2029,7 @@ export type UserUncheckedCreateWithoutRentCollectionsInput = {
   dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
   dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRentCollectionsInput = {
@@ -2027,6 +2078,7 @@ export type UserUpdateWithoutRentCollectionsInput = {
   dealsBuyer?: Prisma.DealUpdateManyWithoutBuyerAgentNestedInput
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRentCollectionsInput = {
@@ -2059,6 +2111,155 @@ export type UserUncheckedUpdateWithoutRentCollectionsInput = {
   dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutArchitectProfileInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
+  listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
+  clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+}
+
+export type UserUncheckedCreateWithoutArchitectProfileInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+}
+
+export type UserCreateOrConnectWithoutArchitectProfileInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutArchitectProfileInput, Prisma.UserUncheckedCreateWithoutArchitectProfileInput>
+}
+
+export type UserUpsertWithoutArchitectProfileInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutArchitectProfileInput, Prisma.UserUncheckedUpdateWithoutArchitectProfileInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutArchitectProfileInput, Prisma.UserUncheckedCreateWithoutArchitectProfileInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutArchitectProfileInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutArchitectProfileInput, Prisma.UserUncheckedUpdateWithoutArchitectProfileInput>
+}
+
+export type UserUpdateWithoutArchitectProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutArchitectProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
 }
 
 export type UserCreateManyAgencyInput = {
@@ -2116,6 +2317,7 @@ export type UserUpdateWithoutAgencyInput = {
   dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAgencyInput = {
@@ -2148,6 +2350,7 @@ export type UserUncheckedUpdateWithoutAgencyInput = {
   dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutAgencyInput = {
@@ -2292,6 +2495,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   dealsSeller?: boolean | Prisma.User$dealsSellerArgs<ExtArgs>
   expenses?: boolean | Prisma.User$expensesArgs<ExtArgs>
   rentCollections?: boolean | Prisma.User$rentCollectionsArgs<ExtArgs>
+  architectProfile?: boolean | Prisma.User$architectProfileArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2385,6 +2589,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   dealsSeller?: boolean | Prisma.User$dealsSellerArgs<ExtArgs>
   expenses?: boolean | Prisma.User$expensesArgs<ExtArgs>
   rentCollections?: boolean | Prisma.User$rentCollectionsArgs<ExtArgs>
+  architectProfile?: boolean | Prisma.User$architectProfileArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2405,6 +2610,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     dealsSeller: Prisma.$DealPayload<ExtArgs>[]
     expenses: Prisma.$ExpensePayload<ExtArgs>[]
     rentCollections: Prisma.$RentCollectionPayload<ExtArgs>[]
+    architectProfile: Prisma.$ArchitectProfilePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2832,6 +3038,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   dealsSeller<T extends Prisma.User$dealsSellerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dealsSellerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   expenses<T extends Prisma.User$expensesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExpensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   rentCollections<T extends Prisma.User$rentCollectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rentCollectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RentCollectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  architectProfile<T extends Prisma.User$architectProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$architectProfileArgs<ExtArgs>>): Prisma.Prisma__ArchitectProfileClient<runtime.Types.Result.GetResult<Prisma.$ArchitectProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3469,6 +3676,25 @@ export type User$rentCollectionsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.RentCollectionScalarFieldEnum | Prisma.RentCollectionScalarFieldEnum[]
+}
+
+/**
+ * User.architectProfile
+ */
+export type User$architectProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ArchitectProfile
+   */
+  select?: Prisma.ArchitectProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ArchitectProfile
+   */
+  omit?: Prisma.ArchitectProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArchitectProfileInclude<ExtArgs> | null
+  where?: Prisma.ArchitectProfileWhereInput
 }
 
 /**

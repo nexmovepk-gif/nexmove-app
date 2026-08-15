@@ -1,4 +1,4 @@
-﻿// src/app/api/admin/pending/route.ts
+// src/app/api/admin/pending/route.ts
 // Returns ALL pending architect profiles AND unverified agencies for admin review
 
 import { NextResponse } from "next/server";
@@ -21,33 +21,20 @@ export async function GET() {
   }
 
   try {
-    // ── Pending architect profiles (not yet verified, any case of status) ──────
+    // ── Pending architect profiles (not yet verified, includes user) ─────────
     const pendingArchitects = await prisma.architectProfile.findMany({
       where: {
         OR: [
+          { status: "PENDING" },
           { verificationStatus: "PENDING" },
           { verificationStatus: "pending" },
           { isVerified: false },
         ],
       },
-      orderBy: { createdAt: "asc" },
-      select: {
-        id: true,
-        name: true,
-        title: true,
-        specialization: true,
-        bio: true,
-        experienceYears: true,
-        experienceLevel: true,
-        location: true,
-        councilLicenseNo: true,
-        software: true,
-        projectTypes: true,
-        portfolioLinks: true,
-        verificationStatus: true,
-        isVerified: true,
-        createdAt: true,
+      include: {
+        user: true,
       },
+      orderBy: { createdAt: "desc" },
     });
 
     // ── Users with accountRoleType = ARCHITECT (to cross-reference email/phone) ─

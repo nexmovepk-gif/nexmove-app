@@ -36,15 +36,24 @@ export type ArchitectProfileSumAggregateOutputType = {
 
 export type ArchitectProfileMinAggregateOutputType = {
   id: string | null
+  userId: string | null
   name: string | null
   title: string | null
   specialization: string | null
+  companyName: string | null
   bio: string | null
+  phone: string | null
+  isOverseas: boolean | null
+  country: string | null
+  city: string | null
+  pcatpNo: string | null
+  status: string | null
   isVerified: boolean | null
   verificationStatus: string | null
   experienceYears: number | null
   experienceLevel: string | null
   location: string | null
+  portfolioUrl: string | null
   availableForProjects: boolean | null
   councilLicenseNo: string | null
   avatarInitials: string | null
@@ -55,15 +64,24 @@ export type ArchitectProfileMinAggregateOutputType = {
 
 export type ArchitectProfileMaxAggregateOutputType = {
   id: string | null
+  userId: string | null
   name: string | null
   title: string | null
   specialization: string | null
+  companyName: string | null
   bio: string | null
+  phone: string | null
+  isOverseas: boolean | null
+  country: string | null
+  city: string | null
+  pcatpNo: string | null
+  status: string | null
   isVerified: boolean | null
   verificationStatus: string | null
   experienceYears: number | null
   experienceLevel: string | null
   location: string | null
+  portfolioUrl: string | null
   availableForProjects: boolean | null
   councilLicenseNo: string | null
   avatarInitials: string | null
@@ -74,10 +92,18 @@ export type ArchitectProfileMaxAggregateOutputType = {
 
 export type ArchitectProfileCountAggregateOutputType = {
   id: number
+  userId: number
   name: number
   title: number
   specialization: number
+  companyName: number
   bio: number
+  phone: number
+  isOverseas: number
+  country: number
+  city: number
+  pcatpNo: number
+  status: number
   isVerified: number
   verificationStatus: number
   experienceYears: number
@@ -87,6 +113,7 @@ export type ArchitectProfileCountAggregateOutputType = {
   projectTypes: number
   portfolioImages: number
   portfolioLinks: number
+  portfolioUrl: number
   availableForProjects: number
   councilLicenseNo: number
   avatarInitials: number
@@ -107,15 +134,24 @@ export type ArchitectProfileSumAggregateInputType = {
 
 export type ArchitectProfileMinAggregateInputType = {
   id?: true
+  userId?: true
   name?: true
   title?: true
   specialization?: true
+  companyName?: true
   bio?: true
+  phone?: true
+  isOverseas?: true
+  country?: true
+  city?: true
+  pcatpNo?: true
+  status?: true
   isVerified?: true
   verificationStatus?: true
   experienceYears?: true
   experienceLevel?: true
   location?: true
+  portfolioUrl?: true
   availableForProjects?: true
   councilLicenseNo?: true
   avatarInitials?: true
@@ -126,15 +162,24 @@ export type ArchitectProfileMinAggregateInputType = {
 
 export type ArchitectProfileMaxAggregateInputType = {
   id?: true
+  userId?: true
   name?: true
   title?: true
   specialization?: true
+  companyName?: true
   bio?: true
+  phone?: true
+  isOverseas?: true
+  country?: true
+  city?: true
+  pcatpNo?: true
+  status?: true
   isVerified?: true
   verificationStatus?: true
   experienceYears?: true
   experienceLevel?: true
   location?: true
+  portfolioUrl?: true
   availableForProjects?: true
   councilLicenseNo?: true
   avatarInitials?: true
@@ -145,10 +190,18 @@ export type ArchitectProfileMaxAggregateInputType = {
 
 export type ArchitectProfileCountAggregateInputType = {
   id?: true
+  userId?: true
   name?: true
   title?: true
   specialization?: true
+  companyName?: true
   bio?: true
+  phone?: true
+  isOverseas?: true
+  country?: true
+  city?: true
+  pcatpNo?: true
+  status?: true
   isVerified?: true
   verificationStatus?: true
   experienceYears?: true
@@ -158,6 +211,7 @@ export type ArchitectProfileCountAggregateInputType = {
   projectTypes?: true
   portfolioImages?: true
   portfolioLinks?: true
+  portfolioUrl?: true
   availableForProjects?: true
   councilLicenseNo?: true
   avatarInitials?: true
@@ -255,10 +309,18 @@ export type ArchitectProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type ArchitectProfileGroupByOutputType = {
   id: string
+  userId: string | null
   name: string
   title: string | null
   specialization: string
+  companyName: string | null
   bio: string | null
+  phone: string | null
+  isOverseas: boolean
+  country: string | null
+  city: string | null
+  pcatpNo: string | null
+  status: string
   isVerified: boolean
   verificationStatus: string
   experienceYears: number | null
@@ -268,6 +330,7 @@ export type ArchitectProfileGroupByOutputType = {
   projectTypes: string[]
   portfolioImages: string[]
   portfolioLinks: string[]
+  portfolioUrl: string | null
   availableForProjects: boolean
   councilLicenseNo: string | null
   avatarInitials: string | null
@@ -301,10 +364,18 @@ export type ArchitectProfileWhereInput = {
   OR?: Prisma.ArchitectProfileWhereInput[]
   NOT?: Prisma.ArchitectProfileWhereInput | Prisma.ArchitectProfileWhereInput[]
   id?: Prisma.StringFilter<"ArchitectProfile"> | string
+  userId?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   name?: Prisma.StringFilter<"ArchitectProfile"> | string
   title?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   specialization?: Prisma.StringFilter<"ArchitectProfile"> | string
+  companyName?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   bio?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  phone?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  isOverseas?: Prisma.BoolFilter<"ArchitectProfile"> | boolean
+  country?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  city?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  pcatpNo?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  status?: Prisma.StringFilter<"ArchitectProfile"> | string
   isVerified?: Prisma.BoolFilter<"ArchitectProfile"> | boolean
   verificationStatus?: Prisma.StringFilter<"ArchitectProfile"> | string
   experienceYears?: Prisma.IntNullableFilter<"ArchitectProfile"> | number | null
@@ -314,22 +385,32 @@ export type ArchitectProfileWhereInput = {
   projectTypes?: Prisma.StringNullableListFilter<"ArchitectProfile">
   portfolioImages?: Prisma.StringNullableListFilter<"ArchitectProfile">
   portfolioLinks?: Prisma.StringNullableListFilter<"ArchitectProfile">
+  portfolioUrl?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   availableForProjects?: Prisma.BoolFilter<"ArchitectProfile"> | boolean
   councilLicenseNo?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarInitials?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarGradient?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reviews?: Prisma.ArchitectReviewListRelationFilter
   projects?: Prisma.ArchitectProjectListRelationFilter
 }
 
 export type ArchitectProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   specialization?: Prisma.SortOrder
+  companyName?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  isOverseas?: Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  pcatpNo?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   experienceYears?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -339,25 +420,35 @@ export type ArchitectProfileOrderByWithRelationInput = {
   projectTypes?: Prisma.SortOrder
   portfolioImages?: Prisma.SortOrder
   portfolioLinks?: Prisma.SortOrder
+  portfolioUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   availableForProjects?: Prisma.SortOrder
   councilLicenseNo?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarInitials?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarGradient?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
   reviews?: Prisma.ArchitectReviewOrderByRelationAggregateInput
   projects?: Prisma.ArchitectProjectOrderByRelationAggregateInput
 }
 
 export type ArchitectProfileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  userId?: string
   AND?: Prisma.ArchitectProfileWhereInput | Prisma.ArchitectProfileWhereInput[]
   OR?: Prisma.ArchitectProfileWhereInput[]
   NOT?: Prisma.ArchitectProfileWhereInput | Prisma.ArchitectProfileWhereInput[]
   name?: Prisma.StringFilter<"ArchitectProfile"> | string
   title?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   specialization?: Prisma.StringFilter<"ArchitectProfile"> | string
+  companyName?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   bio?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  phone?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  isOverseas?: Prisma.BoolFilter<"ArchitectProfile"> | boolean
+  country?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  city?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  pcatpNo?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  status?: Prisma.StringFilter<"ArchitectProfile"> | string
   isVerified?: Prisma.BoolFilter<"ArchitectProfile"> | boolean
   verificationStatus?: Prisma.StringFilter<"ArchitectProfile"> | string
   experienceYears?: Prisma.IntNullableFilter<"ArchitectProfile"> | number | null
@@ -367,22 +458,32 @@ export type ArchitectProfileWhereUniqueInput = Prisma.AtLeast<{
   projectTypes?: Prisma.StringNullableListFilter<"ArchitectProfile">
   portfolioImages?: Prisma.StringNullableListFilter<"ArchitectProfile">
   portfolioLinks?: Prisma.StringNullableListFilter<"ArchitectProfile">
+  portfolioUrl?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   availableForProjects?: Prisma.BoolFilter<"ArchitectProfile"> | boolean
   councilLicenseNo?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarInitials?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarGradient?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reviews?: Prisma.ArchitectReviewListRelationFilter
   projects?: Prisma.ArchitectProjectListRelationFilter
-}, "id">
+}, "id" | "userId">
 
 export type ArchitectProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   specialization?: Prisma.SortOrder
+  companyName?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  isOverseas?: Prisma.SortOrder
+  country?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  pcatpNo?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   experienceYears?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -392,6 +493,7 @@ export type ArchitectProfileOrderByWithAggregationInput = {
   projectTypes?: Prisma.SortOrder
   portfolioImages?: Prisma.SortOrder
   portfolioLinks?: Prisma.SortOrder
+  portfolioUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   availableForProjects?: Prisma.SortOrder
   councilLicenseNo?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarInitials?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -410,10 +512,18 @@ export type ArchitectProfileScalarWhereWithAggregatesInput = {
   OR?: Prisma.ArchitectProfileScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ArchitectProfileScalarWhereWithAggregatesInput | Prisma.ArchitectProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ArchitectProfile"> | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"ArchitectProfile"> | string
   title?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   specialization?: Prisma.StringWithAggregatesFilter<"ArchitectProfile"> | string
+  companyName?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
+  phone?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
+  isOverseas?: Prisma.BoolWithAggregatesFilter<"ArchitectProfile"> | boolean
+  country?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
+  city?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
+  pcatpNo?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
+  status?: Prisma.StringWithAggregatesFilter<"ArchitectProfile"> | string
   isVerified?: Prisma.BoolWithAggregatesFilter<"ArchitectProfile"> | boolean
   verificationStatus?: Prisma.StringWithAggregatesFilter<"ArchitectProfile"> | string
   experienceYears?: Prisma.IntNullableWithAggregatesFilter<"ArchitectProfile"> | number | null
@@ -423,6 +533,7 @@ export type ArchitectProfileScalarWhereWithAggregatesInput = {
   projectTypes?: Prisma.StringNullableListFilter<"ArchitectProfile">
   portfolioImages?: Prisma.StringNullableListFilter<"ArchitectProfile">
   portfolioLinks?: Prisma.StringNullableListFilter<"ArchitectProfile">
+  portfolioUrl?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   availableForProjects?: Prisma.BoolWithAggregatesFilter<"ArchitectProfile"> | boolean
   councilLicenseNo?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   avatarInitials?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
@@ -436,7 +547,14 @@ export type ArchitectProfileCreateInput = {
   name: string
   title?: string | null
   specialization: string
+  companyName?: string | null
   bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
   isVerified?: boolean
   verificationStatus?: string
   experienceYears?: number | null
@@ -446,22 +564,32 @@ export type ArchitectProfileCreateInput = {
   projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
   availableForProjects?: boolean
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutArchitectProfileInput
   reviews?: Prisma.ArchitectReviewCreateNestedManyWithoutArchitectInput
   projects?: Prisma.ArchitectProjectCreateNestedManyWithoutArchitectInput
 }
 
 export type ArchitectProfileUncheckedCreateInput = {
   id?: string
+  userId?: string | null
   name: string
   title?: string | null
   specialization: string
+  companyName?: string | null
   bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
   isVerified?: boolean
   verificationStatus?: string
   experienceYears?: number | null
@@ -471,6 +599,7 @@ export type ArchitectProfileUncheckedCreateInput = {
   projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
   availableForProjects?: boolean
   councilLicenseNo?: string | null
   avatarInitials?: string | null
@@ -486,7 +615,14 @@ export type ArchitectProfileUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -496,22 +632,32 @@ export type ArchitectProfileUpdateInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutArchitectProfileNestedInput
   reviews?: Prisma.ArchitectReviewUpdateManyWithoutArchitectNestedInput
   projects?: Prisma.ArchitectProjectUpdateManyWithoutArchitectNestedInput
 }
 
 export type ArchitectProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -521,6 +667,7 @@ export type ArchitectProfileUncheckedUpdateInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -533,10 +680,18 @@ export type ArchitectProfileUncheckedUpdateInput = {
 
 export type ArchitectProfileCreateManyInput = {
   id?: string
+  userId?: string | null
   name: string
   title?: string | null
   specialization: string
+  companyName?: string | null
   bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
   isVerified?: boolean
   verificationStatus?: string
   experienceYears?: number | null
@@ -546,6 +701,7 @@ export type ArchitectProfileCreateManyInput = {
   projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
   availableForProjects?: boolean
   councilLicenseNo?: string | null
   avatarInitials?: string | null
@@ -559,7 +715,14 @@ export type ArchitectProfileUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -569,6 +732,7 @@ export type ArchitectProfileUpdateManyMutationInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -579,10 +743,18 @@ export type ArchitectProfileUpdateManyMutationInput = {
 
 export type ArchitectProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -592,6 +764,7 @@ export type ArchitectProfileUncheckedUpdateManyInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -600,12 +773,25 @@ export type ArchitectProfileUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type ArchitectProfileNullableScalarRelationFilter = {
+  is?: Prisma.ArchitectProfileWhereInput | null
+  isNot?: Prisma.ArchitectProfileWhereInput | null
+}
+
 export type ArchitectProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   title?: Prisma.SortOrder
   specialization?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  isOverseas?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  pcatpNo?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   experienceYears?: Prisma.SortOrder
@@ -615,6 +801,7 @@ export type ArchitectProfileCountOrderByAggregateInput = {
   projectTypes?: Prisma.SortOrder
   portfolioImages?: Prisma.SortOrder
   portfolioLinks?: Prisma.SortOrder
+  portfolioUrl?: Prisma.SortOrder
   availableForProjects?: Prisma.SortOrder
   councilLicenseNo?: Prisma.SortOrder
   avatarInitials?: Prisma.SortOrder
@@ -629,15 +816,24 @@ export type ArchitectProfileAvgOrderByAggregateInput = {
 
 export type ArchitectProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   title?: Prisma.SortOrder
   specialization?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  isOverseas?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  pcatpNo?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   experienceYears?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  portfolioUrl?: Prisma.SortOrder
   availableForProjects?: Prisma.SortOrder
   councilLicenseNo?: Prisma.SortOrder
   avatarInitials?: Prisma.SortOrder
@@ -648,15 +844,24 @@ export type ArchitectProfileMaxOrderByAggregateInput = {
 
 export type ArchitectProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   title?: Prisma.SortOrder
   specialization?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
+  isOverseas?: Prisma.SortOrder
+  country?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  pcatpNo?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   verificationStatus?: Prisma.SortOrder
   experienceYears?: Prisma.SortOrder
   experienceLevel?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  portfolioUrl?: Prisma.SortOrder
   availableForProjects?: Prisma.SortOrder
   councilLicenseNo?: Prisma.SortOrder
   avatarInitials?: Prisma.SortOrder
@@ -672,6 +877,38 @@ export type ArchitectProfileSumOrderByAggregateInput = {
 export type ArchitectProfileScalarRelationFilter = {
   is?: Prisma.ArchitectProfileWhereInput
   isNot?: Prisma.ArchitectProfileWhereInput
+}
+
+export type ArchitectProfileCreateNestedOneWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ArchitectProfileCreateWithoutUserInput, Prisma.ArchitectProfileUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.ArchitectProfileCreateOrConnectWithoutUserInput
+  connect?: Prisma.ArchitectProfileWhereUniqueInput
+}
+
+export type ArchitectProfileUncheckedCreateNestedOneWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ArchitectProfileCreateWithoutUserInput, Prisma.ArchitectProfileUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.ArchitectProfileCreateOrConnectWithoutUserInput
+  connect?: Prisma.ArchitectProfileWhereUniqueInput
+}
+
+export type ArchitectProfileUpdateOneWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ArchitectProfileCreateWithoutUserInput, Prisma.ArchitectProfileUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.ArchitectProfileCreateOrConnectWithoutUserInput
+  upsert?: Prisma.ArchitectProfileUpsertWithoutUserInput
+  disconnect?: Prisma.ArchitectProfileWhereInput | boolean
+  delete?: Prisma.ArchitectProfileWhereInput | boolean
+  connect?: Prisma.ArchitectProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ArchitectProfileUpdateToOneWithWhereWithoutUserInput, Prisma.ArchitectProfileUpdateWithoutUserInput>, Prisma.ArchitectProfileUncheckedUpdateWithoutUserInput>
+}
+
+export type ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ArchitectProfileCreateWithoutUserInput, Prisma.ArchitectProfileUncheckedCreateWithoutUserInput>
+  connectOrCreate?: Prisma.ArchitectProfileCreateOrConnectWithoutUserInput
+  upsert?: Prisma.ArchitectProfileUpsertWithoutUserInput
+  disconnect?: Prisma.ArchitectProfileWhereInput | boolean
+  delete?: Prisma.ArchitectProfileWhereInput | boolean
+  connect?: Prisma.ArchitectProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ArchitectProfileUpdateToOneWithWhereWithoutUserInput, Prisma.ArchitectProfileUpdateWithoutUserInput>, Prisma.ArchitectProfileUncheckedUpdateWithoutUserInput>
 }
 
 export type ArchitectProfileCreatesoftwareInput = {
@@ -738,12 +975,19 @@ export type ArchitectProfileUpdateOneRequiredWithoutProjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ArchitectProfileUpdateToOneWithWhereWithoutProjectsInput, Prisma.ArchitectProfileUpdateWithoutProjectsInput>, Prisma.ArchitectProfileUncheckedUpdateWithoutProjectsInput>
 }
 
-export type ArchitectProfileCreateWithoutReviewsInput = {
+export type ArchitectProfileCreateWithoutUserInput = {
   id?: string
   name: string
   title?: string | null
   specialization: string
+  companyName?: string | null
   bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
   isVerified?: boolean
   verificationStatus?: string
   experienceYears?: number | null
@@ -753,21 +997,30 @@ export type ArchitectProfileCreateWithoutReviewsInput = {
   projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
   availableForProjects?: boolean
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviews?: Prisma.ArchitectReviewCreateNestedManyWithoutArchitectInput
   projects?: Prisma.ArchitectProjectCreateNestedManyWithoutArchitectInput
 }
 
-export type ArchitectProfileUncheckedCreateWithoutReviewsInput = {
+export type ArchitectProfileUncheckedCreateWithoutUserInput = {
   id?: string
   name: string
   title?: string | null
   specialization: string
+  companyName?: string | null
   bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
   isVerified?: boolean
   verificationStatus?: string
   experienceYears?: number | null
@@ -777,6 +1030,156 @@ export type ArchitectProfileUncheckedCreateWithoutReviewsInput = {
   projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
+  availableForProjects?: boolean
+  councilLicenseNo?: string | null
+  avatarInitials?: string | null
+  avatarGradient?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviews?: Prisma.ArchitectReviewUncheckedCreateNestedManyWithoutArchitectInput
+  projects?: Prisma.ArchitectProjectUncheckedCreateNestedManyWithoutArchitectInput
+}
+
+export type ArchitectProfileCreateOrConnectWithoutUserInput = {
+  where: Prisma.ArchitectProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ArchitectProfileCreateWithoutUserInput, Prisma.ArchitectProfileUncheckedCreateWithoutUserInput>
+}
+
+export type ArchitectProfileUpsertWithoutUserInput = {
+  update: Prisma.XOR<Prisma.ArchitectProfileUpdateWithoutUserInput, Prisma.ArchitectProfileUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.ArchitectProfileCreateWithoutUserInput, Prisma.ArchitectProfileUncheckedCreateWithoutUserInput>
+  where?: Prisma.ArchitectProfileWhereInput
+}
+
+export type ArchitectProfileUpdateToOneWithWhereWithoutUserInput = {
+  where?: Prisma.ArchitectProfileWhereInput
+  data: Prisma.XOR<Prisma.ArchitectProfileUpdateWithoutUserInput, Prisma.ArchitectProfileUncheckedUpdateWithoutUserInput>
+}
+
+export type ArchitectProfileUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  experienceLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProfileUpdatesoftwareInput | string[]
+  projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
+  portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
+  portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ArchitectReviewUpdateManyWithoutArchitectNestedInput
+  projects?: Prisma.ArchitectProjectUpdateManyWithoutArchitectNestedInput
+}
+
+export type ArchitectProfileUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  experienceLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  software?: Prisma.ArchitectProfileUpdatesoftwareInput | string[]
+  projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
+  portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
+  portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ArchitectReviewUncheckedUpdateManyWithoutArchitectNestedInput
+  projects?: Prisma.ArchitectProjectUncheckedUpdateManyWithoutArchitectNestedInput
+}
+
+export type ArchitectProfileCreateWithoutReviewsInput = {
+  id?: string
+  name: string
+  title?: string | null
+  specialization: string
+  companyName?: string | null
+  bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
+  isVerified?: boolean
+  verificationStatus?: string
+  experienceYears?: number | null
+  experienceLevel?: string | null
+  location?: string | null
+  software?: Prisma.ArchitectProfileCreatesoftwareInput | string[]
+  projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
+  portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
+  portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
+  availableForProjects?: boolean
+  councilLicenseNo?: string | null
+  avatarInitials?: string | null
+  avatarGradient?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutArchitectProfileInput
+  projects?: Prisma.ArchitectProjectCreateNestedManyWithoutArchitectInput
+}
+
+export type ArchitectProfileUncheckedCreateWithoutReviewsInput = {
+  id?: string
+  userId?: string | null
+  name: string
+  title?: string | null
+  specialization: string
+  companyName?: string | null
+  bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
+  isVerified?: boolean
+  verificationStatus?: string
+  experienceYears?: number | null
+  experienceLevel?: string | null
+  location?: string | null
+  software?: Prisma.ArchitectProfileCreatesoftwareInput | string[]
+  projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
+  portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
+  portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
   availableForProjects?: boolean
   councilLicenseNo?: string | null
   avatarInitials?: string | null
@@ -807,7 +1210,14 @@ export type ArchitectProfileUpdateWithoutReviewsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -817,21 +1227,31 @@ export type ArchitectProfileUpdateWithoutReviewsInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutArchitectProfileNestedInput
   projects?: Prisma.ArchitectProjectUpdateManyWithoutArchitectNestedInput
 }
 
 export type ArchitectProfileUncheckedUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -841,6 +1261,7 @@ export type ArchitectProfileUncheckedUpdateWithoutReviewsInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -855,7 +1276,14 @@ export type ArchitectProfileCreateWithoutProjectsInput = {
   name: string
   title?: string | null
   specialization: string
+  companyName?: string | null
   bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
   isVerified?: boolean
   verificationStatus?: string
   experienceYears?: number | null
@@ -865,21 +1293,31 @@ export type ArchitectProfileCreateWithoutProjectsInput = {
   projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
   availableForProjects?: boolean
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutArchitectProfileInput
   reviews?: Prisma.ArchitectReviewCreateNestedManyWithoutArchitectInput
 }
 
 export type ArchitectProfileUncheckedCreateWithoutProjectsInput = {
   id?: string
+  userId?: string | null
   name: string
   title?: string | null
   specialization: string
+  companyName?: string | null
   bio?: string | null
+  phone?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
+  pcatpNo?: string | null
+  status?: string
   isVerified?: boolean
   verificationStatus?: string
   experienceYears?: number | null
@@ -889,6 +1327,7 @@ export type ArchitectProfileUncheckedCreateWithoutProjectsInput = {
   projectTypes?: Prisma.ArchitectProfileCreateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileCreateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileCreateportfolioLinksInput | string[]
+  portfolioUrl?: string | null
   availableForProjects?: boolean
   councilLicenseNo?: string | null
   avatarInitials?: string | null
@@ -919,7 +1358,14 @@ export type ArchitectProfileUpdateWithoutProjectsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -929,21 +1375,31 @@ export type ArchitectProfileUpdateWithoutProjectsInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutArchitectProfileNestedInput
   reviews?: Prisma.ArchitectReviewUpdateManyWithoutArchitectNestedInput
 }
 
 export type ArchitectProfileUncheckedUpdateWithoutProjectsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   specialization?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseas?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pcatpNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verificationStatus?: Prisma.StringFieldUpdateOperationsInput | string
   experienceYears?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -953,6 +1409,7 @@ export type ArchitectProfileUncheckedUpdateWithoutProjectsInput = {
   projectTypes?: Prisma.ArchitectProfileUpdateprojectTypesInput | string[]
   portfolioImages?: Prisma.ArchitectProfileUpdateportfolioImagesInput | string[]
   portfolioLinks?: Prisma.ArchitectProfileUpdateportfolioLinksInput | string[]
+  portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availableForProjects?: Prisma.BoolFieldUpdateOperationsInput | boolean
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1004,10 +1461,18 @@ export type ArchitectProfileCountOutputTypeCountProjectsArgs<ExtArgs extends run
 
 export type ArchitectProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  userId?: boolean
   name?: boolean
   title?: boolean
   specialization?: boolean
+  companyName?: boolean
   bio?: boolean
+  phone?: boolean
+  isOverseas?: boolean
+  country?: boolean
+  city?: boolean
+  pcatpNo?: boolean
+  status?: boolean
   isVerified?: boolean
   verificationStatus?: boolean
   experienceYears?: boolean
@@ -1017,12 +1482,14 @@ export type ArchitectProfileSelect<ExtArgs extends runtime.Types.Extensions.Inte
   projectTypes?: boolean
   portfolioImages?: boolean
   portfolioLinks?: boolean
+  portfolioUrl?: boolean
   availableForProjects?: boolean
   councilLicenseNo?: boolean
   avatarInitials?: boolean
   avatarGradient?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
   reviews?: boolean | Prisma.ArchitectProfile$reviewsArgs<ExtArgs>
   projects?: boolean | Prisma.ArchitectProfile$projectsArgs<ExtArgs>
   _count?: boolean | Prisma.ArchitectProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -1030,10 +1497,18 @@ export type ArchitectProfileSelect<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type ArchitectProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  userId?: boolean
   name?: boolean
   title?: boolean
   specialization?: boolean
+  companyName?: boolean
   bio?: boolean
+  phone?: boolean
+  isOverseas?: boolean
+  country?: boolean
+  city?: boolean
+  pcatpNo?: boolean
+  status?: boolean
   isVerified?: boolean
   verificationStatus?: boolean
   experienceYears?: boolean
@@ -1043,20 +1518,30 @@ export type ArchitectProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   projectTypes?: boolean
   portfolioImages?: boolean
   portfolioLinks?: boolean
+  portfolioUrl?: boolean
   availableForProjects?: boolean
   councilLicenseNo?: boolean
   avatarInitials?: boolean
   avatarGradient?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
 }, ExtArgs["result"]["architectProfile"]>
 
 export type ArchitectProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  userId?: boolean
   name?: boolean
   title?: boolean
   specialization?: boolean
+  companyName?: boolean
   bio?: boolean
+  phone?: boolean
+  isOverseas?: boolean
+  country?: boolean
+  city?: boolean
+  pcatpNo?: boolean
+  status?: boolean
   isVerified?: boolean
   verificationStatus?: boolean
   experienceYears?: boolean
@@ -1066,20 +1551,30 @@ export type ArchitectProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   projectTypes?: boolean
   portfolioImages?: boolean
   portfolioLinks?: boolean
+  portfolioUrl?: boolean
   availableForProjects?: boolean
   councilLicenseNo?: boolean
   avatarInitials?: boolean
   avatarGradient?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
 }, ExtArgs["result"]["architectProfile"]>
 
 export type ArchitectProfileSelectScalar = {
   id?: boolean
+  userId?: boolean
   name?: boolean
   title?: boolean
   specialization?: boolean
+  companyName?: boolean
   bio?: boolean
+  phone?: boolean
+  isOverseas?: boolean
+  country?: boolean
+  city?: boolean
+  pcatpNo?: boolean
+  status?: boolean
   isVerified?: boolean
   verificationStatus?: boolean
   experienceYears?: boolean
@@ -1089,6 +1584,7 @@ export type ArchitectProfileSelectScalar = {
   projectTypes?: boolean
   portfolioImages?: boolean
   portfolioLinks?: boolean
+  portfolioUrl?: boolean
   availableForProjects?: boolean
   councilLicenseNo?: boolean
   avatarInitials?: boolean
@@ -1097,27 +1593,41 @@ export type ArchitectProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ArchitectProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "title" | "specialization" | "bio" | "isVerified" | "verificationStatus" | "experienceYears" | "experienceLevel" | "location" | "software" | "projectTypes" | "portfolioImages" | "portfolioLinks" | "availableForProjects" | "councilLicenseNo" | "avatarInitials" | "avatarGradient" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProfile"]>
+export type ArchitectProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "title" | "specialization" | "companyName" | "bio" | "phone" | "isOverseas" | "country" | "city" | "pcatpNo" | "status" | "isVerified" | "verificationStatus" | "experienceYears" | "experienceLevel" | "location" | "software" | "projectTypes" | "portfolioImages" | "portfolioLinks" | "portfolioUrl" | "availableForProjects" | "councilLicenseNo" | "avatarInitials" | "avatarGradient" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProfile"]>
 export type ArchitectProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
   reviews?: boolean | Prisma.ArchitectProfile$reviewsArgs<ExtArgs>
   projects?: boolean | Prisma.ArchitectProfile$projectsArgs<ExtArgs>
   _count?: boolean | Prisma.ArchitectProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ArchitectProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ArchitectProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ArchitectProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
+}
+export type ArchitectProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
+}
 
 export type $ArchitectProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ArchitectProfile"
   objects: {
+    user: Prisma.$UserPayload<ExtArgs> | null
     reviews: Prisma.$ArchitectReviewPayload<ExtArgs>[]
     projects: Prisma.$ArchitectProjectPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    userId: string | null
     name: string
     title: string | null
     specialization: string
+    companyName: string | null
     bio: string | null
+    phone: string | null
+    isOverseas: boolean
+    country: string | null
+    city: string | null
+    pcatpNo: string | null
+    status: string
     isVerified: boolean
     verificationStatus: string
     experienceYears: number | null
@@ -1127,6 +1637,7 @@ export type $ArchitectProfilePayload<ExtArgs extends runtime.Types.Extensions.In
     projectTypes: string[]
     portfolioImages: string[]
     portfolioLinks: string[]
+    portfolioUrl: string | null
     availableForProjects: boolean
     councilLicenseNo: string | null
     avatarInitials: string | null
@@ -1527,6 +2038,7 @@ readonly fields: ArchitectProfileFieldRefs;
  */
 export interface Prisma__ArchitectProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.ArchitectProfile$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ArchitectProfile$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reviews<T extends Prisma.ArchitectProfile$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ArchitectProfile$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArchitectReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projects<T extends Prisma.ArchitectProfile$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ArchitectProfile$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ArchitectProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1559,10 +2071,18 @@ export interface Prisma__ArchitectProfileClient<T, Null = never, ExtArgs extends
  */
 export interface ArchitectProfileFieldRefs {
   readonly id: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly userId: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly name: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly title: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly specialization: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly companyName: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly bio: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly phone: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly isOverseas: Prisma.FieldRef<"ArchitectProfile", 'Boolean'>
+  readonly country: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly city: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly pcatpNo: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly status: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly isVerified: Prisma.FieldRef<"ArchitectProfile", 'Boolean'>
   readonly verificationStatus: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly experienceYears: Prisma.FieldRef<"ArchitectProfile", 'Int'>
@@ -1572,6 +2092,7 @@ export interface ArchitectProfileFieldRefs {
   readonly projectTypes: Prisma.FieldRef<"ArchitectProfile", 'String[]'>
   readonly portfolioImages: Prisma.FieldRef<"ArchitectProfile", 'String[]'>
   readonly portfolioLinks: Prisma.FieldRef<"ArchitectProfile", 'String[]'>
+  readonly portfolioUrl: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly availableForProjects: Prisma.FieldRef<"ArchitectProfile", 'Boolean'>
   readonly councilLicenseNo: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly avatarInitials: Prisma.FieldRef<"ArchitectProfile", 'String'>
@@ -1832,6 +2353,10 @@ export type ArchitectProfileCreateManyAndReturnArgs<ExtArgs extends runtime.Type
    */
   data: Prisma.ArchitectProfileCreateManyInput | Prisma.ArchitectProfileCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArchitectProfileIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1902,6 +2427,10 @@ export type ArchitectProfileUpdateManyAndReturnArgs<ExtArgs extends runtime.Type
    * Limit how many ArchitectProfiles to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ArchitectProfileIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1968,6 +2497,25 @@ export type ArchitectProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many ArchitectProfiles to delete.
    */
   limit?: number
+}
+
+/**
+ * ArchitectProfile.user
+ */
+export type ArchitectProfile$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

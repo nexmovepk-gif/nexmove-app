@@ -96,10 +96,33 @@ export default function AdminDashboard() {
   const fetchApprovals = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/admin/approvals");
-      if (!res.ok) throw new Error("Failed to fetch");
-      const json = await res.json();
-      setData(json);
+      // Fetch from both endpoints and merge deduplicated results
+      const [approvalsRes, pendingRes] = await Promise.all([
+        fetch("/api/admin/approvals"),
+        fetch("/api/admin/pending"),
+      ]);
+
+      const approvalsJson = approvalsRes.ok ? await approvalsRes.json() : {};
+      const pendingJson = pendingRes.ok ? await pendingRes.json() : {};
+
+      // Deduplicate architects by ID (pending may include more than approvals)
+      const archMap = new Map<string, PendingArchitect>();
+      (approvalsJson.pendingArchitects ?? []).forEach((a: PendingArchitect) => archMap.set(a.id, a));
+      (pendingJson.pendingArchitects ?? []).forEach((a: PendingArchitect) => archMap.set(a.id, a));
+
+      const agencyMap = new Map<string, PendingAgency>();
+      (approvalsJson.pendingAgencies ?? []).forEach((a: PendingAgency) => agencyMap.set(a.id, a));
+      (pendingJson.pendingAgencies ?? []).forEach((a: PendingAgency) => agencyMap.set(a.id, a));
+
+      const kycMap = new Map<string, PendingUser>();
+      (approvalsJson.pendingUserKYC ?? []).forEach((u: PendingUser) => kycMap.set(u.id, u));
+      (pendingJson.pendingUserKYC ?? []).forEach((u: PendingUser) => kycMap.set(u.id, u));
+
+      setData({
+        pendingArchitects: Array.from(archMap.values()),
+        pendingAgencies: Array.from(agencyMap.values()),
+        pendingUserKYC: Array.from(kycMap.values()),
+      });
     } catch {
       addToast("Failed to load approvals data.", "error");
     } finally {
@@ -134,9 +157,9 @@ export default function AdminDashboard() {
   ) => {
     setActionLoading(`${type}-${id}-${action}`);
     try {
-      // Route architect actions to the dedicated endpoint for immediate DB sync
+      // Use dedicated approve-architect endpoint for architects; /api/admin/approve for all others
       const endpoint =
-        type === "architect" ? "/api/admin/approve-architect" : "/api/admin/action";
+        type === "architect" ? "/api/admin/approve-architect" : "/api/admin/approve";
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -147,8 +170,8 @@ export default function AdminDashboard() {
         const err = await res.json();
         throw new Error(err.error || "Action failed");
       }
-      addToast(`${label} ${action === "approve" ? "✓ Approved" : "✗ Rejected"} successfully.`, "success");
-      // Immediate UI refresh after action
+      addToast(`${label} – ${action === "approve" ? "✓ Approved" : "✗ Rejected"} successfully.`, "success");
+      // Immediate refresh so the list updates without manual reload
       await fetchApprovals();
     } catch (err) {
       addToast((err as Error).message, "error");

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
@@ -39,23 +39,46 @@ export default function LiveCameraSnapshot({
     }
   }, [stream])
 
+  // Attach stream and trigger play as soon as the video element mounts or stream updates
+  useEffect(() => {
+    if (isCameraActive && stream && videoRef.current) {
+      videoRef.current.srcObject = stream
+      const playPromise = videoRef.current.play()
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('Video playback initiation error:', err)
+        })
+      }
+    }
+  }, [stream, isCameraActive])
+
   const startCamera = async () => {
     setCameraError(null)
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error('Webcam API is not supported in this browser environment.')
+        throw new Error('Camera API is not supported in this browser environment. Please ensure you are using HTTPS or a supported mobile browser.')
       }
 
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
-        audio: false,
-      })
+      let mediaStream: MediaStream
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: false,
+        })
+      } catch (constraintErr) {
+        console.warn('Strict facingMode constraints failed, attempting fallback...', constraintErr)
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        })
+      }
 
       setStream(mediaStream)
       setIsCameraActive(true)
 
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream
+        videoRef.current.play().catch(() => {})
       }
     } catch (err: unknown) {
       console.error('Camera access error:', err)
@@ -155,6 +178,11 @@ export default function LiveCameraSnapshot({
             autoPlay
             playsInline
             muted
+            onLoadedMetadata={() => {
+              if (videoRef.current) {
+                videoRef.current.play().catch(() => {})
+              }
+            }}
             className="w-full h-full object-cover transform -scale-x-100"
           />
         ) : (

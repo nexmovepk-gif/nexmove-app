@@ -15,7 +15,10 @@ function LoginForm() {
 
   const portalParam = searchParams?.get('portal')
   const callbackUrl = searchParams?.get('callbackUrl')
+  const errorParam = searchParams?.get('error')
+  const messageParam = searchParams?.get('message')
   const isInvestorPortal = portalParam === 'investor' || callbackUrl?.includes('investor')
+  const isSessionExpired = errorParam === 'SessionExpired' || messageParam === 'SessionExpired' || errorParam === 'session_expired'
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,6 +64,14 @@ function LoginForm() {
             : 'Enter your credentials to access your private agency or member dashboard.'}
         </p>
       </div>
+
+      {/* Session Expired Alert */}
+      {isSessionExpired && !error && (
+        <div className="bg-amber-50 border border-amber-300 text-amber-900 text-xs p-3.5 rounded-2xl text-center font-semibold leading-relaxed flex items-center justify-center gap-2">
+          <span>⚠️</span>
+          <span>Session expired. Please sign in again.</span>
+        </div>
+      )}
 
       {/* Error Alert */}
       {error && (

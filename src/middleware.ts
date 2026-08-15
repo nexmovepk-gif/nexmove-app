@@ -11,32 +11,34 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isApiRoute = pathname.startsWith('/api');
-  const isAuthRoute = pathname.startsWith('/api/auth') || pathname.startsWith('/login');
+  const isAuthRoute = pathname.startsWith('/api/auth') || pathname.startsWith('/login') || pathname.startsWith('/register');
   const isAgencyRoute = pathname.startsWith('/agency') || pathname.startsWith('/api/agency');
   const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/api/admin');
+  const isInvestorRoute = pathname.startsWith('/investors') || pathname.startsWith('/api/investors');
 
-  // Allow authentication routes to proceed
+  // Allow public authentication & registration routes to proceed
   if (isAuthRoute) {
     return NextResponse.next();
   }
 
-  // Development / mock testing bypass: permit agency routes without a session
-  if (process.env.NODE_ENV !== 'production' && isAgencyRoute) {
-    return NextResponse.next();
-  }
-
-  // Require authentication for protected agency and admin routes
-  if (!token && (isAgencyRoute || isAdminRoute)) {
+  // Require active authentication for protected agency, investor, and admin routes
+  if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute)) {
     if (isApiRoute) {
       return new NextResponse(
-        JSON.stringify({ error: 'Unauthorized: Please log in' }),
+        JSON.stringify({ error: 'Session expired or unauthorized. Please sign in again.' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
-    return NextResponse.redirect(new URL('/login', req.url));
+    const loginUrl = new URL('/login', req.url);
+    loginUrl.searchParams.set('error', 'SessionExpired');
+    loginUrl.searchParams.set('callbackUrl', pathname);
+    if (isInvestorRoute) {
+      loginUrl.searchParams.set('portal', 'investor');
+    }
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Authenticated user handling
+  // Authenticated user handling & role/tenant checks
   if (token) {
     const userRole = token.role;
     const userAgencyId = token.agencyId;
@@ -68,7 +70,10 @@ export async function middleware(req: NextRequest) {
         requestedAgencyId = parts[3] || null;
       } else if (pathname.startsWith('/agency/')) {
         const parts = pathname.split('/');
-        requestedAgencyId = parts[2] || null;
+        // e.g. /agency/[agencyId]/dashboard
+        if (parts[2] && parts[2] !== 'dashboard' && parts[2] !== 'submit-listing' && parts[2] !== 'add-property' && parts[2] !== 'deals' && parts[2] !== 'ledger' && parts[2] !== 'rent-collection' && parts[2] !== 'leaderboard') {
+          requestedAgencyId = parts[2] || null;
+        }
       }
 
       if (requestedAgencyId && userAgencyId !== requestedAgencyId) {
@@ -93,5 +98,7 @@ export const config = {
     '/api/agency/:path*',
     '/admin/:path*',
     '/api/admin/:path*',
+    '/investors/:path*',
+    '/api/investors/:path*',
   ],
 };

@@ -1,4 +1,7 @@
 ﻿// src/app/api/admin/approvals/route.ts
+// GET all pending applications: architect profiles + agencies + user KYC
+// Handles case-insensitive and boolean fallback matching for all non-verified states
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -19,8 +22,16 @@ export async function GET() {
   }
 
   try {
+    // Fetch ALL pending/unverified architect profiles
+    // Matches: verificationStatus = 'PENDING' | 'pending' | isVerified = false
     const pendingArchitects = await prisma.architectProfile.findMany({
-      where: { verificationStatus: "PENDING" },
+      where: {
+        OR: [
+          { verificationStatus: "PENDING" },
+          { verificationStatus: "pending" },
+          { isVerified: false },
+        ],
+      },
       orderBy: { createdAt: "asc" },
       select: {
         id: true,
@@ -31,10 +42,15 @@ export async function GET() {
         location: true,
         councilLicenseNo: true,
         verificationStatus: true,
+        isVerified: true,
+        bio: true,
+        software: true,
+        projectTypes: true,
         createdAt: true,
       },
     });
 
+    // Fetch unverified agencies (pending approval)
     const pendingAgencies = await prisma.agency.findMany({
       where: { verified: false },
       orderBy: { createdAt: "asc" },
@@ -53,14 +69,19 @@ export async function GET() {
       },
     });
 
+    // Fetch users with submitted KYC docs (selfie uploaded) but not yet overseas-verified
+    // Also include users with accountRoleType set (any non-null role registration intent)
     const pendingUserKYC = await prisma.user.findMany({
       where: {
-        role: "PUBLIC_USER",
         NOT: { accountRoleType: null },
-        liveSelfieUrl: { not: null },
+        OR: [
+          { liveSelfieUrl: { not: null } },
+          { cnicFrontUrl: { not: null } },
+        ],
+        isOverseasVerified: false,
       },
       orderBy: { createdAt: "desc" },
-      take: 50,
+      take: 100,
       select: {
         id: true,
         name: true,
@@ -68,12 +89,19 @@ export async function GET() {
         phone: true,
         accountRoleType: true,
         cnicNumber: true,
+        cnicFrontUrl: true,
+        liveSelfieUrl: true,
         isOverseasVerified: true,
+        overseasCountry: true,
         createdAt: true,
       },
     });
 
-    return NextResponse.json({ pendingArchitects, pendingAgencies, pendingUserKYC });
+    return NextResponse.json({
+      pendingArchitects,
+      pendingAgencies,
+      pendingUserKYC,
+    });
   } catch (error) {
     console.error("[Admin Approvals GET] Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

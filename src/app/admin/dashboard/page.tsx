@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,10 @@ interface PendingArchitect {
   location?: string | null;
   councilLicenseNo?: string | null;
   verificationStatus: string;
+  isVerified: boolean;
+  bio?: string | null;
+  software?: string[];
+  projectTypes?: string[];
   createdAt: string;
 }
 
@@ -39,7 +43,10 @@ interface PendingUser {
   phone?: string | null;
   accountRoleType?: string | null;
   cnicNumber?: string | null;
+  cnicFrontUrl?: string | null;
+  liveSelfieUrl?: string | null;
   isOverseasVerified: boolean;
+  overseasCountry?: string | null;
   createdAt: string;
 }
 
@@ -127,7 +134,11 @@ export default function AdminDashboard() {
   ) => {
     setActionLoading(`${type}-${id}-${action}`);
     try {
-      const res = await fetch("/api/admin/action", {
+      // Route architect actions to the dedicated endpoint for immediate DB sync
+      const endpoint =
+        type === "architect" ? "/api/admin/approve-architect" : "/api/admin/action";
+
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type, id, action }),
@@ -136,8 +147,9 @@ export default function AdminDashboard() {
         const err = await res.json();
         throw new Error(err.error || "Action failed");
       }
-      addToast(`${label} ${action === "approve" ? "approved ✓" : "rejected ✗"} successfully.`, "success");
-      fetchApprovals();
+      addToast(`${label} ${action === "approve" ? "✓ Approved" : "✗ Rejected"} successfully.`, "success");
+      // Immediate UI refresh after action
+      await fetchApprovals();
     } catch (err) {
       addToast((err as Error).message, "error");
     } finally {
@@ -291,47 +303,79 @@ export default function AdminDashboard() {
 
             {loading ? (
               <SkeletonRows />
-            ) : data?.pendingArchitects?.length === 0 ? (
+            ) : !data?.pendingArchitects || data.pendingArchitects.length === 0 ? (
               <EmptyState emoji="🎉" text="No pending architect submissions" />
             ) : (
-              data?.pendingArchitects?.map((arch) => (
+              data.pendingArchitects.map((arch) => (
                 <div
                   key={arch.id}
-                  className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:border-purple-500/30 transition"
+                  className={`bg-slate-900/50 border rounded-2xl p-4 flex flex-col gap-3 hover:border-purple-500/30 transition ${
+                    arch.verificationStatus === "REJECTED"
+                      ? "border-red-500/20"
+                      : "border-slate-800"
+                  }`}
                 >
-                  {/* Avatar */}
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
-                    {arch.name?.charAt(0).toUpperCase() ?? "A"}
-                  </div>
-                  {/* Info */}
-                  <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                    <span className="font-bold text-sm text-slate-100">{arch.name}</span>
-                    <span className="text-xs text-slate-400 truncate">
-                      {arch.title ?? arch.specialization}
-                      {arch.location ? ` · ${arch.location}` : ""}
-                    </span>
-                    <div className="flex flex-wrap gap-1.5 mt-1">
-                      {arch.experienceLevel && (
-                        <Chip color="teal">{arch.experienceLevel}</Chip>
-                      )}
-                      {arch.councilLicenseNo && (
-                        <Chip color="amber">License: {arch.councilLicenseNo}</Chip>
-                      )}
-                      <Chip color="slate">Applied: {formatDate(arch.createdAt)}</Chip>
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    {/* Avatar */}
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                      {arch.name?.charAt(0).toUpperCase() ?? "A"}
                     </div>
-                  </div>
-                  {/* Actions */}
-                  <div className="flex gap-2 flex-shrink-0">
-                    <ActionButton
-                      variant="approve"
-                      loading={actionLoading === `architect-${arch.id}-approve`}
-                      onClick={() => handleAction("architect", arch.id, "approve", arch.name)}
-                    />
-                    <ActionButton
-                      variant="reject"
-                      loading={actionLoading === `architect-${arch.id}-reject`}
-                      onClick={() => handleAction("architect", arch.id, "reject", arch.name)}
-                    />
+                    {/* Info */}
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-sm text-slate-100">{arch.name}</span>
+                        {/* Verification Status Badge */}
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                            arch.verificationStatus === "VERIFIED" || arch.isVerified
+                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              : arch.verificationStatus === "REJECTED"
+                              ? "bg-red-500/10 text-red-400 border-red-500/20"
+                              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                          }`}
+                        >
+                          {arch.isVerified ? "VERIFIED" : arch.verificationStatus}
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-400 truncate">
+                        {arch.title ?? arch.specialization}
+                        {arch.location ? ` · ${arch.location}` : ""}
+                      </span>
+                      {/* Bio excerpt */}
+                      {arch.bio && (
+                        <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">{arch.bio}</p>
+                      )}
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {arch.experienceLevel && (
+                          <Chip color="teal">{arch.experienceLevel}</Chip>
+                        )}
+                        {arch.councilLicenseNo && (
+                          <Chip color="amber">License: {arch.councilLicenseNo}</Chip>
+                        )}
+                        {arch.software?.slice(0, 3).map((s) => (
+                          <Chip key={s} color="indigo">{s}</Chip>
+                        ))}
+                        {arch.projectTypes?.slice(0, 2).map((p) => (
+                          <Chip key={p} color="cyan">{p}</Chip>
+                        ))}
+                        <Chip color="slate">Applied: {formatDate(arch.createdAt)}</Chip>
+                      </div>
+                    </div>
+                    {/* Actions — hide if already verified */}
+                    {!arch.isVerified && arch.verificationStatus !== "VERIFIED" && (
+                      <div className="flex gap-2 flex-shrink-0 self-start">
+                        <ActionButton
+                          variant="approve"
+                          loading={actionLoading === `architect-${arch.id}-approve`}
+                          onClick={() => handleAction("architect", arch.id, "approve", arch.name)}
+                        />
+                        <ActionButton
+                          variant="reject"
+                          loading={actionLoading === `architect-${arch.id}-reject`}
+                          onClick={() => handleAction("architect", arch.id, "reject", arch.name)}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))

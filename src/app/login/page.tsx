@@ -14,10 +14,13 @@ function LoginForm() {
   const searchParams = useSearchParams()
 
   const portalParam = searchParams?.get('portal')
+  const roleParam = searchParams?.get('role')
   const callbackUrl = searchParams?.get('callbackUrl')
   const errorParam = searchParams?.get('error')
   const messageParam = searchParams?.get('message')
-  const isInvestorPortal = portalParam === 'investor' || callbackUrl?.includes('investor')
+
+  const isInvestorPortal = roleParam === 'investor' || portalParam === 'investor' || callbackUrl?.includes('investor')
+  const isAgencyPortal = roleParam === 'agency' || portalParam === 'agency' || callbackUrl?.includes('agency')
   const isSessionExpired = errorParam === 'SessionExpired' || messageParam === 'SessionExpired' || errorParam === 'session_expired'
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -38,10 +41,10 @@ function LoginForm() {
     } else {
       if (callbackUrl) {
         router.push(callbackUrl)
-      } else if (email.includes('superadmin')) {
+      } else if (email.includes('superadmin') || email.toLowerCase() === 'nexmove.pk@gmail.com') {
         router.push('/admin/dashboard')
-      } else if (email.includes('investor')) {
-        router.push('/investors')
+      } else if (isInvestorPortal || email.includes('investor')) {
+        router.push('/investors/dashboard')
       } else {
         router.push('/agency/dashboard')
       }
@@ -52,16 +55,34 @@ function LoginForm() {
     <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col items-center text-center gap-1.5">
-        <span className={`text-xs ${isInvestorPortal ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-emerald-100 text-emerald-800 border-emerald-300'} border font-bold px-3 py-1 rounded-full uppercase tracking-wider`}>
-          {isInvestorPortal ? '🌐 Investor Sign-In Gateway' : 'NexMove Member Gateway'}
+        <span
+          className={`text-xs ${
+            isInvestorPortal
+              ? 'bg-amber-100 text-amber-900 border-amber-300'
+              : isAgencyPortal
+              ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+              : 'bg-slate-100 text-slate-800 border-slate-300'
+          } border font-bold px-3 py-1 rounded-full uppercase tracking-wider`}
+        >
+          {isInvestorPortal
+            ? '🌐 Investor Sign-In Gateway'
+            : isAgencyPortal
+            ? '🏢 Agency Portal Gateway'
+            : 'NexMove Member Gateway'}
         </span>
         <h1 className="text-2xl font-black text-slate-900 mt-1">
-          {isInvestorPortal ? 'Investor Portal Sign In' : 'Account Sign In'}
+          {isInvestorPortal
+            ? 'Investor Portal Sign In'
+            : isAgencyPortal
+            ? 'Agency Dashboard Sign In'
+            : 'Account Sign In'}
         </h1>
         <p className="text-xs text-slate-600 max-w-xs">
           {isInvestorPortal
             ? 'Sign in to access your overseas asset vault, escrow portfolio & legal contracts.'
-            : 'Enter your credentials to access your private agency or member dashboard.'}
+            : isAgencyPortal
+            ? 'Sign in to manage agency listings, client ledgers, rent collection and CRM.'
+            : 'Enter your credentials to access your private account dashboard.'}
         </p>
       </div>
 

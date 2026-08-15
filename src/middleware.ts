@@ -25,9 +25,13 @@ export async function middleware(req: NextRequest) {
   const isApiRoute = pathname.startsWith('/api');
   const isAgencyRoute = pathname.startsWith('/agency') || pathname.startsWith('/api/agency');
   const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/api/admin');
-  const isInvestorRoute = pathname.startsWith('/investors') || pathname.startsWith('/api/investors');
+  const isInvestorRoute =
+    pathname.startsWith('/investor') ||
+    pathname.startsWith('/investors') ||
+    pathname.startsWith('/api/investor') ||
+    pathname.startsWith('/api/investors');
 
-  // Require active authentication for protected agency, investor, and admin routes
+  // 1. Unauthenticated Redirections with contextual role query params
   if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute)) {
     if (isApiRoute) {
       return new NextResponse(
@@ -36,38 +40,94 @@ export async function middleware(req: NextRequest) {
       );
     }
     const loginUrl = new URL('/login', req.url);
-    loginUrl.searchParams.set('callbackUrl', pathname);
     if (isInvestorRoute) {
-      loginUrl.searchParams.set('portal', 'investor');
+      loginUrl.searchParams.set('role', 'investor');
+      loginUrl.searchParams.set('callbackUrl', pathname === '/investors' ? '/investors/dashboard' : pathname);
+    } else if (isAgencyRoute) {
+      loginUrl.searchParams.set('role', 'agency');
+      loginUrl.searchParams.set('callbackUrl', pathname === '/agency' ? '/agency/dashboard' : pathname);
+    } else if (isAdminRoute) {
+      loginUrl.searchParams.set('role', 'admin');
+      loginUrl.searchParams.set('callbackUrl', pathname);
     }
     return NextResponse.redirect(loginUrl);
   }
 
-  // Authenticated user handling & role/tenant isolation checks
+  // 2. Authenticated user handling & Role-Based Access Control (RBAC)
   if (token) {
-    const userRole = token.role;
-    const userAgencyId = token.agencyId;
+    const userRole = token.role as string | undefined;
+    const userEmail = (token.email as string | undefined)?.toLowerCase();
+    const userAccountRoleType = token.accountRoleType as string | undefined;
+    const userAgencyId = token.agencyId as string | null | undefined;
 
-    // Admin route protection
-    if (isAdminRoute) {
-      if (userRole !== 'SUPER_ADMIN') {
-        if (isApiRoute) {
-          return new NextResponse(
-            JSON.stringify({ error: 'Forbidden: Super Admin access required' }),
-            { status: 403, headers: { 'Content-Type': 'application/json' } }
-          );
-        }
-        return NextResponse.redirect(new URL('/unauthorized', req.url));
-      }
+    const isSuperAdmin = userEmail === 'nexmove.pk@gmail.com' || userRole === 'SUPER_ADMIN';
+
+    // 👑 3. Super Admin Override: Full cross-portal access
+    if (isSuperAdmin) {
       return NextResponse.next();
     }
 
-    // Agency isolation – ensure user accesses their own agency data
-    if (isAgencyRoute) {
-      if (userRole === 'SUPER_ADMIN') {
-        return NextResponse.next();
+    // Admin route protection: Only Super Admin allowed
+    if (isAdminRoute) {
+      if (isApiRoute) {
+        return new NextResponse(
+          JSON.stringify({ error: 'Forbidden: Super Admin access required' }),
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
+        );
       }
+      return NextResponse.redirect(new URL('/unauthorized', req.url));
+    }
 
+    // Identify user category
+    const isAgencyUser =
+      userRole === 'AGENCY_MANAGER' ||
+      userRole === 'AGENCY_AGENT' ||
+      userAccountRoleType === 'AGENCY_ADMIN' ||
+      userAccountRoleType === 'AGENCY_AGENT' ||
+      userAccountRoleType === 'AGENCY_MANAGER' ||
+      userAccountRoleType === 'OVERSEAS_AGENCY' ||
+      Boolean(userAgencyId);
+
+    const isInvestorUser =
+      userAccountRoleType === 'OVERSEAS_INVESTOR' ||
+      userAccountRoleType === 'OVERSEAS_BUYER' ||
+      userAccountRoleType === 'BUYER' ||
+      userAccountRoleType === 'LOCAL_PUBLIC' ||
+      userAccountRoleType === 'OVERSEAS_LOCAL_PUBLIC' ||
+      (!isAgencyUser && userRole === 'PUBLIC_USER');
+
+    // Rule 2c: If an authenticated user with role INVESTOR tries to visit /agency/..., BLOCK access & redirect to /investors/dashboard
+    if (!isInvestorRoute && isAgencyRoute) {
+      if (!isAgencyUser && isInvestorUser) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Investor accounts cannot access Agency portals' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        const redirectUrl = new URL('/investors/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'agency_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
+
+    // Rule 2d: If an authenticated user with role AGENCY tries to visit /investors/..., BLOCK access & redirect to /agency/dashboard
+    if (isInvestorRoute) {
+      if (isAgencyUser) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Agency accounts cannot access Investor portals' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        const redirectUrl = new URL('/agency/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'investor_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
+
+    // Tenant isolation inside /agency/ routes (for agency users accessing other agencies)
+    if (isAgencyRoute) {
       let requestedAgencyId: string | null = null;
 
       if (pathname.startsWith('/api/agency/')) {
@@ -75,7 +135,6 @@ export async function middleware(req: NextRequest) {
         requestedAgencyId = parts[3] || null;
       } else if (pathname.startsWith('/agency/')) {
         const parts = pathname.split('/');
-        // e.g. /agency/[agencyId]/dashboard
         if (
           parts[2] &&
           parts[2] !== 'dashboard' &&
@@ -90,7 +149,7 @@ export async function middleware(req: NextRequest) {
         }
       }
 
-      if (requestedAgencyId && userAgencyId !== requestedAgencyId) {
+      if (requestedAgencyId && userAgencyId && userAgencyId !== requestedAgencyId) {
         if (isApiRoute) {
           return new NextResponse(
             JSON.stringify({ error: "Forbidden: You do not have access to this agency's data" }),
@@ -113,6 +172,8 @@ export const config = {
     '/admin/:path*',
     '/api/admin/:path*',
     '/investors/:path*',
+    '/investor/:path*',
     '/api/investors/:path*',
+    '/api/investor/:path*',
   ],
 };

@@ -140,19 +140,13 @@ export default function GlobalHeader() {
         </Link>
 
         <Link
-          href="/login"
-          className="text-xs text-slate-300 hover:text-white px-2.5 py-1 rounded-lg border border-slate-700 hover:border-slate-500 transition font-medium hidden sm:inline"
-        >
-          Login
-        </Link>
-        <Link
           href="/register"
           className="text-xs bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-lg transition font-medium hidden sm:inline"
         >
-          Register Now
+          Register
         </Link>
 
-        {/* Persistent "Agency Dashboard" button */}
+        {/* Contextual "Agency Dashboard" button */}
         <Link
           href="/agency/dashboard"
           className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1"

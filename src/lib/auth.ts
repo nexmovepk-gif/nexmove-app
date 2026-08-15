@@ -14,6 +14,7 @@ declare module 'next-auth' {
       email?: string | null
       image?: string | null
       role?: string | null
+      accountRoleType?: string | null
       agencyId?: string | null
       agencyName?: string | null
     }
@@ -26,6 +27,7 @@ interface AdaptedUser {
   email: string
   name: string | null
   role: string
+  accountRoleType: string | null
   agencyId: string | null
   agencyName: string | null
 }
@@ -36,6 +38,7 @@ export interface RegisteredUser {
   name: string
   password?: string
   role: Role
+  accountRoleType?: string | null
   agencyId?: string | null
   agencyName?: string | null
 }
@@ -86,11 +89,15 @@ export const authOptions: NextAuthOptions = {
             }
 
             if (isMatch) {
+              const isSuperAdminEmail = dbUser.email.toLowerCase() === 'nexmove.pk@gmail.com'
+              const finalRole = isSuperAdminEmail ? 'SUPER_ADMIN' : String(dbUser.role)
+
               return {
                 id: dbUser.id,
                 email: dbUser.email,
                 name: dbUser.name,
-                role: String(dbUser.role),
+                role: finalRole,
+                accountRoleType: dbUser.accountRoleType ?? null,
                 agencyId: dbUser.agencyId ?? null,
                 agencyName: dbUser.agency?.name ?? null,
               }
@@ -109,27 +116,27 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         const u = user as AdaptedUser
         token.id = u.id
+        token.email = u.email
 
-        // 👑 Master Super Admin Override
-        if (u.email === 'nexmove.pk@gmail.com') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ; (token as any).role = 'SUPER_ADMIN'
+        // 👑 Master Super Admin Override (nexmove.pk@gmail.com)
+        if (u.email?.toLowerCase() === 'nexmove.pk@gmail.com' || u.role === 'SUPER_ADMIN') {
+          token.role = 'SUPER_ADMIN'
         } else {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ; (token as any).role = u.role ?? null
+          token.role = u.role ?? null
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ; (token as any).agencyId = u.agencyId ?? null
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ; (token as any).agencyName = u.agencyName ?? null
+        token.accountRoleType = u.accountRoleType ?? null
+        token.agencyId = u.agencyId ?? null
+        token.agencyName = u.agencyName ?? null
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
+        session.user.email = token.email as string
         session.user.role = token.role as string
+        session.user.accountRoleType = (token.accountRoleType as string) ?? null
         session.user.agencyId = token.agencyId as string | null
         session.user.agencyName = token.agencyName as string | null
       }

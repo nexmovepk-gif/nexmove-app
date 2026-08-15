@@ -35,6 +35,7 @@ export default function AgencySubmitListingPage() {
 
   // AI Market Valuation button state
   const [valuationLoading, setValuationLoading] = useState(false);
+  const [valuationWarning, setValuationWarning] = useState<string | null>(null);
   const [valuationResult, setValuationResult] = useState<{ midPKR: number; minPKR: number; maxPKR: number; ratePerSqFt: number; basis: string } | null>(null);
 
   const [submitted, setSubmitted] = useState(false);
@@ -127,13 +128,24 @@ export default function AgencySubmitListingPage() {
   };
 
   const handleAiValuation = () => {
+    const trimmedCity = city.trim();
+    const parsedArea = areaSqFt ? Number(areaSqFt) : 0;
+
+    // Strict validation: do not generate valuation if mandatory parameters are empty or invalid
+    if (!trimmedCity || !propertyType || !areaSqFt.trim() || isNaN(parsedArea) || parsedArea <= 0) {
+      setValuationWarning('Please enter City, Property Type, and Area (Sq Ft) to estimate market valuation.');
+      setValuationResult(null);
+      return;
+    }
+
+    setValuationWarning(null);
     setValuationLoading(true);
     setValuationResult(null);
 
     setTimeout(() => {
-      const sqft = areaSqFt ? Number(areaSqFt) : (bedrooms ? Number(bedrooms) * 650 : 1200);
+      const sqft = parsedArea;
       const beds = bedrooms ? Number(bedrooms) : 2;
-      const { rate, label } = getCityRatePerSqFt(city);
+      const { rate, label } = getCityRatePerSqFt(trimmedCity);
 
       // Bedroom premium: +3% per bedroom above 1
       const bedroomMultiplier = 1 + Math.max(0, beds - 1) * 0.03;
@@ -150,7 +162,7 @@ export default function AgencySubmitListingPage() {
 
       const basis = [
         `${sqft.toLocaleString()} sq ft`,
-        beds ? `${beds} bed${beds !== 1 ? 's' : ''}` : null,
+        bedrooms ? `${bedrooms} bed${Number(bedrooms) !== 1 ? 's' : ''}` : null,
         label,
         propertyType.charAt(0) + propertyType.slice(1).toLowerCase(),
       ].filter(Boolean).join(' · ');
@@ -168,7 +180,7 @@ export default function AgencySubmitListingPage() {
     setContactName(''); setContactPhone(''); setVirtualTourUrl('');
     setAiExtracted(false); setAiConfidence(null); setFileName(null);
     setUploadedFileName(null); setUploadedFileType(null); setUploadedFileSizeBytes(0);
-    setIsValuationEstimated(false); setValuationResult(null); setOwnershipScore(null); setSubmitted(false); setSubmitError(null); setIsRental(false);
+    setIsValuationEstimated(false); setValuationResult(null); setValuationWarning(null); setOwnershipScore(null); setSubmitted(false); setSubmitError(null); setIsRental(false);
   };
 
   return (
@@ -302,6 +314,23 @@ export default function AgencySubmitListingPage() {
                 )}
               </div>
 
+              {/* Valuation Warning Banner */}
+              {valuationWarning && (
+                <div className="mt-4 p-3.5 bg-amber-950/90 border border-amber-500/60 rounded-xl flex items-center justify-between gap-3 text-amber-200 shadow-md">
+                  <div className="flex items-center gap-2.5 text-xs font-semibold">
+                    <span className="text-base">⚠️</span>
+                    <span>{valuationWarning}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setValuationWarning(null)}
+                    className="text-amber-400 hover:text-amber-100 text-xs font-bold px-2 py-0.5 rounded transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
               {/* Valuation Result Card */}
               {valuationResult && !valuationLoading && (
                 <div className="mt-4 p-4 bg-purple-950/60 border border-purple-500/40 rounded-xl">
@@ -385,7 +414,7 @@ export default function AgencySubmitListingPage() {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-sm font-bold text-gray-900">Property Type *</label>
-                      <select value={propertyType} onChange={e => setPropertyType(e.target.value)} className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                      <select value={propertyType} onChange={e => { setPropertyType(e.target.value); setValuationWarning(null); }} className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                         <option value="APARTMENT">Apartment</option>
                         <option value="VILLA">Villa</option>
                         <option value="HOUSE">House</option>
@@ -425,7 +454,7 @@ export default function AgencySubmitListingPage() {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-sm font-bold text-gray-900">City *</label>
-                      <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="e.g. Lahore, Karachi, Islamabad" required className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                      <input type="text" value={city} onChange={e => { setCity(e.target.value); setValuationWarning(null); }} placeholder="e.g. Lahore, Karachi, Islamabad" required className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-sm font-bold text-gray-900">Bedrooms</label>
@@ -437,7 +466,7 @@ export default function AgencySubmitListingPage() {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-sm font-bold text-gray-900">Area (Sq Ft)</label>
-                      <input type="number" value={areaSqFt} onChange={e => setAreaSqFt(e.target.value)} placeholder="e.g. 1800" className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                      <input type="number" value={areaSqFt} onChange={e => { setAreaSqFt(e.target.value); setValuationWarning(null); }} placeholder="e.g. 1800" className="bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
                     </div>
                   </div>
                 </div>

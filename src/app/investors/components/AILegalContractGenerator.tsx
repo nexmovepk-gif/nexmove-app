@@ -13,14 +13,14 @@ interface AILegalContractGeneratorProps {
 }
 
 export default function AILegalContractGenerator({
-  initialDealTitle = 'Executive High-Floor Residence — Gulberg III',
-  initialPricePKR = 42000000,
-  initialAgency = 'Prime Realty Group',
+  initialDealTitle = '',
+  initialPricePKR = 0,
+  initialAgency = '',
   activeCurrency = 'PKR',
 }: AILegalContractGeneratorProps) {
-  const [investorName, setInvestorName] = useState('Tariq Mahmood Al-Hassan')
-  const [nicopOrPassport, setNicopOrPassport] = useState('PK-35202-9876543-1')
-  const [countryResidence, setCountryResidence] = useState('United Arab Emirates')
+  const [investorName, setInvestorName] = useState('')
+  const [nicopOrPassport, setNicopOrPassport] = useState('')
+  const [countryResidence, setCountryResidence] = useState('')
   const [investorCategory, setInvestorCategory] = useState<InvestorCategory>('OVERSEAS_FILER')
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>(activeCurrency)
 
@@ -46,14 +46,14 @@ export default function AILegalContractGenerator({
           countryResidence,
           investorCategory,
           propertyTitle: initialDealTitle,
-          location: 'MM Alam Road, Gulberg III',
-          city: 'Lahore',
+          location: '',
+          city: '',
           agencyName: initialAgency,
           propertyType: 'APARTMENT',
           propertyPricePKR: initialPricePKR,
           activeCurrency: selectedCurrency,
-          riskScore: 'Low (98.4% AI Confidence)',
-          kycVerificationStatus: 'Escrow Secure & State Bank Verified',
+          riskScore: 'Pending KYC Verification',
+          kycVerificationStatus: 'Pending Document Upload',
         })
         setContractGeneratedMsg(`PDF agreement downloaded successfully! Formatted with ${selectedCurrency} exchange rates & FBR FY2026-27 tax integration.`)
       } catch (err) {
@@ -64,6 +64,21 @@ export default function AILegalContractGenerator({
         setTimeout(() => setContractGeneratedMsg(null), 8000)
       }
     }, 600)
+  }
+
+  // Zero-state: no active contract loaded
+  if (initialPricePKR === 0) {
+    return (
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white border border-slate-700/80 rounded-3xl p-10 shadow-xl flex flex-col items-center justify-center gap-4 text-center min-h-[200px]">
+        <span className="text-4xl">📜</span>
+        <div>
+          <p className="text-base font-black text-white">No Active Contract Selected</p>
+          <p className="text-xs text-slate-400 mt-1 max-w-xs">
+            A legal contract will be generated here once you select an active investment deal.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (

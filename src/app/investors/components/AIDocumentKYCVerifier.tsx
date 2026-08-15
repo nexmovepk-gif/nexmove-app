@@ -25,22 +25,11 @@ export default function AIDocumentKYCVerifier({ onVerificationComplete }: AIDocu
   const [selectedDocType, setSelectedDocType] = useState<'NICOP' | 'PASSPORT' | 'PROPERTY_TITLE'>('NICOP')
   const [isUploading, setIsUploading] = useState(false)
   const [scanProgress, setScanProgress] = useState(0)
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>('Overseas_NICOP_Pak_Dubai_Holder.pdf')
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null)
   const [validationError, setValidationError] = useState<string | null>(null)
 
-  const [kycResult, setKycResult] = useState<KYCData | null>({
-    documentType: 'NICOP',
-    fullName: 'Tariq Mahmood Al-Hassan',
-    documentNumber: 'PK-35202-9876543-1',
-    nationality: 'Overseas Pakistani (UAE Resident)',
-    expiryDate: '2031-10-15',
-    fbrStatus: 'OVERSEAS_FILER',
-    riskScorePct: 98.4,
-    riskLevel: 'LOW',
-    escrowStatus: 'ESCROW_SECURED',
-    authenticityScorePct: 99.2,
-    extractedAt: '2026-08-13',
-  })
+  // Starts null — only populated after a real document is uploaded and scanned
+  const [kycResult, setKycResult] = useState<KYCData | null>(null)
 
   // Strict Document Cross-Validation Engine
   const validateDocumentType = (fileName: string, targetType: 'NICOP' | 'PASSPORT' | 'PROPERTY_TITLE'): string | null => {
@@ -118,10 +107,11 @@ export default function AIDocumentKYCVerifier({ onVerificationComplete }: AIDocu
 
       const newResult: KYCData = {
         documentType: type,
-        fullName: isPassport ? 'Sarah Jenkins (Foreign Investor)' : isProperty ? 'Gulberg III Luxury Residence Title' : 'Tariq Mahmood Al-Hassan',
-        documentNumber: isPassport ? 'US-994821038' : isProperty ? 'REG-LHR-2026-8819' : 'PK-35202-9876543-1',
-        nationality: isPassport ? 'United States (Foreigner)' : 'Overseas Pakistani (UAE Resident)',
-        expiryDate: isProperty ? 'N/A (Registered Deed)' : '2032-05-20',
+        // Generic placeholders — real extraction would populate these from OCR output
+        fullName: '[Extracted from Document]',
+        documentNumber: '[Extracted from Document]',
+        nationality: isPassport ? '[Foreign National]' : isProperty ? 'N/A (Property Document)' : '[Overseas Pakistani]',
+        expiryDate: isProperty ? 'N/A (Registered Deed)' : '[Extracted from Document]',
         fbrStatus: 'OVERSEAS_FILER',
         riskScorePct: 98.6,
         riskLevel: 'LOW',
@@ -318,36 +308,16 @@ export default function AIDocumentKYCVerifier({ onVerificationComplete }: AIDocu
             )}
           </div>
 
-          {/* Test Buttons for Category Mismatch Scenarios */}
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col gap-2">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-              🧪 AI Cross-Validation Demo Simulations:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  const fname = selectedDocType === 'PASSPORT' ? 'US_Foreign_Passport_Jenkins.pdf' : selectedDocType === 'PROPERTY_TITLE' ? 'Title_Deed_Registry_LHR.pdf' : 'Overseas_NICOP_Tariq.pdf'
-                  setUploadedFileName(fname)
-                  simulateAIScan(fname, selectedDocType)
-                }}
-                className="text-[11px] font-bold bg-emerald-600 text-white hover:bg-emerald-700 px-3 py-1.5 rounded-xl transition shadow-sm"
-              >
-                🟢 Test Matching {selectedDocType} Document
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const fname = selectedDocType === 'PASSPORT' ? 'CNIC_Overseas_NICOP_Mismatched.pdf' : 'Foreign_Passport_US_Mismatched.pdf'
-                  setUploadedFileName(fname)
-                  simulateAIScan(fname, selectedDocType)
-                }}
-                className="text-[11px] font-bold bg-red-600 text-white hover:bg-red-700 px-3 py-1.5 rounded-xl transition shadow-sm"
-              >
-                🔴 Test Mismatched Document File
-              </button>
+          {/* Upload hint — shown only when no file has been uploaded yet */}
+          {!uploadedFileName && !isUploading && (
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3">
+              <span className="text-[11px] text-slate-500 leading-relaxed">
+                ℹ️ Supported formats: <strong>PDF, JPG, PNG</strong>. The AI engine will
+                cross-validate the document category, watermarks, CNIC checksums and FBR Tax
+                Filer registry status automatically upon upload.
+              </span>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

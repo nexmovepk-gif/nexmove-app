@@ -22,11 +22,10 @@ interface SmartEscrowMilestoneTrackerProps {
 }
 
 export default function SmartEscrowMilestoneTracker({
-  propertyTitle = 'Executive High-Floor Residence — Gulberg III',
-  totalPricePKR = 42000000,
+  propertyTitle = '',
+  totalPricePKR = 0,
   currency = 'PKR',
 }: SmartEscrowMilestoneTrackerProps) {
-
   const [milestones, setMilestones] = useState<EscrowMilestone[]>([
     {
       stageNumber: 1,
@@ -34,14 +33,12 @@ export default function SmartEscrowMilestoneTracker({
       subtitle: 'Clear title deed verification & land revenue encumbrance check',
       percentage: 20,
       payoutAmountPKR: totalPricePKR * 0.2,
-      status: 'COMPLETED',
-      completedAt: '2026-08-01 10:30 AM',
+      status: 'IN_PROGRESS',
       verificationRequirements: [
         'LDA / DHA Land Revenue NOC verified',
         'No pending bank mortgages or litigation',
         'Title Registry Lawyer stamp verified',
       ],
-      txHash: '0x8F92A11C49B2001A',
     },
     {
       stageNumber: 2,
@@ -49,7 +46,7 @@ export default function SmartEscrowMilestoneTracker({
       subtitle: 'FBR Tax Withholding (15% Filer) voucher & Agreement execution',
       percentage: 30,
       payoutAmountPKR: totalPricePKR * 0.3,
-      status: 'IN_PROGRESS',
+      status: 'LOCKED',
       verificationRequirements: [
         'FBR CPR (Computerized Payment Receipt) generated',
         'Bilingual NexMove AI Escrow Contract signed',
@@ -74,14 +71,8 @@ export default function SmartEscrowMilestoneTracker({
   const [releaseModalStage, setReleaseModalStage] = useState<EscrowMilestone | null>(null)
   const [pinInput, setPinInput] = useState('')
   const [releaseSuccessMsg, setReleaseSuccessMsg] = useState<string | null>(null)
-  const [auditLog, setAuditLog] = useState<Array<{ date: string; stage: string; amountPKR: number; tx: string }>>([
-    {
-      date: '2026-08-01 10:30 AM',
-      stage: 'Stage 1: Legal Check (20%)',
-      amountPKR: totalPricePKR * 0.2,
-      tx: '0x8F92A11C49B2001A',
-    },
-  ])
+  // Audit log starts empty — entries are added as real stages are approved
+  const [auditLog, setAuditLog] = useState<Array<{ date: string; stage: string; amountPKR: number; tx: string }>>([])
 
   // Calculations
   const releasedAmountPKR = milestones
@@ -135,6 +126,22 @@ export default function SmartEscrowMilestoneTracker({
     setReleaseModalStage(null)
     setPinInput('')
     setTimeout(() => setReleaseSuccessMsg(null), 8000)
+  }
+
+  // Zero-state: no active contract loaded
+  if (totalPricePKR === 0) {
+    return (
+      <div className="bg-white border border-slate-200 rounded-3xl p-10 shadow-sm flex flex-col items-center justify-center gap-4 text-center min-h-[200px]">
+        <span className="text-4xl">📈</span>
+        <div>
+          <p className="text-base font-black text-slate-900">No Active Contract Selected</p>
+          <p className="text-xs text-slate-500 mt-1 max-w-xs">
+            The 3-stage escrow milestone tracker will appear here once an active investment
+            contract is associated with your account.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -278,7 +285,7 @@ export default function SmartEscrowMilestoneTracker({
                       disabled
                       className="w-full bg-slate-200 text-slate-400 font-bold text-xs py-2.5 px-4 rounded-xl cursor-not-allowed text-center"
                     >
-                      Locked (Complete Stage 2 First)
+                      Locked (Complete Stage {stage.stageNumber - 1} First)
                     </button>
                   )}
                 </div>

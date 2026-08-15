@@ -119,7 +119,7 @@ export default function InvestorPortalPage() {
   const [meetingDate, setMeetingDate] = useState('')
   const [meetingTime, setMeetingTime] = useState('15:00')
   const [nicopOrPassport, setNicopOrPassport] = useState('')
-  const [countryResidence, setCountryResidence] = useState('United Arab Emirates')
+  const [countryResidence, setCountryResidence] = useState('')
   const [investorName, setInvestorName] = useState('')
   const [investorEmail, setInvestorEmail] = useState('')
   const [scheduleSuccess, setScheduleSuccess] = useState(false)
@@ -133,10 +133,10 @@ export default function InvestorPortalPage() {
   // Escrow Wallet State
   const [escrowBalancePKR, setEscrowBalancePKR] = useState<number>(0)
   const [payoutModalOpen, setPayoutModalOpen] = useState(false)
-  const [payoutAmountPKR, setPayoutAmountPKR] = useState<number>(1000000)
-  const [payoutBankName, setPayoutBankName] = useState('Standard Chartered Bank')
-  const [payoutAccountTitle, setPayoutAccountTitle] = useState('Overseas Investor Holdings')
-  const [payoutIban, setPayoutIban] = useState('PK36SCBL0000001122334455')
+  const [payoutAmountPKR, setPayoutAmountPKR] = useState<number>(0)
+  const [payoutBankName, setPayoutBankName] = useState('')
+  const [payoutAccountTitle, setPayoutAccountTitle] = useState('')
+  const [payoutIban, setPayoutIban] = useState('')
   const [payoutSuccessMsg, setPayoutSuccessMsg] = useState<string | null>(null)
 
   // Calculations
@@ -337,9 +337,9 @@ Status             : ${item.status}
           >
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-bold text-slate-200 group-hover:text-amber-400 transition">
-                Tariq Mehmood (Overseas Investor)
+                Demo Investor Account
               </span>
-              <span className="text-[10px] text-slate-500">investor@nexmove.com • Dubai / UK Portfolio</span>
+              <span className="text-[10px] text-slate-500">investor@nexmove.com</span>
             </div>
             <span className="text-xs bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-lg">
               Quick Sign In →
@@ -973,10 +973,10 @@ Status             : ${item.status}
             <AIDocumentKYCVerifier />
 
             {/* 2. Smart Escrow Milestone Tracker */}
-            <SmartEscrowMilestoneTracker propertyTitle="Executive High-Floor Residence — Gulberg III" totalPricePKR={42000000} currency={currency} />
+            <SmartEscrowMilestoneTracker propertyTitle="" totalPricePKR={0} currency={currency} />
 
             {/* 3. AI Legal Contract Generator */}
-            <AILegalContractGenerator initialDealTitle="Executive High-Floor Residence — Gulberg III" initialPricePKR={42000000} initialAgency="Prime Realty Group" activeCurrency={currency} />
+            <AILegalContractGenerator initialDealTitle="" initialPricePKR={0} initialAgency="" activeCurrency={currency} />
 
             {/* Escrow Balance & Wallet Operations Card */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -1000,7 +1000,7 @@ Status             : ${item.status}
                   </div>
                   <div className="flex justify-between text-xs text-slate-300">
                     <span>Escrow Trustee Bank:</span>
-                    <strong className="text-white">Standard Chartered / HBL Trustee</strong>
+                    <strong className="text-white">State Bank Trustee Escrow</strong>
                   </div>
                   <div className="flex justify-between text-xs text-slate-300">
                     <span>SBP Repatriation Clearance:</span>
@@ -1024,7 +1024,7 @@ Status             : ${item.status}
                       <span className="text-[11px] text-slate-500">Direct wire to PKR or Overseas Bank Account</span>
                     </button>
                     <button
-                      onClick={() => alert('Deposit details: SBP Escrow Account #PK36SCBL0000009988776655. Reference: INV-PORT-202')}
+                      onClick={() => alert('Please contact your designated account manager for SBP escrow depository transfer details.')}
                       className="p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl text-left flex flex-col gap-1 transition"
                     >
                       <span className="text-sm font-bold text-slate-900">Deposit Capital into Escrow</span>
@@ -1048,7 +1048,7 @@ Status             : ${item.status}
 
         {/* TAB 5: FINANCIAL & TAX CALCULATOR */}
         {activeTab === 'TAX_CALCULATOR' && (
-          <TaxCalculator initialInvestmentPKR={totalPortfolioPKR || 50000000} initialRentalYieldPct={avgRentalYield} />
+          <TaxCalculator initialInvestmentPKR={totalPortfolioPKR} initialRentalYieldPct={avgRentalYield} />
         )}
 
       </div>
@@ -1140,7 +1140,7 @@ Status             : ${item.status}
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={() => setPayoutModalOpen(false)}>
           <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl"
+            className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between border-b border-slate-100 pb-3">
@@ -1156,6 +1156,7 @@ Status             : ${item.status}
                 <label className="text-xs font-bold text-slate-700">Withdrawal Amount (PKR)</label>
                 <input
                   type="number"
+                  min={0}
                   max={escrowBalancePKR}
                   value={payoutAmountPKR}
                   onChange={(e) => setPayoutAmountPKR(Number(e.target.value))}

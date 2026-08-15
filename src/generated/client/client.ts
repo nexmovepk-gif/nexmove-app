@@ -91,3 +91,18 @@ export type Expense = Prisma.ExpenseModel
  * 
  */
 export type RentCollection = Prisma.RentCollectionModel
+/**
+ * Model ArchitectProfile
+ * Professional architect/designer profile submitted via the registration flow.
+ */
+export type ArchitectProfile = Prisma.ArchitectProfileModel
+/**
+ * Model ArchitectReview
+ * Review left on an architect's profile by a client or agency.
+ */
+export type ArchitectReview = Prisma.ArchitectReviewModel
+/**
+ * Model ArchitectProject
+ * Project record linked to an architect profile, used for portfolio and stats aggregation.
+ */
+export type ArchitectProject = Prisma.ArchitectProjectModel

@@ -406,7 +406,10 @@ export const ModelName = {
   FinancialLedger: 'FinancialLedger',
   Deal: 'Deal',
   Expense: 'Expense',
-  RentCollection: 'RentCollection'
+  RentCollection: 'RentCollection',
+  ArchitectProfile: 'ArchitectProfile',
+  ArchitectReview: 'ArchitectReview',
+  ArchitectProject: 'ArchitectProject'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -422,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agency" | "listing" | "publicListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection"
+    modelProps: "user" | "agency" | "listing" | "publicListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection" | "architectProfile" | "architectReview" | "architectProject"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1166,6 +1169,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ArchitectProfile: {
+      payload: Prisma.$ArchitectProfilePayload<ExtArgs>
+      fields: Prisma.ArchitectProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArchitectProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArchitectProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.ArchitectProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArchitectProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>
+        }
+        findMany: {
+          args: Prisma.ArchitectProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>[]
+        }
+        create: {
+          args: Prisma.ArchitectProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>
+        }
+        createMany: {
+          args: Prisma.ArchitectProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArchitectProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.ArchitectProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>
+        }
+        update: {
+          args: Prisma.ArchitectProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.ArchitectProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArchitectProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArchitectProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.ArchitectProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.ArchitectProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArchitectProfile>
+        }
+        groupBy: {
+          args: Prisma.ArchitectProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArchitectProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    ArchitectReview: {
+      payload: Prisma.$ArchitectReviewPayload<ExtArgs>
+      fields: Prisma.ArchitectReviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArchitectReviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArchitectReviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>
+        }
+        findFirst: {
+          args: Prisma.ArchitectReviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArchitectReviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>
+        }
+        findMany: {
+          args: Prisma.ArchitectReviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>[]
+        }
+        create: {
+          args: Prisma.ArchitectReviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>
+        }
+        createMany: {
+          args: Prisma.ArchitectReviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArchitectReviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>[]
+        }
+        delete: {
+          args: Prisma.ArchitectReviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>
+        }
+        update: {
+          args: Prisma.ArchitectReviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.ArchitectReviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArchitectReviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArchitectReviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.ArchitectReviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectReviewPayload>
+        }
+        aggregate: {
+          args: Prisma.ArchitectReviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArchitectReview>
+        }
+        groupBy: {
+          args: Prisma.ArchitectReviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectReviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArchitectReviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectReviewCountAggregateOutputType> | number
+        }
+      }
+    }
+    ArchitectProject: {
+      payload: Prisma.$ArchitectProjectPayload<ExtArgs>
+      fields: Prisma.ArchitectProjectFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArchitectProjectFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArchitectProjectFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>
+        }
+        findFirst: {
+          args: Prisma.ArchitectProjectFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArchitectProjectFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>
+        }
+        findMany: {
+          args: Prisma.ArchitectProjectFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>[]
+        }
+        create: {
+          args: Prisma.ArchitectProjectCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>
+        }
+        createMany: {
+          args: Prisma.ArchitectProjectCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArchitectProjectCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>[]
+        }
+        delete: {
+          args: Prisma.ArchitectProjectDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>
+        }
+        update: {
+          args: Prisma.ArchitectProjectUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>
+        }
+        deleteMany: {
+          args: Prisma.ArchitectProjectDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArchitectProjectUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArchitectProjectUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>[]
+        }
+        upsert: {
+          args: Prisma.ArchitectProjectUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectProjectPayload>
+        }
+        aggregate: {
+          args: Prisma.ArchitectProjectAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArchitectProject>
+        }
+        groupBy: {
+          args: Prisma.ArchitectProjectGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectProjectGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArchitectProjectCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectProjectCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1406,6 +1631,61 @@ export const RentCollectionScalarFieldEnum = {
 export type RentCollectionScalarFieldEnum = (typeof RentCollectionScalarFieldEnum)[keyof typeof RentCollectionScalarFieldEnum]
 
 
+export const ArchitectProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  title: 'title',
+  specialization: 'specialization',
+  bio: 'bio',
+  isVerified: 'isVerified',
+  verificationStatus: 'verificationStatus',
+  experienceYears: 'experienceYears',
+  experienceLevel: 'experienceLevel',
+  location: 'location',
+  software: 'software',
+  projectTypes: 'projectTypes',
+  portfolioImages: 'portfolioImages',
+  portfolioLinks: 'portfolioLinks',
+  availableForProjects: 'availableForProjects',
+  councilLicenseNo: 'councilLicenseNo',
+  avatarInitials: 'avatarInitials',
+  avatarGradient: 'avatarGradient',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectProfileScalarFieldEnum = (typeof ArchitectProfileScalarFieldEnum)[keyof typeof ArchitectProfileScalarFieldEnum]
+
+
+export const ArchitectReviewScalarFieldEnum = {
+  id: 'id',
+  architectId: 'architectId',
+  reviewerName: 'reviewerName',
+  reviewerEmail: 'reviewerEmail',
+  rating: 'rating',
+  comment: 'comment',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectReviewScalarFieldEnum = (typeof ArchitectReviewScalarFieldEnum)[keyof typeof ArchitectReviewScalarFieldEnum]
+
+
+export const ArchitectProjectScalarFieldEnum = {
+  id: 'id',
+  architectId: 'architectId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectProjectScalarFieldEnum = (typeof ArchitectProjectScalarFieldEnum)[keyof typeof ArchitectProjectScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1596,6 +1876,20 @@ export type EnumDealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
 export type ListEnumDealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DealStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'ProjectStatus'
+ */
+export type EnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ProjectStatus[]'
+ */
+export type ListEnumProjectStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProjectStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1757,6 +2051,9 @@ export type GlobalOmitConfig = {
   deal?: Prisma.DealOmit
   expense?: Prisma.ExpenseOmit
   rentCollection?: Prisma.RentCollectionOmit
+  architectProfile?: Prisma.ArchitectProfileOmit
+  architectReview?: Prisma.ArchitectReviewOmit
+  architectProject?: Prisma.ArchitectProjectOmit
 }
 
 /* Types for Logging */

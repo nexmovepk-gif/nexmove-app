@@ -6,6 +6,21 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import VerifiedBadge from '@/components/VerifiedBadge'
 
+// ─── Stats Types ──────────────────────────────────────────────────────────────
+interface PageStats {
+  verifiedCount: number
+  specializationsCount: number
+  avgRating: number
+  completedProjectsCount: number
+}
+
+const STATS_DEFAULTS: PageStats = {
+  verifiedCount: 0,
+  specializationsCount: 0,
+  avgRating: 0,
+  completedProjectsCount: 0,
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Architect {
   id: string
@@ -274,6 +289,15 @@ export default function ArchitectsPage() {
   const [architects, setArchitects] = useState<Architect[]>([])
   const [loading, setLoading] = useState(true)
   const [proposalTarget, setProposalTarget] = useState<Architect | null>(null)
+  const [stats, setStats] = useState<PageStats>(STATS_DEFAULTS)
+
+  // ── Fetch page stats from the aggregation API ─────────────────────────────
+  useEffect(() => {
+    fetch('/api/public/architects/stats')
+      .then((res) => (res.ok ? res.json() : STATS_DEFAULTS))
+      .then((data: PageStats) => setStats(data))
+      .catch(() => setStats(STATS_DEFAULTS))
+  }, [])
 
   // Filters
   const [specialization, setSpecialization] = useState('All')
@@ -368,12 +392,24 @@ export default function ArchitectsPage() {
       {/* ── Stats Bar ──────────────────────────────────────────────── */}
       <div className="border-b border-slate-800/60 bg-slate-900/30">
         <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap gap-6">
-          {[
-            { label: 'Verified Professionals', value: '6+' },
-            { label: 'Specializations', value: '5' },
-            { label: 'Avg. Rating', value: '4.8★' },
-            { label: 'Completed Projects', value: '333+' },
-          ].map((stat) => (
+          {([
+            {
+              label: 'Verified Professionals',
+              value: stats.verifiedCount > 0 ? `${stats.verifiedCount}+` : '0',
+            },
+            {
+              label: 'Specializations',
+              value: stats.specializationsCount.toString(),
+            },
+            {
+              label: 'Avg. Rating',
+              value: stats.avgRating > 0 ? `${stats.avgRating}★` : 'New',
+            },
+            {
+              label: 'Completed Projects',
+              value: stats.completedProjectsCount > 0 ? `${stats.completedProjectsCount}+` : '0',
+            },
+          ] as const).map((stat) => (
             <div key={stat.label} className="flex items-center gap-2">
               <span className="text-sm font-black text-teal-400">{stat.value}</span>
               <span className="text-xs text-slate-500">{stat.label}</span>

@@ -317,3 +317,69 @@ model RentCollection {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+// ─── Architect & Designer Models ─────────────────────────────────────────────
+
+enum ProjectStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+/// Professional architect/designer profile submitted via the registration flow.
+model ArchitectProfile {
+  id                   String             @id @default(uuid())
+  name                 String
+  title                String?
+  specialization       String
+  bio                  String?
+  isVerified           Boolean            @default(false)
+  verificationStatus   String             @default("PENDING") // PENDING | VERIFIED | REJECTED
+  experienceYears      Int?
+  experienceLevel      String?            // Junior | Mid-Level | Senior | Principal
+  location             String?
+  software             String[]
+  projectTypes         String[]
+  portfolioImages      String[]
+  portfolioLinks       String[]
+  availableForProjects Boolean            @default(true)
+  councilLicenseNo     String?
+  avatarInitials       String?
+  avatarGradient       String?
+
+  reviews              ArchitectReview[]
+  projects             ArchitectProject[]
+
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+/// Review left on an architect's profile by a client or agency.
+model ArchitectReview {
+  id            String           @id @default(uuid())
+  architectId   String
+  architect     ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  reviewerName  String
+  reviewerEmail String?
+  rating        Float            // 1.0 – 5.0
+  comment       String?
+  isVerified    Boolean          @default(false)
+
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+/// Project record linked to an architect profile, used for portfolio and stats aggregation.
+model ArchitectProject {
+  id          String           @id @default(uuid())
+  architectId String
+  architect   ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      ProjectStatus    @default(PENDING)
+  completedAt DateTime?
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}

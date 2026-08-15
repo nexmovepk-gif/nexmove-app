@@ -60,7 +60,10 @@ export const ModelName = {
   FinancialLedger: 'FinancialLedger',
   Deal: 'Deal',
   Expense: 'Expense',
-  RentCollection: 'RentCollection'
+  RentCollection: 'RentCollection',
+  ArchitectProfile: 'ArchitectProfile',
+  ArchitectReview: 'ArchitectReview',
+  ArchitectProject: 'ArchitectProject'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -278,6 +281,61 @@ export const RentCollectionScalarFieldEnum = {
 } as const
 
 export type RentCollectionScalarFieldEnum = (typeof RentCollectionScalarFieldEnum)[keyof typeof RentCollectionScalarFieldEnum]
+
+
+export const ArchitectProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  title: 'title',
+  specialization: 'specialization',
+  bio: 'bio',
+  isVerified: 'isVerified',
+  verificationStatus: 'verificationStatus',
+  experienceYears: 'experienceYears',
+  experienceLevel: 'experienceLevel',
+  location: 'location',
+  software: 'software',
+  projectTypes: 'projectTypes',
+  portfolioImages: 'portfolioImages',
+  portfolioLinks: 'portfolioLinks',
+  availableForProjects: 'availableForProjects',
+  councilLicenseNo: 'councilLicenseNo',
+  avatarInitials: 'avatarInitials',
+  avatarGradient: 'avatarGradient',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectProfileScalarFieldEnum = (typeof ArchitectProfileScalarFieldEnum)[keyof typeof ArchitectProfileScalarFieldEnum]
+
+
+export const ArchitectReviewScalarFieldEnum = {
+  id: 'id',
+  architectId: 'architectId',
+  reviewerName: 'reviewerName',
+  reviewerEmail: 'reviewerEmail',
+  rating: 'rating',
+  comment: 'comment',
+  isVerified: 'isVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectReviewScalarFieldEnum = (typeof ArchitectReviewScalarFieldEnum)[keyof typeof ArchitectReviewScalarFieldEnum]
+
+
+export const ArchitectProjectScalarFieldEnum = {
+  id: 'id',
+  architectId: 'architectId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectProjectScalarFieldEnum = (typeof ArchitectProjectScalarFieldEnum)[keyof typeof ArchitectProjectScalarFieldEnum]
 
 
 export const SortOrder = {

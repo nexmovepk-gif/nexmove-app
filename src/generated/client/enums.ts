@@ -79,3 +79,13 @@ export const ListingSource = {
 } as const
 
 export type ListingSource = (typeof ListingSource)[keyof typeof ListingSource]
+
+
+export const ProjectStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]

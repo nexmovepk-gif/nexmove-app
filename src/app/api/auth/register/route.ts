@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { Role } from '@/generated/client/enums'
+import bcrypt from 'bcryptjs'
 
 export async function POST(req: Request) {
   try {
@@ -151,11 +152,14 @@ export async function POST(req: Request) {
     const finalNicop = nicopNumber || (isOverseasRole ? overseasDocNumber : null)
     const finalDocPhoto = overseasDocPhoto || cnicFrontPhoto || null
 
+    // Hash the password with bcrypt (10 rounds)
+    const hashedPassword = await bcrypt.hash(password, 10)
+
     const createdUser = await prisma.user.create({
       data: {
         name,
         email: normalizedEmail,
-        password,
+        password: hashedPassword,
         phone: phone || null,
         role: assignedRole,
         accountRoleType: role,

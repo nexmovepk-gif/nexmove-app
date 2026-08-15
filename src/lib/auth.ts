@@ -3,6 +3,7 @@ import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from './prisma'
 import { Role } from '../generated/client/enums'
+import bcrypt from 'bcryptjs'
 
 declare module 'next-auth' {
   // Extend Session.user with our custom fields
@@ -62,14 +63,37 @@ export const authOptions: NextAuthOptions = {
             include: { agency: true },
           })
 
-          if (dbUser && dbUser.password === credentials.password) {
-            return {
-              id: dbUser.id,
-              email: dbUser.email,
-              name: dbUser.name,
-              role: String(dbUser.role),
-              agencyId: dbUser.agencyId ?? null,
-              agencyName: dbUser.agency?.name ?? null,
+          if (dbUser && dbUser.password) {
+            let isMatch = false
+            try {
+              isMatch = await bcrypt.compare(credentials.password, dbUser.password)
+            } catch {
+              isMatch = false
+            }
+
+            // Fallback for legacy plain text records: auto-migrate to bcrypt hash
+            if (!isMatch && dbUser.password === credentials.password) {
+              isMatch = true
+              try {
+                const upgradedHash = await bcrypt.hash(credentials.password, 10)
+                await prisma.user.update({
+                  where: { id: dbUser.id },
+                  data: { password: upgradedHash },
+                })
+              } catch (migrationErr) {
+                console.warn('Could not auto-migrate password hash:', migrationErr)
+              }
+            }
+
+            if (isMatch) {
+              return {
+                id: dbUser.id,
+                email: dbUser.email,
+                name: dbUser.name,
+                role: String(dbUser.role),
+                agencyId: dbUser.agencyId ?? null,
+                agencyName: dbUser.agency?.name ?? null,
+              }
             }
           }
         } catch (error) {

@@ -3,12 +3,18 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useCurrency } from './CurrencyContext';
 import { CURRENCIES, CurrencyCode } from '@/lib/currency';
 
 export default function GlobalHeader() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const { currency, setCurrency } = useCurrency();
+
+  const isSuperAdmin =
+    session?.user?.email?.toLowerCase() === 'nexmove.pk@gmail.com' ||
+    session?.user?.role === 'SUPER_ADMIN';
 
   // Helper to construct dynamic breadcrumbs
   const getBreadcrumbs = () => {
@@ -131,6 +137,17 @@ export default function GlobalHeader() {
         >
           Pricing
         </Link>
+        {/* Super Admin Portal Badge — only visible when logged in as SUPER_ADMIN */}
+        {isSuperAdmin && (
+          <Link
+            href="/admin/dashboard"
+            className="text-xs bg-purple-600/20 border border-purple-500/50 text-purple-300 hover:bg-purple-600/40 hover:text-purple-200 px-3 py-1 rounded-lg transition font-bold flex items-center gap-1 shadow-sm shadow-purple-900/50"
+          >
+            <span>👑</span>
+            <span className="hidden sm:inline">Admin Portal</span>
+          </Link>
+        )}
+
         <Link
           href="/investors"
           className="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"

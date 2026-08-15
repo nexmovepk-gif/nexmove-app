@@ -22,7 +22,6 @@ export async function POST(req: Request) {
       isOverseas,
       country,
       city,
-      degrees,
       experienceYears,
       specialization,
       software,

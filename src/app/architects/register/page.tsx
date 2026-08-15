@@ -74,8 +74,8 @@ export default function ArchitectRegisterPage() {
   const [selectedSoftware, setSelectedSoftware] = useState<string[]>([])
   const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([])
   const [bio, setBio] = useState('')
-  const [portfolioUrl, setPortfolioUrl] = useState('')
   const [portfolioLinks, setPortfolioLinks] = useState<string[]>(['', '', ''])
+  const portfolioUrl = portfolioLinks.filter(Boolean)[0] || ''
 
   const toggleItem = (arr: string[], setArr: (v: string[]) => void, item: string) => {
     setArr(arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item])

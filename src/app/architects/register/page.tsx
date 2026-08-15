@@ -311,7 +311,7 @@ export default function ArchitectRegisterPage() {
                   />
                 </div>
 
-                {/* ── Overseas Architect Toggle ─────────────────────── */}
+                {/* ── Overseas Checkbox Toggle ─────────────────────── */}
                 <div className="flex items-center gap-3 bg-slate-800/80 border border-teal-500/30 p-3.5 rounded-xl sm:col-span-2">
                   <input
                     id="isOverseas-toggle"
@@ -330,36 +330,53 @@ export default function ArchitectRegisterPage() {
                   />
                   <label htmlFor="isOverseas-toggle" className="text-xs font-bold text-slate-200 cursor-pointer flex items-center gap-1.5">
                     <span>🌐</span>
-                    <span>Overseas Architect / International Practice (Foreign Firm or Non-Pakistan Practice)</span>
+                    <span>I am an Overseas / International Architect</span>
                   </label>
                 </div>
 
-                {/* Country and City Inputs */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Country {isOverseas && '*'}</label>
-                  <input
-                    type="text"
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    placeholder={isOverseas ? 'United Arab Emirates, UK, USA...' : 'Pakistan'}
-                    required={isOverseas}
-                    className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">City {isOverseas && '*'}</label>
-                  <input
-                    type="text"
-                    value={city}
-                    onChange={(e) => {
-                      setCity(e.target.value)
-                      setLocation(e.target.value ? `${e.target.value}, ${country || 'Pakistan'}` : '')
-                    }}
-                    placeholder={isOverseas ? 'Dubai, London, Toronto...' : 'Karachi, Lahore, Islamabad...'}
-                    required={isOverseas}
-                    className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition"
-                  />
-                </div>
+                {/* Dynamic Location Inputs */}
+                {!isOverseas ? (
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <label className="text-xs font-bold text-slate-300">City / Location</label>
+                    <input
+                      type="text"
+                      value={location}
+                      onChange={(e) => {
+                        setLocation(e.target.value)
+                        setCity(e.target.value)
+                      }}
+                      placeholder="Lahore, Pakistan"
+                      className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-bold text-slate-300">Country *</label>
+                      <input
+                        type="text"
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        placeholder="United Arab Emirates, United Kingdom, USA..."
+                        required
+                        className={`bg-slate-800 border ${fieldErrors.country ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
+                      />
+                      {fieldErrors.country && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.country}</span>}
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-bold text-slate-300">City *</label>
+                      <input
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="Dubai, London, New York..."
+                        required
+                        className={`bg-slate-800 border ${fieldErrors.city ? 'border-red-500' : 'border-slate-700'} rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition`}
+                      />
+                      {fieldErrors.city && <span className="text-[10px] text-red-400 font-semibold">{fieldErrors.city}</span>}
+                    </div>
+                  </>
+                )}
               </div>
               <button
                 onClick={() => {
@@ -372,8 +389,10 @@ export default function ArchitectRegisterPage() {
                   if (!emailV.valid) errors.email = emailV.message
                   if (!passV.valid) errors.password = passV.message
                   if (!phoneV.valid) errors.phone = phoneV.message
-                  if (isOverseas && (!country || !country.trim())) errors.country = 'Country is required for overseas practice'
-                  if (isOverseas && (!city || !city.trim())) errors.city = 'City is required for overseas practice'
+                  if (isOverseas) {
+                    if (!country || !country.trim()) errors.country = 'Country is required for overseas practice'
+                    if (!city || !city.trim()) errors.city = 'City is required for overseas practice'
+                  }
 
                   setFieldErrors((prev) => ({ ...prev, ...errors }))
                   if (Object.keys(errors).length === 0) { setError(null); setStep('credentials') }

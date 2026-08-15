@@ -1449,6 +1449,8 @@ export const UserScalarFieldEnum = {
   isOverseasVerified: 'isOverseasVerified',
   phone: 'phone',
   address: 'address',
+  liveSelfieUrl: 'liveSelfieUrl',
+  taxIdNumber: 'taxIdNumber',
   agencyId: 'agencyId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1475,6 +1477,7 @@ export const AgencyScalarFieldEnum = {
   longitude: 'longitude',
   storefrontPhoto: 'storefrontPhoto',
   ownerPhoto: 'ownerPhoto',
+  commercialLicenseDoc: 'commercialLicenseDoc',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

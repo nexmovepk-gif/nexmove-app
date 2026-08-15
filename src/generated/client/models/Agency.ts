@@ -54,6 +54,7 @@ export type AgencyMinAggregateOutputType = {
   longitude: number | null
   storefrontPhoto: string | null
   ownerPhoto: string | null
+  commercialLicenseDoc: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -76,6 +77,7 @@ export type AgencyMaxAggregateOutputType = {
   longitude: number | null
   storefrontPhoto: string | null
   ownerPhoto: string | null
+  commercialLicenseDoc: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -98,6 +100,7 @@ export type AgencyCountAggregateOutputType = {
   longitude: number
   storefrontPhoto: number
   ownerPhoto: number
+  commercialLicenseDoc: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -132,6 +135,7 @@ export type AgencyMinAggregateInputType = {
   longitude?: true
   storefrontPhoto?: true
   ownerPhoto?: true
+  commercialLicenseDoc?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -154,6 +158,7 @@ export type AgencyMaxAggregateInputType = {
   longitude?: true
   storefrontPhoto?: true
   ownerPhoto?: true
+  commercialLicenseDoc?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -176,6 +181,7 @@ export type AgencyCountAggregateInputType = {
   longitude?: true
   storefrontPhoto?: true
   ownerPhoto?: true
+  commercialLicenseDoc?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -285,6 +291,7 @@ export type AgencyGroupByOutputType = {
   longitude: number | null
   storefrontPhoto: string | null
   ownerPhoto: string | null
+  commercialLicenseDoc: string | null
   createdAt: Date
   updatedAt: Date
   _count: AgencyCountAggregateOutputType | null
@@ -330,6 +337,7 @@ export type AgencyWhereInput = {
   longitude?: Prisma.FloatNullableFilter<"Agency"> | number | null
   storefrontPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
   ownerPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
+  commercialLicenseDoc?: Prisma.StringNullableFilter<"Agency"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   users?: Prisma.UserListRelationFilter
@@ -361,6 +369,7 @@ export type AgencyOrderByWithRelationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
+  commercialLicenseDoc?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
@@ -395,6 +404,7 @@ export type AgencyWhereUniqueInput = Prisma.AtLeast<{
   longitude?: Prisma.FloatNullableFilter<"Agency"> | number | null
   storefrontPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
   ownerPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
+  commercialLicenseDoc?: Prisma.StringNullableFilter<"Agency"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   users?: Prisma.UserListRelationFilter
@@ -426,6 +436,7 @@ export type AgencyOrderByWithAggregationInput = {
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
+  commercialLicenseDoc?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AgencyCountOrderByAggregateInput
@@ -456,6 +467,7 @@ export type AgencyScalarWhereWithAggregatesInput = {
   longitude?: Prisma.FloatNullableWithAggregatesFilter<"Agency"> | number | null
   storefrontPhoto?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   ownerPhoto?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  commercialLicenseDoc?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Agency"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Agency"> | Date | string
 }
@@ -478,6 +490,7 @@ export type AgencyCreateInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -509,6 +522,7 @@ export type AgencyUncheckedCreateInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -540,6 +554,7 @@ export type AgencyUpdateInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -571,6 +586,7 @@ export type AgencyUncheckedUpdateInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -602,6 +618,7 @@ export type AgencyCreateManyInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -624,6 +641,7 @@ export type AgencyUpdateManyMutationInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -646,6 +664,7 @@ export type AgencyUncheckedUpdateManyInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -673,6 +692,7 @@ export type AgencyCountOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrder
+  commercialLicenseDoc?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -700,6 +720,7 @@ export type AgencyMaxOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrder
+  commercialLicenseDoc?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -722,6 +743,7 @@ export type AgencyMinOrderByAggregateInput = {
   longitude?: Prisma.SortOrder
   storefrontPhoto?: Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrder
+  commercialLicenseDoc?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -892,6 +914,7 @@ export type AgencyCreateWithoutUsersInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
@@ -922,6 +945,7 @@ export type AgencyUncheckedCreateWithoutUsersInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
@@ -968,6 +992,7 @@ export type AgencyUpdateWithoutUsersInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
@@ -998,6 +1023,7 @@ export type AgencyUncheckedUpdateWithoutUsersInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1028,6 +1054,7 @@ export type AgencyCreateWithoutListingsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1058,6 +1085,7 @@ export type AgencyUncheckedCreateWithoutListingsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1104,6 +1132,7 @@ export type AgencyUpdateWithoutListingsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1134,6 +1163,7 @@ export type AgencyUncheckedUpdateWithoutListingsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1164,6 +1194,7 @@ export type AgencyCreateWithoutPublicListingsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1194,6 +1225,7 @@ export type AgencyUncheckedCreateWithoutPublicListingsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1240,6 +1272,7 @@ export type AgencyUpdateWithoutPublicListingsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1270,6 +1303,7 @@ export type AgencyUncheckedUpdateWithoutPublicListingsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1300,6 +1334,7 @@ export type AgencyCreateWithoutAgencyReviewsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1330,6 +1365,7 @@ export type AgencyUncheckedCreateWithoutAgencyReviewsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1376,6 +1412,7 @@ export type AgencyUpdateWithoutAgencyReviewsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1406,6 +1443,7 @@ export type AgencyUncheckedUpdateWithoutAgencyReviewsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1436,6 +1474,7 @@ export type AgencyCreateWithoutClientsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1466,6 +1505,7 @@ export type AgencyUncheckedCreateWithoutClientsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1512,6 +1552,7 @@ export type AgencyUpdateWithoutClientsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1542,6 +1583,7 @@ export type AgencyUncheckedUpdateWithoutClientsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1572,6 +1614,7 @@ export type AgencyCreateWithoutLedgersInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1602,6 +1645,7 @@ export type AgencyUncheckedCreateWithoutLedgersInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1648,6 +1692,7 @@ export type AgencyUpdateWithoutLedgersInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1678,6 +1723,7 @@ export type AgencyUncheckedUpdateWithoutLedgersInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1708,6 +1754,7 @@ export type AgencyCreateWithoutDealsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1738,6 +1785,7 @@ export type AgencyUncheckedCreateWithoutDealsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1784,6 +1832,7 @@ export type AgencyUpdateWithoutDealsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1814,6 +1863,7 @@ export type AgencyUncheckedUpdateWithoutDealsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1844,6 +1894,7 @@ export type AgencyCreateWithoutExpensesInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1874,6 +1925,7 @@ export type AgencyUncheckedCreateWithoutExpensesInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1920,6 +1972,7 @@ export type AgencyUpdateWithoutExpensesInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1950,6 +2003,7 @@ export type AgencyUncheckedUpdateWithoutExpensesInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1980,6 +2034,7 @@ export type AgencyCreateWithoutRentCollectionsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -2010,6 +2065,7 @@ export type AgencyUncheckedCreateWithoutRentCollectionsInput = {
   longitude?: number | null
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -2056,6 +2112,7 @@ export type AgencyUpdateWithoutRentCollectionsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -2086,6 +2143,7 @@ export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -2219,6 +2277,7 @@ export type AgencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   longitude?: boolean
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
+  commercialLicenseDoc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
@@ -2251,6 +2310,7 @@ export type AgencySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   longitude?: boolean
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
+  commercialLicenseDoc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["agency"]>
@@ -2273,6 +2333,7 @@ export type AgencySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   longitude?: boolean
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
+  commercialLicenseDoc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["agency"]>
@@ -2295,11 +2356,12 @@ export type AgencySelectScalar = {
   longitude?: boolean
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
+  commercialLicenseDoc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "logo" | "phone" | "address" | "description" | "ntn" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
+export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "logo" | "phone" | "address" | "description" | "ntn" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "commercialLicenseDoc" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
 export type AgencyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
   listings?: boolean | Prisma.Agency$listingsArgs<ExtArgs>
@@ -2346,6 +2408,7 @@ export type $AgencyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     longitude: number | null
     storefrontPhoto: string | null
     ownerPhoto: string | null
+    commercialLicenseDoc: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["agency"]>
@@ -2797,6 +2860,7 @@ export interface AgencyFieldRefs {
   readonly longitude: Prisma.FieldRef<"Agency", 'Float'>
   readonly storefrontPhoto: Prisma.FieldRef<"Agency", 'String'>
   readonly ownerPhoto: Prisma.FieldRef<"Agency", 'String'>
+  readonly commercialLicenseDoc: Prisma.FieldRef<"Agency", 'String'>
   readonly createdAt: Prisma.FieldRef<"Agency", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Agency", 'DateTime'>
 }

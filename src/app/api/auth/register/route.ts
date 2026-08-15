@@ -11,6 +11,9 @@ export async function POST(req: Request) {
       email,
       password,
       role,
+      phone,
+      liveSelfiePhoto,
+      liveSelfieUrl,
       ntn,
       address,
       latitude,
@@ -18,6 +21,7 @@ export async function POST(req: Request) {
       logo,
       storefrontPhoto,
       ownerPhoto,
+      commercialLicenseDoc,
       passportNumber,
       nicopNumber,
       cnicNumber,
@@ -28,17 +32,22 @@ export async function POST(req: Request) {
       overseasPostalCode,
       overseasDocNumber,
       overseasDocPhoto,
+      taxIdNumber,
     } = body
 
     const isAgencyRole = ['AGENCY_ADMIN', 'AGENCY_AGENT', 'AGENCY_MANAGER', 'OVERSEAS_AGENCY'].includes(role)
     const isLocalRole = ['BUYER', 'LOCAL_PUBLIC'].includes(role)
     const isOverseasRole = ['OVERSEAS_BUYER', 'OVERSEAS_INVESTOR', 'OVERSEAS_AGENCY', 'OVERSEAS_LOCAL_PUBLIC'].includes(role)
 
-    // Mandatory base fields
+    const finalLiveSelfie = liveSelfiePhoto || liveSelfieUrl || null
+
+    // Mandatory base fields for ALL roles
     const missingFields: string[] = []
     if (!name) missingFields.push('Full Name')
     if (!email) missingFields.push('Email Address')
     if (!password) missingFields.push('Password')
+    if (!phone) missingFields.push('Phone Number')
+    if (!finalLiveSelfie) missingFields.push('Live Identity Selfie Snapshot')
 
     // Conditional role fields
     if (isAgencyRole) {
@@ -50,6 +59,9 @@ export async function POST(req: Request) {
       if (!logo) missingFields.push('Agency Brand Logo')
       if (!storefrontPhoto) missingFields.push('Agency Storefront Photo')
       if (!ownerPhoto) missingFields.push('Agency Owner Identity Photo')
+      if (role === 'OVERSEAS_AGENCY' && !commercialLicenseDoc) {
+        missingFields.push('Agency Commercial License / Tax Registration Document')
+      }
     }
 
     if (isLocalRole) {
@@ -59,11 +71,14 @@ export async function POST(req: Request) {
     }
 
     if (isOverseasRole) {
-      if (!overseasCountry) missingFields.push('Country')
+      if (!overseasCountry) missingFields.push('Country of Residence')
       if (!overseasCity) missingFields.push('City')
-      if (!overseasPostalCode) missingFields.push('Postal Code')
-      if (!overseasDocNumber && !passportNumber && !nicopNumber) missingFields.push('Overseas NICOP / Passport Number')
-      if (!overseasDocPhoto) missingFields.push('Overseas Identity Document Photo')
+      if (!overseasDocNumber && !passportNumber && !nicopNumber && !cnicNumber) {
+        missingFields.push('Overseas NICOP / Passport Number')
+      }
+      if (!overseasDocPhoto && !cnicFrontPhoto) {
+        missingFields.push('Overseas Identity Document / Passport Photo')
+      }
     }
 
     if (missingFields.length > 0) {
@@ -115,6 +130,7 @@ export async function POST(req: Request) {
           verified: true,
           verifiedLicense: true,
           address: finalAddress,
+          phone: phone || null,
           logo: logo || null,
           ntn: ntn || null,
           cnicNumber: cnicNumber || null,
@@ -124,6 +140,7 @@ export async function POST(req: Request) {
           longitude: parsedLng,
           storefrontPhoto: storefrontPhoto || null,
           ownerPhoto: ownerPhoto || null,
+          commercialLicenseDoc: commercialLicenseDoc || null,
         },
       })
       createdAgencyId = createdAgency.id
@@ -132,13 +149,14 @@ export async function POST(req: Request) {
 
     const finalPassport = passportNumber || (isOverseasRole ? overseasDocNumber : null)
     const finalNicop = nicopNumber || (isOverseasRole ? overseasDocNumber : null)
-    const finalDocPhoto = overseasDocPhoto || null
+    const finalDocPhoto = overseasDocPhoto || cnicFrontPhoto || null
 
     const createdUser = await prisma.user.create({
       data: {
         name,
         email: normalizedEmail,
         password,
+        phone: phone || null,
         role: assignedRole,
         accountRoleType: role,
         cnicNumber: cnicNumber || null,
@@ -150,6 +168,8 @@ export async function POST(req: Request) {
         overseasCity: overseasCity || null,
         overseasPostalCode: overseasPostalCode || null,
         overseasDocPhoto: finalDocPhoto,
+        liveSelfieUrl: finalLiveSelfie,
+        taxIdNumber: taxIdNumber || null,
         isOverseasVerified: isOverseasRole ? true : false,
         address: address || null,
         agencyId: createdAgencyId,

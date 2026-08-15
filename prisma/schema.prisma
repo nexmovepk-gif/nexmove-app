@@ -86,6 +86,8 @@ model User {
   isOverseasVerified  Boolean           @default(false)   // Overseas KYC status
   phone               String?
   address             String?
+  liveSelfieUrl       String?           // Live Photo Capture / Selfie Verification URL
+  taxIdNumber         String?           // FBR / Local Tax Identification Number (Optional/Overseas Investor)
 
   agencyId            String?
   agency              Agency?           @relation(fields: [agencyId], references: [id])
@@ -121,6 +123,7 @@ model Agency {
   longitude           Float?            // Map location Longitude
   storefrontPhoto     String?           // Agency Storefront photo URL
   ownerPhoto          String?           // Agency Owner Passport/Identity photo URL
+  commercialLicenseDoc String?          // Overseas Agency Tax Reg / Commercial License Document URL
 
   users               User[]
   listings            Listing[]

@@ -43,6 +43,8 @@ export type UserMinAggregateOutputType = {
   isOverseasVerified: boolean | null
   phone: string | null
   address: string | null
+  liveSelfieUrl: string | null
+  taxIdNumber: string | null
   agencyId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -67,6 +69,8 @@ export type UserMaxAggregateOutputType = {
   isOverseasVerified: boolean | null
   phone: string | null
   address: string | null
+  liveSelfieUrl: string | null
+  taxIdNumber: string | null
   agencyId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -91,6 +95,8 @@ export type UserCountAggregateOutputType = {
   isOverseasVerified: number
   phone: number
   address: number
+  liveSelfieUrl: number
+  taxIdNumber: number
   agencyId: number
   createdAt: number
   updatedAt: number
@@ -117,6 +123,8 @@ export type UserMinAggregateInputType = {
   isOverseasVerified?: true
   phone?: true
   address?: true
+  liveSelfieUrl?: true
+  taxIdNumber?: true
   agencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -141,6 +149,8 @@ export type UserMaxAggregateInputType = {
   isOverseasVerified?: true
   phone?: true
   address?: true
+  liveSelfieUrl?: true
+  taxIdNumber?: true
   agencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -165,6 +175,8 @@ export type UserCountAggregateInputType = {
   isOverseasVerified?: true
   phone?: true
   address?: true
+  liveSelfieUrl?: true
+  taxIdNumber?: true
   agencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -262,6 +274,8 @@ export type UserGroupByOutputType = {
   isOverseasVerified: boolean
   phone: string | null
   address: string | null
+  liveSelfieUrl: string | null
+  taxIdNumber: string | null
   agencyId: string | null
   createdAt: Date
   updatedAt: Date
@@ -307,6 +321,8 @@ export type UserWhereInput = {
   isOverseasVerified?: Prisma.BoolFilter<"User"> | boolean
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
+  liveSelfieUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  taxIdNumber?: Prisma.StringNullableFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -339,6 +355,8 @@ export type UserOrderByWithRelationInput = {
   isOverseasVerified?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
+  liveSelfieUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  taxIdNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   agencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -374,6 +392,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   isOverseasVerified?: Prisma.BoolFilter<"User"> | boolean
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
+  liveSelfieUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  taxIdNumber?: Prisma.StringNullableFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -406,6 +426,8 @@ export type UserOrderByWithAggregationInput = {
   isOverseasVerified?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
+  liveSelfieUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  taxIdNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   agencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -436,6 +458,8 @@ export type UserScalarWhereWithAggregatesInput = {
   isOverseasVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  liveSelfieUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  taxIdNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -460,6 +484,8 @@ export type UserCreateInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -491,6 +517,8 @@ export type UserUncheckedCreateInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -522,6 +550,8 @@ export type UserUpdateInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -553,6 +583,8 @@ export type UserUncheckedUpdateInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -584,6 +616,8 @@ export type UserCreateManyInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -608,6 +642,8 @@ export type UserUpdateManyMutationInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -631,6 +667,8 @@ export type UserUncheckedUpdateManyInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -655,6 +693,8 @@ export type UserCountOrderByAggregateInput = {
   isOverseasVerified?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  liveSelfieUrl?: Prisma.SortOrder
+  taxIdNumber?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -679,6 +719,8 @@ export type UserMaxOrderByAggregateInput = {
   isOverseasVerified?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  liveSelfieUrl?: Prisma.SortOrder
+  taxIdNumber?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -703,6 +745,8 @@ export type UserMinOrderByAggregateInput = {
   isOverseasVerified?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  liveSelfieUrl?: Prisma.SortOrder
+  taxIdNumber?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -909,6 +953,8 @@ export type UserCreateWithoutAgencyInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
@@ -939,6 +985,8 @@ export type UserUncheckedCreateWithoutAgencyInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
@@ -998,6 +1046,8 @@ export type UserScalarWhereInput = {
   isOverseasVerified?: Prisma.BoolFilter<"User"> | boolean
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
+  liveSelfieUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  taxIdNumber?: Prisma.StringNullableFilter<"User"> | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -1022,6 +1072,8 @@ export type UserCreateWithoutListingsInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1052,6 +1104,8 @@ export type UserUncheckedCreateWithoutListingsInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1098,6 +1152,8 @@ export type UserUpdateWithoutListingsInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1128,6 +1184,8 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1158,6 +1216,8 @@ export type UserCreateWithoutClientsInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1188,6 +1248,8 @@ export type UserUncheckedCreateWithoutClientsInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1234,6 +1296,8 @@ export type UserUpdateWithoutClientsInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1264,6 +1328,8 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1294,6 +1360,8 @@ export type UserCreateWithoutLedgersInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1324,6 +1392,8 @@ export type UserUncheckedCreateWithoutLedgersInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1370,6 +1440,8 @@ export type UserUpdateWithoutLedgersInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1400,6 +1472,8 @@ export type UserUncheckedUpdateWithoutLedgersInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1430,6 +1504,8 @@ export type UserCreateWithoutDealsBuyerInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1460,6 +1536,8 @@ export type UserUncheckedCreateWithoutDealsBuyerInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1495,6 +1573,8 @@ export type UserCreateWithoutDealsSellerInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1525,6 +1605,8 @@ export type UserUncheckedCreateWithoutDealsSellerInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1571,6 +1653,8 @@ export type UserUpdateWithoutDealsBuyerInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1601,6 +1685,8 @@ export type UserUncheckedUpdateWithoutDealsBuyerInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1642,6 +1728,8 @@ export type UserUpdateWithoutDealsSellerInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1672,6 +1760,8 @@ export type UserUncheckedUpdateWithoutDealsSellerInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1702,6 +1792,8 @@ export type UserCreateWithoutExpensesInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1732,6 +1824,8 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1778,6 +1872,8 @@ export type UserUpdateWithoutExpensesInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1808,6 +1904,8 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1838,6 +1936,8 @@ export type UserCreateWithoutRentCollectionsInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1868,6 +1968,8 @@ export type UserUncheckedCreateWithoutRentCollectionsInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1914,6 +2016,8 @@ export type UserUpdateWithoutRentCollectionsInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1944,6 +2048,8 @@ export type UserUncheckedUpdateWithoutRentCollectionsInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1974,6 +2080,8 @@ export type UserCreateManyAgencyInput = {
   isOverseasVerified?: boolean
   phone?: string | null
   address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1997,6 +2105,8 @@ export type UserUpdateWithoutAgencyInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
@@ -2027,6 +2137,8 @@ export type UserUncheckedUpdateWithoutAgencyInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
@@ -2057,6 +2169,8 @@ export type UserUncheckedUpdateManyWithoutAgencyInput = {
   isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2165,6 +2279,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isOverseasVerified?: boolean
   phone?: boolean
   address?: boolean
+  liveSelfieUrl?: boolean
+  taxIdNumber?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2198,6 +2314,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isOverseasVerified?: boolean
   phone?: boolean
   address?: boolean
+  liveSelfieUrl?: boolean
+  taxIdNumber?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2223,6 +2341,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isOverseasVerified?: boolean
   phone?: boolean
   address?: boolean
+  liveSelfieUrl?: boolean
+  taxIdNumber?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2248,12 +2368,14 @@ export type UserSelectScalar = {
   isOverseasVerified?: boolean
   phone?: boolean
   address?: boolean
+  liveSelfieUrl?: boolean
+  taxIdNumber?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "accountRoleType" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "nicopNumber" | "passportNumber" | "overseasCountry" | "overseasCity" | "overseasPostalCode" | "overseasDocPhoto" | "isOverseasVerified" | "phone" | "address" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "accountRoleType" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "nicopNumber" | "passportNumber" | "overseasCountry" | "overseasCity" | "overseasPostalCode" | "overseasDocPhoto" | "isOverseasVerified" | "phone" | "address" | "liveSelfieUrl" | "taxIdNumber" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.User$agencyArgs<ExtArgs>
   listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
@@ -2303,6 +2425,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isOverseasVerified: boolean
     phone: string | null
     address: string | null
+    liveSelfieUrl: string | null
+    taxIdNumber: string | null
     agencyId: string | null
     createdAt: Date
     updatedAt: Date
@@ -2755,6 +2879,8 @@ export interface UserFieldRefs {
   readonly isOverseasVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly address: Prisma.FieldRef<"User", 'String'>
+  readonly liveSelfieUrl: Prisma.FieldRef<"User", 'String'>
+  readonly taxIdNumber: Prisma.FieldRef<"User", 'String'>
   readonly agencyId: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>

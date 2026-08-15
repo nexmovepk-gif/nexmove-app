@@ -6,16 +6,19 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import LiveCameraSnapshot from '@/components/LiveCameraSnapshot'
 import {
   validateName,
   validateEmail,
   validatePassword,
+  validatePhone,
   validateNTN,
   validateLatitude,
   validateLongitude,
   validateRequired,
   validateCNIC,
   validateImageFile,
+  validateDocumentFile,
 } from '@/lib/validation'
 
 // Preset coordinates helper for quick selection
@@ -46,7 +49,9 @@ export default function RegisterPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [phone, setPhone] = useState('')
   const [role, setRole] = useState('BUYER')
+  const [liveSelfiePhoto, setLiveSelfiePhoto] = useState('')
 
   // Local Role State (Buyer / Local Public)
   const [cnicNumber, setCnicNumber] = useState('')
@@ -59,6 +64,8 @@ export default function RegisterPage() {
   const [overseasPostalCode, setOverseasPostalCode] = useState('')
   const [overseasDocNumber, setOverseasDocNumber] = useState('')
   const [overseasDocPhoto, setOverseasDocPhoto] = useState('')
+  const [commercialLicenseDoc, setCommercialLicenseDoc] = useState('')
+  const [taxIdNumber, setTaxIdNumber] = useState('')
 
   // Agency Role State
   const [agencyName, setAgencyName] = useState('')
@@ -101,6 +108,7 @@ export default function RegisterPage() {
     if (key === 'name') msg = validateName(value).message
     if (key === 'email') msg = validateEmail(value).message
     if (key === 'password') msg = validatePassword(value).message
+    if (key === 'phone') msg = validatePhone(value).message
 
     // Local fields
     if (key === 'cnicNumber') msg = validateCNIC(value).message
@@ -149,11 +157,38 @@ export default function RegisterPage() {
     reader.readAsDataURL(file)
   }
 
+  // Document file upload helper (allows PDF and images for license/tax docs)
+  const handleDocumentUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: (val: string) => void,
+    fieldKey: string
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const result = validateDocumentFile(file, 10)
+    if (!result.valid) {
+      setFieldErrors((prev) => ({ ...prev, [fieldKey]: result.message }))
+      return
+    }
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setter(reader.result as string)
+      setFieldErrors((prev) => {
+        const updated = { ...prev }
+        delete updated[fieldKey]
+        return updated
+      })
+    }
+    reader.readAsDataURL(file)
+  }
+
   // Computed Form Validity — strictly checks active relevant fields for the selected role
   const isBaseValid =
     validateName(name).valid &&
     validateEmail(email).valid &&
     validatePassword(password).valid &&
+    validatePhone(phone).valid &&
+    !!liveSelfiePhoto &&
     !!role
 
   const isLocalValid =
@@ -166,7 +201,8 @@ export default function RegisterPage() {
       validateRequired(overseasCity, 'City').valid &&
       validateRequired(overseasPostalCode, 'Postal Code').valid &&
       validateRequired(overseasDocNumber, 'NICOP / Passport Number').valid &&
-      !!overseasDocPhoto)
+      !!overseasDocPhoto &&
+      (role !== 'OVERSEAS_AGENCY' || !!commercialLicenseDoc))
 
   const isAgencyValid =
     !isAgencyRole ||
@@ -187,7 +223,12 @@ export default function RegisterPage() {
       ['name', validateName(name).message],
       ['email', validateEmail(email).message],
       ['password', validatePassword(password).message],
+      ['phone', validatePhone(phone).message],
     ]
+
+    if (!liveSelfiePhoto) {
+      errors.liveSelfiePhoto = 'Live identity selfie snapshot is required for registration.'
+    }
 
     if (isLocalRole) {
       checks.push(['cnicNumber', validateCNIC(cnicNumber).message])
@@ -201,6 +242,9 @@ export default function RegisterPage() {
       checks.push(['overseasPostalCode', validateRequired(overseasPostalCode, 'Postal Code').message])
       checks.push(['overseasDocNumber', validateRequired(overseasDocNumber, 'NICOP / Passport Number').message])
       if (!overseasDocPhoto) errors.overseasDocPhoto = 'Overseas Passport / Document Photo is required.'
+      if (role === 'OVERSEAS_AGENCY' && !commercialLicenseDoc) {
+        errors.commercialLicenseDoc = 'Commercial License / Tax Registration Document is required for Overseas Agency.'
+      }
     }
 
     if (isAgencyRole) {
@@ -241,8 +285,10 @@ export default function RegisterPage() {
           name,
           email,
           password,
+          phone,
           role,
-          cnicNumber: isLocalRole ? cnicNumber : undefined,
+          liveSelfiePhoto,
+          cnicNumber: isLocalRole || role === 'OVERSEAS_INVESTOR' ? (cnicNumber || overseasDocNumber) : undefined,
           cnicFrontPhoto: isLocalRole ? cnicFrontPhoto : undefined,
           cnicBackPhoto: isLocalRole ? cnicBackPhoto : undefined,
           overseasCountry: isOverseasRole ? overseasCountry : undefined,
@@ -250,6 +296,8 @@ export default function RegisterPage() {
           overseasPostalCode: isOverseasRole ? overseasPostalCode : undefined,
           overseasDocNumber: isOverseasRole ? overseasDocNumber : undefined,
           overseasDocPhoto: isOverseasRole ? overseasDocPhoto : undefined,
+          commercialLicenseDoc: role === 'OVERSEAS_AGENCY' ? commercialLicenseDoc : undefined,
+          taxIdNumber: role === 'OVERSEAS_INVESTOR' ? taxIdNumber : undefined,
           agencyName: isAgencyRole ? agencyName : undefined,
           ntn: isAgencyRole ? ntn : undefined,
           address: isAgencyRole ? address : undefined,
@@ -417,6 +465,28 @@ Log in to your admin panel to review and verify this user.`,
               </div>
 
               <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-slate-900" htmlFor="phone-input">
+                  Phone Number (with Country Code) *
+                </label>
+                <input
+                  id="phone-input"
+                  type="text"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value)
+                    liveValidate('phone', e.target.value)
+                  }}
+                  placeholder="e.g. +923001234567 or +447911123456"
+                  required
+                  className={`bg-white border ${fieldErrors.phone ? 'border-red-500' : 'border-slate-300'
+                    } rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition`}
+                />
+                {fieldErrors.phone && (
+                  <span className="text-[10px] text-red-600 font-semibold">{fieldErrors.phone}</span>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1.5 sm:col-span-2">
                 <label className="text-xs font-bold text-slate-900" htmlFor="role-select">
                   Account Role *
                 </label>
@@ -440,6 +510,29 @@ Log in to your admin panel to review and verify this user.`,
                 </select>
               </div>
             </div>
+          </div>
+
+          {/* Section 2: Live Identity Selfie Verification (Mandatory for ALL Roles) */}
+          <div className="flex flex-col gap-3">
+            <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center justify-between">
+              <span>2. Live Identity Selfie Verification</span>
+              <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+                Mandatory for All Roles
+              </span>
+            </h2>
+            <LiveCameraSnapshot
+              capturedPhoto={liveSelfiePhoto}
+              onPhotoCaptured={(photo) => {
+                setLiveSelfiePhoto(photo)
+                setFieldErrors((prev) => {
+                  const updated = { ...prev }
+                  delete updated.liveSelfiePhoto
+                  return updated
+                })
+              }}
+              onPhotoCleared={() => setLiveSelfiePhoto('')}
+              error={fieldErrors.liveSelfiePhoto}
+            />
           </div>
 
           {/* Section 2: Local Verification Fields (For Buyer / Local Public) */}
@@ -682,6 +775,60 @@ Log in to your admin panel to review and verify this user.`,
                     <span className="text-[9px] text-red-600 font-semibold">{fieldErrors.overseasDocPhoto}</span>
                   )}
                 </div>
+
+                {/* Overseas Agency Commercial License Document */}
+                {role === 'OVERSEAS_AGENCY' && (
+                  <div className="flex flex-col gap-2 bg-white p-3 rounded-2xl border border-slate-200 sm:col-span-3">
+                    <label className="text-xs font-bold text-slate-900">
+                      Agency Commercial License / Tax Registration Document *
+                    </label>
+                    {commercialLicenseDoc ? (
+                      <div className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                        <span className="text-xs font-bold text-emerald-800">✓ Commercial License / Tax Registration Uploaded</span>
+                        <button
+                          type="button"
+                          onClick={() => setCommercialLicenseDoc('')}
+                          className="text-red-600 hover:text-red-800 text-xs font-bold"
+                        >
+                          Remove ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="w-full h-24 border-2 border-dashed border-sky-300 hover:border-emerald-500 rounded-xl flex flex-col items-center justify-center cursor-pointer transition bg-white p-2 text-center">
+                        <span className="text-xl">📑</span>
+                        <span className="text-[10px] font-bold text-slate-700 mt-1">Upload Commercial License / Tax Reg</span>
+                        <span className="text-[9px] text-slate-400">PDF, JPG, PNG up to 10MB</span>
+                        <input
+                          type="file"
+                          accept=".pdf,image/*"
+                          onChange={(e) => handleDocumentUpload(e, setCommercialLicenseDoc, 'commercialLicenseDoc')}
+                          className="hidden"
+                        />
+                      </label>
+                    )}
+                    {fieldErrors.commercialLicenseDoc && (
+                      <span className="text-[9px] text-red-600 font-semibold">{fieldErrors.commercialLicenseDoc}</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Overseas Investor Tax Filing Status / Tax ID */}
+                {role === 'OVERSEAS_INVESTOR' && (
+                  <div className="flex flex-col gap-1.5 sm:col-span-3">
+                    <label className="text-xs font-bold text-slate-900" htmlFor="tax-id-input">
+                      FBR / Local Tax Filing Status / Tax Identification Number (Optional)
+                    </label>
+                    <input
+                      id="tax-id-input"
+                      type="text"
+                      value={taxIdNumber}
+                      onChange={(e) => setTaxIdNumber(e.target.value)}
+                      placeholder="e.g. FBR ATL Status: Overseas Filer / Tax ID #12345678"
+                      className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition"
+                    />
+                    <span className="text-[10px] text-slate-400">Optional text field for investor tax compliance verification.</span>
+                  </div>
+                )}
               </div>
             </div>
           )}

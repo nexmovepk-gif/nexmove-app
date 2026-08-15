@@ -157,6 +157,14 @@ export default function GlobalHeader() {
         </Link>
 
         <Link
+          href="/architects/dashboard"
+          className="text-xs bg-teal-500/10 border border-teal-500/30 text-teal-300 hover:bg-teal-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
+        >
+          <span>📐</span>
+          <span className="hidden md:inline">Architect Portal</span>
+        </Link>
+
+        <Link
           href="/register"
           className="text-xs bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-lg transition font-medium hidden sm:inline"
         >

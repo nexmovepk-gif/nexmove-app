@@ -379,6 +379,13 @@ export default function ArchitectsPage() {
             >
               + Join as Architect
             </Link>
+            <Link
+              href="/architects/login"
+              className="text-xs bg-slate-800 hover:bg-slate-700 border border-teal-500/40 text-teal-300 font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5"
+            >
+              <span>📐</span>
+              <span>Architect Login / My Dashboard</span>
+            </Link>
             <a
               href="#directory"
               className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-medium px-4 py-2.5 rounded-xl transition"

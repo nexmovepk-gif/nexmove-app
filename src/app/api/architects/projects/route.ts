@@ -6,6 +6,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -141,5 +143,25 @@ export async function POST(req: Request) {
     console.error("[Architect Projects POST] Error:", error);
     const errMsg = error instanceof Error ? error.message : "Failed to upload project";
     return NextResponse.json({ error: errMsg }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "Project ID is required" }, { status: 400 });
+    }
+
+    await prisma.architectProject.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "Project deleted successfully" });
+  } catch (error) {
+    console.error("[Architect Projects DELETE] Error:", error);
+    return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });
   }
 }

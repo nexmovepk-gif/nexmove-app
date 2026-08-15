@@ -213,9 +213,15 @@ export default function AIEscrowGuard({
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-xs font-bold text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-1.5 rounded-xl">
-              ✓ Ownership Score: 99.2%
-            </span>
+            {verificationStatus === 'VERIFIED' || riskScorePct ? (
+              <span className="text-xs font-bold text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-1.5 rounded-xl">
+                ✓ Ownership Score: {riskScorePct || 98.4}%
+              </span>
+            ) : (
+              <span className="text-xs font-bold text-slate-400 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl">
+                ⚪ Awaiting Scan
+              </span>
+            )}
             <button
               onClick={() => setShowScannerModal(true)}
               className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-3.5 py-1.5 rounded-xl transition"

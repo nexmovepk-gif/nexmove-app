@@ -2,7 +2,7 @@
 // src/app/architects/dashboard/page.tsx
 // LinkedIn-Style Off-White Architect Portal & Dashboard — Full Refactor
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -153,11 +153,6 @@ export default function ArchitectDashboardPage() {
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  // ── Direct avatar / cover upload refs ────────────────────────────────────
-  const avatarInputRef = useRef<HTMLInputElement>(null)
-  const coverInputRef = useRef<HTMLInputElement>(null)
-  const [avatarUploading, setAvatarUploading] = useState(false)
-  const [coverUploading, setCoverUploading] = useState(false)
   // Controls whether ProfileEditModal opens in edit-mode or view-mode
   const [profileModalEditMode, setProfileModalEditMode] = useState(false)
 
@@ -236,93 +231,6 @@ export default function ArchitectDashboardPage() {
     }
   }
 
-  // ── Direct avatar upload: reads file → saves to DB → reloads ─────────────
-  const handleDirectAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !profile) return
-    setAvatarUploading(true)
-    try {
-      const reader = new FileReader()
-      reader.onload = async () => {
-        const avatarUrl = reader.result as string
-        const res = await fetch('/api/architects/profile', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: profile.id,
-            name: profile.name,
-            phone: profile.phone,
-            companyName: profile.companyName,
-            specialization: profile.specialization,
-            experienceYears: profile.experienceYears,
-            pcatpNo: profile.pcatpNo,
-            bio: profile.bio,
-            isOverseas: profile.isOverseas,
-            country: profile.country,
-            city: profile.city,
-            software: profile.software,
-            avatarUrl,
-            coverImage: profile.coverImage,
-          }),
-        })
-        if (!res.ok) throw new Error('Failed to save avatar')
-        setMessage({ text: '✓ Profile picture updated!', type: 'success' })
-        loadDashboardData()
-      }
-      reader.readAsDataURL(file)
-    } catch (err) {
-      console.error(err)
-      setMessage({ text: 'Failed to upload avatar', type: 'error' })
-    } finally {
-      setAvatarUploading(false)
-      // Reset so the same file can be re-selected
-      if (avatarInputRef.current) avatarInputRef.current.value = ''
-    }
-  }
-
-  // ── Direct cover upload: reads file → saves to DB → reloads ──────────────
-  const handleDirectCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !profile) return
-    setCoverUploading(true)
-    try {
-      const reader = new FileReader()
-      reader.onload = async () => {
-        const coverImage = reader.result as string
-        const res = await fetch('/api/architects/profile', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: profile.id,
-            name: profile.name,
-            phone: profile.phone,
-            companyName: profile.companyName,
-            specialization: profile.specialization,
-            experienceYears: profile.experienceYears,
-            pcatpNo: profile.pcatpNo,
-            bio: profile.bio,
-            isOverseas: profile.isOverseas,
-            country: profile.country,
-            city: profile.city,
-            software: profile.software,
-            avatarUrl: profile.avatarUrl,
-            coverImage,
-          }),
-        })
-        if (!res.ok) throw new Error('Failed to save cover')
-        setMessage({ text: '✓ Cover photo updated!', type: 'success' })
-        loadDashboardData()
-      }
-      reader.readAsDataURL(file)
-    } catch (err) {
-      console.error(err)
-      setMessage({ text: 'Failed to upload cover photo', type: 'error' })
-    } finally {
-      setCoverUploading(false)
-      if (coverInputRef.current) coverInputRef.current.value = ''
-    }
-  }
-
   // Open profile modal and control whether it starts in edit-mode
   const openProfileModal = (editMode = false) => {
     setProfileModalEditMode(editMode)
@@ -392,22 +300,6 @@ export default function ArchitectDashboardPage() {
         <div className="lg:col-span-4 flex flex-col gap-5">
           {/* Profile card */}
           <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-
-            {/* ── Hidden file inputs for direct upload ── */}
-            <input
-              ref={avatarInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleDirectAvatarUpload}
-            />
-            <input
-              ref={coverInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleDirectCoverUpload}
-            />
 
             {/* ── Cover Banner — click triggers Profile Editor Modal ── */}
             <div

@@ -30,9 +30,12 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith('/investors') ||
     pathname.startsWith('/api/investor') ||
     pathname.startsWith('/api/investors');
+  const isArchitectDashboardRoute =
+    pathname.startsWith('/architects/dashboard') ||
+    pathname.startsWith('/api/architects/dashboard');
 
   // 1. Unauthenticated Redirections with contextual role query params
-  if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute)) {
+  if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute || isArchitectDashboardRoute)) {
     if (isApiRoute) {
       return new NextResponse(
         JSON.stringify({ error: 'Unauthorized: Active session required. Please sign in.' }),
@@ -40,7 +43,10 @@ export async function middleware(req: NextRequest) {
       );
     }
     const loginUrl = new URL('/login', req.url);
-    if (isInvestorRoute) {
+    if (isArchitectDashboardRoute) {
+      loginUrl.searchParams.set('role', 'architect');
+      loginUrl.searchParams.set('callbackUrl', pathname);
+    } else if (isInvestorRoute) {
       loginUrl.searchParams.set('role', 'investor');
       loginUrl.searchParams.set('callbackUrl', pathname === '/investors' ? '/investors/dashboard' : pathname);
     } else if (isAgencyRoute) {
@@ -59,6 +65,7 @@ export async function middleware(req: NextRequest) {
     const userEmail = (token.email as string | undefined)?.toLowerCase();
     const userAccountRoleType = token.accountRoleType as string | undefined;
     const userAgencyId = token.agencyId as string | null | undefined;
+    const isArchitect = Boolean(token.isArchitect);
 
     const isSuperAdmin = userEmail === 'nexmove.pk@gmail.com' || userRole === 'SUPER_ADMIN';
 
@@ -79,22 +86,76 @@ export async function middleware(req: NextRequest) {
     }
 
     // Identify user category
+    const isArchitectUser = isArchitect || userRole === 'ARCHITECT';
+
     const isAgencyUser =
-      userRole === 'AGENCY_MANAGER' ||
-      userRole === 'AGENCY_AGENT' ||
-      userAccountRoleType === 'AGENCY_ADMIN' ||
-      userAccountRoleType === 'AGENCY_AGENT' ||
-      userAccountRoleType === 'AGENCY_MANAGER' ||
-      userAccountRoleType === 'OVERSEAS_AGENCY' ||
-      Boolean(userAgencyId);
+      !isArchitectUser &&
+      (userRole === 'AGENCY_MANAGER' ||
+        userRole === 'AGENCY_AGENT' ||
+        userAccountRoleType === 'AGENCY_ADMIN' ||
+        userAccountRoleType === 'AGENCY_AGENT' ||
+        userAccountRoleType === 'AGENCY_MANAGER' ||
+        userAccountRoleType === 'OVERSEAS_AGENCY' ||
+        Boolean(userAgencyId));
 
     const isInvestorUser =
-      userAccountRoleType === 'OVERSEAS_INVESTOR' ||
-      userAccountRoleType === 'OVERSEAS_BUYER' ||
-      userAccountRoleType === 'BUYER' ||
-      userAccountRoleType === 'LOCAL_PUBLIC' ||
-      userAccountRoleType === 'OVERSEAS_LOCAL_PUBLIC' ||
-      (!isAgencyUser && userRole === 'PUBLIC_USER');
+      !isArchitectUser &&
+      !isAgencyUser &&
+      (userAccountRoleType === 'OVERSEAS_INVESTOR' ||
+        userAccountRoleType === 'OVERSEAS_BUYER' ||
+        userAccountRoleType === 'BUYER' ||
+        userAccountRoleType === 'LOCAL_PUBLIC' ||
+        userAccountRoleType === 'OVERSEAS_LOCAL_PUBLIC' ||
+        userRole === 'PUBLIC_USER');
+
+    // Rule 2a: Architect Dashboard protection
+    if (isArchitectDashboardRoute) {
+      if (!isArchitectUser) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Architect account required' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        if (isAgencyUser) {
+          const redirectUrl = new URL('/agency/dashboard', req.url);
+          redirectUrl.searchParams.set('unauthorized', 'architect_portal_restricted');
+          return NextResponse.redirect(redirectUrl);
+        }
+        if (isInvestorUser) {
+          const redirectUrl = new URL('/investors/dashboard', req.url);
+          redirectUrl.searchParams.set('unauthorized', 'architect_portal_restricted');
+          return NextResponse.redirect(redirectUrl);
+        }
+        return NextResponse.redirect(new URL('/unauthorized', req.url));
+      }
+    }
+
+    // Rule 2b: If an Architect tries to visit Agency or Investor portals
+    if (isArchitectUser) {
+      if (isAgencyRoute && pathname.includes('/dashboard')) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Architect accounts cannot access Agency portals' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        const redirectUrl = new URL('/architects/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'agency_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
+      }
+      if (isInvestorRoute && pathname.includes('/dashboard')) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Architect accounts cannot access Investor portals' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        const redirectUrl = new URL('/architects/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'investor_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
 
     // Rule 2c: If an authenticated user with role INVESTOR tries to visit /agency/..., BLOCK access & redirect to /investors/dashboard
     if (!isInvestorRoute && isAgencyRoute) {
@@ -175,5 +236,6 @@ export const config = {
     '/investor/:path*',
     '/api/investors/:path*',
     '/api/investor/:path*',
+    '/architects/dashboard/:path*',
   ],
 };

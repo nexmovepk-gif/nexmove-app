@@ -12,9 +12,40 @@ export default function GlobalHeader() {
   const { data: session } = useSession();
   const { currency, setCurrency } = useCurrency();
 
+  const user = session?.user;
   const isSuperAdmin =
-    session?.user?.email?.toLowerCase() === 'nexmove.pk@gmail.com' ||
-    session?.user?.role === 'SUPER_ADMIN';
+    user?.email?.toLowerCase() === 'nexmove.pk@gmail.com' ||
+    user?.role === 'SUPER_ADMIN';
+
+  const isArchitectUser =
+    !isSuperAdmin &&
+    (Boolean(user?.isArchitect) || user?.role === 'ARCHITECT');
+
+  const isAgencyUser =
+    !isSuperAdmin &&
+    !isArchitectUser &&
+    (user?.role === 'AGENCY_MANAGER' ||
+      user?.role === 'AGENCY_AGENT' ||
+      user?.accountRoleType === 'AGENCY_ADMIN' ||
+      user?.accountRoleType === 'AGENCY_AGENT' ||
+      user?.accountRoleType === 'AGENCY_MANAGER' ||
+      user?.accountRoleType === 'OVERSEAS_AGENCY' ||
+      Boolean(user?.agencyId));
+
+  const isInvestorUser =
+    !isSuperAdmin &&
+    !isArchitectUser &&
+    !isAgencyUser &&
+    Boolean(user) &&
+    (user?.accountRoleType === 'OVERSEAS_INVESTOR' ||
+      user?.accountRoleType === 'OVERSEAS_BUYER' ||
+      user?.accountRoleType === 'BUYER' ||
+      user?.accountRoleType === 'LOCAL_PUBLIC' ||
+      user?.accountRoleType === 'OVERSEAS_LOCAL_PUBLIC' ||
+      user?.role === 'PUBLIC_USER' ||
+      user?.role === 'INVESTOR');
+
+  const isGuest = !user;
 
   // Helper to construct dynamic breadcrumbs
   const getBreadcrumbs = () => {
@@ -91,7 +122,7 @@ export default function GlobalHeader() {
         )}
       </div>
 
-      {/* Right: Currency Switcher, Persistent Navigation & Action Buttons */}
+      {/* Right: Currency Switcher, Persistent Navigation & Role-Based Action Buttons */}
       <div className="flex items-center gap-2.5 flex-shrink-0">
         {/* Currency Switcher */}
         <div className="flex items-center gap-1 bg-slate-900 border border-slate-700/80 rounded-lg px-2 py-0.5">
@@ -137,48 +168,91 @@ export default function GlobalHeader() {
         >
           Pricing
         </Link>
-        {/* Super Admin Portal Badge — only visible when logged in as SUPER_ADMIN */}
+
+        {/* 👑 SUPER_ADMIN: Show all dashboards */}
         {isSuperAdmin && (
+          <>
+            <Link
+              href="/admin/dashboard"
+              className="text-xs bg-purple-600/20 border border-purple-500/50 text-purple-300 hover:bg-purple-600/40 hover:text-purple-200 px-3 py-1 rounded-lg transition font-bold flex items-center gap-1 shadow-sm shadow-purple-900/50"
+            >
+              <span>👑</span>
+              <span className="hidden sm:inline">Admin Portal</span>
+            </Link>
+            <Link
+              href="/investors"
+              className="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
+            >
+              <span>🌐</span>
+              <span>Investor Portal</span>
+            </Link>
+            <Link
+              href="/architects/dashboard"
+              className="text-xs bg-teal-500/10 border border-teal-500/30 text-teal-300 hover:bg-teal-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
+            >
+              <span>🏛️</span>
+              <span className="hidden md:inline">Architect Portal</span>
+            </Link>
+            <Link
+              href="/agency/dashboard"
+              className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1"
+            >
+              <span>🏢</span>
+              <span className="hidden sm:inline">Agency Dashboard</span>
+            </Link>
+          </>
+        )}
+
+        {/* 📐 ARCHITECT: Show ONLY Architect Portal */}
+        {isArchitectUser && (
           <Link
-            href="/admin/dashboard"
-            className="text-xs bg-purple-600/20 border border-purple-500/50 text-purple-300 hover:bg-purple-600/40 hover:text-purple-200 px-3 py-1 rounded-lg transition font-bold flex items-center gap-1 shadow-sm shadow-purple-900/50"
+            href="/architects/dashboard"
+            className="text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-teal-950/50 flex items-center gap-1.5"
           >
-            <span>👑</span>
-            <span className="hidden sm:inline">Admin Portal</span>
+            <span>🏛️</span>
+            <span>Architect Portal</span>
           </Link>
         )}
 
-        <Link
-          href="/investors"
-          className="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
-        >
-          <span>🌐</span>
-          <span>Investor Portal</span>
-        </Link>
+        {/* 🏢 AGENCY / AGENT: Show ONLY Agency Dashboard */}
+        {isAgencyUser && (
+          <Link
+            href="/agency/dashboard"
+            className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1.5"
+          >
+            <span>🏢</span>
+            <span>Agency Dashboard</span>
+          </Link>
+        )}
 
-        <Link
-          href="/architects/dashboard"
-          className="text-xs bg-teal-500/10 border border-teal-500/30 text-teal-300 hover:bg-teal-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
-        >
-          <span>📐</span>
-          <span className="hidden md:inline">Architect Portal</span>
-        </Link>
+        {/* 💼 INVESTOR: Show ONLY Investor Portal */}
+        {isInvestorUser && (
+          <Link
+            href="/investors"
+            className="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-xl transition shadow shadow-amber-950/50 flex items-center gap-1.5"
+          >
+            <span>💼</span>
+            <span>Investor Portal</span>
+          </Link>
+        )}
 
-        <Link
-          href="/register"
-          className="text-xs bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-lg transition font-medium hidden sm:inline"
-        >
-          Register
-        </Link>
-
-        {/* Contextual "Agency Dashboard" button */}
-        <Link
-          href="/agency/dashboard"
-          className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1"
-        >
-          <span>←</span>
-          <span className="hidden sm:inline">Agency Dashboard</span>
-        </Link>
+        {/* 👤 GUEST / UNAUTHENTICATED: Show Register & Login */}
+        {isGuest && (
+          <>
+            <Link
+              href="/login"
+              className="text-xs text-slate-300 hover:text-white px-2.5 py-1 rounded-lg transition font-medium"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="text-xs bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1"
+            >
+              <span>Register</span>
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );

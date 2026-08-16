@@ -17,6 +17,7 @@ declare module 'next-auth' {
       accountRoleType?: string | null
       agencyId?: string | null
       agencyName?: string | null
+      isArchitect?: boolean
     }
   }
 }
@@ -30,6 +31,7 @@ interface AdaptedUser {
   accountRoleType: string | null
   agencyId: string | null
   agencyName: string | null
+  isArchitect: boolean
 }
 
 export interface RegisteredUser {
@@ -92,6 +94,18 @@ export const authOptions: NextAuthOptions = {
               const isSuperAdminEmail = dbUser.email.toLowerCase() === 'nexmove.pk@gmail.com'
               const finalRole = isSuperAdminEmail ? 'SUPER_ADMIN' : String(dbUser.role)
 
+              // Detect if user has a linked Architect Profile
+              let isArchitect = false
+              try {
+                const architectProfile = await prisma.architectProfile.findUnique({
+                  where: { userId: dbUser.id },
+                  select: { id: true },
+                })
+                isArchitect = Boolean(architectProfile)
+              } catch {
+                isArchitect = false
+              }
+
               return {
                 id: dbUser.id,
                 email: dbUser.email,
@@ -100,6 +114,7 @@ export const authOptions: NextAuthOptions = {
                 accountRoleType: dbUser.accountRoleType ?? null,
                 agencyId: dbUser.agencyId ?? null,
                 agencyName: dbUser.agency?.name ?? null,
+                isArchitect,
               }
             }
           }
@@ -128,6 +143,7 @@ export const authOptions: NextAuthOptions = {
         token.accountRoleType = u.accountRoleType ?? null
         token.agencyId = u.agencyId ?? null
         token.agencyName = u.agencyName ?? null
+        token.isArchitect = u.isArchitect ?? false
       }
       return token
     },
@@ -139,6 +155,7 @@ export const authOptions: NextAuthOptions = {
         session.user.accountRoleType = (token.accountRoleType as string) ?? null
         session.user.agencyId = token.agencyId as string | null
         session.user.agencyName = token.agencyName as string | null
+        session.user.isArchitect = Boolean(token.isArchitect)
       }
       return session
     },

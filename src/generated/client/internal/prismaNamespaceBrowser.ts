@@ -316,6 +316,7 @@ export const ArchitectProfileScalarFieldEnum = {
   avatarGradient: 'avatarGradient',
   avatarUrl: 'avatarUrl',
   coverImage: 'coverImage',
+  coverBannerUrl: 'coverBannerUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

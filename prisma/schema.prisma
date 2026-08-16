@@ -363,6 +363,7 @@ model ArchitectProfile {
   avatarGradient       String?
   avatarUrl            String?
   coverImage           String?
+  coverBannerUrl       String?
 
   reviews              ArchitectReview[]
   projects             ArchitectProject[]

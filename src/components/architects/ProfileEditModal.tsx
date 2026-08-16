@@ -23,6 +23,7 @@ export interface ArchitectProfileData {
   projectTypes: string[]
   avatarUrl?: string | null
   coverImage?: string | null
+  coverBannerUrl?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
   isVerified?: boolean
@@ -124,16 +125,32 @@ export default function ProfileEditModal({
   const handleAvatarFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    // Instant preview via object URL
+    const tempUrl = URL.createObjectURL(file)
+    setAvatarUrl(tempUrl)
+
     const reader = new FileReader()
-    reader.onload = () => setAvatarUrl(reader.result as string)
+    reader.onload = () => {
+      if (reader.result) {
+        setAvatarUrl(reader.result as string)
+      }
+    }
     reader.readAsDataURL(file)
   }
 
   const handleCoverFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    // Instant preview via object URL
+    const tempUrl = URL.createObjectURL(file)
+    setCoverImage(tempUrl)
+
     const reader = new FileReader()
-    reader.onload = () => setCoverImage(reader.result as string)
+    reader.onload = () => {
+      if (reader.result) {
+        setCoverImage(reader.result as string)
+      }
+    }
     reader.readAsDataURL(file)
   }
 

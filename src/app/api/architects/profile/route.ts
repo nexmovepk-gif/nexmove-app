@@ -69,7 +69,11 @@ export async function PUT(req: Request) {
       projectTypes,
       avatarUrl,
       coverImage,
+      coverBannerUrl,
     } = body;
+
+    const resolvedAvatar = (avatarUrl ?? body.avatar ?? "").trim();
+    const resolvedCover = (coverBannerUrl ?? coverImage ?? "").trim();
 
     let targetProfileId = id;
 
@@ -119,8 +123,8 @@ export async function PUT(req: Request) {
         location: finalLocation,
         ...(Array.isArray(software) && { software }),
         ...(Array.isArray(projectTypes) && { projectTypes }),
-        ...(avatarUrl !== undefined && { avatarUrl: avatarUrl ? avatarUrl.trim() : null }),
-        ...(coverImage !== undefined && { coverImage: coverImage ? coverImage.trim() : null }),
+        ...(resolvedAvatar ? { avatarUrl: resolvedAvatar } : {}),
+        ...(resolvedCover ? { coverImage: resolvedCover, coverBannerUrl: resolvedCover } : {}),
       },
     });
 

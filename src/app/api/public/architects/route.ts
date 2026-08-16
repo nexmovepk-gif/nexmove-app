@@ -18,6 +18,9 @@ export interface Architect {
   bio: string
   avatarInitials: string
   avatarGradient: string
+  avatarUrl?: string | null
+  coverImage?: string | null
+  coverBannerUrl?: string | null
   councilLicenseNo: string
   verificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED'
   verified: boolean
@@ -87,6 +90,9 @@ export async function GET(req: NextRequest) {
         bio: arch.bio || 'Verified Architect on NexMove PropTech Platform.',
         avatarInitials: arch.avatarInitials || arch.name.substring(0, 2).toUpperCase(),
         avatarGradient: arch.avatarGradient || 'from-teal-600 to-emerald-700',
+        avatarUrl: arch.avatarUrl || null,
+        coverImage: arch.coverBannerUrl || arch.coverImage || null,
+        coverBannerUrl: arch.coverBannerUrl || arch.coverImage || null,
         councilLicenseNo: arch.pcatpNo || arch.councilLicenseNo || 'VERIFIED-PCATP',
         verificationStatus: (arch.verificationStatus as unknown as Architect['verificationStatus']) || 'VERIFIED',
         verified: arch.isVerified || arch.status === 'APPROVED' || arch.verificationStatus === 'VERIFIED',

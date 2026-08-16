@@ -204,7 +204,11 @@ export default function ArchitectDashboardPage() {
   const handleProfilePicUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !profile) return
+    // Instant local preview
+    const tempUrl = URL.createObjectURL(file)
+    setProfile((prev) => (prev ? { ...prev, avatarUrl: tempUrl } : null))
     setUploadingAvatar(true)
+
     try {
       const reader = new FileReader()
       reader.onload = async () => {
@@ -227,6 +231,7 @@ export default function ArchitectDashboardPage() {
             software: profile.software,
             avatarUrl,
             coverImage: profile.coverImage,
+            coverBannerUrl: profile.coverImage,
           }),
         })
         if (!res.ok) throw new Error('Failed to update avatar')
@@ -247,7 +252,12 @@ export default function ArchitectDashboardPage() {
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !profile) return
+    // Instant local preview
+    const tempUrl = URL.createObjectURL(file)
+    setProfile((prev) => (prev ? { ...prev, coverImage: tempUrl } : null))
+    setCoverUrlInput(tempUrl)
     setUploadingCover(true)
+
     try {
       const reader = new FileReader()
       reader.onload = async () => {
@@ -270,6 +280,7 @@ export default function ArchitectDashboardPage() {
             software: profile.software,
             avatarUrl: profile.avatarUrl,
             coverImage,
+            coverBannerUrl: coverImage,
           }),
         })
         if (!res.ok) throw new Error('Failed to update cover photo')

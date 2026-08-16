@@ -2,7 +2,7 @@
 // src/app/architects/dashboard/page.tsx
 // LinkedIn-Style Off-White Architect Portal & Dashboard — Full Refactor
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -153,6 +153,14 @@ export default function ArchitectDashboardPage() {
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
+  // ── Direct avatar / cover upload refs ────────────────────────────────────
+  const avatarInputRef = useRef<HTMLInputElement>(null)
+  const coverInputRef = useRef<HTMLInputElement>(null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [coverUploading, setCoverUploading] = useState(false)
+  // Controls whether ProfileEditModal opens in edit-mode or view-mode
+  const [profileModalEditMode, setProfileModalEditMode] = useState(false)
+
   const loadDashboardData = useCallback(async () => {
     setLoading(true)
     try {
@@ -228,6 +236,99 @@ export default function ArchitectDashboardPage() {
     }
   }
 
+  // ── Direct avatar upload: reads file → saves to DB → reloads ─────────────
+  const handleDirectAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+    setAvatarUploading(true)
+    try {
+      const reader = new FileReader()
+      reader.onload = async () => {
+        const avatarUrl = reader.result as string
+        const res = await fetch('/api/architects/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: profile.id,
+            name: profile.name,
+            phone: profile.phone,
+            companyName: profile.companyName,
+            specialization: profile.specialization,
+            experienceYears: profile.experienceYears,
+            pcatpNo: profile.pcatpNo,
+            bio: profile.bio,
+            isOverseas: profile.isOverseas,
+            country: profile.country,
+            city: profile.city,
+            software: profile.software,
+            avatarUrl,
+            coverImage: profile.coverImage,
+          }),
+        })
+        if (!res.ok) throw new Error('Failed to save avatar')
+        setMessage({ text: '✓ Profile picture updated!', type: 'success' })
+        loadDashboardData()
+      }
+      reader.readAsDataURL(file)
+    } catch (err) {
+      console.error(err)
+      setMessage({ text: 'Failed to upload avatar', type: 'error' })
+    } finally {
+      setAvatarUploading(false)
+      // Reset so the same file can be re-selected
+      if (avatarInputRef.current) avatarInputRef.current.value = ''
+    }
+  }
+
+  // ── Direct cover upload: reads file → saves to DB → reloads ──────────────
+  const handleDirectCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+    setCoverUploading(true)
+    try {
+      const reader = new FileReader()
+      reader.onload = async () => {
+        const coverImage = reader.result as string
+        const res = await fetch('/api/architects/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: profile.id,
+            name: profile.name,
+            phone: profile.phone,
+            companyName: profile.companyName,
+            specialization: profile.specialization,
+            experienceYears: profile.experienceYears,
+            pcatpNo: profile.pcatpNo,
+            bio: profile.bio,
+            isOverseas: profile.isOverseas,
+            country: profile.country,
+            city: profile.city,
+            software: profile.software,
+            avatarUrl: profile.avatarUrl,
+            coverImage,
+          }),
+        })
+        if (!res.ok) throw new Error('Failed to save cover')
+        setMessage({ text: '✓ Cover photo updated!', type: 'success' })
+        loadDashboardData()
+      }
+      reader.readAsDataURL(file)
+    } catch (err) {
+      console.error(err)
+      setMessage({ text: 'Failed to upload cover photo', type: 'error' })
+    } finally {
+      setCoverUploading(false)
+      if (coverInputRef.current) coverInputRef.current.value = ''
+    }
+  }
+
+  // Open profile modal and control whether it starts in edit-mode
+  const openProfileModal = (editMode = false) => {
+    setProfileModalEditMode(editMode)
+    setShowProfileModal(true)
+  }
+
   if (status === 'loading' || loading) {
     return (
       <main className="min-h-screen bg-[#f3f4f6] text-slate-800 flex items-center justify-center p-6">
@@ -291,10 +392,28 @@ export default function ArchitectDashboardPage() {
         <div className="lg:col-span-4 flex flex-col gap-5">
           {/* Profile card */}
           <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-            {/* Cover Banner */}
+
+            {/* ── Hidden file inputs for direct upload ── */}
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleDirectAvatarUpload}
+            />
+            <input
+              ref={coverInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleDirectCoverUpload}
+            />
+
+            {/* ── Cover Banner — click triggers Profile Editor Modal ── */}
             <div
-              onClick={() => setShowProfileModal(true)}
+              onClick={() => openProfileModal(true)}
               className="relative h-32 bg-gradient-to-r from-teal-700 via-emerald-800 to-slate-800 cursor-pointer group"
+              title="Click to edit cover photo"
             >
               {profile?.coverImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -308,17 +427,20 @@ export default function ArchitectDashboardPage() {
                   NexMove Engine
                 </div>
               )}
-              <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/30 transition flex items-center justify-center">
-                <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition bg-slate-900/70 px-2.5 py-1 rounded-full">
+              <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition flex items-center justify-center pointer-events-none">
+                <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition bg-slate-900/70 px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow">
                   📷 Edit Cover
                 </span>
               </div>
             </div>
 
-            {/* Avatar & Info */}
+            {/* ── Avatar & Info ── */}
             <div className="px-5 pb-5 pt-0 relative flex flex-col items-center text-center -mt-12">
-              <div
-                onClick={() => setShowProfileModal(true)}
+              {/* Avatar circle — click opens Profile Editor Modal */}
+              <button
+                type="button"
+                onClick={() => openProfileModal(true)}
+                title="Click to view & edit profile"
                 className="relative w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white font-black text-2xl cursor-pointer group"
               >
                 {profile?.avatarUrl ? (
@@ -331,10 +453,12 @@ export default function ArchitectDashboardPage() {
                 ) : (
                   profile?.avatarInitials || session?.user?.name?.substring(0, 2).toUpperCase() || 'AR'
                 )}
-                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-[10px] font-bold">
-                  ✏️ Edit
+                {/* Camera / Edit hover overlay */}
+                <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-0.5 pointer-events-none">
+                  <span className="text-base leading-none">📷</span>
+                  <span className="text-[9px] font-bold text-white uppercase tracking-wider">Edit</span>
                 </div>
-              </div>
+              </button>
 
               <div className="mt-3 flex flex-col items-center gap-1">
                 <div className="flex items-center gap-1.5">
@@ -378,10 +502,11 @@ export default function ArchitectDashboardPage() {
               </div>
 
               <button
-                onClick={() => setShowProfileModal(true)}
-                className="mt-4 w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2.5 rounded-xl transition border border-slate-200"
+                onClick={() => openProfileModal(true)}
+                className="mt-4 w-full bg-slate-900 hover:bg-slate-700 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
               >
-                ⚙️ View / Edit Profile
+                <span>⚙️</span>
+                <span>View / Edit Profile</span>
               </button>
             </div>
           </div>
@@ -694,6 +819,7 @@ export default function ArchitectDashboardPage() {
           isOpen={showProfileModal}
           onClose={() => setShowProfileModal(false)}
           onSaved={loadDashboardData}
+          openInEditMode={profileModalEditMode}
         />
       )}
 

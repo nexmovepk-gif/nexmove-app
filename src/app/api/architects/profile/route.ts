@@ -61,11 +61,14 @@ export async function PUT(req: Request) {
       companyName,
       specialization,
       experienceYears,
+      pcatpNo,
       isOverseas,
       country,
       city,
       software,
       projectTypes,
+      avatarUrl,
+      coverImage,
     } = body;
 
     let targetProfileId = id;
@@ -109,12 +112,15 @@ export async function PUT(req: Request) {
         ...(companyName !== undefined && { companyName: companyName ? companyName.trim() : null }),
         ...(specialization && { specialization: specialization.trim() }),
         ...(experienceYears !== undefined && { experienceYears: Number(experienceYears) || 0 }),
+        ...(pcatpNo !== undefined && { pcatpNo: pcatpNo ? pcatpNo.trim() : null }),
         ...(isOverseas !== undefined && { isOverseas: Boolean(isOverseas) }),
         ...(country !== undefined && { country: finalCountry }),
         ...(city !== undefined && { city: finalCity }),
         location: finalLocation,
         ...(Array.isArray(software) && { software }),
         ...(Array.isArray(projectTypes) && { projectTypes }),
+        ...(avatarUrl !== undefined && { avatarUrl: avatarUrl ? avatarUrl.trim() : null }),
+        ...(coverImage !== undefined && { coverImage: coverImage ? coverImage.trim() : null }),
       },
     });
 

@@ -2,7 +2,7 @@
 // src/components/architects/ProfileEditModal.tsx
 // LinkedIn-Style Profile View & Edit Drawer/Modal — Enhanced with Rating Stars & Cover Upload
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import VerifiedBadge from '@/components/VerifiedBadge'
 
 export interface ArchitectProfileData {
@@ -34,6 +34,8 @@ interface ProfileEditModalProps {
   isOpen: boolean
   onClose: () => void
   onSaved: () => void
+  /** When true the modal opens directly in the Edit Form view (skips the read-only overview) */
+  openInEditMode?: boolean
 }
 
 const SPECIALIZATION_OPTIONS = [
@@ -74,8 +76,10 @@ export default function ProfileEditModal({
   isOpen,
   onClose,
   onSaved,
+  openInEditMode = false,
 }: ProfileEditModalProps) {
-  const [isEditing, setIsEditing] = useState(false)
+  // Start in edit mode if the caller requested it (e.g., "Edit Profile" button)
+  const [isEditing, setIsEditing] = useState(openInEditMode)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
 
@@ -93,6 +97,27 @@ export default function ProfileEditModal({
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl || '')
   const [coverImage, setCoverImage] = useState(profile.coverImage || '')
   const [softwareInput, setSoftwareInput] = useState(profile.software?.join(', ') || 'Revit, AutoCAD, 3ds Max')
+
+  // Synchronize state whenever modal opens or profile changes
+  useEffect(() => {
+    if (isOpen) {
+      setName(profile.name || '')
+      setPhone(profile.phone || '')
+      setCompanyName(profile.companyName || '')
+      setSpecialization(profile.specialization || '3D Visualizer')
+      setExperienceYears((profile.experienceYears || 5).toString())
+      setPcatpNo(profile.pcatpNo || '')
+      setBio(profile.bio || '')
+      setIsOverseas(Boolean(profile.isOverseas))
+      setCountry(profile.country || 'Pakistan')
+      setCity(profile.city || '')
+      setAvatarUrl(profile.avatarUrl || '')
+      setCoverImage(profile.coverImage || '')
+      setSoftwareInput(profile.software?.join(', ') || 'Revit, AutoCAD, 3ds Max')
+      setIsEditing(openInEditMode)
+      setMessage(null)
+    }
+  }, [isOpen, profile, openInEditMode])
 
   if (!isOpen) return null
 
@@ -191,7 +216,7 @@ export default function ProfileEditModal({
             </div>
           )}
 
-          {/* Click-to-upload cover overlay — always visible on hover */}
+          {/* Click-to-upload cover overlay */}
           <label className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition flex items-center justify-center cursor-pointer">
             <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition bg-slate-900/70 px-3 py-1.5 rounded-full flex items-center gap-1.5">
               📷 Change Cover Photo
@@ -258,9 +283,10 @@ export default function ProfileEditModal({
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
-              className="text-xs bg-slate-900 hover:bg-slate-700 text-white font-bold px-4 py-2 rounded-xl transition shadow-sm"
+              className="text-xs bg-slate-900 hover:bg-slate-700 text-white font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5"
             >
-              ✏️ Edit Profile
+              <span>✏️</span>
+              <span>Edit Profile</span>
             </button>
           ) : (
             <button
@@ -384,6 +410,7 @@ export default function ProfileEditModal({
             /* ── EDIT FORM ── */
             <form onSubmit={handleSave} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Full Name */}
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-bold text-slate-700">Full Name *</label>
                   <input
@@ -391,10 +418,12 @@ export default function ProfileEditModal({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    placeholder="e.g. Ar. Ahmed Khan"
                     className="bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-500/30 transition"
                   />
                 </div>
 
+                {/* Phone Number */}
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-bold text-slate-700">Phone Number (WhatsApp)</label>
                   <input
@@ -406,6 +435,7 @@ export default function ProfileEditModal({
                   />
                 </div>
 
+                {/* Company Name */}
                 <div className="flex flex-col gap-1 sm:col-span-2">
                   <label className="text-xs font-bold text-slate-700">Company / Firm Name</label>
                   <input
@@ -417,6 +447,53 @@ export default function ProfileEditModal({
                   />
                 </div>
 
+                {/* Avatar Image (Upload / URL) */}
+                <div className="flex flex-col gap-1.5 sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700">Profile Picture (Avatar)</label>
+                    <label className="text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold px-3 py-1 rounded-lg cursor-pointer transition">
+                      📁 Upload Avatar File
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAvatarFile}
+                      />
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    value={avatarUrl}
+                    onChange={(e) => setAvatarUrl(e.target.value)}
+                    placeholder="Or paste avatar image URL (https://...)"
+                    className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-600 transition"
+                  />
+                </div>
+
+                {/* Cover Banner Image (Upload / URL) */}
+                <div className="flex flex-col gap-1.5 sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700">Cover Banner Image</label>
+                    <label className="text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold px-3 py-1 rounded-lg cursor-pointer transition">
+                      📁 Upload Cover File
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleCoverFile}
+                      />
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    value={coverImage}
+                    onChange={(e) => setCoverImage(e.target.value)}
+                    placeholder="Or paste cover banner image URL (https://...)"
+                    className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-600 transition"
+                  />
+                </div>
+
+                {/* Specialization */}
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-bold text-slate-700">Specialization</label>
                   <select
@@ -430,6 +507,7 @@ export default function ProfileEditModal({
                   </select>
                 </div>
 
+                {/* Experience Years */}
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-bold text-slate-700">Experience Years</label>
                   <input
@@ -442,7 +520,8 @@ export default function ProfileEditModal({
                   />
                 </div>
 
-                <div className="flex flex-col gap-1">
+                {/* PCATP License No */}
+                <div className="flex flex-col gap-1 sm:col-span-2">
                   <label className="text-xs font-bold text-slate-700">PCATP License No.</label>
                   <input
                     type="text"
@@ -453,6 +532,7 @@ export default function ProfileEditModal({
                   />
                 </div>
 
+                {/* Software Stack */}
                 <div className="flex flex-col gap-1 sm:col-span-2">
                   <label className="text-xs font-bold text-slate-700">Software Stack (comma separated)</label>
                   <input
@@ -514,6 +594,7 @@ export default function ProfileEditModal({
                   </div>
                 )}
 
+                {/* Bio / About */}
                 <div className="flex flex-col gap-1 sm:col-span-2">
                   <label className="text-xs font-bold text-slate-700">Bio / About Me</label>
                   <textarea

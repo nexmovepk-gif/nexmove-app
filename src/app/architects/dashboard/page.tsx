@@ -2,7 +2,7 @@
 // src/app/architects/dashboard/page.tsx
 // LinkedIn-Style Off-White Architect Portal & Dashboard — Full Refactor
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -139,9 +139,17 @@ export default function ArchitectDashboardPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Modals
-  const [showProfileModal, setShowProfileModal] = useState(false)
+  // ── Modals & Dialogs State ────────────────────────────────────────────────
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false)
   const [showPostModal, setShowPostModal] = useState(false)
+
+  // ── Hidden File Input References ──────────────────────────────────────────
+  const profileInputRef = useRef<HTMLInputElement>(null)
+  const coverInputRef = useRef<HTMLInputElement>(null)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [uploadingCover, setUploadingCover] = useState(false)
+  const [coverUrlInput, setCoverUrlInput] = useState('')
 
   // Social state
   const [likedProjects, setLikedProjects] = useState<Record<string, boolean>>({})
@@ -153,16 +161,16 @@ export default function ArchitectDashboardPage() {
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  // Controls whether ProfileEditModal opens in edit-mode or view-mode
-  const [profileModalEditMode, setProfileModalEditMode] = useState(false)
-
   const loadDashboardData = useCallback(async () => {
     setLoading(true)
     try {
       const profRes = await fetch('/api/architects/profile')
       if (profRes.ok) {
         const profData = await profRes.json()
-        if (profData.profile) setProfile(profData.profile)
+        if (profData.profile) {
+          setProfile(profData.profile)
+          setCoverUrlInput(profData.profile.coverImage || '')
+        }
       }
 
       const projRes = await fetch('/api/architects/projects')
@@ -191,6 +199,131 @@ export default function ArchitectDashboardPage() {
       loadDashboardData()
     }
   }, [status, router, loadDashboardData])
+
+  // ── Fast Direct Profile Picture Upload ────────────────────────────────────
+  const handleProfilePicUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+    setUploadingAvatar(true)
+    try {
+      const reader = new FileReader()
+      reader.onload = async () => {
+        const avatarUrl = reader.result as string
+        const res = await fetch('/api/architects/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: profile.id,
+            name: profile.name,
+            phone: profile.phone,
+            companyName: profile.companyName,
+            specialization: profile.specialization,
+            experienceYears: profile.experienceYears,
+            pcatpNo: profile.pcatpNo,
+            bio: profile.bio,
+            isOverseas: profile.isOverseas,
+            country: profile.country,
+            city: profile.city,
+            software: profile.software,
+            avatarUrl,
+            coverImage: profile.coverImage,
+          }),
+        })
+        if (!res.ok) throw new Error('Failed to update avatar')
+        setMessage({ text: '✓ Profile picture updated successfully!', type: 'success' })
+        loadDashboardData()
+      }
+      reader.readAsDataURL(file)
+    } catch (err) {
+      console.error(err)
+      setMessage({ text: 'Failed to upload profile picture', type: 'error' })
+    } finally {
+      setUploadingAvatar(false)
+      if (profileInputRef.current) profileInputRef.current.value = ''
+    }
+  }
+
+  // ── Fast Direct Cover Photo Upload ────────────────────────────────────────
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+    setUploadingCover(true)
+    try {
+      const reader = new FileReader()
+      reader.onload = async () => {
+        const coverImage = reader.result as string
+        const res = await fetch('/api/architects/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: profile.id,
+            name: profile.name,
+            phone: profile.phone,
+            companyName: profile.companyName,
+            specialization: profile.specialization,
+            experienceYears: profile.experienceYears,
+            pcatpNo: profile.pcatpNo,
+            bio: profile.bio,
+            isOverseas: profile.isOverseas,
+            country: profile.country,
+            city: profile.city,
+            software: profile.software,
+            avatarUrl: profile.avatarUrl,
+            coverImage,
+          }),
+        })
+        if (!res.ok) throw new Error('Failed to update cover photo')
+        setMessage({ text: '✓ Cover photo updated successfully!', type: 'success' })
+        setIsCoverModalOpen(false)
+        loadDashboardData()
+      }
+      reader.readAsDataURL(file)
+    } catch (err) {
+      console.error(err)
+      setMessage({ text: 'Failed to upload cover photo', type: 'error' })
+    } finally {
+      setUploadingCover(false)
+      if (coverInputRef.current) coverInputRef.current.value = ''
+    }
+  }
+
+  // ── Save Cover Photo from URL Input Modal ─────────────────────────────────
+  const handleSaveCoverUrl = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!profile) return
+    setUploadingCover(true)
+    try {
+      const res = await fetch('/api/architects/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: profile.id,
+          name: profile.name,
+          phone: profile.phone,
+          companyName: profile.companyName,
+          specialization: profile.specialization,
+          experienceYears: profile.experienceYears,
+          pcatpNo: profile.pcatpNo,
+          bio: profile.bio,
+          isOverseas: profile.isOverseas,
+          country: profile.country,
+          city: profile.city,
+          software: profile.software,
+          avatarUrl: profile.avatarUrl,
+          coverImage: coverUrlInput.trim(),
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to update cover photo URL')
+      setMessage({ text: '✓ Cover photo URL updated successfully!', type: 'success' })
+      setIsCoverModalOpen(false)
+      loadDashboardData()
+    } catch (err) {
+      console.error(err)
+      setMessage({ text: 'Failed to save cover photo URL', type: 'error' })
+    } finally {
+      setUploadingCover(false)
+    }
+  }
 
   const toggleLike = async (id: string) => {
     const isLiked = likedProjects[id]
@@ -229,12 +362,6 @@ export default function ArchitectDashboardPage() {
     } finally {
       setDeletingId(null)
     }
-  }
-
-  // Open profile modal and control whether it starts in edit-mode
-  const openProfileModal = (editMode = false) => {
-    setProfileModalEditMode(editMode)
-    setShowProfileModal(true)
   }
 
   if (status === 'loading' || loading) {
@@ -301,12 +428,33 @@ export default function ArchitectDashboardPage() {
           {/* Profile card */}
           <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm flex flex-col">
 
-            {/* ── Cover Banner — click triggers Profile Editor Modal ── */}
+            {/* ── Hidden File Inputs for Fast Direct Upload ── */}
+            <input
+              type="file"
+              ref={profileInputRef}
+              accept="image/*"
+              onChange={handleProfilePicUpload}
+              className="hidden"
+            />
+            <input
+              type="file"
+              ref={coverInputRef}
+              accept="image/*"
+              onChange={handleCoverUpload}
+              className="hidden"
+            />
+
+            {/* ── Cover Banner ── */}
             <div
-              onClick={() => openProfileModal(true)}
               className="relative h-32 bg-gradient-to-r from-teal-700 via-emerald-800 to-slate-800 cursor-pointer group"
+              onClick={() => setIsCoverModalOpen(true)}
               title="Click to edit cover photo"
             >
+              {uploadingCover && (
+                <div className="absolute inset-0 bg-slate-900/60 z-10 flex items-center justify-center">
+                  <div className="w-6 h-6 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                </div>
+              )}
               {profile?.coverImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -319,10 +467,18 @@ export default function ArchitectDashboardPage() {
                   NexMove Engine
                 </div>
               )}
-              <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition flex items-center justify-center pointer-events-none">
-                <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition bg-slate-900/70 px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow">
-                  📷 Edit Cover
-                </span>
+              <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/40 transition flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsCoverModalOpen(true)
+                  }}
+                  className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition bg-slate-900/80 hover:bg-slate-900 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow"
+                >
+                  <span>📷</span>
+                  <span>Edit Cover</span>
+                </button>
               </div>
             </div>
 
@@ -331,11 +487,13 @@ export default function ArchitectDashboardPage() {
               {/* Avatar circle — click opens Profile Editor Modal */}
               <button
                 type="button"
-                onClick={() => openProfileModal(true)}
+                onClick={() => setIsProfileModalOpen(true)}
                 title="Click to view & edit profile"
                 className="relative w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white font-black text-2xl cursor-pointer group"
               >
-                {profile?.avatarUrl ? (
+                {uploadingAvatar ? (
+                  <div className="w-7 h-7 border-[3px] border-white/40 border-t-white rounded-full animate-spin" />
+                ) : profile?.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={profile.avatarUrl}
@@ -346,7 +504,7 @@ export default function ArchitectDashboardPage() {
                   profile?.avatarInitials || session?.user?.name?.substring(0, 2).toUpperCase() || 'AR'
                 )}
                 {/* Camera / Edit hover overlay */}
-                <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-0.5 pointer-events-none">
+                <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition flex flex-col items-center justify-center gap-0.5">
                   <span className="text-base leading-none">📷</span>
                   <span className="text-[9px] font-bold text-white uppercase tracking-wider">Edit</span>
                 </div>
@@ -393,8 +551,10 @@ export default function ArchitectDashboardPage() {
                 </div>
               </div>
 
+              {/* ── View / Edit Profile Button ── */}
               <button
-                onClick={() => openProfileModal(true)}
+                type="button"
+                onClick={() => setIsProfileModalOpen(true)}
                 className="mt-4 w-full bg-slate-900 hover:bg-slate-700 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
               >
                 <span>⚙️</span>
@@ -527,7 +687,7 @@ export default function ArchitectDashboardPage() {
                 <div className="p-4 flex items-center justify-between border-b border-slate-100">
                   <div
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() => setShowProfileModal(true)}
+                    onClick={() => setIsProfileModalOpen(true)}
                   >
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-600 to-emerald-700 text-white font-bold text-xs flex items-center justify-center overflow-hidden flex-shrink-0">
                       {profile?.avatarUrl ? (
@@ -708,11 +868,106 @@ export default function ArchitectDashboardPage() {
       {profile && (
         <ProfileEditModal
           profile={profile}
-          isOpen={showProfileModal}
-          onClose={() => setShowProfileModal(false)}
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
           onSaved={loadDashboardData}
-          openInEditMode={profileModalEditMode}
+          openInEditMode={true}
         />
+      )}
+
+      {/* ── High Z-Index Cover Banner Modal ─────────────────────────────── */}
+      {isCoverModalOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          onClick={() => setIsCoverModalOpen(false)}
+        >
+          <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 shadow-2xl flex flex-col gap-4 text-slate-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">📷</span>
+                <h3 className="text-sm font-bold text-slate-900">Update Cover Banner</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsCoverModalOpen(false)}
+                className="text-slate-400 hover:text-slate-700 text-lg leading-none transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Live Preview */}
+            <div className="relative h-28 bg-gradient-to-r from-teal-700 to-slate-800 rounded-xl overflow-hidden border border-slate-200">
+              {coverUrlInput ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={coverUrlInput}
+                  alt="Cover preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white/30 text-xs font-bold uppercase tracking-widest">
+                  Preview
+                </div>
+              )}
+            </div>
+
+            {/* File Upload Option */}
+            <div className="flex flex-col gap-1.5 bg-slate-50 border border-slate-200 rounded-xl p-3">
+              <span className="text-xs font-bold text-slate-700">Option 1: Upload from Computer</span>
+              <button
+                type="button"
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploadingCover}
+                className="w-full bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+              >
+                {uploadingCover ? (
+                  <span>Uploading...</span>
+                ) : (
+                  <>
+                    <span>📁</span>
+                    <span>Choose Image File (JPG, PNG, WEBP)</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* URL Input Form */}
+            <form onSubmit={handleSaveCoverUrl} className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-bold text-slate-700">Option 2: Paste Direct Image URL</span>
+                <input
+                  type="text"
+                  value={coverUrlInput}
+                  onChange={(e) => setCoverUrlInput(e.target.value)}
+                  placeholder="https://images.unsplash.com/photo-..."
+                  className="bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-600 transition"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsCoverModalOpen(false)}
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2.5 rounded-xl transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={uploadingCover}
+                  className="flex-1 bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs py-2.5 rounded-xl transition shadow disabled:opacity-50"
+                >
+                  Save URL
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
       <LinkedInStylePostModal

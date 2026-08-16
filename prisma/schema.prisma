@@ -361,6 +361,8 @@ model ArchitectProfile {
   councilLicenseNo     String?
   avatarInitials       String?
   avatarGradient       String?
+  avatarUrl            String?
+  coverImage           String?
 
   reviews              ArchitectReview[]
   projects             ArchitectProject[]
@@ -395,6 +397,9 @@ model ArchitectProject {
   software      String[]         @default([])
   imageUrl      String?
   imageUrls     String[]         @default([])
+  videoUrl      String?
+  tags          String[]         @default([])
+  likesCount    Int              @default(0)
   completedYear Int?
   status        ProjectStatus    @default(COMPLETED)
   completedAt   DateTime?

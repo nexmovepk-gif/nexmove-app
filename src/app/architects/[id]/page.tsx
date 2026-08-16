@@ -1,29 +1,50 @@
 'use client'
 // src/app/architects/[id]/page.tsx
+// LinkedIn-Style Architect Public Profile View — Social Actions, Star Rating, Multi-Image Gallery
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import VerifiedBadge from '@/components/VerifiedBadge'
+
+interface Project {
+  id: string
+  title: string
+  description?: string | null
+  category?: string | null
+  software: string[]
+  imageUrl?: string | null
+  imageUrls?: string[]
+  videoUrl?: string | null
+  tags?: string[]
+  likesCount?: number
+  completedYear?: number | null
+}
 
 interface ArchitectDetail {
   id: string
   name: string
   title: string
   specialization: string
+  companyName?: string | null
+  isOverseas?: boolean
+  country?: string | null
+  city?: string | null
   bio: string
   avatarInitials: string
   avatarGradient: string
+  avatarUrl?: string | null
+  coverImage?: string | null
   councilLicenseNo: string
+  pcatpNo?: string | null
   verified: boolean
   experienceYears: number
   experienceLevel: string
-  degrees?: string[]
   software: string[]
   projectTypes: string[]
   portfolioLinks: string[]
   portfolioImages: string[]
+  projects?: Project[]
   avgRating: number
   reviewCount: number
   completedProjects: number
@@ -33,81 +54,186 @@ interface ArchitectDetail {
   joinedAt: string
 }
 
-// ─── Proposal Modal ───────────────────────────────────────────────────────────
-function ProposalModal({ architect, onClose }: { architect: ArchitectDetail; onClose: () => void }) {
-  const [agencyName, setAgencyName] = useState('')
-  const [contactEmail, setContactEmail] = useState('')
-  const [propertyListingId, setPropertyListingId] = useState('')
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
+// ── Star Rating Interactive Widget ─────────────────────────────────────────
+function StarRater({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [hovered, setHovered] = useState(0)
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          onClick={() => onChange(star)}
+          onMouseEnter={() => setHovered(star)}
+          onMouseLeave={() => setHovered(0)}
+          className={`text-2xl leading-none transition-transform hover:scale-110 ${
+            star <= (hovered || value) ? 'text-amber-400' : 'text-slate-200'
+          }`}
+        >
+          ★
+        </button>
+      ))}
+    </div>
+  )
+}
+
+// ── Star Display (read-only) ───────────────────────────────────────────────
+function StarDisplay({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span key={i} className={`text-sm leading-none ${i <= Math.round(rating) ? 'text-amber-400' : 'text-slate-200'}`}>
+          ★
+        </span>
+      ))}
+      <span className="ml-1 text-xs font-bold text-slate-600">{rating.toFixed(1)}</span>
+    </div>
+  )
+}
+
+// ── Image Gallery (inline mosaic) ──────────────────────────────────────────
+function ProjectImageGallery({ urls, title }: { urls: string[]; title: string }) {
+  const [lightbox, setLightbox] = useState<string | null>(null)
+  if (urls.length === 0) return null
+
+  if (urls.length === 1) {
+    return (
+      <>
+        <div
+          className="bg-slate-950 h-56 overflow-hidden cursor-zoom-in"
+          onClick={() => setLightbox(urls[0])}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={urls[0]} alt={title} className="w-full h-full object-cover hover:scale-105 transition duration-300" />
+        </div>
+        {lightbox && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 p-4" onClick={() => setLightbox(null)}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={lightbox} alt={title} className="max-w-full max-h-full object-contain rounded-xl" />
+          </div>
+        )}
+      </>
+    )
+  }
+
+  const visible = urls.slice(0, 4)
+  const overflow = urls.length - 4
+
+  return (
+    <>
+      <div className={`grid gap-0.5 ${urls.length === 2 ? 'grid-cols-2' : 'grid-cols-2'} h-56 overflow-hidden`}>
+        {visible.map((url, idx) => (
+          <div
+            key={idx}
+            className="relative overflow-hidden bg-slate-900 cursor-zoom-in"
+            onClick={() => setLightbox(url)}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={url} alt={`${title} ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition duration-300" />
+            {idx === 3 && overflow > 0 && (
+              <div className="absolute inset-0 bg-slate-900/70 flex items-center justify-center">
+                <span className="text-white text-xl font-black">+{overflow}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {lightbox && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 p-4" onClick={() => setLightbox(null)}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={lightbox} alt={title} className="max-w-full max-h-full object-contain rounded-xl" />
+        </div>
+      )}
+    </>
+  )
+}
+
+// ── Review Submit Modal ────────────────────────────────────────────────────
+function ReviewModal({ architectId, architectName, onClose }: {
+  architectId: string
+  architectName: string
+  onClose: () => void
+}) {
+  const [rating, setRating] = useState(0)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [comment, setComment] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
+    if (rating === 0) { setError('Please select a star rating.'); return }
+    setSubmitting(true)
     setError(null)
     try {
-      const res = await fetch('/api/architects/proposal', {
+      const res = await fetch('/api/architects/review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ architectId: architect.id, architectName: architect.name, agencyName, contactEmail, propertyListingId, message }),
+        body: JSON.stringify({ architectId, reviewerName: name, reviewerEmail: email, rating, comment }),
       })
-      if (!res.ok) throw new Error('Failed to send proposal')
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to submit review')
       setSuccess(true)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to send proposal')
+      setError(err instanceof Error ? err.message : 'Error submitting review')
     } finally {
-      setLoading(false)
+      setSubmitting(false)
     }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-sm" />
-      <div className="relative w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl p-6 flex flex-col gap-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
+      <div
+        className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 flex flex-col gap-4 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-base font-black text-slate-100">Request Design Proposal</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Sending to <span className="text-teal-400 font-bold">{architect.name}</span></p>
+            <h3 className="text-base font-bold text-slate-900">Leave a Review</h3>
+            <p className="text-xs text-slate-500">Rate <span className="font-bold text-teal-700">{architectName}</span></p>
           </div>
-          <button onClick={onClose} className="text-slate-500 hover:text-slate-300 transition text-lg leading-none">✕</button>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-lg">✕</button>
         </div>
 
         {success ? (
-          <div className="flex flex-col items-center gap-3 py-6 text-center">
-            <div className="w-14 h-14 rounded-full bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 text-2xl">✓</div>
-            <p className="text-sm font-bold text-teal-400">Proposal Sent Successfully!</p>
-            <p className="text-xs text-slate-400 max-w-xs">Your request has been sent to {architect.name}. They will review and respond to your inquiry directly.</p>
-            <button onClick={onClose} className="mt-2 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-5 py-2.5 rounded-xl transition font-medium">Close</button>
+          <div className="py-4 text-center flex flex-col items-center gap-2">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 text-2xl flex items-center justify-center">✓</div>
+            <p className="text-sm font-bold text-emerald-700">Review Submitted!</p>
+            <p className="text-xs text-slate-500">Thank you for your feedback.</p>
+            <button onClick={onClose} className="mt-1 text-xs bg-slate-100 text-slate-700 px-4 py-2 rounded-xl font-bold">Close</button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {error && <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-xl">{error}</div>}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">Agency / Company Name *</label>
-                <input type="text" value={agencyName} onChange={(e) => setAgencyName(e.target.value)} placeholder="Premier Properties Agency" required className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">Contact Email *</label>
-                <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="contact@agency.com" required className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition" />
-              </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            {error && <div className="bg-red-50 text-red-700 text-xs p-2.5 rounded-xl">{error}</div>}
+
+            <div className="flex flex-col items-center gap-1 py-2">
+              <p className="text-xs text-slate-500 font-medium">Your Rating</p>
+              <StarRater value={rating} onChange={setRating} />
+              {rating > 0 && (
+                <p className="text-xs text-amber-600 font-bold">
+                  {['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][rating]}
+                </p>
+              )}
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-300">Property Listing ID <span className="text-slate-600 font-normal">(optional)</span></label>
-              <input type="text" value={propertyListingId} onChange={(e) => setPropertyListingId(e.target.value)} placeholder="e.g. lst_123456 — link to an active property listing" className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition font-mono" />
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-700">Your Name *</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Ahmed Khan" className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500 transition" />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-slate-300">Proposal Message *</label>
-              <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Describe your project requirements, site details, budget range, and expected deliverables..." required rows={4} className="bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 transition resize-none" />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-700">Email (optional)</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500 transition" />
             </div>
-            <div className="flex gap-2.5 pt-1">
-              <button type="button" onClick={onClose} className="flex-1 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-2.5 rounded-xl transition font-medium">Cancel</button>
-              <button type="submit" disabled={loading} className="flex-1 text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold py-2.5 rounded-xl transition disabled:opacity-50">
-                {loading ? 'Sending...' : 'Send Proposal Request'}
-              </button>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-700">Review Comment</label>
+              <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} placeholder="Describe your experience working with this architect..." className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 resize-none focus:outline-none focus:border-teal-500 transition" />
             </div>
+            <button type="submit" disabled={submitting} className="w-full bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs py-2.5 rounded-xl transition disabled:opacity-50">
+              {submitting ? 'Submitting...' : '★ Submit Review'}
+            </button>
           </form>
         )}
       </div>
@@ -115,34 +241,66 @@ function ProposalModal({ architect, onClose }: { architect: ArchitectDetail; onC
   )
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
-export default function ArchitectProfilePage() {
+export default function ArchitectPublicProfilePage() {
   const params = useParams()
   const id = params?.id as string
+
   const [architect, setArchitect] = useState<ArchitectDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [showProposal, setShowProposal] = useState(false)
-  const [lightboxImg, setLightboxImg] = useState<string | null>(null)
+
+  // Social state per post
+  const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({})
+  const [likesMap, setLikesMap] = useState<Record<string, number>>({})
+  const [commentOpen, setCommentOpen] = useState<Record<string, boolean>>({})
+  const [ratingMap, setRatingMap] = useState<Record<string, number>>({})
+  const [reviewModalOpen, setReviewModalOpen] = useState(false)
 
   useEffect(() => {
     if (!id) return
     fetch(`/api/public/architects/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error('Architect not found')
-        return r.json()
+      .then((res) => {
+        if (!res.ok) throw new Error('Architect profile not found')
+        return res.json()
       })
-      .then((d) => setArchitect(d.architect))
+      .then((data) => {
+        setArchitect(data.architect)
+        // Set initial likes from DB
+        const initialLikes: Record<string, number> = {}
+        data.architect?.projects?.forEach((p: Project) => {
+          initialLikes[p.id] = p.likesCount || 0
+        })
+        setLikesMap(initialLikes)
+        // SEO
+        if (data.architect) {
+          document.title = `${data.architect.name} — ${data.architect.specialization} | NexMove`
+        }
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [id])
 
+  const toggleLike = async (postId: string) => {
+    const isLiked = likedPosts[postId]
+    setLikedPosts((prev) => ({ ...prev, [postId]: !isLiked }))
+    setLikesMap((prev) => ({ ...prev, [postId]: (prev[postId] || 0) + (isLiked ? -1 : 1) }))
+    try {
+      await fetch(`/api/architects/projects?id=${postId}&action=${isLiked ? 'unlike' : 'like'}`, {
+        method: 'PATCH',
+      })
+    } catch {
+      // revert
+      setLikedPosts((prev) => ({ ...prev, [postId]: isLiked }))
+      setLikesMap((prev) => ({ ...prev, [postId]: (prev[postId] || 0) + (isLiked ? 1 : -1) }))
+    }
+  }
+
   if (loading) {
     return (
-      <main className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <main className="min-h-screen bg-[#f3f4f6] text-slate-900 flex items-center justify-center p-6">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs text-slate-500">Loading profile...</span>
+          <div className="w-10 h-10 border-[3px] border-teal-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs text-slate-500 font-medium">Loading Architect Profile...</p>
         </div>
       </main>
     )
@@ -150,12 +308,12 @@ export default function ArchitectProfilePage() {
 
   if (error || !architect) {
     return (
-      <main className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-        <div className="text-center flex flex-col gap-4 max-w-sm">
-          <div className="text-5xl">🏗️</div>
-          <h1 className="text-lg font-black text-slate-200">Profile Not Found</h1>
-          <p className="text-xs text-slate-500">This architect profile may be pending verification or unavailable.</p>
-          <Link href="/architects" className="text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold px-4 py-2.5 rounded-xl transition">
+      <main className="min-h-screen bg-[#f3f4f6] text-slate-900 flex items-center justify-center p-6">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center max-w-md shadow-sm flex flex-col items-center gap-3">
+          <span className="text-4xl">⚠️</span>
+          <h1 className="text-base font-bold text-slate-900">{error || 'Profile Not Found'}</h1>
+          <p className="text-xs text-slate-500">The requested profile is unavailable or non-existent.</p>
+          <Link href="/architects" className="mt-2 text-xs bg-slate-900 text-white font-bold px-4 py-2 rounded-xl">
             ← Back to Directory
           </Link>
         </div>
@@ -163,236 +321,330 @@ export default function ArchitectProfilePage() {
     )
   }
 
-  const stars = Array.from({ length: 5 }, (_, i) => i < Math.round(architect.avgRating))
-
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
-      {/* ── Hero Banner (portfolio collage) ────────────────────────── */}
-      {architect.portfolioImages.length > 0 && (
-        <div className="relative h-56 md:h-72 overflow-hidden">
-          <div className="flex h-full">
-            {architect.portfolioImages.slice(0, 4).map((img, idx) => (
-              <div key={idx} className="flex-1 overflow-hidden">
-                <Image src={img} alt="" fill className="object-cover" unoptimized />
-              </div>
-            ))}
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-transparent to-slate-950" />
-          {/* Back link */}
-          <div className="absolute top-4 left-4">
-            <Link href="/architects" className="text-xs bg-slate-950/70 backdrop-blur-sm border border-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-xl transition font-medium">
-              ← Architects
-            </Link>
-          </div>
-          {architect.availableForProjects && (
-            <div className="absolute top-4 right-4">
-              <span className="text-xs bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-bold px-3 py-1.5 rounded-xl">
-                ● Available for Projects
-              </span>
-            </div>
-          )}
-        </div>
-      )}
+    <main className="min-h-screen bg-[#f3f4f6] text-slate-900 pb-16 font-sans">
 
-      <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col gap-8">
-        {/* ── Profile Header ────────────────────────────────────────── */}
-        <div className="flex flex-col md:flex-row gap-6 items-start">
-          {/* Avatar */}
-          <div className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-br ${architect.avatarGradient} flex items-center justify-center text-white font-black text-2xl md:text-3xl flex-shrink-0 shadow-2xl -mt-12 md:-mt-14 ring-4 ring-slate-950`}>
-            {architect.avatarInitials}
-          </div>
+      {/* ── Top Navigation Bar ─────────────────────────────────────── */}
+      <div className="bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
+          <Link
+            href="/architects"
+            className="text-xs font-bold text-slate-600 hover:text-teal-700 transition flex items-center gap-1"
+          >
+            <span>←</span>
+            <span>Architects Directory</span>
+          </Link>
 
-          {/* Info */}
-          <div className="flex flex-col gap-2 flex-1 mt-0 md:mt-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-black text-slate-50">{architect.name}</h1>
-              <VerifiedBadge type="ARCHITECT" verified={architect.verified} size="md" />
-            </div>
-            <p className="text-sm text-slate-400">{architect.title}</p>
-            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-              <span>📍 {architect.location}</span>
-              <span>•</span>
-              <span>{architect.experienceYears} years experience</span>
-              <span>•</span>
-              <span className={`font-medium ${architect.availableForProjects ? 'text-emerald-400' : 'text-slate-500'}`}>
-                {architect.availableForProjects ? 'Available' : 'Currently Busy'}
-              </span>
-            </div>
-
-            {/* Rating */}
-            {architect.avgRating > 0 && (
-              <div className="flex items-center gap-1.5">
-                {stars.map((filled, i) => (
-                  <span key={i} className={`text-sm ${filled ? 'text-amber-400' : 'text-slate-700'}`}>★</span>
-                ))}
-                <span className="text-sm font-black text-amber-400">{architect.avgRating.toFixed(1)}</span>
-                <span className="text-xs text-slate-500">({architect.reviewCount} reviews)</span>
-              </div>
-            )}
-          </div>
-
-          {/* Action */}
-          <div className="flex flex-col gap-2 flex-shrink-0 w-full md:w-auto">
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setShowProposal(true)}
-              className="w-full md:w-auto text-sm bg-teal-600 hover:bg-teal-500 text-white font-bold px-5 py-3 rounded-xl transition shadow shadow-teal-900/60"
+              onClick={() => setReviewModalOpen(true)}
+              className="text-xs bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5"
             >
-              Request Design Proposal
+              <span>★</span>
+              <span className="hidden sm:inline">Leave a Review</span>
             </button>
-            {architect.portfolioLinks.length > 0 && (
-              <a href={architect.portfolioLinks[0]} target="_blank" rel="noopener noreferrer" className="w-full md:w-auto text-center text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-xl transition font-medium">
-                View Portfolio ↗
+
+            {architect.phone && (
+              <a
+                href={`https://wa.me/${architect.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(architect.name)},%20I%20saw%20your%20profile%20on%20NexMove.`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl transition shadow flex items-center gap-1.5"
+              >
+                <span>💬</span>
+                <span>Direct WhatsApp</span>
               </a>
             )}
           </div>
         </div>
+      </div>
 
-        {/* ── Stats Strip ───────────────────────────────────────────── */}
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: 'Projects Completed', value: architect.completedProjects },
-            { label: 'Reviews', value: architect.reviewCount },
-            { label: 'Experience (yrs)', value: architect.experienceYears },
-          ].map((s) => (
-            <div key={s.label} className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 text-center">
-              <div className="text-2xl font-black text-teal-400">{s.value}</div>
-              <div className="text-[10px] text-slate-500 mt-0.5 uppercase tracking-wider">{s.label}</div>
-            </div>
-          ))}
-        </div>
+      <div className="max-w-5xl mx-auto px-4 py-6 flex flex-col gap-6">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* ── Left Column ──────────────────────────────────────────── */}
-          <div className="md:col-span-2 flex flex-col gap-6">
-            {/* Bio */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
-              <h2 className="text-sm font-black text-slate-200 mb-3">About</h2>
-              <p className="text-sm text-slate-400 leading-relaxed">{architect.bio}</p>
-            </div>
-
-            {/* Portfolio Gallery */}
-            {architect.portfolioImages.length > 0 && (
-              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-sm font-black text-slate-200">Project Gallery</h2>
-                  <span className="text-[11px] text-slate-500">{architect.portfolioImages.length} images</span>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {architect.portfolioImages.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setLightboxImg(img)}
-                      className="relative aspect-video overflow-hidden rounded-xl group"
-                    >
-                      <Image src={img} alt={`Project ${idx + 1}`} fill className="object-cover group-hover:scale-110 transition-transform duration-300" unoptimized />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                        <span className="text-white text-lg opacity-0 group-hover:opacity-100 transition-opacity">🔍</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Portfolio Links */}
-                {architect.portfolioLinks.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap gap-2">
-                    {architect.portfolioLinks.map((link, idx) => (
-                      <a key={idx} href={link} target="_blank" rel="noopener noreferrer"
-                        className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-teal-400 hover:text-teal-300 px-3 py-1.5 rounded-xl transition font-medium">
-                        🔗 Portfolio {idx + 1} ↗
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
+        {/* ── LinkedIn Profile Header Card ────────────────────────── */}
+        <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm">
+          {/* Cover Banner */}
+          <div className="relative h-52 bg-gradient-to-r from-teal-800 via-emerald-900 to-slate-900">
+            {architect.coverImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={architect.coverImage} alt="Cover" className="w-full h-full object-cover" />
+            ) : null}
+            {architect.availableForProjects && (
+              <span className="absolute top-4 right-4 text-xs font-bold bg-white border border-emerald-200 text-emerald-700 px-3 py-1 rounded-full shadow flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                Available for Projects
+              </span>
             )}
           </div>
 
-          {/* ── Right Column ─────────────────────────────────────────── */}
-          <div className="flex flex-col gap-4">
-            {/* Credentials */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 flex flex-col gap-4">
-              <h2 className="text-sm font-black text-slate-200">Credentials</h2>
-
-              {architect.councilLicenseNo && (
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Council License</span>
-                  <span className="text-xs font-mono text-teal-400 bg-teal-950/30 border border-teal-900/40 px-2.5 py-1.5 rounded-lg">
-                    {architect.councilLicenseNo}
-                  </span>
+          {/* Avatar + Details */}
+          <div className="px-6 pb-5 pt-0 relative flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 bg-white">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+              <div className="relative w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white font-black text-3xl flex-shrink-0">
+                {architect.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={architect.avatarUrl} alt={architect.name} className="w-full h-full object-cover" />
+                ) : (
+                  architect.avatarInitials
+                )}
+              </div>
+              <div className="mb-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-2xl font-black text-slate-900">{architect.name}</h1>
+                  <VerifiedBadge type="ARCHITECT" verified={architect.verified} />
                 </div>
-              )}
-
-              {architect.degrees && architect.degrees.length > 0 && (
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Education</span>
-                  {architect.degrees.map((d, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <span className="text-teal-500 mt-0.5 text-xs">🎓</span>
-                      <span className="text-xs text-slate-300 leading-snug">{d}</span>
-                    </div>
-                  ))}
+                <p className="text-sm font-bold text-slate-600">{architect.specialization}</p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {architect.companyName ? `${architect.companyName} · ` : ''}
+                  {architect.location}
+                </p>
+                <div className="mt-1.5">
+                  <StarDisplay rating={architect.avgRating} />
                 </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setReviewModalOpen(true)}
+                className="text-xs bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 font-bold px-3 py-2 rounded-xl transition"
+              >
+                ★ Review
+              </button>
+              {architect.phone && (
+                <a
+                  href={`https://wa.me/${architect.phone.replace(/[^0-9]/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5"
+                >
+                  <span>💬</span>
+                  <span>WhatsApp</span>
+                </a>
               )}
-
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Experience Level</span>
-                <span className="text-xs text-slate-300 font-medium">{architect.experienceLevel} · {architect.experienceYears} years</span>
-              </div>
-
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Member Since</span>
-                <span className="text-xs text-slate-400">{new Date(architect.joinedAt).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</span>
-              </div>
             </div>
-
-            {/* Software */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 flex flex-col gap-3">
-              <h2 className="text-sm font-black text-slate-200">Software</h2>
-              <div className="flex flex-wrap gap-1.5">
-                {architect.software.map((s) => (
-                  <span key={s} className="text-xs bg-violet-500/10 border border-violet-500/20 text-violet-400 px-2.5 py-1 rounded-full font-medium">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Project Types */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 flex flex-col gap-3">
-              <h2 className="text-sm font-black text-slate-200">Project Expertise</h2>
-              <div className="flex flex-wrap gap-1.5">
-                {architect.projectTypes.map((p) => (
-                  <span key={p} className="text-xs bg-amber-500/10 border border-amber-500/20 text-amber-400 px-2.5 py-1 rounded-full font-medium">
-                    {p}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* CTA */}
-            <button
-              onClick={() => setShowProposal(true)}
-              className="w-full text-sm bg-teal-600 hover:bg-teal-500 text-white font-bold px-4 py-3.5 rounded-xl transition shadow shadow-teal-900/60"
-            >
-              Send Design Proposal Request
-            </button>
           </div>
+
+          {/* Stats Bar */}
+          <div className="border-t border-slate-100 px-6 py-3 bg-[#f8fafc] flex flex-wrap gap-6 text-xs font-bold text-slate-700">
+            <div>
+              <span className="text-slate-400 block text-[10px] font-normal uppercase mb-0.5">PCATP License</span>
+              <span className="font-mono text-teal-700">{architect.pcatpNo || architect.councilLicenseNo || 'VERIFIED'}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] font-normal uppercase mb-0.5">Experience</span>
+              <span>{architect.experienceYears} Years</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] font-normal uppercase mb-0.5">Projects</span>
+              <span>{architect.completedProjects}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] font-normal uppercase mb-0.5">Rating</span>
+              <span className="text-amber-500">★ {architect.avgRating.toFixed(1)}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px] font-normal uppercase mb-0.5">Reviews</span>
+              <span>{architect.reviewCount}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── About Section ───────────────────────────────────────── */}
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-sm flex flex-col gap-3">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">About</h2>
+          <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">{architect.bio}</p>
+          <div className="pt-3 border-t border-slate-100 flex flex-wrap gap-1.5">
+            <span className="text-xs font-bold text-slate-400 mr-1">Software Stack:</span>
+            {architect.software.map((sw) => (
+              <span key={sw} className="text-xs bg-[#f3f4f6] border border-slate-200 text-slate-700 px-2.5 py-0.5 rounded-lg font-medium">
+                {sw}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Portfolio Feed ───────────────────────────────────────── */}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Portfolio & Published Designs ({architect.projects?.length || 0})
+            </h2>
+          </div>
+
+          {!architect.projects || architect.projects.length === 0 ? (
+            <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center text-xs text-slate-500 shadow-sm">
+              No portfolio projects published yet.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {architect.projects.map((proj) => (
+                <div
+                  key={proj.id}
+                  className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm flex flex-col"
+                >
+                  {/* Project Header: mini architect attribution */}
+                  <div className="p-3 flex items-center gap-2.5 border-b border-slate-100">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white text-[10px] font-black overflow-hidden flex-shrink-0">
+                      {architect.avatarUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={architect.avatarUrl} alt={architect.name} className="w-full h-full object-cover" />
+                      ) : (
+                        architect.avatarInitials
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <span className="text-[11px] font-bold text-slate-900 truncate">{architect.name}</span>
+                        <VerifiedBadge type="ARCHITECT" verified={architect.verified} />
+                      </div>
+                      <p className="text-[10px] text-slate-400">{architect.specialization}</p>
+                    </div>
+                    {proj.category && (
+                      <span className="text-[10px] font-bold bg-teal-50 border border-teal-200 text-teal-700 px-2 py-0.5 rounded-full flex-shrink-0">
+                        {proj.category}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Media */}
+                  {proj.videoUrl ? (
+                    <div className="bg-slate-950 aspect-video overflow-hidden">
+                      <video src={proj.videoUrl} controls className="w-full h-full object-cover" />
+                    </div>
+                  ) : proj.imageUrls && proj.imageUrls.length > 0 ? (
+                    <ProjectImageGallery urls={proj.imageUrls} title={proj.title} />
+                  ) : proj.imageUrl ? (
+                    <div className="bg-slate-950 h-52 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={proj.imageUrl} alt={proj.title} className="w-full h-full object-cover" />
+                    </div>
+                  ) : null}
+
+                  {/* Project Info */}
+                  <div className="p-4 flex flex-col gap-2 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-sm font-bold text-slate-900">{proj.title}</h3>
+                      {proj.completedYear && (
+                        <span className="text-xs font-mono text-slate-400 flex-shrink-0">{proj.completedYear}</span>
+                      )}
+                    </div>
+
+                    {proj.description && (
+                      <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{proj.description}</p>
+                    )}
+
+                    {/* Software + Tags */}
+                    {((proj.software && proj.software.length > 0) || (proj.tags && proj.tags.length > 0)) && (
+                      <div className="flex flex-wrap gap-1 mt-auto pt-1">
+                        {proj.software?.map((sw) => (
+                          <span key={sw} className="text-[10px] bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded font-medium">
+                            #{sw}
+                          </span>
+                        ))}
+                        {proj.tags?.map((tag) => (
+                          <span key={tag} className="text-[10px] bg-teal-50 border border-teal-200 text-teal-600 px-2 py-0.5 rounded font-medium">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Social Engagements Footer ── */}
+                  <div className="px-4 py-3 bg-[#f8fafc] border-t border-slate-100 flex flex-col gap-2">
+                    {/* Action row */}
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        {/* Like */}
+                        <button
+                          onClick={() => toggleLike(proj.id)}
+                          className={`text-xs font-bold flex items-center gap-1 px-2 py-1.5 rounded-lg transition ${
+                            likedPosts[proj.id]
+                              ? 'text-teal-700 bg-teal-50 border border-teal-200'
+                              : 'text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="text-sm">👍</span>
+                          <span>{likedPosts[proj.id] ? 'Liked' : 'Like'}</span>
+                          <span className="text-[10px] bg-white border border-slate-200 px-1 py-0.5 rounded-full font-mono ml-0.5">
+                            {likesMap[proj.id] || 0}
+                          </span>
+                        </button>
+
+                        {/* Comment */}
+                        <button
+                          onClick={() => setCommentOpen((prev) => ({ ...prev, [proj.id]: !prev[proj.id] }))}
+                          className={`text-xs font-bold flex items-center gap-1 px-2 py-1.5 rounded-lg transition ${
+                            commentOpen[proj.id] ? 'text-teal-700 bg-teal-50' : 'text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span>💬</span>
+                          <span>Comment</span>
+                        </button>
+
+                        {/* Star Rating */}
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => setRatingMap((prev) => ({ ...prev, [proj.id]: star }))}
+                              className={`text-base leading-none transition hover:scale-110 ${
+                                star <= (ratingMap[proj.id] || 0) ? 'text-amber-400' : 'text-slate-200 hover:text-amber-300'
+                              }`}
+                            >
+                              ★
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* WhatsApp Direct */}
+                      {architect.phone && (
+                        <a
+                          href={`https://wa.me/${architect.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(architect.name)},%20I%20saw%20your%20project%20%22${encodeURIComponent(proj.title)}%22%20on%20NexMove.`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-sm"
+                        >
+                          <span>💬</span>
+                          <span>WhatsApp</span>
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Inline Comment Box */}
+                    {commentOpen[proj.id] && (
+                      <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                        <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-[10px] font-bold flex-shrink-0">
+                          Y
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Write a comment..."
+                          className="flex-1 bg-white border border-slate-200 rounded-full px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-400 transition"
+                        />
+                        <button className="text-xs bg-teal-600 text-white font-bold px-3 py-1.5 rounded-full hover:bg-teal-500 transition">
+                          Post
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── Proposal Modal ──────────────────────────────────────────── */}
-      {showProposal && <ProposalModal architect={architect} onClose={() => setShowProposal(false)} />}
-
-      {/* ── Image Lightbox ──────────────────────────────────────────── */}
-      {lightboxImg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm px-4" onClick={() => setLightboxImg(null)}>
-          <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
-            <Image src={lightboxImg} alt="Portfolio" width={900} height={600} className="w-full h-auto rounded-2xl shadow-2xl max-h-[80vh] object-contain" unoptimized />
-            <button onClick={() => setLightboxImg(null)} className="absolute top-3 right-3 bg-slate-900/80 hover:bg-slate-800 text-slate-300 text-lg w-9 h-9 rounded-full flex items-center justify-center transition">
-              ✕
-            </button>
-          </div>
-        </div>
+      {/* ── Review Modal ─────────────────────────────────────────── */}
+      {reviewModalOpen && (
+        <ReviewModal
+          architectId={architect.id}
+          architectName={architect.name}
+          onClose={() => setReviewModalOpen(false)}
+        />
       )}
     </main>
   )

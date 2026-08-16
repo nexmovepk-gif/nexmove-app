@@ -27,10 +27,12 @@ export type AggregateArchitectProject = {
 }
 
 export type ArchitectProjectAvgAggregateOutputType = {
+  likesCount: number | null
   completedYear: number | null
 }
 
 export type ArchitectProjectSumAggregateOutputType = {
+  likesCount: number | null
   completedYear: number | null
 }
 
@@ -41,6 +43,8 @@ export type ArchitectProjectMinAggregateOutputType = {
   description: string | null
   category: string | null
   imageUrl: string | null
+  videoUrl: string | null
+  likesCount: number | null
   completedYear: number | null
   status: $Enums.ProjectStatus | null
   completedAt: Date | null
@@ -55,6 +59,8 @@ export type ArchitectProjectMaxAggregateOutputType = {
   description: string | null
   category: string | null
   imageUrl: string | null
+  videoUrl: string | null
+  likesCount: number | null
   completedYear: number | null
   status: $Enums.ProjectStatus | null
   completedAt: Date | null
@@ -71,6 +77,9 @@ export type ArchitectProjectCountAggregateOutputType = {
   software: number
   imageUrl: number
   imageUrls: number
+  videoUrl: number
+  tags: number
+  likesCount: number
   completedYear: number
   status: number
   completedAt: number
@@ -81,10 +90,12 @@ export type ArchitectProjectCountAggregateOutputType = {
 
 
 export type ArchitectProjectAvgAggregateInputType = {
+  likesCount?: true
   completedYear?: true
 }
 
 export type ArchitectProjectSumAggregateInputType = {
+  likesCount?: true
   completedYear?: true
 }
 
@@ -95,6 +106,8 @@ export type ArchitectProjectMinAggregateInputType = {
   description?: true
   category?: true
   imageUrl?: true
+  videoUrl?: true
+  likesCount?: true
   completedYear?: true
   status?: true
   completedAt?: true
@@ -109,6 +122,8 @@ export type ArchitectProjectMaxAggregateInputType = {
   description?: true
   category?: true
   imageUrl?: true
+  videoUrl?: true
+  likesCount?: true
   completedYear?: true
   status?: true
   completedAt?: true
@@ -125,6 +140,9 @@ export type ArchitectProjectCountAggregateInputType = {
   software?: true
   imageUrl?: true
   imageUrls?: true
+  videoUrl?: true
+  tags?: true
+  likesCount?: true
   completedYear?: true
   status?: true
   completedAt?: true
@@ -228,6 +246,9 @@ export type ArchitectProjectGroupByOutputType = {
   software: string[]
   imageUrl: string | null
   imageUrls: string[]
+  videoUrl: string | null
+  tags: string[]
+  likesCount: number
   completedYear: number | null
   status: $Enums.ProjectStatus
   completedAt: Date | null
@@ -267,6 +288,9 @@ export type ArchitectProjectWhereInput = {
   software?: Prisma.StringNullableListFilter<"ArchitectProject">
   imageUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
   imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  videoUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  tags?: Prisma.StringNullableListFilter<"ArchitectProject">
+  likesCount?: Prisma.IntFilter<"ArchitectProject"> | number
   completedYear?: Prisma.IntNullableFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableFilter<"ArchitectProject"> | Date | string | null
@@ -284,6 +308,9 @@ export type ArchitectProjectOrderByWithRelationInput = {
   software?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrls?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   completedYear?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -304,6 +331,9 @@ export type ArchitectProjectWhereUniqueInput = Prisma.AtLeast<{
   software?: Prisma.StringNullableListFilter<"ArchitectProject">
   imageUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
   imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  videoUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  tags?: Prisma.StringNullableListFilter<"ArchitectProject">
+  likesCount?: Prisma.IntFilter<"ArchitectProject"> | number
   completedYear?: Prisma.IntNullableFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableFilter<"ArchitectProject"> | Date | string | null
@@ -321,6 +351,9 @@ export type ArchitectProjectOrderByWithAggregationInput = {
   software?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   imageUrls?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   completedYear?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -345,6 +378,9 @@ export type ArchitectProjectScalarWhereWithAggregatesInput = {
   software?: Prisma.StringNullableListFilter<"ArchitectProject">
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProject"> | string | null
   imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  videoUrl?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProject"> | string | null
+  tags?: Prisma.StringNullableListFilter<"ArchitectProject">
+  likesCount?: Prisma.IntWithAggregatesFilter<"ArchitectProject"> | number
   completedYear?: Prisma.IntNullableWithAggregatesFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusWithAggregatesFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ArchitectProject"> | Date | string | null
@@ -360,6 +396,9 @@ export type ArchitectProjectCreateInput = {
   software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
   imageUrl?: string | null
   imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  videoUrl?: string | null
+  tags?: Prisma.ArchitectProjectCreatetagsInput | string[]
+  likesCount?: number
   completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
@@ -377,6 +416,9 @@ export type ArchitectProjectUncheckedCreateInput = {
   software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
   imageUrl?: string | null
   imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  videoUrl?: string | null
+  tags?: Prisma.ArchitectProjectCreatetagsInput | string[]
+  likesCount?: number
   completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
@@ -392,6 +434,9 @@ export type ArchitectProjectUpdateInput = {
   software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ArchitectProjectUpdatetagsInput | string[]
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -409,6 +454,9 @@ export type ArchitectProjectUncheckedUpdateInput = {
   software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ArchitectProjectUpdatetagsInput | string[]
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -425,6 +473,9 @@ export type ArchitectProjectCreateManyInput = {
   software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
   imageUrl?: string | null
   imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  videoUrl?: string | null
+  tags?: Prisma.ArchitectProjectCreatetagsInput | string[]
+  likesCount?: number
   completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
@@ -440,6 +491,9 @@ export type ArchitectProjectUpdateManyMutationInput = {
   software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ArchitectProjectUpdatetagsInput | string[]
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -456,6 +510,9 @@ export type ArchitectProjectUncheckedUpdateManyInput = {
   software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ArchitectProjectUpdatetagsInput | string[]
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -482,6 +539,9 @@ export type ArchitectProjectCountOrderByAggregateInput = {
   software?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   imageUrls?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   completedYear?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -490,6 +550,7 @@ export type ArchitectProjectCountOrderByAggregateInput = {
 }
 
 export type ArchitectProjectAvgOrderByAggregateInput = {
+  likesCount?: Prisma.SortOrder
   completedYear?: Prisma.SortOrder
 }
 
@@ -500,6 +561,8 @@ export type ArchitectProjectMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   category?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   completedYear?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -514,6 +577,8 @@ export type ArchitectProjectMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   category?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
+  likesCount?: Prisma.SortOrder
   completedYear?: Prisma.SortOrder
   status?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -522,6 +587,7 @@ export type ArchitectProjectMinOrderByAggregateInput = {
 }
 
 export type ArchitectProjectSumOrderByAggregateInput = {
+  likesCount?: Prisma.SortOrder
   completedYear?: Prisma.SortOrder
 }
 
@@ -575,12 +641,21 @@ export type ArchitectProjectCreateimageUrlsInput = {
   set: string[]
 }
 
+export type ArchitectProjectCreatetagsInput = {
+  set: string[]
+}
+
 export type ArchitectProjectUpdatesoftwareInput = {
   set?: string[]
   push?: string | string[]
 }
 
 export type ArchitectProjectUpdateimageUrlsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ArchitectProjectUpdatetagsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -601,6 +676,9 @@ export type ArchitectProjectCreateWithoutArchitectInput = {
   software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
   imageUrl?: string | null
   imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  videoUrl?: string | null
+  tags?: Prisma.ArchitectProjectCreatetagsInput | string[]
+  likesCount?: number
   completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
@@ -616,6 +694,9 @@ export type ArchitectProjectUncheckedCreateWithoutArchitectInput = {
   software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
   imageUrl?: string | null
   imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  videoUrl?: string | null
+  tags?: Prisma.ArchitectProjectCreatetagsInput | string[]
+  likesCount?: number
   completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
@@ -661,6 +742,9 @@ export type ArchitectProjectScalarWhereInput = {
   software?: Prisma.StringNullableListFilter<"ArchitectProject">
   imageUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
   imageUrls?: Prisma.StringNullableListFilter<"ArchitectProject">
+  videoUrl?: Prisma.StringNullableFilter<"ArchitectProject"> | string | null
+  tags?: Prisma.StringNullableListFilter<"ArchitectProject">
+  likesCount?: Prisma.IntFilter<"ArchitectProject"> | number
   completedYear?: Prisma.IntNullableFilter<"ArchitectProject"> | number | null
   status?: Prisma.EnumProjectStatusFilter<"ArchitectProject"> | $Enums.ProjectStatus
   completedAt?: Prisma.DateTimeNullableFilter<"ArchitectProject"> | Date | string | null
@@ -676,6 +760,9 @@ export type ArchitectProjectCreateManyArchitectInput = {
   software?: Prisma.ArchitectProjectCreatesoftwareInput | string[]
   imageUrl?: string | null
   imageUrls?: Prisma.ArchitectProjectCreateimageUrlsInput | string[]
+  videoUrl?: string | null
+  tags?: Prisma.ArchitectProjectCreatetagsInput | string[]
+  likesCount?: number
   completedYear?: number | null
   status?: $Enums.ProjectStatus
   completedAt?: Date | string | null
@@ -691,6 +778,9 @@ export type ArchitectProjectUpdateWithoutArchitectInput = {
   software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ArchitectProjectUpdatetagsInput | string[]
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -706,6 +796,9 @@ export type ArchitectProjectUncheckedUpdateWithoutArchitectInput = {
   software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ArchitectProjectUpdatetagsInput | string[]
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -721,6 +814,9 @@ export type ArchitectProjectUncheckedUpdateManyWithoutArchitectInput = {
   software?: Prisma.ArchitectProjectUpdatesoftwareInput | string[]
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   imageUrls?: Prisma.ArchitectProjectUpdateimageUrlsInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.ArchitectProjectUpdatetagsInput | string[]
+  likesCount?: Prisma.IntFieldUpdateOperationsInput | number
   completedYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumProjectStatusFieldUpdateOperationsInput | $Enums.ProjectStatus
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -739,6 +835,9 @@ export type ArchitectProjectSelect<ExtArgs extends runtime.Types.Extensions.Inte
   software?: boolean
   imageUrl?: boolean
   imageUrls?: boolean
+  videoUrl?: boolean
+  tags?: boolean
+  likesCount?: boolean
   completedYear?: boolean
   status?: boolean
   completedAt?: boolean
@@ -756,6 +855,9 @@ export type ArchitectProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   software?: boolean
   imageUrl?: boolean
   imageUrls?: boolean
+  videoUrl?: boolean
+  tags?: boolean
+  likesCount?: boolean
   completedYear?: boolean
   status?: boolean
   completedAt?: boolean
@@ -773,6 +875,9 @@ export type ArchitectProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   software?: boolean
   imageUrl?: boolean
   imageUrls?: boolean
+  videoUrl?: boolean
+  tags?: boolean
+  likesCount?: boolean
   completedYear?: boolean
   status?: boolean
   completedAt?: boolean
@@ -790,6 +895,9 @@ export type ArchitectProjectSelectScalar = {
   software?: boolean
   imageUrl?: boolean
   imageUrls?: boolean
+  videoUrl?: boolean
+  tags?: boolean
+  likesCount?: boolean
   completedYear?: boolean
   status?: boolean
   completedAt?: boolean
@@ -797,7 +905,7 @@ export type ArchitectProjectSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ArchitectProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "architectId" | "title" | "description" | "category" | "software" | "imageUrl" | "imageUrls" | "completedYear" | "status" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProject"]>
+export type ArchitectProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "architectId" | "title" | "description" | "category" | "software" | "imageUrl" | "imageUrls" | "videoUrl" | "tags" | "likesCount" | "completedYear" | "status" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProject"]>
 export type ArchitectProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   architect?: boolean | Prisma.ArchitectProfileDefaultArgs<ExtArgs>
 }
@@ -822,6 +930,9 @@ export type $ArchitectProjectPayload<ExtArgs extends runtime.Types.Extensions.In
     software: string[]
     imageUrl: string | null
     imageUrls: string[]
+    videoUrl: string | null
+    tags: string[]
+    likesCount: number
     completedYear: number | null
     status: $Enums.ProjectStatus
     completedAt: Date | null
@@ -1259,6 +1370,9 @@ export interface ArchitectProjectFieldRefs {
   readonly software: Prisma.FieldRef<"ArchitectProject", 'String[]'>
   readonly imageUrl: Prisma.FieldRef<"ArchitectProject", 'String'>
   readonly imageUrls: Prisma.FieldRef<"ArchitectProject", 'String[]'>
+  readonly videoUrl: Prisma.FieldRef<"ArchitectProject", 'String'>
+  readonly tags: Prisma.FieldRef<"ArchitectProject", 'String[]'>
+  readonly likesCount: Prisma.FieldRef<"ArchitectProject", 'Int'>
   readonly completedYear: Prisma.FieldRef<"ArchitectProject", 'Int'>
   readonly status: Prisma.FieldRef<"ArchitectProject", 'ProjectStatus'>
   readonly completedAt: Prisma.FieldRef<"ArchitectProject", 'DateTime'>

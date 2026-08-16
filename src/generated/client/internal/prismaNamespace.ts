@@ -1662,6 +1662,8 @@ export const ArchitectProfileScalarFieldEnum = {
   councilLicenseNo: 'councilLicenseNo',
   avatarInitials: 'avatarInitials',
   avatarGradient: 'avatarGradient',
+  avatarUrl: 'avatarUrl',
+  coverImage: 'coverImage',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1693,6 +1695,9 @@ export const ArchitectProjectScalarFieldEnum = {
   software: 'software',
   imageUrl: 'imageUrl',
   imageUrls: 'imageUrls',
+  videoUrl: 'videoUrl',
+  tags: 'tags',
+  likesCount: 'likesCount',
   completedYear: 'completedYear',
   status: 'status',
   completedAt: 'completedAt',

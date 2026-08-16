@@ -1,5 +1,5 @@
 // src/app/api/architects/projects/route.ts
-// Handles project creation and project fetching for Architects
+// Handles project creation, fetching, liking, and deletion for Architects
 
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
@@ -53,6 +53,8 @@ export async function POST(req: Request) {
       software,
       imageUrl,
       imageUrls,
+      videoUrl,
+      tags,
       completedYear,
     } = body;
 
@@ -66,7 +68,7 @@ export async function POST(req: Request) {
       targetArchitectId = user?.architectProfile?.id || null;
     }
 
-    // Fallback: If no session or direct link, check if profile exists by email/id
+    // Fallback: If no session or direct link, check if profile exists
     if (!targetArchitectId) {
       const firstProfile = await prisma.architectProfile.findFirst({
         orderBy: { createdAt: "desc" },
@@ -88,13 +90,19 @@ export async function POST(req: Request) {
     const formattedSoftware = Array.isArray(software)
       ? software
       : typeof software === "string" && software.trim()
-      ? software.split(",").map((s) => s.trim())
+      ? software.split(",").map((s: string) => s.trim())
+      : [];
+
+    const formattedTags = Array.isArray(tags)
+      ? tags
+      : typeof tags === "string" && tags.trim()
+      ? tags.split(",").map((t: string) => t.trim()).filter(Boolean)
       : [];
 
     const formattedImageUrls = Array.isArray(imageUrls)
       ? imageUrls.filter(Boolean)
       : typeof imageUrls === "string" && imageUrls.trim()
-      ? imageUrls.split(",").map((u) => u.trim()).filter(Boolean)
+      ? imageUrls.split(",").map((u: string) => u.trim()).filter(Boolean)
       : imageUrl
       ? [imageUrl]
       : [];
@@ -110,6 +118,8 @@ export async function POST(req: Request) {
         software: formattedSoftware,
         imageUrl: primaryImageUrl,
         imageUrls: formattedImageUrls,
+        videoUrl: videoUrl || null,
+        tags: formattedTags,
         completedYear: Number(completedYear) || new Date().getFullYear(),
         status: "COMPLETED",
         completedAt: new Date(),
@@ -143,6 +153,36 @@ export async function POST(req: Request) {
     console.error("[Architect Projects POST] Error:", error);
     const errMsg = error instanceof Error ? error.message : "Failed to upload project";
     return NextResponse.json({ error: errMsg }, { status: 500 });
+  }
+}
+
+// PATCH: Handle like toggle (increment or decrement likesCount)
+export async function PATCH(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    const action = searchParams.get("action"); // 'like' | 'unlike'
+
+    if (!id) {
+      return NextResponse.json({ error: "Project ID is required" }, { status: 400 });
+    }
+
+    const increment = action === "unlike" ? -1 : 1;
+
+    const updated = await prisma.architectProject.update({
+      where: { id },
+      data: {
+        likesCount: {
+          increment,
+        },
+      },
+      select: { id: true, likesCount: true },
+    });
+
+    return NextResponse.json({ success: true, project: updated });
+  } catch (error) {
+    console.error("[Architect Projects PATCH] Error:", error);
+    return NextResponse.json({ error: "Failed to update like count" }, { status: 500 });
   }
 }
 

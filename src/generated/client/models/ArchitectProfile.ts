@@ -58,6 +58,8 @@ export type ArchitectProfileMinAggregateOutputType = {
   councilLicenseNo: string | null
   avatarInitials: string | null
   avatarGradient: string | null
+  avatarUrl: string | null
+  coverImage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -86,6 +88,8 @@ export type ArchitectProfileMaxAggregateOutputType = {
   councilLicenseNo: string | null
   avatarInitials: string | null
   avatarGradient: string | null
+  avatarUrl: string | null
+  coverImage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -118,6 +122,8 @@ export type ArchitectProfileCountAggregateOutputType = {
   councilLicenseNo: number
   avatarInitials: number
   avatarGradient: number
+  avatarUrl: number
+  coverImage: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -156,6 +162,8 @@ export type ArchitectProfileMinAggregateInputType = {
   councilLicenseNo?: true
   avatarInitials?: true
   avatarGradient?: true
+  avatarUrl?: true
+  coverImage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -184,6 +192,8 @@ export type ArchitectProfileMaxAggregateInputType = {
   councilLicenseNo?: true
   avatarInitials?: true
   avatarGradient?: true
+  avatarUrl?: true
+  coverImage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -216,6 +226,8 @@ export type ArchitectProfileCountAggregateInputType = {
   councilLicenseNo?: true
   avatarInitials?: true
   avatarGradient?: true
+  avatarUrl?: true
+  coverImage?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -335,6 +347,8 @@ export type ArchitectProfileGroupByOutputType = {
   councilLicenseNo: string | null
   avatarInitials: string | null
   avatarGradient: string | null
+  avatarUrl: string | null
+  coverImage: string | null
   createdAt: Date
   updatedAt: Date
   _count: ArchitectProfileCountAggregateOutputType | null
@@ -390,6 +404,8 @@ export type ArchitectProfileWhereInput = {
   councilLicenseNo?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarInitials?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarGradient?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  avatarUrl?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  coverImage?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -425,6 +441,8 @@ export type ArchitectProfileOrderByWithRelationInput = {
   councilLicenseNo?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarInitials?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarGradient?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -463,6 +481,8 @@ export type ArchitectProfileWhereUniqueInput = Prisma.AtLeast<{
   councilLicenseNo?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarInitials?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   avatarGradient?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  avatarUrl?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
+  coverImage?: Prisma.StringNullableFilter<"ArchitectProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ArchitectProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -498,6 +518,8 @@ export type ArchitectProfileOrderByWithAggregationInput = {
   councilLicenseNo?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarInitials?: Prisma.SortOrderInput | Prisma.SortOrder
   avatarGradient?: Prisma.SortOrderInput | Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverImage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ArchitectProfileCountOrderByAggregateInput
@@ -538,6 +560,8 @@ export type ArchitectProfileScalarWhereWithAggregatesInput = {
   councilLicenseNo?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   avatarInitials?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   avatarGradient?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
+  avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
+  coverImage?: Prisma.StringNullableWithAggregatesFilter<"ArchitectProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ArchitectProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ArchitectProfile"> | Date | string
 }
@@ -569,6 +593,8 @@ export type ArchitectProfileCreateInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutArchitectProfileInput
@@ -604,6 +630,8 @@ export type ArchitectProfileUncheckedCreateInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ArchitectReviewUncheckedCreateNestedManyWithoutArchitectInput
@@ -637,6 +665,8 @@ export type ArchitectProfileUpdateInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutArchitectProfileNestedInput
@@ -672,6 +702,8 @@ export type ArchitectProfileUncheckedUpdateInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ArchitectReviewUncheckedUpdateManyWithoutArchitectNestedInput
@@ -706,6 +738,8 @@ export type ArchitectProfileCreateManyInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -737,6 +771,8 @@ export type ArchitectProfileUpdateManyMutationInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -769,6 +805,8 @@ export type ArchitectProfileUncheckedUpdateManyInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -806,6 +844,8 @@ export type ArchitectProfileCountOrderByAggregateInput = {
   councilLicenseNo?: Prisma.SortOrder
   avatarInitials?: Prisma.SortOrder
   avatarGradient?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -838,6 +878,8 @@ export type ArchitectProfileMaxOrderByAggregateInput = {
   councilLicenseNo?: Prisma.SortOrder
   avatarInitials?: Prisma.SortOrder
   avatarGradient?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -866,6 +908,8 @@ export type ArchitectProfileMinOrderByAggregateInput = {
   councilLicenseNo?: Prisma.SortOrder
   avatarInitials?: Prisma.SortOrder
   avatarGradient?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  coverImage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1002,6 +1046,8 @@ export type ArchitectProfileCreateWithoutUserInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ArchitectReviewCreateNestedManyWithoutArchitectInput
@@ -1035,6 +1081,8 @@ export type ArchitectProfileUncheckedCreateWithoutUserInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ArchitectReviewUncheckedCreateNestedManyWithoutArchitectInput
@@ -1084,6 +1132,8 @@ export type ArchitectProfileUpdateWithoutUserInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ArchitectReviewUpdateManyWithoutArchitectNestedInput
@@ -1117,6 +1167,8 @@ export type ArchitectProfileUncheckedUpdateWithoutUserInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ArchitectReviewUncheckedUpdateManyWithoutArchitectNestedInput
@@ -1150,6 +1202,8 @@ export type ArchitectProfileCreateWithoutReviewsInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutArchitectProfileInput
@@ -1184,6 +1238,8 @@ export type ArchitectProfileUncheckedCreateWithoutReviewsInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ArchitectProjectUncheckedCreateNestedManyWithoutArchitectInput
@@ -1232,6 +1288,8 @@ export type ArchitectProfileUpdateWithoutReviewsInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutArchitectProfileNestedInput
@@ -1266,6 +1324,8 @@ export type ArchitectProfileUncheckedUpdateWithoutReviewsInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ArchitectProjectUncheckedUpdateManyWithoutArchitectNestedInput
@@ -1298,6 +1358,8 @@ export type ArchitectProfileCreateWithoutProjectsInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutArchitectProfileInput
@@ -1332,6 +1394,8 @@ export type ArchitectProfileUncheckedCreateWithoutProjectsInput = {
   councilLicenseNo?: string | null
   avatarInitials?: string | null
   avatarGradient?: string | null
+  avatarUrl?: string | null
+  coverImage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ArchitectReviewUncheckedCreateNestedManyWithoutArchitectInput
@@ -1380,6 +1444,8 @@ export type ArchitectProfileUpdateWithoutProjectsInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutArchitectProfileNestedInput
@@ -1414,6 +1480,8 @@ export type ArchitectProfileUncheckedUpdateWithoutProjectsInput = {
   councilLicenseNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarInitials?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatarGradient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ArchitectReviewUncheckedUpdateManyWithoutArchitectNestedInput
@@ -1487,6 +1555,8 @@ export type ArchitectProfileSelect<ExtArgs extends runtime.Types.Extensions.Inte
   councilLicenseNo?: boolean
   avatarInitials?: boolean
   avatarGradient?: boolean
+  avatarUrl?: boolean
+  coverImage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
@@ -1523,6 +1593,8 @@ export type ArchitectProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   councilLicenseNo?: boolean
   avatarInitials?: boolean
   avatarGradient?: boolean
+  avatarUrl?: boolean
+  coverImage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
@@ -1556,6 +1628,8 @@ export type ArchitectProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   councilLicenseNo?: boolean
   avatarInitials?: boolean
   avatarGradient?: boolean
+  avatarUrl?: boolean
+  coverImage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
@@ -1589,11 +1663,13 @@ export type ArchitectProfileSelectScalar = {
   councilLicenseNo?: boolean
   avatarInitials?: boolean
   avatarGradient?: boolean
+  avatarUrl?: boolean
+  coverImage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ArchitectProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "title" | "specialization" | "companyName" | "bio" | "phone" | "isOverseas" | "country" | "city" | "pcatpNo" | "status" | "isVerified" | "verificationStatus" | "experienceYears" | "experienceLevel" | "location" | "software" | "projectTypes" | "portfolioImages" | "portfolioLinks" | "portfolioUrl" | "availableForProjects" | "councilLicenseNo" | "avatarInitials" | "avatarGradient" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProfile"]>
+export type ArchitectProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "name" | "title" | "specialization" | "companyName" | "bio" | "phone" | "isOverseas" | "country" | "city" | "pcatpNo" | "status" | "isVerified" | "verificationStatus" | "experienceYears" | "experienceLevel" | "location" | "software" | "projectTypes" | "portfolioImages" | "portfolioLinks" | "portfolioUrl" | "availableForProjects" | "councilLicenseNo" | "avatarInitials" | "avatarGradient" | "avatarUrl" | "coverImage" | "createdAt" | "updatedAt", ExtArgs["result"]["architectProfile"]>
 export type ArchitectProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.ArchitectProfile$userArgs<ExtArgs>
   reviews?: boolean | Prisma.ArchitectProfile$reviewsArgs<ExtArgs>
@@ -1642,6 +1718,8 @@ export type $ArchitectProfilePayload<ExtArgs extends runtime.Types.Extensions.In
     councilLicenseNo: string | null
     avatarInitials: string | null
     avatarGradient: string | null
+    avatarUrl: string | null
+    coverImage: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["architectProfile"]>
@@ -2097,6 +2175,8 @@ export interface ArchitectProfileFieldRefs {
   readonly councilLicenseNo: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly avatarInitials: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly avatarGradient: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly avatarUrl: Prisma.FieldRef<"ArchitectProfile", 'String'>
+  readonly coverImage: Prisma.FieldRef<"ArchitectProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"ArchitectProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ArchitectProfile", 'DateTime'>
 }

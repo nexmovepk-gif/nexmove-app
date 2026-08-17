@@ -8,11 +8,10 @@ import AIEscrowGuard from '@/components/AIEscrowGuard';
 import BankTransferCheckoutModal from '@/components/BankTransferCheckoutModal';
 import AIListingCard, { AIListingItem, ListingStatusKey } from '@/components/AIListingCard';
 import {
-  Search, SlidersHorizontal, Plus, LogOut, Bell,
+  Search, SlidersHorizontal, Plus, LogOut,
   Sparkles, Flame, CheckCircle2, Clock, CalendarClock,
   BadgeCheck, XCircle, LayoutList, ChevronDown, RefreshCw,
-  Building2, TrendingUp, DollarSign, ShieldAlert,
-  Users, Layers, ArrowUpRight
+  TrendingUp
 } from 'lucide-react';
 
 type TabKey = 'ALL' | ListingStatusKey;

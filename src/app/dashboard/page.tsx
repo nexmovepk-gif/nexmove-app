@@ -2,15 +2,14 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import AIListingCard, { AIListingItem, ListingStatusKey } from '@/components/AIListingCard';
 import ActivityCenter, { ActivityNotification } from '@/components/ActivityCenter';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import {
-  Search, SlidersHorizontal, Plus, LogOut, Bell,
+  Search, SlidersHorizontal, Plus, LogOut,
   Sparkles, Flame, CheckCircle2, Clock, CalendarClock,
   BadgeCheck, XCircle, LayoutList, ChevronDown, RefreshCw,
-  Building, UserCheck, ShieldCheck, ArrowRight
+  ShieldCheck
 } from 'lucide-react';
 
 type TabKey = 'ALL' | ListingStatusKey;
@@ -119,7 +118,6 @@ const INITIAL_USER_LISTINGS: AIListingItem[] = [
 ];
 
 export default function UserDashboardPage() {
-  const { data: session } = useSession();
   const [listings, setListings] = useState<AIListingItem[]>(INITIAL_USER_LISTINGS);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>('ALL');

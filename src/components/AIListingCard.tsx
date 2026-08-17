@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   Home, Building2, MapPin, BedDouble, Bath,
-  CheckCircle2, Clock, CalendarClock, BadgeCheck, XCircle, Archive,
+  CheckCircle2, Clock, CalendarClock, BadgeCheck, XCircle,
   MoreVertical, Eye, Pencil, Trash2, RotateCcw,
-  Sparkles, Flame, Users, Send, MessageSquare,
-  ChevronDown, ChevronUp, Share2, Check, AlertTriangle, ExternalLink
+  Sparkles, Send, MessageSquare,
+  ChevronDown, ChevronUp, Share2, Check
 } from 'lucide-react';
 
 export type ListingStatusKey =
@@ -138,7 +138,6 @@ export default function AIListingCard({
   const liveBuyers = listing.liveBuyersViewing ?? (listing.status === 'ACTIVE' ? Math.floor(Math.random() * 15) + 8 : 2);
   const earlyMatches = listing.earlyMatchAlertsSent ?? (listing.status === 'AVAILABLE_SOON' ? 18 : 6);
   const inquiries = listing.directInquiries ?? (listing.status === 'ACTIVE' ? 9 : 3);
-  const demandIndex = listing.demandIndex ?? (aiScore >= 85 ? 'HIGH' : 'SURGING');
 
   const defaultSuggestions = [
     listing.virtualTourUrl

@@ -456,7 +456,7 @@ export default function PropertyForm({
           <div>
             <h2 className="text-3xl font-black text-gray-900">Property Listing Published!</h2>
             <p className="text-gray-600 mt-1 max-w-md">
-              Your property <span className="font-bold text-gray-900">"{title}"</span> is now live with purpose{' '}
+              Your property <span className="font-bold text-gray-900">&quot;{title}&quot;</span> is now live with purpose{' '}
               <span className="font-bold text-emerald-600 uppercase">[{purpose.replace('_', ' ')}]</span>.
             </p>
           </div>

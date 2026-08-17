@@ -15,7 +15,8 @@ export default function GlobalHeader() {
   const user = session?.user;
   const isSuperAdmin =
     user?.email?.toLowerCase() === 'nexmove.pk@gmail.com' ||
-    user?.role === 'SUPER_ADMIN';
+    user?.role === 'SUPER_ADMIN' ||
+    user?.role === 'ADMIN';
 
   const isArchitectUser =
     !isSuperAdmin &&
@@ -32,29 +33,22 @@ export default function GlobalHeader() {
       user?.accountRoleType === 'OVERSEAS_AGENCY' ||
       Boolean(user?.agencyId));
 
-  const isInvestorUser =
+  const isOverseasUser =
     !isSuperAdmin &&
     !isArchitectUser &&
     !isAgencyUser &&
-    Boolean(user) &&
-    (user?.accountRoleType === 'OVERSEAS_INVESTOR' ||
-      user?.role === 'INVESTOR');
-
-  const isOverseasBuyer =
-    !isSuperAdmin &&
-    !isArchitectUser &&
-    !isAgencyUser &&
-    !isInvestorUser &&
     Boolean(user) &&
     (user?.accountRoleType === 'OVERSEAS_BUYER' ||
-      user?.role === 'OVERSEAS_BUYER');
+      user?.accountRoleType === 'OVERSEAS_INVESTOR' ||
+      user?.accountRoleType === 'INVESTOR' ||
+      user?.role === 'OVERSEAS_BUYER' ||
+      user?.role === 'INVESTOR');
 
   const isStandardUser =
     !isSuperAdmin &&
     !isArchitectUser &&
     !isAgencyUser &&
-    !isInvestorUser &&
-    !isOverseasBuyer &&
+    !isOverseasUser &&
     Boolean(user);
 
   const isGuest = !user;
@@ -77,6 +71,7 @@ export default function GlobalHeader() {
       if (seg === 'agency') formattedLabel = 'Agency';
       if (seg === 'dashboard') formattedLabel = 'Dashboard';
       if (seg === 'my-listings') formattedLabel = 'My Listings';
+      if (seg === 'overseas') formattedLabel = 'Overseas Portal';
       if (seg === 'ledger') formattedLabel = 'Ledger';
       if (seg === 'leaderboard') formattedLabel = 'Leaderboard';
       if (seg === 'rent-collection') formattedLabel = 'Rent Collections';
@@ -182,7 +177,7 @@ export default function GlobalHeader() {
           Pricing
         </Link>
 
-        {/* 👑 SUPER_ADMIN: Show all dashboards */}
+        {/* 👑 SUPER_ADMIN / ADMIN: Show Admin Portal & Cross-Navigation */}
         {isSuperAdmin && (
           <>
             <Link
@@ -193,18 +188,18 @@ export default function GlobalHeader() {
               <span className="hidden sm:inline">Admin Portal</span>
             </Link>
             <Link
-              href="/investors"
-              className="text-xs bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
+              href="/overseas/dashboard"
+              className="text-xs bg-indigo-600/20 border border-indigo-500/40 text-indigo-300 hover:bg-indigo-600/30 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
             >
-              <span>🌐</span>
-              <span>Investor Portal</span>
+              <span>🌍</span>
+              <span className="hidden sm:inline">Overseas Portal</span>
             </Link>
             <Link
               href="/agency/dashboard"
               className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1"
             >
               <span>🏢</span>
-              <span className="hidden sm:inline">Agency Portal</span>
+              <span className="hidden sm:inline">Agency Dashboard</span>
             </Link>
             <Link
               href="/dashboard"
@@ -216,7 +211,7 @@ export default function GlobalHeader() {
           </>
         )}
 
-        {/* 📐 ARCHITECT: Show ONLY Architect Portal */}
+        {/* 📐 ARCHITECT: Show ONLY Architect Studio */}
         {isArchitectUser && (
           <Link
             href="/architects/dashboard"
@@ -227,7 +222,7 @@ export default function GlobalHeader() {
           </Link>
         )}
 
-        {/* 🏢 AGENCY / AGENT: Show Agency Dashboard */}
+        {/* 🏢 AGENCY / AGENT: Show ONLY Agency Dashboard */}
         {isAgencyUser && (
           <Link
             href="/agency/dashboard"
@@ -238,36 +233,25 @@ export default function GlobalHeader() {
           </Link>
         )}
 
-        {/* 💼 INVESTOR: Show Overseas Investment Portal */}
-        {isInvestorUser && (
-          <Link
-            href="/investors"
-            className="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-xl transition shadow shadow-amber-950/50 flex items-center gap-1.5"
-          >
-            <span>💼</span>
-            <span>Overseas Investment Portal</span>
-          </Link>
-        )}
-
-        {/* 🌍 OVERSEAS BUYER: Show Overseas Investment Portal */}
-        {isOverseasBuyer && (
+        {/* 🌍 OVERSEAS PORTAL: Show ONLY to OVERSEAS_BUYER / INVESTOR */}
+        {isOverseasUser && (
           <Link
             href="/overseas/dashboard"
-            className="text-xs bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-indigo-950/50 flex items-center gap-1.5"
+            className="text-xs bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold px-3.5 py-1.5 rounded-xl transition shadow shadow-indigo-950/50 flex items-center gap-1.5"
           >
             <span>🌍</span>
-            <span>Overseas Investment Portal</span>
+            <span>Overseas Portal</span>
           </Link>
         )}
 
-        {/* 🏠 STANDARD USER: Show My Listings / Dashboard */}
+        {/* 🏠 STANDARD USER: Show ONLY User Dashboard / My Listings (NEVER Overseas Portal) */}
         {isStandardUser && (
           <Link
             href="/dashboard"
-            className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1.5"
+            className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1.5"
           >
             <span>🏠</span>
-            <span>My Listings / Dashboard</span>
+            <span>User Dashboard</span>
           </Link>
         )}
 

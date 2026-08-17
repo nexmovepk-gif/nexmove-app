@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import AIListingCard, { AIListingItem, ListingStatusKey } from '@/components/AIListingCard';
 import ActivityCenter, { ActivityNotification } from '@/components/ActivityCenter';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -35,7 +36,12 @@ const TAB_ACTIVE_STYLES: Record<TabKey, string> = {
 const PROPERTY_TYPES = ['HOUSE', 'APARTMENT', 'FLAT', 'PLOT', 'COMMERCIAL', 'OFFICE', 'VILLA'];
 const PURPOSES = ['FOR_SALE', 'FOR_RENT', 'LEASE'];
 
-export default function UserDashboardPage() {
+function UserDashboardContent() {
+  const searchParams = useSearchParams();
+  const unauthorizedParam = searchParams.get('unauthorized');
+  const reasonParam = searchParams.get('reason');
+  const [dismissNotice, setDismissNotice] = useState(false);
+
   const [listings, setListings] = useState<AIListingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabKey>('ALL');
@@ -202,6 +208,31 @@ export default function UserDashboardPage() {
             </Link>
           </div>
         </div>
+
+        {/* ── Authorization Notice Banner (if redirected from restricted portal) ── */}
+        {!dismissNotice && unauthorizedParam && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-300 rounded-2xl flex items-center justify-between shadow-xs animate-in fade-in">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-200 text-amber-800 flex items-center justify-center font-black flex-shrink-0 text-base">
+                🛡️
+              </div>
+              <div>
+                <p className="text-xs font-black text-amber-950">
+                  {reasonParam || 'Access Restricted: This portal is reserved for Overseas NICOP buyers.'}
+                </p>
+                <p className="text-[11px] text-amber-800 font-medium mt-0.5">
+                  You have been securely redirected to your local User Dashboard.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setDismissNotice(true)}
+              className="text-amber-800 hover:text-amber-950 font-bold text-xs px-2.5 py-1.5 rounded-lg hover:bg-amber-100 transition ml-2 flex-shrink-0"
+            >
+              ✕ Dismiss
+            </button>
+          </div>
+        )}
 
         {/* ── AI Health & Demand KPI Bar ──────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
@@ -450,5 +481,19 @@ export default function UserDashboardPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function UserDashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        </div>
+      }
+    >
+      <UserDashboardContent />
+    </Suspense>
   );
 }

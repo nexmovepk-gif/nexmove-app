@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Globe2, ShieldCheck, BadgeCheck, TrendingUp,
@@ -298,6 +299,7 @@ function SavedPropertyCard({
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 
 export default function OverseasBuyerDashboard() {
+  const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const user = session?.user;
 
@@ -349,12 +351,49 @@ export default function OverseasBuyerDashboard() {
   }, [user?.id]);
 
   useEffect(() => {
-    if (sessionStatus === 'authenticated') {
+    if (sessionStatus === 'authenticated' && user) {
+      const isSuperAdmin =
+        user.email?.toLowerCase() === 'nexmove.pk@gmail.com' ||
+        user.role === 'SUPER_ADMIN' ||
+        user.role === 'ADMIN';
+
+      const isOverseasBuyer =
+        user.accountRoleType === 'OVERSEAS_BUYER' ||
+        user.role === 'OVERSEAS_BUYER';
+
+      const isInvestor =
+        user.accountRoleType === 'OVERSEAS_INVESTOR' ||
+        user.accountRoleType === 'INVESTOR' ||
+        user.role === 'INVESTOR';
+
+      const isAgency =
+        user.role === 'AGENCY_MANAGER' ||
+        user.role === 'AGENCY_AGENT' ||
+        user.accountRoleType === 'AGENCY_ADMIN' ||
+        user.accountRoleType === 'AGENCY_AGENT' ||
+        user.accountRoleType === 'AGENCY_MANAGER' ||
+        user.accountRoleType === 'OVERSEAS_AGENCY' ||
+        Boolean(user.agencyId);
+
+      // Strict RBAC Guard: Deny local public users and agencies
+      if (!isSuperAdmin && !isOverseasBuyer && !isInvestor) {
+        if (isAgency) {
+          router.replace(
+            '/agency/dashboard?unauthorized=overseas_portal_restricted&reason=This+portal+is+reserved+for+Overseas+NICOP+buyers'
+          );
+        } else {
+          router.replace(
+            '/dashboard?unauthorized=overseas_portal_restricted&reason=This+portal+is+reserved+for+Overseas+NICOP+buyers'
+          );
+        }
+        return;
+      }
+
       fetchProperties();
     } else if (sessionStatus === 'unauthenticated') {
-      setLoading(false);
+      router.replace('/login?role=overseas_buyer&callbackUrl=/overseas/dashboard');
     }
-  }, [sessionStatus, fetchProperties]);
+  }, [sessionStatus, user, router, fetchProperties]);
 
   const totalAssetsPKR = useMemo(
     () => savedProperties.reduce((acc, p) => acc + p.pricePKR, 0),

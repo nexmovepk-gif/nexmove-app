@@ -246,15 +246,18 @@ export async function middleware(req: NextRequest) {
         if (isAgencyUser) {
           const redirectUrl = new URL('/agency/dashboard', req.url);
           redirectUrl.searchParams.set('unauthorized', 'overseas_portal_restricted');
+          redirectUrl.searchParams.set('reason', 'This portal is reserved for Overseas NICOP buyers');
           return NextResponse.redirect(redirectUrl);
         }
         if (isArchitectUser) {
           const redirectUrl = new URL('/architects/dashboard', req.url);
           redirectUrl.searchParams.set('unauthorized', 'overseas_portal_restricted');
+          redirectUrl.searchParams.set('reason', 'This portal is reserved for Overseas NICOP buyers');
           return NextResponse.redirect(redirectUrl);
         }
         const redirectUrl = new URL('/dashboard', req.url);
         redirectUrl.searchParams.set('unauthorized', 'overseas_portal_restricted');
+        redirectUrl.searchParams.set('reason', 'This portal is reserved for Overseas NICOP buyers');
         return NextResponse.redirect(redirectUrl);
       }
     }

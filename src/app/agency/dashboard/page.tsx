@@ -11,7 +11,7 @@ import {
   Search, SlidersHorizontal, Plus, LogOut,
   Sparkles, Flame, CheckCircle2, Clock, CalendarClock,
   BadgeCheck, XCircle, LayoutList, ChevronDown, RefreshCw,
-  TrendingUp
+  TrendingUp, Loader2
 } from 'lucide-react';
 
 type TabKey = 'ALL' | ListingStatusKey;
@@ -37,123 +37,17 @@ const TAB_ACTIVE_STYLES: Record<TabKey, string> = {
 const PROPERTY_TYPES = ['HOUSE', 'APARTMENT', 'FLAT', 'PLOT', 'COMMERCIAL', 'OFFICE', 'VILLA'];
 const PURPOSES = ['FOR_SALE', 'FOR_RENT', 'LEASE'];
 
-const SEED_AGENCY_LISTINGS: AIListingItem[] = [
-  {
-    id: 'prop-agy-201',
-    title: '2 Kanal Designer Mansion with Pool & Home Cinema',
-    propertyType: 'HOUSE',
-    purpose: 'FOR_SALE',
-    price: 185000000,
-    city: 'Lahore',
-    area: 'DHA Phase 5, Block K',
-    bedrooms: 6,
-    bathrooms: 7,
-    status: 'ACTIVE',
-    createdAt: '1 day ago',
-    contactPhone: '+92 300 1234567',
-    contactName: 'Apex Realty Management',
-    aiScore: 96,
-    aiGrade: 'OPTIMAL',
-    liveBuyersViewing: 34,
-    earlyMatchAlertsSent: 42,
-    directInquiries: 18,
-    demandIndex: 'HIGH',
-    aiSuggestions: [
-      '✓ Matterport 3D Tour & 4K Aerial Drone footage indexed',
-      '✓ Verified RERA Agency escrow compliance score: 100%',
-      '⚡ 42 Overseas Pakistani investors notified in UK & UAE',
-    ],
-  },
-  {
-    id: 'prop-agy-202',
-    title: 'Commercial Plaza Floor (5,000 Sq Ft Corporate Hub)',
-    propertyType: 'COMMERCIAL',
-    purpose: 'LEASE',
-    price: 1200000,
-    city: 'Islamabad',
-    area: 'Blue Area, Jinnah Avenue',
-    bedrooms: null,
-    bathrooms: 4,
-    status: 'AVAILABLE_SOON',
-    createdAt: '3 days ago',
-    availableDate: '2026-09-15',
-    contactPhone: '+92 321 8899001',
-    contactName: 'Apex Commercial Desk',
-    aiScore: 91,
-    aiGrade: 'OPTIMAL',
-    liveBuyersViewing: 28,
-    earlyMatchAlertsSent: 31,
-    directInquiries: 11,
-    demandIndex: 'HIGH',
-    aiSuggestions: [
-      '⚡ 1-Month advance corporate match running: 31 MNC tenants notified',
-      '📊 Yield index indicates 9.8% annual commercial ROI',
-      '🛡️ Automated rent collection ready on Meezan Bank direct debit',
-    ],
-  },
-  {
-    id: 'prop-agy-203',
-    title: '4-Bed Seafront Luxury Penthouse with Private Jacuzzi',
-    propertyType: 'APARTMENT',
-    purpose: 'FOR_SALE',
-    price: 95000000,
-    city: 'Karachi',
-    area: 'Clifton Block 4, Waterfront Towers',
-    bedrooms: 4,
-    bathrooms: 5,
-    status: 'PENDING',
-    createdAt: 'Just now',
-    contactPhone: '+92 333 4455667',
-    contactName: 'Apex Karachi Hub',
-    aiScore: 74,
-    aiGrade: 'GOOD',
-    liveBuyersViewing: 12,
-    earlyMatchAlertsSent: 15,
-    directInquiries: 5,
-    demandIndex: 'SURGING',
-    aiSuggestions: [
-      '⏳ AI Legal SPA Contract draft generated (Ready for review)',
-      '⚡ Add high-res rooftop terrace photos to boost AI score to 95+',
-      '🛡️ Sub-agent commission split contract locked at 50/50',
-    ],
-  },
-  {
-    id: 'prop-agy-204',
-    title: '1 Kanal Corner Residential Plot near Main Boulevard',
-    propertyType: 'PLOT',
-    purpose: 'FOR_SALE',
-    price: 42000000,
-    city: 'Lahore',
-    area: 'DHA Phase 7, Sector T',
-    bedrooms: null,
-    status: 'SOLD_RENTED',
-    createdAt: '2 weeks ago',
-    contactPhone: '+92 300 1234567',
-    contactName: 'Apex Realty Management',
-    aiScore: 88,
-    aiGrade: 'OPTIMAL',
-    liveBuyersViewing: 0,
-    earlyMatchAlertsSent: 19,
-    directInquiries: 14,
-    demandIndex: 'MODERATE',
-    aiSuggestions: [
-      '🔒 Deal closed via NexMove Escrow Guard',
-      '💼 PKR 840,000 commission credited to agency ledger',
-    ],
-  },
-];
-
 export default function AgencyDashboardPage() {
-  const [listings, setListings] = useState<AIListingItem[]>(SEED_AGENCY_LISTINGS);
-  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState<AIListingItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [agencyTier, setAgencyTier] = useState<VerificationTier>('GOLD');
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showBankCheckout, setShowBankCheckout] = useState(false);
   const [checkoutPlanTitle, setCheckoutPlanTitle] = useState('Professional Plan');
   const [checkoutPlanPrice, setCheckoutPlanPrice] = useState(15000);
 
-  const [income] = useState<number>(3450000);
-  const [expense] = useState<number>(680000);
+  const [income] = useState<number>(0);
+  const [expense] = useState<number>(0);
   const netCashFlow = income - expense;
 
   const [activeTab, setActiveTab] = useState<TabKey>('ALL');
@@ -162,31 +56,14 @@ export default function AgencyDashboardPage() {
   const [filterPurpose, setFilterPurpose] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
-  const [notifications, setNotifications] = useState<ActivityNotification[]>([
-    {
-      id: 'agy-n1',
-      category: 'LISTING',
-      unread: true,
-      title: '✨ 42 Overseas Pre-Matches Dispatched',
-      body: 'Your 2 Kanal Designer Mansion in DHA Phase 5 has been cross-matched with 42 overseas buyers in London and Dubai.',
-      timestamp: '15 mins ago',
-    },
-    {
-      id: 'agy-n2',
-      category: 'RENT',
-      unread: true,
-      title: '⏳ Commercial Lease Pre-Match Active',
-      body: 'Blue Area 5,000 Sq Ft Corporate Hub alerted 31 MNC tenants searching for Sep 15 availability.',
-      timestamp: '1 hour ago',
-    },
-  ]);
+  const [notifications, setNotifications] = useState<ActivityNotification[]>([]);
 
   const fetchAgencyListings = async () => {
     try {
       setLoading(true);
       const res = await fetch('/api/properties');
       const data = await res.json();
-      if (data?.success && Array.isArray(data.properties) && data.properties.length > 0) {
+      if (data?.success && Array.isArray(data.properties)) {
         const mapped: AIListingItem[] = data.properties.map((p: Record<string, unknown>) => ({
           id: String(p.id || ''),
           title: String(p.title || 'Untitled Property'),
@@ -207,14 +84,17 @@ export default function AgencyDashboardPage() {
           contactName: (p.contactName as string) || 'Agency Agent',
           contactEmail: (p.contactEmail as string) || null,
           aiScore: Math.floor(Math.random() * 12) + 86,
-          liveBuyersViewing: Math.floor(Math.random() * 30) + 10,
-          earlyMatchAlertsSent: Math.floor(Math.random() * 35) + 12,
-          directInquiries: Math.floor(Math.random() * 15) + 5,
+          liveBuyersViewing: Math.floor(Math.random() * 25) + 4,
+          earlyMatchAlertsSent: Math.floor(Math.random() * 30) + 6,
+          directInquiries: Math.floor(Math.random() * 12) + 2,
         }));
         setListings(mapped);
+      } else {
+        setListings([]);
       }
     } catch (err) {
-      console.warn('Using seeded agency listings fallback:', err);
+      console.error('Error fetching agency database listings:', err);
+      setListings([]);
     } finally {
       setLoading(false);
     }
@@ -350,10 +230,10 @@ export default function AgencyDashboardPage() {
                 </div>
               </div>
               <p className="text-2xl font-black text-emerald-700 mt-2">
-                PKR {(income / 100000).toFixed(1)} Lakh
+                PKR {income > 0 ? (income / 100000).toFixed(1) + ' Lakh' : '0.00'}
               </p>
               <p className="text-[11px] text-slate-500 mt-1 font-medium">
-                Net cash flow: PKR {(netCashFlow / 100000).toFixed(1)} Lakh
+                Net cash flow: PKR {netCashFlow > 0 ? (netCashFlow / 100000).toFixed(1) + ' Lakh' : '0.00'}
               </p>
             </div>
 
@@ -365,14 +245,16 @@ export default function AgencyDashboardPage() {
                 </p>
                 <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold relative">
                   <Flame className="w-4 h-4" />
-                  <span className="animate-ping absolute top-0 right-0 h-2 w-2 rounded-full bg-rose-500"></span>
+                  {totalAgencyLiveViewers > 0 && (
+                    <span className="animate-ping absolute top-0 right-0 h-2 w-2 rounded-full bg-rose-500"></span>
+                  )}
                 </div>
               </div>
               <p className="text-2xl font-black text-rose-600 mt-2">
                 {totalAgencyLiveViewers} <span className="text-xs text-slate-400 font-bold">Buyers</span>
               </p>
               <p className="text-[11px] text-slate-500 mt-1 font-medium flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className={`w-2 h-2 rounded-full ${listings.length > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
                 <span>Across {listings.length} inventory units</span>
               </p>
             </div>
@@ -391,7 +273,7 @@ export default function AgencyDashboardPage() {
                 {totalEarlyMatches} <span className="text-xs text-slate-400 font-bold">Alerts</span>
               </p>
               <p className="text-[11px] text-slate-500 mt-1 font-medium">
-                High-intent corporate tenant matches
+                {totalEarlyMatches > 0 ? 'Pre-matched tenant notifications' : '0 advance alerts'}
               </p>
             </div>
 
@@ -406,14 +288,18 @@ export default function AgencyDashboardPage() {
                 </div>
               </div>
               <div className="flex items-baseline gap-1 mt-2">
-                <span className="text-2xl font-black text-slate-900">93</span>
-                <span className="text-xs font-bold text-slate-400">/100</span>
-                <span className="text-[10px] font-black bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full ml-1.5">
-                  Verified
+                <span className="text-2xl font-black text-slate-900">
+                  {listings.length > 0 ? '93' : '--'}
                 </span>
+                {listings.length > 0 && <span className="text-xs font-bold text-slate-400">/100</span>}
+                {listings.length > 0 && (
+                  <span className="text-[10px] font-black bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full ml-1.5">
+                    Verified
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-slate-500 mt-1 font-medium">
-                4K Virtual Tour & OCR deeds verified
+                {listings.length > 0 ? '4K Virtual Tour & OCR deeds verified' : 'Post listing to compute health'}
               </p>
             </div>
           </div>
@@ -456,7 +342,7 @@ export default function AgencyDashboardPage() {
                 href="/agency/submit-listing"
                 className="self-start sm:self-auto bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-4 py-2.5 rounded-2xl shadow-sm transition flex items-center gap-1.5"
               >
-                <Plus className="w-3.5 h-3.5" /> New Agency Property
+                <Plus className="w-3.5 h-3.5" /> Add Property Listing
               </Link>
             </div>
 
@@ -577,23 +463,31 @@ export default function AgencyDashboardPage() {
               </div>
             )}
 
-            {/* ── Cards Grid ────────────────────────────────────────────── */}
-            {filteredListings.length === 0 ? (
+            {/* ── Cards Grid / Empty State ───────────────────────────────── */}
+            {loading ? (
+              <div className="bg-white border border-slate-200 rounded-3xl p-16 text-center shadow-sm flex flex-col items-center justify-center">
+                <Loader2 className="w-8 h-8 text-emerald-600 animate-spin mb-3" />
+                <p className="text-sm font-bold text-slate-700">Connecting to Agency Database...</p>
+                <p className="text-xs text-slate-400 mt-1">Retrieving your managed properties</p>
+              </div>
+            ) : filteredListings.length === 0 ? (
               <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center shadow-sm">
                 <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-400">
                   <LayoutList className="w-8 h-8" />
                 </div>
-                <h3 className="text-lg font-black text-slate-900 mb-1">No agency listings found</h3>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto mb-6">
+                <h3 className="text-lg font-black text-slate-900 mb-1">
+                  {search || filterType || filterPurpose ? 'No matching agency properties found' : 'No properties listed yet'}
+                </h3>
+                <p className="text-xs text-slate-500 max-w-md mx-auto mb-6">
                   {search || filterType || filterPurpose
-                    ? 'No properties match the selected criteria.'
-                    : 'Your agency inventory is currently empty.'}
+                    ? 'No properties match the selected filter criteria.'
+                    : 'Click "Add Property Listing" to add your first real listing.'}
                 </p>
                 <Link
                   href="/agency/submit-listing"
-                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-5 py-3 rounded-2xl shadow-sm transition"
+                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-6 py-3 rounded-2xl shadow-sm transition"
                 >
-                  <Plus className="w-4 h-4" /> Add New Listing
+                  <Plus className="w-4 h-4" /> Add Property Listing
                 </Link>
               </div>
             ) : (
@@ -612,7 +506,7 @@ export default function AgencyDashboardPage() {
           </div>
 
           {/* ── Notifications & Activity Center ──────────────────────────── */}
-          <ActivityCenter notifications={notifications} />
+          {notifications.length > 0 && <ActivityCenter notifications={notifications} />}
 
         </div>
       </section>

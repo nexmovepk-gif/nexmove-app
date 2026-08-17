@@ -39,9 +39,10 @@ export async function GET(req: NextRequest) {
       where.verifiedProperty = true
     }
 
-    let listings: Awaited<ReturnType<typeof prisma.publicListing.findMany<{ include: { agency: true } }>>> = []
+    // 1. Fetch from PublicListing
+    let publicListings: Awaited<ReturnType<typeof prisma.publicListing.findMany<{ include: { agency: true } }>>> = []
     try {
-      listings = await prisma.publicListing.findMany({
+      publicListings = await prisma.publicListing.findMany({
         where,
         include: {
           agency: true,
@@ -52,20 +53,56 @@ export async function GET(req: NextRequest) {
       })
     } catch (dbErr) {
       console.warn('Prisma publicListing fetch error:', dbErr)
-      listings = []
+      publicListings = []
     }
 
-    // Strip sensitive contact data from public list view
-    const safeListings = listings.map((l) => {
+    // 2. Fetch from Property
+    const propWhere: Record<string, unknown> = {
+      isAvailable: true,
+    }
+    if (city) {
+      propWhere.city = { contains: city, mode: 'insensitive' }
+    }
+    if (type) {
+      propWhere.propertyType = { contains: type, mode: 'insensitive' }
+    }
+    if (minPrice || maxPrice) {
+      propWhere.price = {
+        ...(minPrice ? { gte: Number(minPrice) } : {}),
+        ...(maxPrice ? { lte: Number(maxPrice) } : {}),
+      }
+    }
+    if (minBeds) {
+      propWhere.bedrooms = { gte: Number(minBeds) }
+    }
+
+    let properties: Awaited<ReturnType<typeof prisma.property.findMany<{ include: { agency: true } }>>> = []
+    try {
+      properties = await prisma.property.findMany({
+        where: propWhere,
+        include: {
+          agency: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+    } catch (propErr) {
+      console.warn('Prisma property fetch error:', propErr)
+      properties = []
+    }
+
+    // Transform public listings
+    const mappedPublic = publicListings.map((l) => {
       const contactPhone = l.contactPhone || ''
       return {
         id: l.id,
         title: l.title,
         description: l.description,
-        propertyType: l.propertyType,
+        propertyType: String(l.propertyType),
         price: l.price,
         address: l.address,
-        city: l.city,
+        city: l.city || '',
         areaSqFt: l.areaSqFt,
         bedrooms: l.bedrooms,
         bathrooms: l.bathrooms,
@@ -81,9 +118,40 @@ export async function GET(req: NextRequest) {
       }
     })
 
+    // Transform properties
+    const mappedProperties = properties.map((p) => {
+      const contactPhone = p.contactPhone || ''
+      return {
+        id: p.id,
+        title: p.title,
+        description: p.description || '',
+        propertyType: p.propertyType,
+        price: p.price,
+        address: p.address,
+        city: p.city || '',
+        areaSqFt: p.areaSqFt,
+        bedrooms: p.bedrooms,
+        bathrooms: p.bathrooms,
+        verifiedProperty: p.agency?.verified || false,
+        aiExtracted: true,
+        aiConfidence: 0.95,
+        isActive: p.isAvailable,
+        agencyId: p.agencyId,
+        agencyName: p.agency?.name || null,
+        agencyVerified: p.agency?.verified || false,
+        contactPhoneMasked: contactPhone ? contactPhone.slice(0, -4) + '****' : '',
+        createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString(),
+      }
+    })
+
+    // Merge and sort newest first
+    const unifiedListings = [...mappedProperties, ...mappedPublic].sort((a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+
     return NextResponse.json({
-      listings: safeListings,
-      total: safeListings.length,
+      listings: unifiedListings,
+      total: unifiedListings.length,
       timestamp: new Date().toISOString(),
     })
   } catch (err) {
@@ -149,7 +217,6 @@ export async function POST(req: NextRequest) {
         fileSizeBytes: uploadedFileSizeBytes ?? 0,
       })
 
-      // Use AI-extracted values where user didn't supply them
       if (aiResult.success) {
         resolvedBedrooms = resolvedBedrooms ?? aiResult.bedrooms
         resolvedArea = resolvedArea ?? aiResult.areaSqFt
@@ -187,7 +254,7 @@ export async function POST(req: NextRequest) {
         contactName,
         contactPhone,
         contactEmail: contactEmail ?? null,
-        verifiedProperty: false, // Starts unverified; admin sets this
+        verifiedProperty: false,
         aiExtracted,
         aiConfidence,
         isActive: true,

@@ -38,12 +38,14 @@ export default function GlobalHeader() {
     !isAgencyUser &&
     Boolean(user) &&
     (user?.accountRoleType === 'OVERSEAS_INVESTOR' ||
-      user?.accountRoleType === 'OVERSEAS_BUYER' ||
-      user?.accountRoleType === 'BUYER' ||
-      user?.accountRoleType === 'LOCAL_PUBLIC' ||
-      user?.accountRoleType === 'OVERSEAS_LOCAL_PUBLIC' ||
-      user?.role === 'PUBLIC_USER' ||
       user?.role === 'INVESTOR');
+
+  const isStandardUser =
+    !isSuperAdmin &&
+    !isArchitectUser &&
+    !isAgencyUser &&
+    !isInvestorUser &&
+    Boolean(user);
 
   const isGuest = !user;
 
@@ -64,6 +66,7 @@ export default function GlobalHeader() {
       // Custom label mappings
       if (seg === 'agency') formattedLabel = 'Agency';
       if (seg === 'dashboard') formattedLabel = 'Dashboard';
+      if (seg === 'my-listings') formattedLabel = 'My Listings';
       if (seg === 'ledger') formattedLabel = 'Ledger';
       if (seg === 'leaderboard') formattedLabel = 'Leaderboard';
       if (seg === 'rent-collection') formattedLabel = 'Rent Collections';
@@ -187,18 +190,18 @@ export default function GlobalHeader() {
               <span>Investor Portal</span>
             </Link>
             <Link
-              href="/architects/dashboard"
-              className="text-xs bg-teal-500/10 border border-teal-500/30 text-teal-300 hover:bg-teal-500/20 px-2.5 py-1 rounded-lg transition font-bold flex items-center gap-1"
-            >
-              <span>🏛️</span>
-              <span className="hidden md:inline">Architect Portal</span>
-            </Link>
-            <Link
               href="/agency/dashboard"
               className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1"
             >
               <span>🏢</span>
-              <span className="hidden sm:inline">Agency Dashboard</span>
+              <span className="hidden sm:inline">Agency Portal</span>
+            </Link>
+            <Link
+              href="/dashboard"
+              className="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1"
+            >
+              <span>🏠</span>
+              <span className="hidden sm:inline">User Dashboard</span>
             </Link>
           </>
         )}
@@ -210,18 +213,18 @@ export default function GlobalHeader() {
             className="text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-teal-950/50 flex items-center gap-1.5"
           >
             <span>🏛️</span>
-            <span>Architect Portal</span>
+            <span>Architect Studio</span>
           </Link>
         )}
 
-        {/* 🏢 AGENCY / AGENT: Show ONLY Agency Dashboard */}
+        {/* 🏢 AGENCY / AGENT: Show ONLY Agency Portal */}
         {isAgencyUser && (
           <Link
             href="/agency/dashboard"
             className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1.5"
           >
             <span>🏢</span>
-            <span>Agency Dashboard</span>
+            <span>Agency Portal</span>
           </Link>
         )}
 
@@ -233,6 +236,17 @@ export default function GlobalHeader() {
           >
             <span>💼</span>
             <span>Investor Portal</span>
+          </Link>
+        )}
+
+        {/* 🏠 STANDARD USER: Show User Dashboard / My Listings */}
+        {isStandardUser && (
+          <Link
+            href="/dashboard"
+            className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1.5"
+          >
+            <span>🏠</span>
+            <span>User Dashboard</span>
           </Link>
         )}
 

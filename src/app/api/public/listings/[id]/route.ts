@@ -7,6 +7,40 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // 1. Try finding in Property model
+    const prop = await prisma.property.findUnique({
+      where: { id: params.id },
+      include: { agency: true },
+    })
+
+    if (prop && prop.isAvailable) {
+      const safeProp = {
+        id: prop.id,
+        title: prop.title,
+        description: prop.description || '',
+        propertyType: prop.propertyType,
+        price: prop.price,
+        address: prop.address,
+        city: prop.city || '',
+        areaSqFt: prop.areaSqFt,
+        bedrooms: prop.bedrooms,
+        bathrooms: prop.bathrooms,
+        contactName: prop.contactName,
+        contactPhone: prop.contactPhone,
+        contactEmail: prop.contactEmail,
+        verifiedProperty: prop.agency?.verified || false,
+        aiExtracted: true,
+        aiConfidence: 0.95,
+        isActive: prop.isAvailable,
+        agencyId: prop.agencyId,
+        agencyName: prop.agency?.name || null,
+        agencyVerified: prop.agency?.verified || false,
+        createdAt: prop.createdAt.toISOString(),
+      }
+      return NextResponse.json({ listing: safeProp })
+    }
+
+    // 2. Try finding in PublicListing model
     const listing = await prisma.publicListing.findUnique({
       where: { id: params.id },
       include: { agency: true },

@@ -8,6 +8,15 @@ export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   try {
+    const prop = await prisma.property.findUnique({
+      where: { id: params.id },
+    });
+    if (prop) {
+      return {
+        title: `${prop.title} — NexMove`,
+        description: prop.description ?? '',
+      };
+    }
     const listing = await prisma.publicListing.findUnique({
       where: { id: params.id },
     });
@@ -26,35 +35,68 @@ export default async function ListingDetailPage({ params }: { params: { id: stri
   let listing: PublicListingItem | null = null;
 
   try {
-    const dbListing = await prisma.publicListing.findUnique({
+    // 1. Check Property model
+    const prop = await prisma.property.findUnique({
       where: { id: params.id },
       include: { agency: true },
     });
 
-    if (dbListing && dbListing.isActive) {
+    if (prop && prop.isAvailable) {
       listing = {
-        id: dbListing.id,
-        title: dbListing.title,
-        description: dbListing.description || '',
-        propertyType: dbListing.propertyType,
-        price: dbListing.price,
-        address: dbListing.address,
-        city: dbListing.city || '',
-        areaSqFt: dbListing.areaSqFt,
-        bedrooms: dbListing.bedrooms,
-        bathrooms: dbListing.bathrooms,
-        contactName: dbListing.contactName,
-        contactPhone: dbListing.contactPhone,
-        contactEmail: dbListing.contactEmail,
-        verifiedProperty: dbListing.verifiedProperty,
-        aiExtracted: dbListing.aiExtracted,
-        aiConfidence: dbListing.aiConfidence,
-        isActive: dbListing.isActive,
-        agencyId: dbListing.agencyId,
-        agencyName: dbListing.agency?.name || null,
-        agencyVerified: dbListing.agency?.verified || false,
-        createdAt: dbListing.createdAt.toISOString(),
+        id: prop.id,
+        title: prop.title,
+        description: prop.description || '',
+        propertyType: String(prop.propertyType),
+        price: prop.price,
+        address: prop.address,
+        city: prop.city || '',
+        areaSqFt: prop.areaSqFt,
+        bedrooms: prop.bedrooms,
+        bathrooms: prop.bathrooms,
+        contactName: prop.contactName,
+        contactPhone: prop.contactPhone,
+        contactEmail: prop.contactEmail,
+        verifiedProperty: prop.agency?.verified || false,
+        aiExtracted: true,
+        aiConfidence: 0.95,
+        isActive: prop.isAvailable,
+        agencyId: prop.agencyId,
+        agencyName: prop.agency?.name || null,
+        agencyVerified: prop.agency?.verified || false,
+        createdAt: prop.createdAt.toISOString(),
       };
+    } else {
+      // 2. Check PublicListing model
+      const dbListing = await prisma.publicListing.findUnique({
+        where: { id: params.id },
+        include: { agency: true },
+      });
+
+      if (dbListing && dbListing.isActive) {
+        listing = {
+          id: dbListing.id,
+          title: dbListing.title,
+          description: dbListing.description || '',
+          propertyType: dbListing.propertyType,
+          price: dbListing.price,
+          address: dbListing.address,
+          city: dbListing.city || '',
+          areaSqFt: dbListing.areaSqFt,
+          bedrooms: dbListing.bedrooms,
+          bathrooms: dbListing.bathrooms,
+          contactName: dbListing.contactName,
+          contactPhone: dbListing.contactPhone,
+          contactEmail: dbListing.contactEmail,
+          verifiedProperty: dbListing.verifiedProperty,
+          aiExtracted: dbListing.aiExtracted,
+          aiConfidence: dbListing.aiConfidence,
+          isActive: dbListing.isActive,
+          agencyId: dbListing.agencyId,
+          agencyName: dbListing.agency?.name || null,
+          agencyVerified: dbListing.agency?.verified || false,
+          createdAt: dbListing.createdAt.toISOString(),
+        };
+      }
     }
   } catch (err) {
     console.error('Error loading listing from Prisma:', err);

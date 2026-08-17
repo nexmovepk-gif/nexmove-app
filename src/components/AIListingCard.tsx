@@ -162,10 +162,13 @@ export default function AIListingCard({
   };
 
   const handleShare = () => {
-    const shareText = `🌟 Verified NexMove Property: ${listing.title}\n📍 ${listing.city} - ${formatPKR(listing.price)}\nAI Health Score: ${aiScore}/100 🔥\nContact: ${listing.contactPhone || 'NexMove Support'}`;
-    navigator.clipboard?.writeText(shareText);
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://nexmove.pk';
+    const liveUrl = `${origin}/marketplace/${listing.id}`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(liveUrl);
+    }
     setCopiedShare(true);
-    setTimeout(() => setCopiedShare(false), 2000);
+    setTimeout(() => setCopiedShare(false), 2500);
   };
 
   return (
@@ -174,6 +177,14 @@ export default function AIListingCard({
         isInactive ? 'opacity-75 bg-slate-50/50' : ''
       }`}
     >
+      {/* Toast Notification on Share */}
+      {copiedShare && (
+        <div className="absolute top-3 right-12 z-40 bg-slate-900 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-lg border border-slate-700 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1">
+          <Check className="w-3 h-3 text-emerald-400" />
+          <span>Listing link copied!</span>
+        </div>
+      )}
+
       {/* Top Status Border Accent */}
       <div className={`h-1.5 w-full ${statusCfg.dot}`} />
 

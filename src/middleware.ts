@@ -33,9 +33,12 @@ export async function middleware(req: NextRequest) {
   const isArchitectDashboardRoute =
     pathname.startsWith('/architects/dashboard') ||
     pathname.startsWith('/api/architects/dashboard');
+  const isUserDashboardRoute =
+    pathname === '/dashboard' ||
+    pathname.startsWith('/dashboard/');
 
   // 1. Unauthenticated Redirections with contextual role query params
-  if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute || isArchitectDashboardRoute)) {
+  if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute || isArchitectDashboardRoute || isUserDashboardRoute)) {
     if (isApiRoute) {
       return new NextResponse(
         JSON.stringify({ error: 'Unauthorized: Active session required. Please sign in.' }),
@@ -54,6 +57,8 @@ export async function middleware(req: NextRequest) {
       loginUrl.searchParams.set('callbackUrl', pathname === '/agency' ? '/agency/dashboard' : pathname);
     } else if (isAdminRoute) {
       loginUrl.searchParams.set('role', 'admin');
+      loginUrl.searchParams.set('callbackUrl', pathname);
+    } else {
       loginUrl.searchParams.set('callbackUrl', pathname);
     }
     return NextResponse.redirect(loginUrl);
@@ -85,7 +90,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/unauthorized', req.url));
     }
 
-    // Identify user category
+    // Identify user category strictly
     const isArchitectUser = isArchitect || userRole === 'ARCHITECT';
 
     const isAgencyUser =
@@ -101,12 +106,12 @@ export async function middleware(req: NextRequest) {
     const isInvestorUser =
       !isArchitectUser &&
       !isAgencyUser &&
-      (userAccountRoleType === 'OVERSEAS_INVESTOR' ||
-        userAccountRoleType === 'OVERSEAS_BUYER' ||
-        userAccountRoleType === 'BUYER' ||
-        userAccountRoleType === 'LOCAL_PUBLIC' ||
-        userAccountRoleType === 'OVERSEAS_LOCAL_PUBLIC' ||
-        userRole === 'PUBLIC_USER');
+      userAccountRoleType === 'OVERSEAS_INVESTOR';
+
+    const isRegularPublicUser =
+      !isArchitectUser &&
+      !isAgencyUser &&
+      !isInvestorUser;
 
     // Rule 2a: Architect Dashboard protection
     if (isArchitectDashboardRoute) {
@@ -127,7 +132,9 @@ export async function middleware(req: NextRequest) {
           redirectUrl.searchParams.set('unauthorized', 'architect_portal_restricted');
           return NextResponse.redirect(redirectUrl);
         }
-        return NextResponse.redirect(new URL('/unauthorized', req.url));
+        const redirectUrl = new URL('/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'architect_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
       }
     }
 
@@ -157,9 +164,9 @@ export async function middleware(req: NextRequest) {
       }
     }
 
-    // Rule 2c: If an authenticated user with role INVESTOR tries to visit /agency/..., BLOCK access & redirect to /investors/dashboard
+    // Rule 2c: If an authenticated user with role INVESTOR tries to visit /agency/..., redirect to /investors/dashboard
     if (!isInvestorRoute && isAgencyRoute) {
-      if (!isAgencyUser && isInvestorUser) {
+      if (isInvestorUser) {
         if (isApiRoute) {
           return new NextResponse(
             JSON.stringify({ error: 'Forbidden: Investor accounts cannot access Agency portals' }),
@@ -170,9 +177,21 @@ export async function middleware(req: NextRequest) {
         redirectUrl.searchParams.set('unauthorized', 'agency_portal_restricted');
         return NextResponse.redirect(redirectUrl);
       }
+      // If a regular public user tries to access /agency/..., redirect them to /dashboard (NEVER /investors/dashboard)
+      if (isRegularPublicUser) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Agency account required' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        const redirectUrl = new URL('/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'agency_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
+      }
     }
 
-    // Rule 2d: If an authenticated user with role AGENCY tries to visit /investors/..., BLOCK access & redirect to /agency/dashboard
+    // Rule 2d: If an authenticated user with role AGENCY tries to visit /investors/..., redirect to /agency/dashboard
     if (isInvestorRoute) {
       if (isAgencyUser) {
         if (isApiRoute) {
@@ -182,6 +201,18 @@ export async function middleware(req: NextRequest) {
           );
         }
         const redirectUrl = new URL('/agency/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'investor_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
+      }
+      // If a regular public user tries to access /investors/..., redirect them to /dashboard (NEVER loop to /investors/dashboard)
+      if (isRegularPublicUser) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Overseas Investor account required' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        const redirectUrl = new URL('/dashboard', req.url);
         redirectUrl.searchParams.set('unauthorized', 'investor_portal_restricted');
         return NextResponse.redirect(redirectUrl);
       }
@@ -199,6 +230,7 @@ export async function middleware(req: NextRequest) {
         if (
           parts[2] &&
           parts[2] !== 'dashboard' &&
+          parts[2] !== 'properties' &&
           parts[2] !== 'submit-listing' &&
           parts[2] !== 'add-property' &&
           parts[2] !== 'deals' &&
@@ -228,6 +260,7 @@ export async function middleware(req: NextRequest) {
 // Configure routes where the middleware should run
 export const config = {
   matcher: [
+    '/dashboard/:path*',
     '/agency/:path*',
     '/api/agency/:path*',
     '/admin/:path*',

@@ -45,8 +45,10 @@ function LoginForm() {
         router.push('/admin/dashboard')
       } else if (isInvestorPortal || email.includes('investor')) {
         router.push('/investors/dashboard')
-      } else {
+      } else if (isAgencyPortal || email.includes('agency')) {
         router.push('/agency/dashboard')
+      } else {
+        router.push('/dashboard')
       }
     }
   }

@@ -101,6 +101,7 @@ export async function POST(req: NextRequest) {
     const {
       title,
       description,
+      purpose = 'FOR_SALE',
       propertyType = 'HOUSE',
       price,
       address,
@@ -108,6 +109,13 @@ export async function POST(req: NextRequest) {
       areaSqFt,
       bedrooms,
       bathrooms,
+      isAvailable = true,
+      availableDate,
+      images = [],
+      videoUrl,
+      panoramaUrl,
+      virtualTourUrl,
+      features = [],
       contactName,
       contactPhone,
       contactEmail,
@@ -119,7 +127,7 @@ export async function POST(req: NextRequest) {
     } = body
 
     // Basic validation
-    if (!title || !price || !address || !contactName || !contactPhone) {
+    if (!title || price === undefined || price === null || !address || !contactName || !contactPhone) {
       return NextResponse.json(
         { error: 'Missing required fields: title, price, address, contactName, contactPhone' },
         { status: 400 }
@@ -155,10 +163,13 @@ export async function POST(req: NextRequest) {
       ? (propertyType.toUpperCase() as PropertyType)
       : PropertyType.HOUSE
 
+    const parsedAvailableDate = availableDate ? new Date(availableDate) : null
+
     const created = await prisma.publicListing.create({
       data: {
         title,
         description: description ?? '',
+        purpose: purpose === 'FOR_RENT' ? 'FOR_RENT' : purpose === 'LEASE' ? 'LEASE' : 'FOR_SALE',
         propertyType: validPropertyType,
         price: Number(price),
         address,
@@ -166,6 +177,13 @@ export async function POST(req: NextRequest) {
         areaSqFt: resolvedArea,
         bedrooms: resolvedBedrooms,
         bathrooms: resolvedBathrooms,
+        isAvailable: Boolean(isAvailable),
+        availableDate: parsedAvailableDate,
+        images: Array.isArray(images) ? images : [],
+        videoUrl: videoUrl || null,
+        panoramaUrl: panoramaUrl || null,
+        virtualTourUrl: virtualTourUrl || null,
+        features: Array.isArray(features) ? features : [],
         contactName,
         contactPhone,
         contactEmail: contactEmail ?? null,

@@ -664,10 +664,6 @@ export type EnumProjectStatusFieldUpdateOperationsInput = {
   set?: $Enums.ProjectStatus
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type ArchitectProjectCreateWithoutArchitectInput = {
   id?: string
   title: string

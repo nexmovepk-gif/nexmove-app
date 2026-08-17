@@ -51,6 +51,12 @@ enum DealStatus {
   CANCELLED
 }
 
+enum PropertyPurpose {
+  FOR_SALE
+  FOR_RENT
+  LEASE
+}
+
 // Phase 2 enums
 enum PropertyType {
   HOUSE
@@ -93,6 +99,7 @@ model User {
   agency              Agency?           @relation(fields: [agencyId], references: [id])
 
   listings            Listing[]
+  properties          Property[]
   clients             Client[]
   ledgers             FinancialLedger[]
 
@@ -128,6 +135,7 @@ model Agency {
 
   users               User[]
   listings            Listing[]
+  properties          Property[]
   publicListings      PublicListing[]
   clients             Client[]
   ledgers             FinancialLedger[]
@@ -166,6 +174,45 @@ model Listing {
   updatedAt           DateTime          @updatedAt
 }
 
+/// Comprehensive Property Model
+model Property {
+  id                  String            @id @default(uuid())
+  title               String
+  description         String?
+  purpose             PropertyPurpose   @default(FOR_SALE) // For Sale, For Rent, Lease
+  propertyType        String            // House, Flat / Apartment, Commercial Plot, Office, etc.
+  category            String?           // HOMES, PLOTS, COMMERCIAL, OTHER
+  price               Float             // Sale Price or Monthly Rent/Price
+  address             String
+  city                String?
+  latitude            Float?
+  longitude           Float?
+  areaSqFt            Float?
+  bedrooms            Int?
+  bathrooms           Int?
+  isAvailable         Boolean           @default(true)
+  availableDate       DateTime?
+  images              String[]          @default([])
+  videoUrl            String?           // Video file upload or external URL (YouTube/Vimeo/MP4)
+  panoramaUrl         String?           // 360 Panorama photo (.jpg)
+  virtualTourUrl      String?           // 3D Virtual Tour URL (Matterport / Spline)
+  features            String[]          @default([]) // Corner Property, Main Boulevard, Furnished, etc.
+  contactName         String
+  contactPhone        String
+  contactEmail        String?
+
+  agencyId            String?
+  agency              Agency?           @relation(fields: [agencyId], references: [id])
+
+  userId              String?
+  user                User?             @relation(fields: [userId], references: [id])
+
+  status              ListingStatus     @default(ACTIVE)
+
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
 // ─── Phase 2 Models ──────────────────────────────────────────────────────────
 
 /// Public self-listing: submitted by property owners without an agency account.
@@ -173,6 +220,7 @@ model PublicListing {
   id                  String            @id @default(uuid())
   title               String
   description         String?
+  purpose             PropertyPurpose   @default(FOR_SALE)
   propertyType        PropertyType      @default(HOUSE)
   source              ListingSource     @default(PUBLIC_SELF)
   price               Float
@@ -183,7 +231,13 @@ model PublicListing {
   areaSqFt            Float?
   bedrooms            Int?
   bathrooms           Int?
-  images              String[]          // Cloudinary/S3 URLs (Phase 3 integration)
+  isAvailable         Boolean           @default(true)
+  availableDate       DateTime?
+  images              String[]          @default([]) // Cloudinary/S3 URLs (Phase 3 integration)
+  videoUrl            String?
+  panoramaUrl         String?
+  virtualTourUrl      String?
+  features            String[]          @default([])
   contactName         String
   contactPhone        String
   contactEmail        String?

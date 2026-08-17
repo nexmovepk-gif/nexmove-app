@@ -62,6 +62,15 @@ export const DealStatus = {
 export type DealStatus = (typeof DealStatus)[keyof typeof DealStatus]
 
 
+export const PropertyPurpose = {
+  FOR_SALE: 'FOR_SALE',
+  FOR_RENT: 'FOR_RENT',
+  LEASE: 'LEASE'
+} as const
+
+export type PropertyPurpose = (typeof PropertyPurpose)[keyof typeof PropertyPurpose]
+
+
 export const PropertyType = {
   HOUSE: 'HOUSE',
   APARTMENT: 'APARTMENT',

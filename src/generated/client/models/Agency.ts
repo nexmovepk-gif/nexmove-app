@@ -342,6 +342,7 @@ export type AgencyWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   users?: Prisma.UserListRelationFilter
   listings?: Prisma.ListingListRelationFilter
+  properties?: Prisma.PropertyListRelationFilter
   publicListings?: Prisma.PublicListingListRelationFilter
   clients?: Prisma.ClientListRelationFilter
   ledgers?: Prisma.FinancialLedgerListRelationFilter
@@ -374,6 +375,7 @@ export type AgencyOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
   listings?: Prisma.ListingOrderByRelationAggregateInput
+  properties?: Prisma.PropertyOrderByRelationAggregateInput
   publicListings?: Prisma.PublicListingOrderByRelationAggregateInput
   clients?: Prisma.ClientOrderByRelationAggregateInput
   ledgers?: Prisma.FinancialLedgerOrderByRelationAggregateInput
@@ -409,6 +411,7 @@ export type AgencyWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   users?: Prisma.UserListRelationFilter
   listings?: Prisma.ListingListRelationFilter
+  properties?: Prisma.PropertyListRelationFilter
   publicListings?: Prisma.PublicListingListRelationFilter
   clients?: Prisma.ClientListRelationFilter
   ledgers?: Prisma.FinancialLedgerListRelationFilter
@@ -495,6 +498,7 @@ export type AgencyCreateInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
@@ -527,6 +531,7 @@ export type AgencyUncheckedCreateInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
@@ -559,6 +564,7 @@ export type AgencyUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
@@ -591,6 +597,7 @@ export type AgencyUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
@@ -796,6 +803,22 @@ export type AgencyUpdateOneRequiredWithoutListingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AgencyUpdateToOneWithWhereWithoutListingsInput, Prisma.AgencyUpdateWithoutListingsInput>, Prisma.AgencyUncheckedUpdateWithoutListingsInput>
 }
 
+export type AgencyCreateNestedOneWithoutPropertiesInput = {
+  create?: Prisma.XOR<Prisma.AgencyCreateWithoutPropertiesInput, Prisma.AgencyUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.AgencyCreateOrConnectWithoutPropertiesInput
+  connect?: Prisma.AgencyWhereUniqueInput
+}
+
+export type AgencyUpdateOneWithoutPropertiesNestedInput = {
+  create?: Prisma.XOR<Prisma.AgencyCreateWithoutPropertiesInput, Prisma.AgencyUncheckedCreateWithoutPropertiesInput>
+  connectOrCreate?: Prisma.AgencyCreateOrConnectWithoutPropertiesInput
+  upsert?: Prisma.AgencyUpsertWithoutPropertiesInput
+  disconnect?: Prisma.AgencyWhereInput | boolean
+  delete?: Prisma.AgencyWhereInput | boolean
+  connect?: Prisma.AgencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AgencyUpdateToOneWithWhereWithoutPropertiesInput, Prisma.AgencyUpdateWithoutPropertiesInput>, Prisma.AgencyUncheckedUpdateWithoutPropertiesInput>
+}
+
 export type AgencyCreateNestedOneWithoutPublicListingsInput = {
   create?: Prisma.XOR<Prisma.AgencyCreateWithoutPublicListingsInput, Prisma.AgencyUncheckedCreateWithoutPublicListingsInput>
   connectOrCreate?: Prisma.AgencyCreateOrConnectWithoutPublicListingsInput
@@ -918,6 +941,7 @@ export type AgencyCreateWithoutUsersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
@@ -949,6 +973,7 @@ export type AgencyUncheckedCreateWithoutUsersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
@@ -996,6 +1021,7 @@ export type AgencyUpdateWithoutUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
@@ -1027,6 +1053,7 @@ export type AgencyUncheckedUpdateWithoutUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1058,6 +1085,7 @@ export type AgencyCreateWithoutListingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
@@ -1089,6 +1117,7 @@ export type AgencyUncheckedCreateWithoutListingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
@@ -1136,6 +1165,7 @@ export type AgencyUpdateWithoutListingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
@@ -1167,6 +1197,151 @@ export type AgencyUncheckedUpdateWithoutListingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
+  publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
+  ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
+  rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
+  agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
+  deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+}
+
+export type AgencyCreateWithoutPropertiesInput = {
+  id?: string
+  name: string
+  licenseNumber?: string | null
+  verified?: boolean
+  verifiedLicense?: boolean
+  logo?: string | null
+  phone?: string | null
+  address?: string | null
+  description?: string | null
+  ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  storefrontPhoto?: string | null
+  ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutAgencyInput
+  listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
+  clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
+  ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
+  rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
+  agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
+  deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+}
+
+export type AgencyUncheckedCreateWithoutPropertiesInput = {
+  id?: string
+  name: string
+  licenseNumber?: string | null
+  verified?: boolean
+  verifiedLicense?: boolean
+  logo?: string | null
+  phone?: string | null
+  address?: string | null
+  description?: string | null
+  ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  storefrontPhoto?: string | null
+  ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
+  ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
+  rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
+  agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
+  deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+}
+
+export type AgencyCreateOrConnectWithoutPropertiesInput = {
+  where: Prisma.AgencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.AgencyCreateWithoutPropertiesInput, Prisma.AgencyUncheckedCreateWithoutPropertiesInput>
+}
+
+export type AgencyUpsertWithoutPropertiesInput = {
+  update: Prisma.XOR<Prisma.AgencyUpdateWithoutPropertiesInput, Prisma.AgencyUncheckedUpdateWithoutPropertiesInput>
+  create: Prisma.XOR<Prisma.AgencyCreateWithoutPropertiesInput, Prisma.AgencyUncheckedCreateWithoutPropertiesInput>
+  where?: Prisma.AgencyWhereInput
+}
+
+export type AgencyUpdateToOneWithWhereWithoutPropertiesInput = {
+  where?: Prisma.AgencyWhereInput
+  data: Prisma.XOR<Prisma.AgencyUpdateWithoutPropertiesInput, Prisma.AgencyUncheckedUpdateWithoutPropertiesInput>
+}
+
+export type AgencyUpdateWithoutPropertiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
+  ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
+  rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
+  agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
+  deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+}
+
+export type AgencyUncheckedUpdateWithoutPropertiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1199,6 +1374,7 @@ export type AgencyCreateWithoutPublicListingsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
@@ -1230,6 +1406,7 @@ export type AgencyUncheckedCreateWithoutPublicListingsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
@@ -1277,6 +1454,7 @@ export type AgencyUpdateWithoutPublicListingsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
@@ -1308,6 +1486,7 @@ export type AgencyUncheckedUpdateWithoutPublicListingsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1339,6 +1518,7 @@ export type AgencyCreateWithoutAgencyReviewsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
@@ -1370,6 +1550,7 @@ export type AgencyUncheckedCreateWithoutAgencyReviewsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
@@ -1417,6 +1598,7 @@ export type AgencyUpdateWithoutAgencyReviewsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
@@ -1448,6 +1630,7 @@ export type AgencyUncheckedUpdateWithoutAgencyReviewsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1479,6 +1662,7 @@ export type AgencyCreateWithoutClientsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
@@ -1510,6 +1694,7 @@ export type AgencyUncheckedCreateWithoutClientsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
@@ -1557,6 +1742,7 @@ export type AgencyUpdateWithoutClientsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
@@ -1588,6 +1774,7 @@ export type AgencyUncheckedUpdateWithoutClientsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1619,6 +1806,7 @@ export type AgencyCreateWithoutLedgersInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
@@ -1650,6 +1838,7 @@ export type AgencyUncheckedCreateWithoutLedgersInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
@@ -1697,6 +1886,7 @@ export type AgencyUpdateWithoutLedgersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
@@ -1728,6 +1918,7 @@ export type AgencyUncheckedUpdateWithoutLedgersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1759,6 +1950,7 @@ export type AgencyCreateWithoutDealsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
@@ -1790,6 +1982,7 @@ export type AgencyUncheckedCreateWithoutDealsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
@@ -1837,6 +2030,7 @@ export type AgencyUpdateWithoutDealsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
@@ -1868,6 +2062,7 @@ export type AgencyUncheckedUpdateWithoutDealsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1899,6 +2094,7 @@ export type AgencyCreateWithoutExpensesInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
@@ -1930,6 +2126,7 @@ export type AgencyUncheckedCreateWithoutExpensesInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
@@ -1977,6 +2174,7 @@ export type AgencyUpdateWithoutExpensesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
@@ -2008,6 +2206,7 @@ export type AgencyUncheckedUpdateWithoutExpensesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
@@ -2039,6 +2238,7 @@ export type AgencyCreateWithoutRentCollectionsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
@@ -2070,6 +2270,7 @@ export type AgencyUncheckedCreateWithoutRentCollectionsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
   publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
   ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
@@ -2117,6 +2318,7 @@ export type AgencyUpdateWithoutRentCollectionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
@@ -2148,6 +2350,7 @@ export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
   publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
   ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
@@ -2164,6 +2367,7 @@ export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
 export type AgencyCountOutputType = {
   users: number
   listings: number
+  properties: number
   publicListings: number
   clients: number
   ledgers: number
@@ -2176,6 +2380,7 @@ export type AgencyCountOutputType = {
 export type AgencyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | AgencyCountOutputTypeCountUsersArgs
   listings?: boolean | AgencyCountOutputTypeCountListingsArgs
+  properties?: boolean | AgencyCountOutputTypeCountPropertiesArgs
   publicListings?: boolean | AgencyCountOutputTypeCountPublicListingsArgs
   clients?: boolean | AgencyCountOutputTypeCountClientsArgs
   ledgers?: boolean | AgencyCountOutputTypeCountLedgersArgs
@@ -2207,6 +2412,13 @@ export type AgencyCountOutputTypeCountUsersArgs<ExtArgs extends runtime.Types.Ex
  */
 export type AgencyCountOutputTypeCountListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ListingWhereInput
+}
+
+/**
+ * AgencyCountOutputType without action
+ */
+export type AgencyCountOutputTypeCountPropertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PropertyWhereInput
 }
 
 /**
@@ -2282,6 +2494,7 @@ export type AgencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
   listings?: boolean | Prisma.Agency$listingsArgs<ExtArgs>
+  properties?: boolean | Prisma.Agency$propertiesArgs<ExtArgs>
   publicListings?: boolean | Prisma.Agency$publicListingsArgs<ExtArgs>
   clients?: boolean | Prisma.Agency$clientsArgs<ExtArgs>
   ledgers?: boolean | Prisma.Agency$ledgersArgs<ExtArgs>
@@ -2365,6 +2578,7 @@ export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type AgencyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
   listings?: boolean | Prisma.Agency$listingsArgs<ExtArgs>
+  properties?: boolean | Prisma.Agency$propertiesArgs<ExtArgs>
   publicListings?: boolean | Prisma.Agency$publicListingsArgs<ExtArgs>
   clients?: boolean | Prisma.Agency$clientsArgs<ExtArgs>
   ledgers?: boolean | Prisma.Agency$ledgersArgs<ExtArgs>
@@ -2382,6 +2596,7 @@ export type $AgencyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     users: Prisma.$UserPayload<ExtArgs>[]
     listings: Prisma.$ListingPayload<ExtArgs>[]
+    properties: Prisma.$PropertyPayload<ExtArgs>[]
     publicListings: Prisma.$PublicListingPayload<ExtArgs>[]
     clients: Prisma.$ClientPayload<ExtArgs>[]
     ledgers: Prisma.$FinancialLedgerPayload<ExtArgs>[]
@@ -2807,6 +3022,7 @@ export interface Prisma__AgencyClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   users<T extends Prisma.Agency$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   listings<T extends Prisma.Agency$listingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$listingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  properties<T extends Prisma.Agency$propertiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$propertiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   publicListings<T extends Prisma.Agency$publicListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$publicListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PublicListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clients<T extends Prisma.Agency$clientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ledgers<T extends Prisma.Agency$ledgersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$ledgersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinancialLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3301,6 +3517,30 @@ export type Agency$listingsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ListingScalarFieldEnum | Prisma.ListingScalarFieldEnum[]
+}
+
+/**
+ * Agency.properties
+ */
+export type Agency$propertiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Property
+   */
+  select?: Prisma.PropertySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Property
+   */
+  omit?: Prisma.PropertyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyInclude<ExtArgs> | null
+  where?: Prisma.PropertyWhereInput
+  orderBy?: Prisma.PropertyOrderByWithRelationInput | Prisma.PropertyOrderByWithRelationInput[]
+  cursor?: Prisma.PropertyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PropertyScalarFieldEnum | Prisma.PropertyScalarFieldEnum[]
 }
 
 /**

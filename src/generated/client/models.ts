@@ -11,6 +11,7 @@
 export type * from './models/User'
 export type * from './models/Agency'
 export type * from './models/Listing'
+export type * from './models/Property'
 export type * from './models/PublicListing'
 export type * from './models/AgencyReview'
 export type * from './models/Client'

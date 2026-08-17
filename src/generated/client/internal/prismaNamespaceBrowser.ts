@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Agency: 'Agency',
   Listing: 'Listing',
+  Property: 'Property',
   PublicListing: 'PublicListing',
   AgencyReview: 'AgencyReview',
   Client: 'Client',
@@ -158,10 +159,46 @@ export const ListingScalarFieldEnum = {
 export type ListingScalarFieldEnum = (typeof ListingScalarFieldEnum)[keyof typeof ListingScalarFieldEnum]
 
 
+export const PropertyScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  purpose: 'purpose',
+  propertyType: 'propertyType',
+  category: 'category',
+  price: 'price',
+  address: 'address',
+  city: 'city',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  areaSqFt: 'areaSqFt',
+  bedrooms: 'bedrooms',
+  bathrooms: 'bathrooms',
+  isAvailable: 'isAvailable',
+  availableDate: 'availableDate',
+  images: 'images',
+  videoUrl: 'videoUrl',
+  panoramaUrl: 'panoramaUrl',
+  virtualTourUrl: 'virtualTourUrl',
+  features: 'features',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  contactEmail: 'contactEmail',
+  agencyId: 'agencyId',
+  userId: 'userId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
 export const PublicListingScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
+  purpose: 'purpose',
   propertyType: 'propertyType',
   source: 'source',
   price: 'price',
@@ -172,7 +209,13 @@ export const PublicListingScalarFieldEnum = {
   areaSqFt: 'areaSqFt',
   bedrooms: 'bedrooms',
   bathrooms: 'bathrooms',
+  isAvailable: 'isAvailable',
+  availableDate: 'availableDate',
   images: 'images',
+  videoUrl: 'videoUrl',
+  panoramaUrl: 'panoramaUrl',
+  virtualTourUrl: 'virtualTourUrl',
+  features: 'features',
   contactName: 'contactName',
   contactPhone: 'contactPhone',
   contactEmail: 'contactEmail',

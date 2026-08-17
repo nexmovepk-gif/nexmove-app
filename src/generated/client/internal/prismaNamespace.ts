@@ -400,6 +400,7 @@ export const ModelName = {
   User: 'User',
   Agency: 'Agency',
   Listing: 'Listing',
+  Property: 'Property',
   PublicListing: 'PublicListing',
   AgencyReview: 'AgencyReview',
   Client: 'Client',
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agency" | "listing" | "publicListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection" | "architectProfile" | "architectReview" | "architectProject"
+    modelProps: "user" | "agency" | "listing" | "property" | "publicListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection" | "architectProfile" | "architectReview" | "architectProject"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -648,6 +649,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ListingCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ListingCountAggregateOutputType> | number
+        }
+      }
+    }
+    Property: {
+      payload: Prisma.$PropertyPayload<ExtArgs>
+      fields: Prisma.PropertyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PropertyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PropertyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>
+        }
+        findFirst: {
+          args: Prisma.PropertyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PropertyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>
+        }
+        findMany: {
+          args: Prisma.PropertyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>[]
+        }
+        create: {
+          args: Prisma.PropertyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>
+        }
+        createMany: {
+          args: Prisma.PropertyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PropertyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>[]
+        }
+        delete: {
+          args: Prisma.PropertyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>
+        }
+        update: {
+          args: Prisma.PropertyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>
+        }
+        deleteMany: {
+          args: Prisma.PropertyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PropertyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PropertyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>[]
+        }
+        upsert: {
+          args: Prisma.PropertyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PropertyPayload>
+        }
+        aggregate: {
+          args: Prisma.PropertyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProperty>
+        }
+        groupBy: {
+          args: Prisma.PropertyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PropertyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PropertyCountAggregateOutputType> | number
         }
       }
     }
@@ -1506,10 +1581,46 @@ export const ListingScalarFieldEnum = {
 export type ListingScalarFieldEnum = (typeof ListingScalarFieldEnum)[keyof typeof ListingScalarFieldEnum]
 
 
+export const PropertyScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  purpose: 'purpose',
+  propertyType: 'propertyType',
+  category: 'category',
+  price: 'price',
+  address: 'address',
+  city: 'city',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  areaSqFt: 'areaSqFt',
+  bedrooms: 'bedrooms',
+  bathrooms: 'bathrooms',
+  isAvailable: 'isAvailable',
+  availableDate: 'availableDate',
+  images: 'images',
+  videoUrl: 'videoUrl',
+  panoramaUrl: 'panoramaUrl',
+  virtualTourUrl: 'virtualTourUrl',
+  features: 'features',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  contactEmail: 'contactEmail',
+  agencyId: 'agencyId',
+  userId: 'userId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
+
+
 export const PublicListingScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
+  purpose: 'purpose',
   propertyType: 'propertyType',
   source: 'source',
   price: 'price',
@@ -1520,7 +1631,13 @@ export const PublicListingScalarFieldEnum = {
   areaSqFt: 'areaSqFt',
   bedrooms: 'bedrooms',
   bathrooms: 'bathrooms',
+  isAvailable: 'isAvailable',
+  availableDate: 'availableDate',
   images: 'images',
+  videoUrl: 'videoUrl',
+  panoramaUrl: 'panoramaUrl',
+  virtualTourUrl: 'virtualTourUrl',
+  features: 'features',
   contactName: 'contactName',
   contactPhone: 'contactPhone',
   contactEmail: 'contactEmail',
@@ -1831,6 +1948,20 @@ export type ListEnumListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'PropertyPurpose'
+ */
+export type EnumPropertyPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyPurpose'>
+    
+
+
+/**
+ * Reference to a field of type 'PropertyPurpose[]'
+ */
+export type ListEnumPropertyPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyPurpose[]'>
+    
+
+
+/**
  * Reference to a field of type 'PropertyType'
  */
 export type EnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType'>
@@ -2067,6 +2198,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   agency?: Prisma.AgencyOmit
   listing?: Prisma.ListingOmit
+  property?: Prisma.PropertyOmit
   publicListing?: Prisma.PublicListingOmit
   agencyReview?: Prisma.AgencyReviewOmit
   client?: Prisma.ClientOmit

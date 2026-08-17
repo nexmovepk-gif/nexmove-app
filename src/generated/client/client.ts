@@ -57,6 +57,11 @@ export type Agency = Prisma.AgencyModel
  */
 export type Listing = Prisma.ListingModel
 /**
+ * Model Property
+ * Comprehensive Property Model
+ */
+export type Property = Prisma.PropertyModel
+/**
  * Model PublicListing
  * Public self-listing: submitted by property owners without an agency account.
  */

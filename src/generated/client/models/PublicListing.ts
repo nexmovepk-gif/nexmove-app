@@ -50,6 +50,7 @@ export type PublicListingMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
+  purpose: $Enums.PropertyPurpose | null
   propertyType: $Enums.PropertyType | null
   source: $Enums.ListingSource | null
   price: number | null
@@ -60,6 +61,11 @@ export type PublicListingMinAggregateOutputType = {
   areaSqFt: number | null
   bedrooms: number | null
   bathrooms: number | null
+  isAvailable: boolean | null
+  availableDate: Date | null
+  videoUrl: string | null
+  panoramaUrl: string | null
+  virtualTourUrl: string | null
   contactName: string | null
   contactPhone: string | null
   contactEmail: string | null
@@ -77,6 +83,7 @@ export type PublicListingMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
+  purpose: $Enums.PropertyPurpose | null
   propertyType: $Enums.PropertyType | null
   source: $Enums.ListingSource | null
   price: number | null
@@ -87,6 +94,11 @@ export type PublicListingMaxAggregateOutputType = {
   areaSqFt: number | null
   bedrooms: number | null
   bathrooms: number | null
+  isAvailable: boolean | null
+  availableDate: Date | null
+  videoUrl: string | null
+  panoramaUrl: string | null
+  virtualTourUrl: string | null
   contactName: string | null
   contactPhone: string | null
   contactEmail: string | null
@@ -104,6 +116,7 @@ export type PublicListingCountAggregateOutputType = {
   id: number
   title: number
   description: number
+  purpose: number
   propertyType: number
   source: number
   price: number
@@ -114,7 +127,13 @@ export type PublicListingCountAggregateOutputType = {
   areaSqFt: number
   bedrooms: number
   bathrooms: number
+  isAvailable: number
+  availableDate: number
   images: number
+  videoUrl: number
+  panoramaUrl: number
+  virtualTourUrl: number
+  features: number
   contactName: number
   contactPhone: number
   contactEmail: number
@@ -154,6 +173,7 @@ export type PublicListingMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
+  purpose?: true
   propertyType?: true
   source?: true
   price?: true
@@ -164,6 +184,11 @@ export type PublicListingMinAggregateInputType = {
   areaSqFt?: true
   bedrooms?: true
   bathrooms?: true
+  isAvailable?: true
+  availableDate?: true
+  videoUrl?: true
+  panoramaUrl?: true
+  virtualTourUrl?: true
   contactName?: true
   contactPhone?: true
   contactEmail?: true
@@ -181,6 +206,7 @@ export type PublicListingMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
+  purpose?: true
   propertyType?: true
   source?: true
   price?: true
@@ -191,6 +217,11 @@ export type PublicListingMaxAggregateInputType = {
   areaSqFt?: true
   bedrooms?: true
   bathrooms?: true
+  isAvailable?: true
+  availableDate?: true
+  videoUrl?: true
+  panoramaUrl?: true
+  virtualTourUrl?: true
   contactName?: true
   contactPhone?: true
   contactEmail?: true
@@ -208,6 +239,7 @@ export type PublicListingCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
+  purpose?: true
   propertyType?: true
   source?: true
   price?: true
@@ -218,7 +250,13 @@ export type PublicListingCountAggregateInputType = {
   areaSqFt?: true
   bedrooms?: true
   bathrooms?: true
+  isAvailable?: true
+  availableDate?: true
   images?: true
+  videoUrl?: true
+  panoramaUrl?: true
+  virtualTourUrl?: true
+  features?: true
   contactName?: true
   contactPhone?: true
   contactEmail?: true
@@ -323,6 +361,7 @@ export type PublicListingGroupByOutputType = {
   id: string
   title: string
   description: string | null
+  purpose: $Enums.PropertyPurpose
   propertyType: $Enums.PropertyType
   source: $Enums.ListingSource
   price: number
@@ -333,7 +372,13 @@ export type PublicListingGroupByOutputType = {
   areaSqFt: number | null
   bedrooms: number | null
   bathrooms: number | null
+  isAvailable: boolean
+  availableDate: Date | null
   images: string[]
+  videoUrl: string | null
+  panoramaUrl: string | null
+  virtualTourUrl: string | null
+  features: string[]
   contactName: string
   contactPhone: string
   contactEmail: string | null
@@ -374,6 +419,7 @@ export type PublicListingWhereInput = {
   id?: Prisma.StringFilter<"PublicListing"> | string
   title?: Prisma.StringFilter<"PublicListing"> | string
   description?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  purpose?: Prisma.EnumPropertyPurposeFilter<"PublicListing"> | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFilter<"PublicListing"> | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFilter<"PublicListing"> | $Enums.ListingSource
   price?: Prisma.FloatFilter<"PublicListing"> | number
@@ -384,7 +430,13 @@ export type PublicListingWhereInput = {
   areaSqFt?: Prisma.FloatNullableFilter<"PublicListing"> | number | null
   bedrooms?: Prisma.IntNullableFilter<"PublicListing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"PublicListing"> | number | null
+  isAvailable?: Prisma.BoolFilter<"PublicListing"> | boolean
+  availableDate?: Prisma.DateTimeNullableFilter<"PublicListing"> | Date | string | null
   images?: Prisma.StringNullableListFilter<"PublicListing">
+  videoUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  panoramaUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  virtualTourUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  features?: Prisma.StringNullableListFilter<"PublicListing">
   contactName?: Prisma.StringFilter<"PublicListing"> | string
   contactPhone?: Prisma.StringFilter<"PublicListing"> | string
   contactEmail?: Prisma.StringNullableFilter<"PublicListing"> | string | null
@@ -403,6 +455,7 @@ export type PublicListingOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   propertyType?: Prisma.SortOrder
   source?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -413,7 +466,13 @@ export type PublicListingOrderByWithRelationInput = {
   areaSqFt?: Prisma.SortOrderInput | Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
+  availableDate?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  panoramaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  virtualTourUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  features?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -435,6 +494,7 @@ export type PublicListingWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PublicListingWhereInput | Prisma.PublicListingWhereInput[]
   title?: Prisma.StringFilter<"PublicListing"> | string
   description?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  purpose?: Prisma.EnumPropertyPurposeFilter<"PublicListing"> | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFilter<"PublicListing"> | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFilter<"PublicListing"> | $Enums.ListingSource
   price?: Prisma.FloatFilter<"PublicListing"> | number
@@ -445,7 +505,13 @@ export type PublicListingWhereUniqueInput = Prisma.AtLeast<{
   areaSqFt?: Prisma.FloatNullableFilter<"PublicListing"> | number | null
   bedrooms?: Prisma.IntNullableFilter<"PublicListing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"PublicListing"> | number | null
+  isAvailable?: Prisma.BoolFilter<"PublicListing"> | boolean
+  availableDate?: Prisma.DateTimeNullableFilter<"PublicListing"> | Date | string | null
   images?: Prisma.StringNullableListFilter<"PublicListing">
+  videoUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  panoramaUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  virtualTourUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  features?: Prisma.StringNullableListFilter<"PublicListing">
   contactName?: Prisma.StringFilter<"PublicListing"> | string
   contactPhone?: Prisma.StringFilter<"PublicListing"> | string
   contactEmail?: Prisma.StringNullableFilter<"PublicListing"> | string | null
@@ -464,6 +530,7 @@ export type PublicListingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   propertyType?: Prisma.SortOrder
   source?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -474,7 +541,13 @@ export type PublicListingOrderByWithAggregationInput = {
   areaSqFt?: Prisma.SortOrderInput | Prisma.SortOrder
   bedrooms?: Prisma.SortOrderInput | Prisma.SortOrder
   bathrooms?: Prisma.SortOrderInput | Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
+  availableDate?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  panoramaUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  virtualTourUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  features?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -500,6 +573,7 @@ export type PublicListingScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"PublicListing"> | string
   title?: Prisma.StringWithAggregatesFilter<"PublicListing"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"PublicListing"> | string | null
+  purpose?: Prisma.EnumPropertyPurposeWithAggregatesFilter<"PublicListing"> | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeWithAggregatesFilter<"PublicListing"> | $Enums.PropertyType
   source?: Prisma.EnumListingSourceWithAggregatesFilter<"PublicListing"> | $Enums.ListingSource
   price?: Prisma.FloatWithAggregatesFilter<"PublicListing"> | number
@@ -510,7 +584,13 @@ export type PublicListingScalarWhereWithAggregatesInput = {
   areaSqFt?: Prisma.FloatNullableWithAggregatesFilter<"PublicListing"> | number | null
   bedrooms?: Prisma.IntNullableWithAggregatesFilter<"PublicListing"> | number | null
   bathrooms?: Prisma.IntNullableWithAggregatesFilter<"PublicListing"> | number | null
+  isAvailable?: Prisma.BoolWithAggregatesFilter<"PublicListing"> | boolean
+  availableDate?: Prisma.DateTimeNullableWithAggregatesFilter<"PublicListing"> | Date | string | null
   images?: Prisma.StringNullableListFilter<"PublicListing">
+  videoUrl?: Prisma.StringNullableWithAggregatesFilter<"PublicListing"> | string | null
+  panoramaUrl?: Prisma.StringNullableWithAggregatesFilter<"PublicListing"> | string | null
+  virtualTourUrl?: Prisma.StringNullableWithAggregatesFilter<"PublicListing"> | string | null
+  features?: Prisma.StringNullableListFilter<"PublicListing">
   contactName?: Prisma.StringWithAggregatesFilter<"PublicListing"> | string
   contactPhone?: Prisma.StringWithAggregatesFilter<"PublicListing"> | string
   contactEmail?: Prisma.StringNullableWithAggregatesFilter<"PublicListing"> | string | null
@@ -528,6 +608,7 @@ export type PublicListingCreateInput = {
   id?: string
   title: string
   description?: string | null
+  purpose?: $Enums.PropertyPurpose
   propertyType?: $Enums.PropertyType
   source?: $Enums.ListingSource
   price: number
@@ -538,7 +619,13 @@ export type PublicListingCreateInput = {
   areaSqFt?: number | null
   bedrooms?: number | null
   bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
   images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
   contactName: string
   contactPhone: string
   contactEmail?: string | null
@@ -556,6 +643,7 @@ export type PublicListingUncheckedCreateInput = {
   id?: string
   title: string
   description?: string | null
+  purpose?: $Enums.PropertyPurpose
   propertyType?: $Enums.PropertyType
   source?: $Enums.ListingSource
   price: number
@@ -566,7 +654,13 @@ export type PublicListingUncheckedCreateInput = {
   areaSqFt?: number | null
   bedrooms?: number | null
   bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
   images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
   contactName: string
   contactPhone: string
   contactEmail?: string | null
@@ -584,6 +678,7 @@ export type PublicListingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -594,7 +689,13 @@ export type PublicListingUpdateInput = {
   areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -612,6 +713,7 @@ export type PublicListingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -622,7 +724,13 @@ export type PublicListingUncheckedUpdateInput = {
   areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -640,6 +748,7 @@ export type PublicListingCreateManyInput = {
   id?: string
   title: string
   description?: string | null
+  purpose?: $Enums.PropertyPurpose
   propertyType?: $Enums.PropertyType
   source?: $Enums.ListingSource
   price: number
@@ -650,7 +759,13 @@ export type PublicListingCreateManyInput = {
   areaSqFt?: number | null
   bedrooms?: number | null
   bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
   images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
   contactName: string
   contactPhone: string
   contactEmail?: string | null
@@ -668,6 +783,7 @@ export type PublicListingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -678,7 +794,13 @@ export type PublicListingUpdateManyMutationInput = {
   areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -695,6 +817,7 @@ export type PublicListingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -705,7 +828,13 @@ export type PublicListingUncheckedUpdateManyInput = {
   areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -729,18 +858,11 @@ export type PublicListingOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StringNullableListFilter<$PrismaModel = never> = {
-  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
-  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
-  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
-  isEmpty?: boolean
-}
-
 export type PublicListingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   propertyType?: Prisma.SortOrder
   source?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -751,7 +873,13 @@ export type PublicListingCountOrderByAggregateInput = {
   areaSqFt?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
+  availableDate?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
+  panoramaUrl?: Prisma.SortOrder
+  virtualTourUrl?: Prisma.SortOrder
+  features?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
@@ -779,6 +907,7 @@ export type PublicListingMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   propertyType?: Prisma.SortOrder
   source?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -789,6 +918,11 @@ export type PublicListingMaxOrderByAggregateInput = {
   areaSqFt?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
+  availableDate?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
+  panoramaUrl?: Prisma.SortOrder
+  virtualTourUrl?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
@@ -806,6 +940,7 @@ export type PublicListingMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   propertyType?: Prisma.SortOrder
   source?: Prisma.SortOrder
   price?: Prisma.SortOrder
@@ -816,6 +951,11 @@ export type PublicListingMinOrderByAggregateInput = {
   areaSqFt?: Prisma.SortOrder
   bedrooms?: Prisma.SortOrder
   bathrooms?: Prisma.SortOrder
+  isAvailable?: Prisma.SortOrder
+  availableDate?: Prisma.SortOrder
+  videoUrl?: Prisma.SortOrder
+  panoramaUrl?: Prisma.SortOrder
+  virtualTourUrl?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
@@ -885,6 +1025,10 @@ export type PublicListingCreateimagesInput = {
   set: string[]
 }
 
+export type PublicListingCreatefeaturesInput = {
+  set: string[]
+}
+
 export type EnumPropertyTypeFieldUpdateOperationsInput = {
   set?: $Enums.PropertyType
 }
@@ -898,10 +1042,16 @@ export type PublicListingUpdateimagesInput = {
   push?: string | string[]
 }
 
+export type PublicListingUpdatefeaturesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type PublicListingCreateWithoutAgencyInput = {
   id?: string
   title: string
   description?: string | null
+  purpose?: $Enums.PropertyPurpose
   propertyType?: $Enums.PropertyType
   source?: $Enums.ListingSource
   price: number
@@ -912,7 +1062,13 @@ export type PublicListingCreateWithoutAgencyInput = {
   areaSqFt?: number | null
   bedrooms?: number | null
   bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
   images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
   contactName: string
   contactPhone: string
   contactEmail?: string | null
@@ -929,6 +1085,7 @@ export type PublicListingUncheckedCreateWithoutAgencyInput = {
   id?: string
   title: string
   description?: string | null
+  purpose?: $Enums.PropertyPurpose
   propertyType?: $Enums.PropertyType
   source?: $Enums.ListingSource
   price: number
@@ -939,7 +1096,13 @@ export type PublicListingUncheckedCreateWithoutAgencyInput = {
   areaSqFt?: number | null
   bedrooms?: number | null
   bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
   images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
   contactName: string
   contactPhone: string
   contactEmail?: string | null
@@ -985,6 +1148,7 @@ export type PublicListingScalarWhereInput = {
   id?: Prisma.StringFilter<"PublicListing"> | string
   title?: Prisma.StringFilter<"PublicListing"> | string
   description?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  purpose?: Prisma.EnumPropertyPurposeFilter<"PublicListing"> | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFilter<"PublicListing"> | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFilter<"PublicListing"> | $Enums.ListingSource
   price?: Prisma.FloatFilter<"PublicListing"> | number
@@ -995,7 +1159,13 @@ export type PublicListingScalarWhereInput = {
   areaSqFt?: Prisma.FloatNullableFilter<"PublicListing"> | number | null
   bedrooms?: Prisma.IntNullableFilter<"PublicListing"> | number | null
   bathrooms?: Prisma.IntNullableFilter<"PublicListing"> | number | null
+  isAvailable?: Prisma.BoolFilter<"PublicListing"> | boolean
+  availableDate?: Prisma.DateTimeNullableFilter<"PublicListing"> | Date | string | null
   images?: Prisma.StringNullableListFilter<"PublicListing">
+  videoUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  panoramaUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  virtualTourUrl?: Prisma.StringNullableFilter<"PublicListing"> | string | null
+  features?: Prisma.StringNullableListFilter<"PublicListing">
   contactName?: Prisma.StringFilter<"PublicListing"> | string
   contactPhone?: Prisma.StringFilter<"PublicListing"> | string
   contactEmail?: Prisma.StringNullableFilter<"PublicListing"> | string | null
@@ -1013,6 +1183,7 @@ export type PublicListingCreateManyAgencyInput = {
   id?: string
   title: string
   description?: string | null
+  purpose?: $Enums.PropertyPurpose
   propertyType?: $Enums.PropertyType
   source?: $Enums.ListingSource
   price: number
@@ -1023,7 +1194,13 @@ export type PublicListingCreateManyAgencyInput = {
   areaSqFt?: number | null
   bedrooms?: number | null
   bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
   images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
   contactName: string
   contactPhone: string
   contactEmail?: string | null
@@ -1040,6 +1217,7 @@ export type PublicListingUpdateWithoutAgencyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1050,7 +1228,13 @@ export type PublicListingUpdateWithoutAgencyInput = {
   areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1067,6 +1251,7 @@ export type PublicListingUncheckedUpdateWithoutAgencyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1077,7 +1262,13 @@ export type PublicListingUncheckedUpdateWithoutAgencyInput = {
   areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1094,6 +1285,7 @@ export type PublicListingUncheckedUpdateManyWithoutAgencyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
   propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
   source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
   price?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1104,7 +1296,13 @@ export type PublicListingUncheckedUpdateManyWithoutAgencyInput = {
   areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
   contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1123,6 +1321,7 @@ export type PublicListingSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   title?: boolean
   description?: boolean
+  purpose?: boolean
   propertyType?: boolean
   source?: boolean
   price?: boolean
@@ -1133,7 +1332,13 @@ export type PublicListingSelect<ExtArgs extends runtime.Types.Extensions.Interna
   areaSqFt?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  isAvailable?: boolean
+  availableDate?: boolean
   images?: boolean
+  videoUrl?: boolean
+  panoramaUrl?: boolean
+  virtualTourUrl?: boolean
+  features?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
@@ -1152,6 +1357,7 @@ export type PublicListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   title?: boolean
   description?: boolean
+  purpose?: boolean
   propertyType?: boolean
   source?: boolean
   price?: boolean
@@ -1162,7 +1368,13 @@ export type PublicListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   areaSqFt?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  isAvailable?: boolean
+  availableDate?: boolean
   images?: boolean
+  videoUrl?: boolean
+  panoramaUrl?: boolean
+  virtualTourUrl?: boolean
+  features?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
@@ -1181,6 +1393,7 @@ export type PublicListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   title?: boolean
   description?: boolean
+  purpose?: boolean
   propertyType?: boolean
   source?: boolean
   price?: boolean
@@ -1191,7 +1404,13 @@ export type PublicListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   areaSqFt?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  isAvailable?: boolean
+  availableDate?: boolean
   images?: boolean
+  videoUrl?: boolean
+  panoramaUrl?: boolean
+  virtualTourUrl?: boolean
+  features?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
@@ -1210,6 +1429,7 @@ export type PublicListingSelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
+  purpose?: boolean
   propertyType?: boolean
   source?: boolean
   price?: boolean
@@ -1220,7 +1440,13 @@ export type PublicListingSelectScalar = {
   areaSqFt?: boolean
   bedrooms?: boolean
   bathrooms?: boolean
+  isAvailable?: boolean
+  availableDate?: boolean
   images?: boolean
+  videoUrl?: boolean
+  panoramaUrl?: boolean
+  virtualTourUrl?: boolean
+  features?: boolean
   contactName?: boolean
   contactPhone?: boolean
   contactEmail?: boolean
@@ -1234,7 +1460,7 @@ export type PublicListingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PublicListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "propertyType" | "source" | "price" | "address" | "city" | "latitude" | "longitude" | "areaSqFt" | "bedrooms" | "bathrooms" | "images" | "contactName" | "contactPhone" | "contactEmail" | "verifiedProperty" | "aiExtracted" | "aiConfidence" | "aiRawData" | "agencyId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["publicListing"]>
+export type PublicListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "purpose" | "propertyType" | "source" | "price" | "address" | "city" | "latitude" | "longitude" | "areaSqFt" | "bedrooms" | "bathrooms" | "isAvailable" | "availableDate" | "images" | "videoUrl" | "panoramaUrl" | "virtualTourUrl" | "features" | "contactName" | "contactPhone" | "contactEmail" | "verifiedProperty" | "aiExtracted" | "aiConfidence" | "aiRawData" | "agencyId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["publicListing"]>
 export type PublicListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.PublicListing$agencyArgs<ExtArgs>
 }
@@ -1254,6 +1480,7 @@ export type $PublicListingPayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     title: string
     description: string | null
+    purpose: $Enums.PropertyPurpose
     propertyType: $Enums.PropertyType
     source: $Enums.ListingSource
     price: number
@@ -1264,7 +1491,13 @@ export type $PublicListingPayload<ExtArgs extends runtime.Types.Extensions.Inter
     areaSqFt: number | null
     bedrooms: number | null
     bathrooms: number | null
+    isAvailable: boolean
+    availableDate: Date | null
     images: string[]
+    videoUrl: string | null
+    panoramaUrl: string | null
+    virtualTourUrl: string | null
+    features: string[]
     contactName: string
     contactPhone: string
     contactEmail: string | null
@@ -1703,6 +1936,7 @@ export interface PublicListingFieldRefs {
   readonly id: Prisma.FieldRef<"PublicListing", 'String'>
   readonly title: Prisma.FieldRef<"PublicListing", 'String'>
   readonly description: Prisma.FieldRef<"PublicListing", 'String'>
+  readonly purpose: Prisma.FieldRef<"PublicListing", 'PropertyPurpose'>
   readonly propertyType: Prisma.FieldRef<"PublicListing", 'PropertyType'>
   readonly source: Prisma.FieldRef<"PublicListing", 'ListingSource'>
   readonly price: Prisma.FieldRef<"PublicListing", 'Float'>
@@ -1713,7 +1947,13 @@ export interface PublicListingFieldRefs {
   readonly areaSqFt: Prisma.FieldRef<"PublicListing", 'Float'>
   readonly bedrooms: Prisma.FieldRef<"PublicListing", 'Int'>
   readonly bathrooms: Prisma.FieldRef<"PublicListing", 'Int'>
+  readonly isAvailable: Prisma.FieldRef<"PublicListing", 'Boolean'>
+  readonly availableDate: Prisma.FieldRef<"PublicListing", 'DateTime'>
   readonly images: Prisma.FieldRef<"PublicListing", 'String[]'>
+  readonly videoUrl: Prisma.FieldRef<"PublicListing", 'String'>
+  readonly panoramaUrl: Prisma.FieldRef<"PublicListing", 'String'>
+  readonly virtualTourUrl: Prisma.FieldRef<"PublicListing", 'String'>
+  readonly features: Prisma.FieldRef<"PublicListing", 'String[]'>
   readonly contactName: Prisma.FieldRef<"PublicListing", 'String'>
   readonly contactPhone: Prisma.FieldRef<"PublicListing", 'String'>
   readonly contactEmail: Prisma.FieldRef<"PublicListing", 'String'>

@@ -40,11 +40,21 @@ export default function GlobalHeader() {
     (user?.accountRoleType === 'OVERSEAS_INVESTOR' ||
       user?.role === 'INVESTOR');
 
+  const isOverseasBuyer =
+    !isSuperAdmin &&
+    !isArchitectUser &&
+    !isAgencyUser &&
+    !isInvestorUser &&
+    Boolean(user) &&
+    (user?.accountRoleType === 'OVERSEAS_BUYER' ||
+      user?.role === 'OVERSEAS_BUYER');
+
   const isStandardUser =
     !isSuperAdmin &&
     !isArchitectUser &&
     !isAgencyUser &&
     !isInvestorUser &&
+    !isOverseasBuyer &&
     Boolean(user);
 
   const isGuest = !user;
@@ -236,6 +246,17 @@ export default function GlobalHeader() {
           >
             <span>💼</span>
             <span>Investor Portal</span>
+          </Link>
+        )}
+
+        {/* 🌍 OVERSEAS BUYER: Show Overseas Buyer Portal */}
+        {isOverseasBuyer && (
+          <Link
+            href="/overseas/dashboard"
+            className="text-xs bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-indigo-950/50 flex items-center gap-1.5"
+          >
+            <span>🌍</span>
+            <span>Overseas Portal</span>
           </Link>
         )}
 

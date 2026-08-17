@@ -30,6 +30,9 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith('/investors') ||
     pathname.startsWith('/api/investor') ||
     pathname.startsWith('/api/investors');
+  const isOverseasRoute =
+    pathname.startsWith('/overseas') ||
+    pathname.startsWith('/api/overseas');
   const isArchitectDashboardRoute =
     pathname.startsWith('/architects/dashboard') ||
     pathname.startsWith('/api/architects/dashboard');
@@ -38,7 +41,7 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith('/dashboard/');
 
   // 1. Unauthenticated Redirections with contextual role query params
-  if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute || isArchitectDashboardRoute || isUserDashboardRoute)) {
+  if (!token && (isAgencyRoute || isAdminRoute || isInvestorRoute || isOverseasRoute || isArchitectDashboardRoute || isUserDashboardRoute)) {
     if (isApiRoute) {
       return new NextResponse(
         JSON.stringify({ error: 'Unauthorized: Active session required. Please sign in.' }),
@@ -108,10 +111,17 @@ export async function middleware(req: NextRequest) {
       !isAgencyUser &&
       userAccountRoleType === 'OVERSEAS_INVESTOR';
 
+    const isOverseasBuyer =
+      !isArchitectUser &&
+      !isAgencyUser &&
+      (userAccountRoleType === 'OVERSEAS_BUYER' ||
+        userRole === 'OVERSEAS_BUYER');
+
     const isRegularPublicUser =
       !isArchitectUser &&
       !isAgencyUser &&
-      !isInvestorUser;
+      !isInvestorUser &&
+      !isOverseasBuyer;
 
     // Rule 2a: Architect Dashboard protection
     if (isArchitectDashboardRoute) {
@@ -218,6 +228,26 @@ export async function middleware(req: NextRequest) {
       }
     }
 
+    // Rule 2e: /overseas/ route protection — only OVERSEAS_BUYER, OVERSEAS_INVESTOR, or SUPER_ADMIN
+    if (isOverseasRoute) {
+      const canAccessOverseas = isOverseasBuyer || isInvestorUser;
+      if (!canAccessOverseas) {
+        if (isApiRoute) {
+          return new NextResponse(
+            JSON.stringify({ error: 'Forbidden: Overseas Buyer account required' }),
+            { status: 403, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+        if (isAgencyUser) {
+          return NextResponse.redirect(new URL('/agency/dashboard', req.url));
+        }
+        if (isArchitectUser) {
+          return NextResponse.redirect(new URL('/architects/dashboard', req.url));
+        }
+        return NextResponse.redirect(new URL('/dashboard', req.url));
+      }
+    }
+
     // Tenant isolation inside /agency/ routes (for agency users accessing other agencies)
     if (isAgencyRoute) {
       let requestedAgencyId: string | null = null;
@@ -269,6 +299,8 @@ export const config = {
     '/investor/:path*',
     '/api/investors/:path*',
     '/api/investor/:path*',
+    '/overseas/:path*',
+    '/api/overseas/:path*',
     '/architects/dashboard/:path*',
   ],
 };

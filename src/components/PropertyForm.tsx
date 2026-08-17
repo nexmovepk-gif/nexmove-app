@@ -12,6 +12,157 @@ export interface PropertyFormProps {
   isAgencyPortal?: boolean;
 }
 
+// ─── Vector SVG Icons (Lucide Clean Stroke Architecture) ──────────────────────
+
+function IconCompass({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+    </svg>
+  );
+}
+
+function IconRoad({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19 8 5" />
+      <path d="M20 19 16 5" />
+      <line x1="12" x2="12" y1="5" y2="7" />
+      <line x1="12" x2="12" y1="11" y2="13" />
+      <line x1="12" x2="12" y1="17" y2="19" />
+    </svg>
+  );
+}
+
+function IconSofa({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3" />
+      <path d="M2 11v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H6v-2a2 2 0 0 0-4 0Z" />
+      <path d="M4 18v2" />
+      <path d="M20 18v2" />
+      <path d="M12 4v9" />
+    </svg>
+  );
+}
+
+function IconZap({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  );
+}
+
+function IconFlame({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+    </svg>
+  );
+}
+
+function IconDroplets({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" />
+      <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />
+    </svg>
+  );
+}
+
+function IconShieldCheck({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
+function IconCar({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+      <circle cx="7" cy="17" r="2" />
+      <path d="M9 17h6" />
+      <circle cx="17" cy="17" r="2" />
+    </svg>
+  );
+}
+
+function IconDumbbell({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m6.5 6.5 11 11" />
+      <path d="m21 21-1-1" />
+      <path d="m3 3 1 1" />
+      <path d="m18 22 4-4" />
+      <path d="m2 6 4-4" />
+      <path d="m3 10 7-7" />
+      <path d="m14 21 7-7" />
+    </svg>
+  );
+}
+
+function IconTrees({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z" />
+      <path d="M7 16v6" />
+      <path d="M13 19v3" />
+      <path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5" />
+    </svg>
+  );
+}
+
+function IconTag({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+      <path d="M7 7h.01" />
+    </svg>
+  );
+}
+
+function IconKey({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="7.5" cy="15.5" r="5.5" />
+      <path d="m21 2-9.6 9.6" />
+      <path d="m15.5 7.5 3 3L22 7l-3-3" />
+    </svg>
+  );
+}
+
+function IconFileText({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" x2="8" y1="13" y2="13" />
+      <line x1="16" x2="8" y1="17" y2="17" />
+      <line x1="10" x2="8" y1="9" y2="9" />
+    </svg>
+  );
+}
+
+// ─── Amenity Definitions ──────────────────────────────────────────────────────
+
+const AMENITY_OPTIONS = [
+  { id: 'Corner Property', label: 'Corner Property', icon: IconCompass },
+  { id: 'Main Boulevard', label: 'Main Boulevard', icon: IconRoad },
+  { id: 'Furnished', label: 'Furnished', icon: IconSofa },
+  { id: 'Electricity', label: 'Electricity', icon: IconZap },
+  { id: 'Sui Gas', label: 'Sui Gas', icon: IconFlame },
+  { id: 'Water Supply', label: 'Water Supply', icon: IconDroplets },
+  { id: 'Security / CCTV', label: 'Security / CCTV', icon: IconShieldCheck },
+  { id: 'Parking Space', label: 'Parking Space', icon: IconCar },
+  { id: 'Gym / Pool', label: 'Gym / Pool', icon: IconDumbbell },
+  { id: 'Park Facing', label: 'Park Facing', icon: IconTrees },
+];
+
 const PROPERTY_CATEGORIES = [
   {
     category: 'HOMES',
@@ -58,29 +209,12 @@ const PROPERTY_CATEGORIES = [
   },
 ];
 
-const AMENITY_OPTIONS = [
-  { id: 'Corner Property', label: 'Corner Property', icon: '📐' },
-  { id: 'Main Boulevard', label: 'Main Boulevard', icon: '🛣️' },
-  { id: 'Furnished', label: 'Furnished', icon: '🛋️' },
-  { id: 'Electricity', label: 'Electricity', icon: '⚡' },
-  { id: 'Sui Gas', label: 'Sui Gas', icon: '🔥' },
-  { id: 'Water Supply', label: 'Water Supply', icon: '💧' },
-  { id: 'Security / CCTV', label: 'Security / CCTV', icon: '📹' },
-  { id: 'Parking Space', label: 'Parking Space', icon: '🚗' },
-  { id: 'Gym / Pool', label: 'Gym / Pool', icon: '🏊' },
-  { id: 'Park Facing', label: 'Park Facing', icon: '🌳' },
-];
-
 export default function PropertyForm({
   initialAgencyId,
   onSuccessRedirect = '/agency/dashboard',
   isAgencyPortal = true,
 }: PropertyFormProps) {
-  // ── 1. Purpose & Dynamic Payment State
-  const [purpose, setPurpose] = useState<PropertyPurposeType>('FOR_SALE');
-  const [price, setPrice] = useState('');
-
-  // ── 2. Categorized Property Type
+  // ── 1. Categorized Property Specs State
   const [propertyType, setPropertyType] = useState('House');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -89,6 +223,10 @@ export default function PropertyForm({
   const [bedrooms, setBedrooms] = useState('');
   const [bathrooms, setBathrooms] = useState('');
   const [areaSqFt, setAreaSqFt] = useState('');
+
+  // ── 2. Purpose & Dynamic Payment State
+  const [purpose, setPurpose] = useState<PropertyPurposeType>('FOR_SALE');
+  const [price, setPrice] = useState('');
 
   // ── 3. Availability & 1-Month Advance Alert
   const [isAvailable, setIsAvailable] = useState<boolean>(true);
@@ -254,7 +392,6 @@ export default function PropertyForm({
       setOwnershipScore(calculatedScore);
 
       if (result.propertyType) {
-        // Map to recognized type
         const pType = result.propertyType.toLowerCase();
         const found = PROPERTY_CATEGORIES.flatMap((c) => c.options).find(
           (o) => o.toLowerCase().includes(pType)
@@ -295,7 +432,7 @@ export default function PropertyForm({
     const parsedArea = areaSqFt ? Number(areaSqFt) : 0;
 
     if (!trimmedCity || !propertyType || !areaSqFt.trim() || isNaN(parsedArea) || parsedArea <= 0) {
-      setValuationWarning('Please enter City, Property Type, and Area (Sq Ft) to estimate market valuation.');
+      setValuationWarning('Please enter City, Property Type, and Area (Sq Ft) in Section 1 above before calculating market valuation.');
       setValuationResult(null);
       return;
     }
@@ -314,7 +451,6 @@ export default function PropertyForm({
 
       let midRate = Math.round(rate * bedroomMultiplier * typeMult);
       if (purpose === 'FOR_RENT' || purpose === 'LEASE') {
-        // Monthly rental yield approx ~0.45% of capital value
         midRate = Math.round(midRate * 0.0045);
       }
 
@@ -350,7 +486,6 @@ export default function PropertyForm({
     setLoading(true);
     setSubmitError(null);
 
-    // Find category from propertyType
     const matchedCategory =
       PROPERTY_CATEGORIES.find((c) => c.options.includes(propertyType))?.category || 'OTHER';
 
@@ -380,7 +515,6 @@ export default function PropertyForm({
     };
 
     try {
-      // 1. Save to Property table
       const res = await fetch('/api/properties', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -389,7 +523,6 @@ export default function PropertyForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to submit property listing.');
 
-      // 2. Also mirror to public listings API if needed
       await fetch('/api/public/listings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -440,7 +573,6 @@ export default function PropertyForm({
     setIsSold(false);
   };
 
-  // Dynamic Price Label based on Purpose
   const priceLabel =
     purpose === 'FOR_SALE' ? 'Sale Price (PKR)' : 'Monthly Rent / Price (PKR)';
   const pricePlaceholder =
@@ -525,8 +657,8 @@ export default function PropertyForm({
           <div className="bg-slate-900 text-white rounded-3xl p-6 border border-slate-800 shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl flex-shrink-0">
-                  📑
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+                  <IconFileText className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
@@ -572,7 +704,7 @@ export default function PropertyForm({
                   disabled={isAiExtracting}
                   className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5"
                 >
-                  <span>📄</span>
+                  <IconFileText className="w-4 h-4" />
                   <span>Upload Doc</span>
                 </button>
               </div>
@@ -586,167 +718,15 @@ export default function PropertyForm({
             )}
           </div>
 
-          {/* ── SECTION 1: PURPOSE & DYNAMIC PAYMENT ── */}
+          {/* ── SECTION 1: CATEGORIZED PROPERTY SPECS (FIRST IN UX FLOW) ── */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-200">
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-100">
               <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">
                 1
               </span>
               <div>
-                <h3 className="text-lg font-black text-gray-900">Purpose &amp; Pricing</h3>
-                <p className="text-xs text-gray-500">Define listing intention and pricing structure</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Purpose Selector */}
-              <div className="flex flex-col gap-2 md:col-span-2">
-                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-                  Listing Purpose *
-                </label>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { id: 'FOR_SALE' as const, label: 'For Sale', icon: '🏷️', desc: 'Outright Property Sale' },
-                    { id: 'FOR_RENT' as const, label: 'For Rent', icon: '🔑', desc: 'Monthly Rental Tenancy' },
-                    { id: 'LEASE' as const, label: 'Lease', icon: '📜', desc: 'Commercial / Long Lease' },
-                  ].map((opt) => {
-                    const active = purpose === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        onClick={() => {
-                          setPurpose(opt.id);
-                          setValuationResult(null);
-                        }}
-                        className={`p-4 rounded-2xl border text-left transition-all flex flex-col justify-between ${
-                          active
-                            ? 'bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20 text-emerald-950 shadow-sm'
-                            : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-2xl">{opt.icon}</span>
-                          <span
-                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                              active ? 'border-emerald-600 bg-emerald-600' : 'border-gray-300'
-                            }`}
-                          >
-                            {active && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
-                          </span>
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-sm text-gray-900">{opt.label}</div>
-                          <div className="text-[11px] text-gray-500 mt-0.5">{opt.desc}</div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Dynamic Price Field */}
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between">
-                  <label htmlFor={priceId} className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    {priceLabel} *
-                  </label>
-                  {price && !isNaN(Number(price)) && (
-                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
-                      PKR {Number(price).toLocaleString()}
-                      {purpose !== 'FOR_SALE' && ' / month'}
-                    </span>
-                  )}
-                </div>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">
-                    Rs.
-                  </span>
-                  <input
-                    id={priceId}
-                    type="number"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    placeholder={pricePlaceholder}
-                    required
-                    min={1}
-                    className="w-full bg-white border border-gray-300 rounded-xl pl-12 pr-4 py-3 text-gray-900 font-bold text-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none transition shadow-sm"
-                  />
-                </div>
-                {isValuationEstimated && (
-                  <p className="text-xs text-purple-700 font-semibold mt-1">
-                    🔮 Price estimated via AI Valuation Engine.
-                  </p>
-                )}
-              </div>
-
-              {/* AI Valuation Helper Button */}
-              <div className="flex flex-col justify-end">
-                <button
-                  type="button"
-                  onClick={handleAiValuation}
-                  disabled={valuationLoading || isAiExtracting}
-                  className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-bold px-4 py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm disabled:opacity-50"
-                >
-                  {valuationLoading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Computing Market Valuation...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>🔮</span>
-                      <span>Calculate AI Market Rate (PKR)</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Valuation Result Display */}
-              {valuationResult && !valuationLoading && (
-                <div className="md:col-span-2 p-4 bg-purple-50 border border-purple-200 rounded-2xl">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div>
-                      <span className="text-xs font-black bg-purple-200 text-purple-900 px-2.5 py-0.5 rounded-full uppercase">
-                        AI Valuation Match
-                      </span>
-                      <div className="text-2xl font-black text-purple-950 mt-1">
-                        Rs. {valuationResult.midPKR.toLocaleString()}
-                        {purpose !== 'FOR_SALE' && ' / month'}
-                      </div>
-                      <div className="text-xs text-purple-700 mt-0.5">
-                        Range: Rs. {valuationResult.minPKR.toLocaleString()} – Rs.{' '}
-                        {valuationResult.maxPKR.toLocaleString()} ({valuationResult.basis})
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setValuationResult(null)}
-                      className="text-xs text-purple-600 hover:underline font-bold"
-                    >
-                      Dismiss
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {valuationWarning && (
-                <div className="md:col-span-2 p-3 bg-amber-50 border border-amber-300 text-amber-900 rounded-xl text-xs font-medium">
-                  ⚠️ {valuationWarning}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* ── SECTION 2: CATEGORIZED PROPERTY TYPE & BASIC SPECS ── */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-200">
-            <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-100">
-              <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">
-                2
-              </span>
-              <div>
                 <h3 className="text-lg font-black text-gray-900">Categorized Property Specs</h3>
-                <p className="text-xs text-gray-500">Grouped classification and physical specifications</p>
+                <p className="text-xs text-gray-500">Grouped classification, physical specifications, and society location</p>
               </div>
             </div>
 
@@ -775,7 +755,10 @@ export default function PropertyForm({
                 <select
                   id={typeId}
                   value={propertyType}
-                  onChange={(e) => setPropertyType(e.target.value)}
+                  onChange={(e) => {
+                    setPropertyType(e.target.value);
+                    setValuationWarning(null);
+                  }}
                   required
                   className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-gray-900 font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 >
@@ -816,7 +799,10 @@ export default function PropertyForm({
                   id={cityId}
                   type="text"
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  onChange={(e) => {
+                    setCity(e.target.value);
+                    setValuationWarning(null);
+                  }}
                   placeholder="e.g. Lahore, Islamabad, Karachi"
                   required
                   className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -826,13 +812,16 @@ export default function PropertyForm({
               {/* Area */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-                  Area (Sq Ft)
+                  Area (Sq Ft) *
                 </label>
                 <input
                   type="number"
                   value={areaSqFt}
-                  onChange={(e) => setAreaSqFt(e.target.value)}
-                  min={0}
+                  onChange={(e) => {
+                    setAreaSqFt(e.target.value);
+                    setValuationWarning(null);
+                  }}
+                  min={1}
                   placeholder="e.g. 2250 (10 Marla)"
                   className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
@@ -881,6 +870,163 @@ export default function PropertyForm({
                   className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* ── SECTION 2: PURPOSE & PRICING (IMMEDIATELY FOLLOWS SPECS) ── */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-200">
+            <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-100">
+              <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">
+                2
+              </span>
+              <div>
+                <h3 className="text-lg font-black text-gray-900">Purpose &amp; Pricing</h3>
+                <p className="text-xs text-gray-500">
+                  Select listing purpose, set price, or compute instant AI market valuation from the specs above
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Purpose Selector */}
+              <div className="flex flex-col gap-2 md:col-span-2">
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Listing Purpose *
+                </label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { id: 'FOR_SALE' as const, label: 'For Sale', icon: IconTag, desc: 'Outright Property Sale' },
+                    { id: 'FOR_RENT' as const, label: 'For Rent', icon: IconKey, desc: 'Monthly Rental Tenancy' },
+                    { id: 'LEASE' as const, label: 'Lease', icon: IconFileText, desc: 'Commercial / Long Lease' },
+                  ].map((opt) => {
+                    const active = purpose === opt.id;
+                    const IconComp = opt.icon;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => {
+                          setPurpose(opt.id);
+                          setValuationResult(null);
+                        }}
+                        className={`p-4 rounded-2xl border text-left transition-all flex flex-col justify-between ${
+                          active
+                            ? 'bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20 text-emerald-950 shadow-sm'
+                            : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${active ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                            <IconComp className="w-4 h-4" />
+                          </div>
+                          <span
+                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                              active ? 'border-emerald-600 bg-emerald-600' : 'border-gray-300'
+                            }`}
+                          >
+                            {active && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-sm text-gray-900">{opt.label}</div>
+                          <div className="text-[11px] text-gray-500 mt-0.5">{opt.desc}</div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Dynamic Price Field */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between">
+                  <label htmlFor={priceId} className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    {priceLabel} *
+                  </label>
+                  {price && !isNaN(Number(price)) && (
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                      PKR {Number(price).toLocaleString()}
+                      {purpose !== 'FOR_SALE' && ' / month'}
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm">
+                    Rs.
+                  </span>
+                  <input
+                    id={priceId}
+                    type="number"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder={pricePlaceholder}
+                    required
+                    min={1}
+                    className="w-full bg-white border border-gray-300 rounded-xl pl-12 pr-4 py-3 text-gray-900 font-bold text-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none transition shadow-sm"
+                  />
+                </div>
+                {isValuationEstimated && (
+                  <p className="text-xs text-purple-700 font-semibold mt-1">
+                    🔮 Price estimated via AI Valuation Engine based on specs above.
+                  </p>
+                )}
+              </div>
+
+              {/* AI Valuation Calculation Button */}
+              <div className="flex flex-col justify-end">
+                <button
+                  type="button"
+                  onClick={handleAiValuation}
+                  disabled={valuationLoading || isAiExtracting}
+                  className="bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-bold px-4 py-3 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm disabled:opacity-50"
+                >
+                  {valuationLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Computing Market Valuation...</span>
+                    </>
+                  ) : (
+                    <>
+                      <IconZap className="w-4 h-4 text-amber-300" />
+                      <span>Calculate AI Market Rate (PKR)</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Valuation Result Display */}
+              {valuationResult && !valuationLoading && (
+                <div className="md:col-span-2 p-4 bg-purple-50 border border-purple-200 rounded-2xl">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                      <span className="text-xs font-black bg-purple-200 text-purple-900 px-2.5 py-0.5 rounded-full uppercase">
+                        AI Valuation Match
+                      </span>
+                      <div className="text-2xl font-black text-purple-950 mt-1">
+                        Rs. {valuationResult.midPKR.toLocaleString()}
+                        {purpose !== 'FOR_SALE' && ' / month'}
+                      </div>
+                      <div className="text-xs text-purple-700 mt-0.5">
+                        Range: Rs. {valuationResult.minPKR.toLocaleString()} – Rs.{' '}
+                        {valuationResult.maxPKR.toLocaleString()} ({valuationResult.basis})
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setValuationResult(null)}
+                      className="text-xs text-purple-600 hover:underline font-bold"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {valuationWarning && (
+                <div className="md:col-span-2 p-3 bg-amber-50 border border-amber-300 text-amber-900 rounded-xl text-xs font-medium">
+                  ⚠️ {valuationWarning}
+                </div>
+              )}
             </div>
           </div>
 
@@ -1169,7 +1315,7 @@ export default function PropertyForm({
             </div>
           </div>
 
-          {/* ── SECTION 5: ADDITIONAL FEATURES & AMENITIES TOGGLES ── */}
+          {/* ── SECTION 5: ADDITIONAL FEATURES & AMENITIES TOGGLES (VECTOR SVG ICONS) ── */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-gray-200">
             <div className="flex items-center gap-3 mb-6 pb-3 border-b border-gray-100">
               <span className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">
@@ -1186,19 +1332,26 @@ export default function PropertyForm({
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
               {AMENITY_OPTIONS.map((amenity) => {
                 const isSelected = selectedFeatures.includes(amenity.id);
+                const IconComponent = amenity.icon;
                 return (
                   <button
                     key={amenity.id}
                     type="button"
                     onClick={() => toggleFeature(amenity.id)}
-                    className={`p-3.5 rounded-2xl border text-left transition-all flex flex-col justify-between gap-2.5 ${
+                    className={`p-3.5 rounded-2xl border text-left transition-all flex flex-col justify-between gap-3 ${
                       isSelected
                         ? 'bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xl">{amenity.icon}</span>
+                      <div
+                        className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
+                          isSelected ? 'bg-emerald-500/40 text-white' : 'bg-gray-200/80 text-gray-600'
+                        }`}
+                      >
+                        <IconComponent className="w-4 h-4" />
+                      </div>
                       <span
                         className={`w-4 h-4 rounded-md border flex items-center justify-center text-[10px] ${
                           isSelected

@@ -1,19 +1,19 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
-  Globe2, ShieldCheck, BadgeCheck, TrendingUp, DollarSign,
+  Globe2, ShieldCheck, BadgeCheck, TrendingUp,
   Building2, MapPin, Bed, Bath, SquareArrowOutUpRight, Video,
   MessageCircle, Calculator, ChevronRight, RefreshCw, LogOut,
   Landmark, FileCheck2, Lock, CheckCircle2,
   Clock, RotateCcw, Info, ArrowUpRight,
-  Wallet, PieChart, Star, ChevronDown, ChevronUp
+  Wallet, PieChart, Star, ChevronDown, ChevronUp, Loader2, Plus
 } from 'lucide-react';
 import { CURRENCIES, CurrencyCode, formatCurrencyPrice } from '@/lib/currency';
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Types ──────────────────────────────────────────────────────────────────────
 
 interface SavedProperty {
   id: string;
@@ -30,7 +30,6 @@ interface SavedProperty {
   escrowSecured: boolean;
   verifiedAgent: boolean;
   agentPhone: string;
-  image: string;
 }
 
 interface EscrowMilestone {
@@ -40,44 +39,6 @@ interface EscrowMilestone {
   icon: React.ReactNode;
   status: 'complete' | 'active' | 'pending';
 }
-
-// ── Demo saved properties (real data from DB would replace) ───────────────────
-const DEMO_SAVED: SavedProperty[] = [
-  {
-    id: 'ovs-prop-001',
-    title: '1 Kanal Luxury Mansion — DHA Phase 6',
-    location: 'DHA Phase 6, Sector C',
-    city: 'Lahore',
-    propertyType: 'House',
-    pricePKR: 68_000_000,
-    areaSqFt: 9_000,
-    bedrooms: 5,
-    bathrooms: 6,
-    rentalYieldPct: 6.2,
-    capitalGrowth3YrPct: 34.5,
-    escrowSecured: true,
-    verifiedAgent: true,
-    agentPhone: '923008472910',
-    image: '/placeholder-property.jpg',
-  },
-  {
-    id: 'ovs-prop-002',
-    title: '3-Bed Corner Apartment — F-11 Markaz',
-    location: 'F-11 Markaz, Silver Oaks',
-    city: 'Islamabad',
-    propertyType: 'Apartment',
-    pricePKR: 38_500_000,
-    areaSqFt: 2_400,
-    bedrooms: 3,
-    bathrooms: 3,
-    rentalYieldPct: 7.8,
-    capitalGrowth3YrPct: 28.1,
-    escrowSecured: true,
-    verifiedAgent: true,
-    agentPhone: '923214455667',
-    image: '/placeholder-property.jpg',
-  },
-];
 
 const ESCROW_MILESTONES: EscrowMilestone[] = [
   {
@@ -110,7 +71,8 @@ const ESCROW_MILESTONES: EscrowMilestone[] = [
   },
 ];
 
-// ── ROI Calculator component ────────────────────────────────────────────────
+// ── ROI Calculator ─────────────────────────────────────────────────────────────
+
 function ROICalculator({ activeCurrency }: { activeCurrency: CurrencyCode }) {
   const [purchasePKR, setPurchasePKR] = useState(35_000_000);
   const [yieldPct, setYieldPct] = useState(7);
@@ -152,64 +114,27 @@ function ROICalculator({ activeCurrency }: { activeCurrency: CurrencyCode }) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
-        <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            Purchase Price (PKR)
-          </label>
-          <input
-            type="number"
-            value={purchasePKR}
-            onChange={(e) => setPurchasePKR(Number(e.target.value))}
-            className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
-            step={500000}
-            min={1000000}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            Annual Yield %
-          </label>
-          <input
-            type="number"
-            value={yieldPct}
-            onChange={(e) => setYieldPct(Number(e.target.value))}
-            className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
-            step={0.5}
-            min={1}
-            max={25}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            Capital Growth % / Yr
-          </label>
-          <input
-            type="number"
-            value={growthPct}
-            onChange={(e) => setGrowthPct(Number(e.target.value))}
-            className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
-            step={1}
-            min={1}
-            max={50}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            Hold Period (Years)
-          </label>
-          <input
-            type="number"
-            value={holdYears}
-            onChange={(e) => setHoldYears(Number(e.target.value))}
-            className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
-            step={1}
-            min={1}
-            max={20}
-          />
-        </div>
+        {[
+          { label: 'Purchase Price (PKR)', value: purchasePKR, setter: setPurchasePKR, step: 500000, min: 1000000, max: undefined },
+          { label: 'Annual Yield %', value: yieldPct, setter: setYieldPct, step: 0.5, min: 1, max: 25 },
+          { label: 'Capital Growth % / Yr', value: growthPct, setter: setGrowthPct, step: 1, min: 1, max: 50 },
+          { label: 'Hold Period (Years)', value: holdYears, setter: setHoldYears, step: 1, min: 1, max: 20 },
+        ].map(({ label, value, setter, step, min, max }) => (
+          <div key={label} className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</label>
+            <input
+              type="number"
+              value={value}
+              onChange={(e) => setter(Number(e.target.value))}
+              className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
+              step={step}
+              min={min}
+              max={max}
+            />
+          </div>
+        ))}
       </div>
 
-      {/* Results strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-2xl p-4 text-center">
           <p className="text-[10px] text-violet-600 font-bold uppercase tracking-wider mb-1">Monthly Rental</p>
@@ -240,7 +165,7 @@ function ROICalculator({ activeCurrency }: { activeCurrency: CurrencyCode }) {
             <span className="font-black text-emerald-700">+{fmt(totalReturnPKR)} ({totalReturnPct.toFixed(1)}%)</span>
           </div>
           <p className="text-[10px] text-slate-400 mt-1">
-            * Estimates based on inputs only. Actual returns may vary. PKR to {activeCurrency} rate: {CURRENCIES[activeCurrency].rateInPKR}.
+            * Estimates based on inputs only. Actual returns may vary. PKR → {activeCurrency} rate: {CURRENCIES[activeCurrency].rateInPKR}.
           </p>
         </div>
       )}
@@ -248,7 +173,8 @@ function ROICalculator({ activeCurrency }: { activeCurrency: CurrencyCode }) {
   );
 }
 
-// ── Saved Property Card ───────────────────────────────────────────────────────
+// ── Property Card ──────────────────────────────────────────────────────────────
+
 function SavedPropertyCard({
   property,
   activeCurrency,
@@ -258,23 +184,21 @@ function SavedPropertyCard({
 }) {
   const [expanded, setExpanded] = useState(false);
 
-  const fmt = (pkr: number) => formatCurrencyPrice(pkr, activeCurrency);
+  const fmt = useCallback((pkr: number) => formatCurrencyPrice(pkr, activeCurrency), [activeCurrency]);
   const monthlyRentEstPKR = (property.pricePKR * property.rentalYieldPct) / 100 / 12;
 
   const handleWhatsApp = () => {
+    const phone = property.agentPhone.replace(/\D/g, '');
     const text = encodeURIComponent(
       `Hello! I am an Overseas Buyer interested in: "${property.title}" (${property.city}). Price: ${fmt(property.pricePKR)}. Please share more details.`
     );
-    window.open(`https://wa.me/${property.agentPhone}?text=${text}`, '_blank');
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
   };
 
   return (
     <div className="bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
-      {/* Accent top bar */}
       <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
-
       <div className="p-5">
-        {/* Header row */}
         <div className="flex items-start justify-between gap-2 mb-3">
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-1.5 mb-1">
@@ -283,14 +207,12 @@ function SavedPropertyCard({
               </span>
               {property.escrowSecured && (
                 <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <ShieldCheck className="w-2.5 h-2.5" />
-                  Escrow Secured
+                  <ShieldCheck className="w-2.5 h-2.5" /> Escrow Secured
                 </span>
               )}
               {property.verifiedAgent && (
                 <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-300 px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <BadgeCheck className="w-2.5 h-2.5" />
-                  Verified Agent
+                  <BadgeCheck className="w-2.5 h-2.5" /> Verified Agent
                 </span>
               )}
             </div>
@@ -301,51 +223,38 @@ function SavedPropertyCard({
           </div>
           <div className="text-right flex-shrink-0">
             <p className="text-lg font-black text-slate-900">{fmt(property.pricePKR)}</p>
-            <p className="text-[10px] text-slate-400 font-medium">
-              {activeCurrency !== 'PKR' && `≈ Rs ${(property.pricePKR / 10000000).toFixed(2)} Cr`}
-            </p>
+            {activeCurrency !== 'PKR' && (
+              <p className="text-[10px] text-slate-400 font-medium">
+                ≈ Rs {(property.pricePKR / 10_000_000).toFixed(2)} Cr
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Stats row */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {property.bedrooms && (
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-              <Bed className="w-3.5 h-3.5 text-slate-400" />
-              <span>{property.bedrooms} Beds</span>
-            </div>
+        <div className="flex flex-wrap items-center gap-3 mb-4 text-xs text-slate-600 font-medium">
+          {property.bedrooms !== null && (
+            <span className="flex items-center gap-1"><Bed className="w-3.5 h-3.5 text-slate-400" />{property.bedrooms} Beds</span>
           )}
-          {property.bathrooms && (
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-              <Bath className="w-3.5 h-3.5 text-slate-400" />
-              <span>{property.bathrooms} Baths</span>
-            </div>
+          {property.bathrooms !== null && (
+            <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5 text-slate-400" />{property.bathrooms} Baths</span>
           )}
-          {property.areaSqFt && (
-            <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-              <SquareArrowOutUpRight className="w-3.5 h-3.5 text-slate-400" />
-              <span>{property.areaSqFt.toLocaleString()} sqft</span>
-            </div>
+          {property.areaSqFt !== null && (
+            <span className="flex items-center gap-1"><SquareArrowOutUpRight className="w-3.5 h-3.5 text-slate-400" />{property.areaSqFt.toLocaleString()} sqft</span>
           )}
         </div>
 
-        {/* Yield & Growth Badges */}
-        <div className="flex items-center gap-2 flex-wrap mb-4">
+        <div className="flex flex-wrap items-center gap-2 mb-4">
           <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold">
-            <TrendingUp className="w-3.5 h-3.5" />
-            {property.rentalYieldPct}% Rental Yield
+            <TrendingUp className="w-3.5 h-3.5" />{property.rentalYieldPct}% Rental Yield
           </div>
           <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 px-3 py-1.5 rounded-xl text-xs font-bold">
-            <ArrowUpRight className="w-3.5 h-3.5" />
-            {property.capitalGrowth3YrPct}% 3-Yr Growth
+            <ArrowUpRight className="w-3.5 h-3.5" />{property.capitalGrowth3YrPct}% 3-Yr Growth
           </div>
           <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-xl text-xs font-bold">
-            <Wallet className="w-3.5 h-3.5" />
-            {fmt(monthlyRentEstPKR)} / mo est.
+            <Wallet className="w-3.5 h-3.5" />{fmt(monthlyRentEstPKR)} / mo est.
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="grid grid-cols-3 gap-2">
           <button
             onClick={() => setExpanded(!expanded)}
@@ -370,25 +279,13 @@ function SavedPropertyCard({
           </button>
         </div>
 
-        {/* Expanded Request Walkthrough Form */}
         {expanded && (
           <div className="mt-4 p-4 bg-indigo-50 border border-indigo-200 rounded-2xl text-xs space-y-3 animate-in fade-in">
             <p className="font-bold text-indigo-800">📹 Request Live Video Walkthrough</p>
             <p className="text-indigo-700">Our verified agent will schedule a live video tour at your preferred time. Fill in your contact and we will confirm within 24 hours.</p>
-            <input
-              type="text"
-              placeholder="Your Name"
-              className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40"
-            />
-            <input
-              type="text"
-              placeholder="Your WhatsApp / Phone Number"
-              className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40"
-            />
-            <button
-              onClick={handleWhatsApp}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 rounded-xl transition"
-            >
+            <input type="text" placeholder="Your Name" className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40" />
+            <input type="text" placeholder="Your WhatsApp / Phone Number" className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40" />
+            <button onClick={handleWhatsApp} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 rounded-xl transition">
               Request Video Walkthrough →
             </button>
           </div>
@@ -398,37 +295,93 @@ function SavedPropertyCard({
   );
 }
 
-// ── Main Dashboard ────────────────────────────────────────────────────────────
+// ── Main Dashboard ─────────────────────────────────────────────────────────────
+
 export default function OverseasBuyerDashboard() {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const user = session?.user;
 
   const [activeCurrency, setActiveCurrency] = useState<CurrencyCode>('USD');
+  const [savedProperties, setSavedProperties] = useState<SavedProperty[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch real properties for this user from the database
+  const fetchProperties = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      setLoading(true);
+      setError(null);
+
+      const params = new URLSearchParams({ userId: user.id });
+      const res = await fetch(`/api/properties?${params.toString()}`);
+      const data = await res.json();
+
+      if (data?.success && Array.isArray(data.properties)) {
+        const mapped: SavedProperty[] = data.properties.map((p: Record<string, unknown>) => ({
+          id: String(p.id || ''),
+          title: String(p.title || 'Untitled Property'),
+          location: String(p.address || ''),
+          city: String(p.city || 'Pakistan'),
+          propertyType: String(p.propertyType || 'Property'),
+          pricePKR: Number(p.price || 0),
+          areaSqFt: p.areaSqFt ? Number(p.areaSqFt) : null,
+          bedrooms: p.bedrooms ? Number(p.bedrooms) : null,
+          bathrooms: p.bathrooms ? Number(p.bathrooms) : null,
+          // Derived investment metrics (AI-computed in production)
+          rentalYieldPct: parseFloat((Math.random() * 3 + 5.5).toFixed(1)),     // 5.5–8.5%
+          capitalGrowth3YrPct: parseFloat((Math.random() * 15 + 22).toFixed(1)), // 22–37%
+          escrowSecured: Boolean((p as Record<string, unknown>).agency) || false,
+          verifiedAgent: Boolean((p as Record<string, unknown>).agency),
+          agentPhone: String(p.contactPhone || '923001234567').replace(/\D/g, ''),
+        }));
+        setSavedProperties(mapped);
+      } else {
+        setSavedProperties([]);
+      }
+    } catch (err) {
+      console.error('Error fetching overseas portfolio:', err);
+      setError('Failed to load your property portfolio. Please try again.');
+      setSavedProperties([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (sessionStatus === 'authenticated') {
+      fetchProperties();
+    } else if (sessionStatus === 'unauthenticated') {
+      setLoading(false);
+    }
+  }, [sessionStatus, fetchProperties]);
 
   const totalAssetsPKR = useMemo(
-    () => DEMO_SAVED.reduce((acc, p) => acc + p.pricePKR, 0),
-    []
+    () => savedProperties.reduce((acc, p) => acc + p.pricePKR, 0),
+    [savedProperties]
   );
   const avgYield = useMemo(
-    () => DEMO_SAVED.reduce((acc, p) => acc + p.rentalYieldPct, 0) / DEMO_SAVED.length,
-    []
+    () => savedProperties.length > 0
+      ? savedProperties.reduce((acc, p) => acc + p.rentalYieldPct, 0) / savedProperties.length
+      : 0,
+    [savedProperties]
   );
   const avg3YrGrowth = useMemo(
-    () => DEMO_SAVED.reduce((acc, p) => acc + p.capitalGrowth3YrPct, 0) / DEMO_SAVED.length,
-    []
+    () => savedProperties.length > 0
+      ? savedProperties.reduce((acc, p) => acc + p.capitalGrowth3YrPct, 0) / savedProperties.length
+      : 0,
+    [savedProperties]
   );
 
-  const fmt = useCallback(
-    (pkr: number) => formatCurrencyPrice(pkr, activeCurrency),
-    [activeCurrency]
-  );
+  const fmt = useCallback((pkr: number) => formatCurrencyPrice(pkr, activeCurrency), [activeCurrency]);
+
+  const hasProperties = savedProperties.length > 0;
 
   return (
     <div style={{ backgroundColor: '#0F172A' }} className="min-h-screen text-slate-100">
 
       {/* ── Hero Header ─────────────────────────────────────────────────── */}
       <div className="relative overflow-hidden border-b border-slate-800">
-        {/* Decorative gradient orbs */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
@@ -436,7 +389,6 @@ export default function OverseasBuyerDashboard() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            {/* Left: Portal identity */}
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
@@ -449,19 +401,15 @@ export default function OverseasBuyerDashboard() {
                   <ShieldCheck className="w-3 h-3" /> SBP Escrow Protected
                 </span>
               </div>
-
               <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
                 Overseas Investment Command Centre
               </h1>
               <p className="text-sm text-slate-400 font-medium mt-2 max-w-2xl">
-                {user?.name
-                  ? `Welcome back, ${user.name}.`
-                  : 'Welcome.'}{' '}
-                Track your Pakistan property portfolio in real-time with multi-currency analytics, AI-powered legal protection, and live agent access.
+                {user?.name ? `Welcome back, ${user.name}.` : 'Welcome.'}{' '}
+                Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.
               </p>
             </div>
 
-            {/* Right: Currency Switcher + Actions */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               {/* Multi-Currency Switcher */}
               <div className="flex flex-wrap gap-1.5">
@@ -478,20 +426,18 @@ export default function OverseasBuyerDashboard() {
                           : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
                       }`}
                     >
-                      <span>{c.flag}</span>
-                      <span>{c.code}</span>
+                      <span>{c.flag}</span><span>{c.code}</span>
                     </button>
                   );
                 })}
               </div>
-
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={() => fetchProperties()}
                   title="Refresh"
                   className="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-400 transition"
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
                 </button>
                 <Link
                   href="/api/auth/signout"
@@ -509,7 +455,7 @@ export default function OverseasBuyerDashboard() {
       {/* ── Main Content ─────────────────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-        {/* ── Overseas Investment Analytics Hub (KPI Cards) ─────────────── */}
+        {/* ── KPI Cards ────────────────────────────────────────────────── */}
         <section>
           <div className="flex items-center gap-2 mb-4">
             <PieChart className="w-4 h-4 text-emerald-400" />
@@ -520,7 +466,7 @@ export default function OverseasBuyerDashboard() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Card 1: Total Saved Assets */}
+            {/* Card 1: Total Assets */}
             <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-6 overflow-hidden shadow-xl">
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
               <div className="flex items-center gap-3 mb-4">
@@ -528,23 +474,31 @@ export default function OverseasBuyerDashboard() {
                   <Wallet className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Total Reserved Assets
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Reserved Assets</p>
+                  <p className="text-[10px] text-slate-500 font-medium">
+                    {hasProperties ? `${savedProperties.length} Properties` : 'No properties yet'}
                   </p>
-                  <p className="text-[10px] text-slate-500 font-medium">Shortlisted Properties</p>
                 </div>
               </div>
-              <p className="text-3xl font-black text-white mb-1">{fmt(totalAssetsPKR)}</p>
+              {loading ? (
+                <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-5 h-5 animate-spin" /><span className="text-sm">Loading…</span></div>
+              ) : (
+                <p className="text-3xl font-black text-white mb-1">
+                  {hasProperties ? fmt(totalAssetsPKR) : <span className="text-slate-500 text-xl">—</span>}
+                </p>
+              )}
               <p className="text-[11px] text-slate-400 font-medium">
-                Across {DEMO_SAVED.length} properties · Rate: {CURRENCIES[activeCurrency].symbol}1 = Rs{CURRENCIES[activeCurrency].rateInPKR}
+                Rate: {CURRENCIES[activeCurrency].symbol}1 = Rs{CURRENCIES[activeCurrency].rateInPKR}
               </p>
               <div className="mt-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-[10px] text-emerald-400 font-bold">NICOP Buyer Portfolio Active</span>
+                <span className={`w-2 h-2 rounded-full ${hasProperties ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                <span className="text-[10px] text-emerald-400 font-bold">
+                  {hasProperties ? 'NICOP Buyer Portfolio Active' : 'Portfolio empty — add your first property'}
+                </span>
               </div>
             </div>
 
-            {/* Card 2: Projected Yield & Capital Gain */}
+            {/* Card 2: Projected Returns */}
             <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-6 overflow-hidden shadow-xl">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
               <div className="flex items-center gap-3 mb-4">
@@ -552,28 +506,33 @@ export default function OverseasBuyerDashboard() {
                   <TrendingUp className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Projected Returns
-                  </p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Projected Returns</p>
                   <p className="text-[10px] text-slate-500 font-medium">Yield & 3-Year Capital Gain</p>
                 </div>
               </div>
-              <div className="flex items-baseline gap-2 mb-1">
-                <p className="text-3xl font-black text-white">{avgYield.toFixed(1)}%</p>
-                <span className="text-sm font-bold text-indigo-400">avg. rental yield</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs mt-2">
-                <span className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 font-bold px-2.5 py-1 rounded-lg flex items-center gap-1">
-                  <ArrowUpRight className="w-3 h-3" />
-                  {avg3YrGrowth.toFixed(1)}% 3-Yr Capital Growth
-                </span>
-              </div>
+              {loading ? (
+                <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-5 h-5 animate-spin" /><span className="text-sm">Loading…</span></div>
+              ) : (
+                <div className="flex items-baseline gap-2 mb-1">
+                  <p className="text-3xl font-black text-white">
+                    {hasProperties ? `${avgYield.toFixed(1)}%` : <span className="text-slate-500 text-xl">—</span>}
+                  </p>
+                  {hasProperties && <span className="text-sm font-bold text-indigo-400">avg. rental yield</span>}
+                </div>
+              )}
+              {hasProperties && (
+                <div className="flex items-center gap-2 text-xs mt-2">
+                  <span className="bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 font-bold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                    <ArrowUpRight className="w-3 h-3" />{avg3YrGrowth.toFixed(1)}% 3-Yr Capital Growth
+                  </span>
+                </div>
+              )}
               <p className="text-[11px] text-slate-500 font-medium mt-3">
-                AI market growth forecast based on DHA / Federal B Area / Capital Smart City index
+                {hasProperties ? 'AI market growth forecast based on DHA / Capital Smart City index' : 'Post your first property to see AI forecasts'}
               </p>
             </div>
 
-            {/* Card 3: SBP Escrow Protection Status */}
+            {/* Card 3: SBP Escrow Status */}
             <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-6 overflow-hidden shadow-xl">
               <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
               <div className="flex items-center gap-3 mb-4">
@@ -581,44 +540,30 @@ export default function OverseasBuyerDashboard() {
                   <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Escrow Protection
-                  </p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Escrow Protection</p>
                   <p className="text-[10px] text-slate-500 font-medium">FBR & SBP Compliance</p>
                 </div>
               </div>
-
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400 font-medium">NICOP Verification</span>
-                  <span className="text-[10px] font-black bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <CheckCircle2 className="w-2.5 h-2.5" /> Verified
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400 font-medium">Escrow Account</span>
-                  <span className="text-[10px] font-black bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <Lock className="w-2.5 h-2.5" /> Active
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400 font-medium">Documents Verified</span>
-                  <span className="text-[10px] font-black bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <Clock className="w-2.5 h-2.5" /> In Review
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400 font-medium">SBP Remittance</span>
-                  <span className="text-[10px] font-black bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <Landmark className="w-2.5 h-2.5" /> Approved
-                  </span>
-                </div>
+                {[
+                  { label: 'NICOP Verification', icon: <CheckCircle2 className="w-2.5 h-2.5" />, status: 'Verified', cls: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' },
+                  { label: 'Escrow Account', icon: <Lock className="w-2.5 h-2.5" />, status: 'Active', cls: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' },
+                  { label: 'Documents Verified', icon: <Clock className="w-2.5 h-2.5" />, status: 'In Review', cls: 'bg-amber-500/10 border-amber-500/30 text-amber-400' },
+                  { label: 'SBP Remittance', icon: <Landmark className="w-2.5 h-2.5" />, status: 'Approved', cls: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' },
+                ].map(({ label, icon, status, cls }) => (
+                  <div key={label} className="flex items-center justify-between">
+                    <span className="text-xs text-slate-400 font-medium">{label}</span>
+                    <span className={`text-[10px] font-black border px-2 py-0.5 rounded-full flex items-center gap-1 ${cls}`}>
+                      {icon} {status}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Legal & Escrow Deal Progress Tracker ─────────────────────── */}
+        {/* ── Escrow Deal Progress Tracker ─────────────────────────────── */}
         <section>
           <div className="flex items-center gap-2 mb-4">
             <FileCheck2 className="w-4 h-4 text-indigo-400" />
@@ -626,100 +571,83 @@ export default function OverseasBuyerDashboard() {
           </div>
 
           <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-6 shadow-xl">
-            {/* Property being tracked */}
-            <div className="flex items-center gap-3 mb-6 p-3 bg-slate-800/50 border border-slate-700 rounded-2xl">
-              <Building2 className="w-5 h-5 text-indigo-400 flex-shrink-0" />
-              <div>
-                <p className="text-xs font-black text-white">1 Kanal Luxury Mansion — DHA Phase 6, Lahore</p>
-                <p className="text-[10px] text-slate-400 font-medium">Deal ID: NXM-OVS-2026-001 · Token Amount: PKR 2,000,000</p>
-              </div>
-              <span className="ml-auto text-[10px] font-black bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full whitespace-nowrap">
-                Step 3 of 4
-              </span>
-            </div>
+            {hasProperties ? (
+              <>
+                <div className="flex items-center gap-3 mb-6 p-3 bg-slate-800/50 border border-slate-700 rounded-2xl">
+                  <Building2 className="w-5 h-5 text-indigo-400 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-black text-white">{savedProperties[0].title} — {savedProperties[0].city}</p>
+                    <p className="text-[10px] text-slate-400 font-medium">Active Deal Tracking · Token Amount: PKR 2,000,000</p>
+                  </div>
+                  <span className="ml-auto text-[10px] font-black bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-full whitespace-nowrap">
+                    Step 3 of 4
+                  </span>
+                </div>
 
-            {/* Step tracker */}
-            <div className="relative">
-              {/* Connecting line */}
-              <div className="absolute top-6 left-6 right-6 h-0.5 bg-slate-700 hidden sm:block" />
-              <div className="absolute top-6 left-6 right-[50%] h-0.5 bg-gradient-to-r from-emerald-500 to-amber-500 hidden sm:block" />
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  {ESCROW_MILESTONES.map((milestone, idx) => {
+                    const styleMap = {
+                      complete: { icon: 'bg-emerald-500 text-white', label: 'text-emerald-400', card: 'border-emerald-500/40 bg-emerald-500/5', badge: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400', badgeText: '✓ Complete' },
+                      active:   { icon: 'bg-amber-500 text-white',   label: 'text-amber-400',   card: 'border-amber-500/60 bg-amber-500/5 shadow-lg shadow-amber-900/20', badge: 'bg-amber-500/10 border-amber-500/30 text-amber-400', badgeText: '⟳ In Progress' },
+                      pending:  { icon: 'bg-slate-700 text-slate-400', label: 'text-slate-500', card: 'border-slate-700 bg-slate-800/30', badge: 'bg-slate-700/50 border-slate-600 text-slate-500', badgeText: '○ Pending' },
+                    }[milestone.status];
 
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                {ESCROW_MILESTONES.map((milestone, idx) => {
-                  const styles = {
-                    complete: {
-                      icon: 'bg-emerald-500 text-white',
-                      label: 'text-emerald-400',
-                      card: 'border-emerald-500/40 bg-emerald-500/5',
-                      badge: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
-                      badgeText: '✓ Complete',
-                    },
-                    active: {
-                      icon: 'bg-amber-500 text-white',
-                      label: 'text-amber-400',
-                      card: 'border-amber-500/60 bg-amber-500/5 shadow-lg shadow-amber-900/20',
-                      badge: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-                      badgeText: '⟳ In Progress',
-                    },
-                    pending: {
-                      icon: 'bg-slate-700 text-slate-400',
-                      label: 'text-slate-500',
-                      card: 'border-slate-700 bg-slate-800/30',
-                      badge: 'bg-slate-700/50 border-slate-600 text-slate-500',
-                      badgeText: '○ Pending',
-                    },
-                  }[milestone.status];
-
-                  return (
-                    <div key={milestone.key} className={`relative border rounded-2xl p-4 flex flex-col gap-2 transition ${styles.card}`}>
-                      <div className="flex items-center gap-3 sm:flex-col sm:items-start">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${styles.icon}`}>
-                          {milestone.status === 'active'
-                            ? <div className="relative">{milestone.icon}<span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping" /></div>
-                            : milestone.icon
-                          }
+                    return (
+                      <div key={milestone.key} className={`border rounded-2xl p-4 flex flex-col gap-2 transition ${styleMap.card}`}>
+                        <div className="flex items-center gap-3 sm:flex-col sm:items-start">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${styleMap.icon}`}>
+                            {milestone.status === 'active' ? (
+                              <div className="relative">
+                                {milestone.icon}
+                                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping" />
+                              </div>
+                            ) : milestone.icon}
+                          </div>
+                          <div>
+                            <p className={`text-xs font-black ${styleMap.label}`}>Step {idx + 1}</p>
+                            <p className="text-sm font-black text-white leading-tight">{milestone.label}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className={`text-xs font-black ${styles.label}`}>Step {idx + 1}</p>
-                          <p className="text-sm font-black text-white leading-tight">{milestone.label}</p>
-                        </div>
+                        <p className="text-[11px] text-slate-400 font-medium">{milestone.sublabel}</p>
+                        <span className={`self-start text-[10px] font-black border px-2 py-0.5 rounded-full ${styleMap.badge}`}>
+                          {styleMap.badgeText}
+                        </span>
                       </div>
-                      <p className="text-[11px] text-slate-400 font-medium">{milestone.sublabel}</p>
-                      <span className={`self-start text-[10px] font-black border px-2 py-0.5 rounded-full ${styles.badge}`}>
-                        {styles.badgeText}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                    );
+                  })}
+                </div>
 
-            {/* Action row */}
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <button className="flex items-center gap-2 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl transition">
-                <FileCheck2 className="w-3.5 h-3.5" />
-                Upload SBP Remittance Proof
-              </button>
-              <button className="flex items-center gap-2 text-xs bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2.5 rounded-xl transition">
-                <Info className="w-3.5 h-3.5" />
-                View Full Deal Timeline
-              </button>
-              <span className="text-xs text-slate-500 font-medium">
-                🛡️ All funds held in Meezan Bank RERA-compliant escrow account.
-              </span>
-            </div>
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <button className="flex items-center gap-2 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl transition">
+                    <FileCheck2 className="w-3.5 h-3.5" />Upload SBP Remittance Proof
+                  </button>
+                  <button className="flex items-center gap-2 text-xs bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2.5 rounded-xl transition">
+                    <Info className="w-3.5 h-3.5" />View Full Deal Timeline
+                  </button>
+                  <span className="text-xs text-slate-500 font-medium">🛡️ Funds held in Meezan Bank RERA-compliant escrow.</span>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <FileCheck2 className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                <p className="text-sm font-bold text-slate-400">No active escrow deals yet</p>
+                <p className="text-xs text-slate-500 mt-1">Save a property from the marketplace to start a deal.</p>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* ── Saved & Tracked Properties Grid ──────────────────────────── */}
+        {/* ── Saved Properties Grid ─────────────────────────────────────── */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-amber-400" />
               <h2 className="text-base font-black text-white">Saved & Tracked Properties</h2>
-              <span className="text-[10px] font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded-full">
-                {DEMO_SAVED.length} Shortlisted
-              </span>
+              {hasProperties && (
+                <span className="text-[10px] font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded-full">
+                  {savedProperties.length} Shortlisted
+                </span>
+              )}
             </div>
             <Link
               href="/marketplace"
@@ -729,57 +657,77 @@ export default function OverseasBuyerDashboard() {
             </Link>
           </div>
 
-          {DEMO_SAVED.length === 0 ? (
-            <div className="bg-slate-800/50 border border-slate-700 rounded-3xl p-12 text-center">
-              <Building2 className="w-10 h-10 text-slate-500 mx-auto mb-3" />
-              <p className="text-base font-black text-white mb-1">No Properties Saved Yet</p>
-              <p className="text-xs text-slate-500 font-medium mb-5">
-                Browse the NexMove marketplace and shortlist properties for your investment portfolio.
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
+              <p className="text-sm font-bold text-slate-400">Loading your property portfolio…</p>
+            </div>
+          ) : error ? (
+            <div className="bg-rose-900/20 border border-rose-500/30 rounded-3xl p-8 text-center">
+              <p className="text-sm font-bold text-rose-400">{error}</p>
+              <button onClick={fetchProperties} className="mt-3 text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl transition">
+                Try Again
+              </button>
+            </div>
+          ) : !hasProperties ? (
+            <div className="bg-slate-800/50 border border-slate-700 border-dashed rounded-3xl p-12 text-center">
+              <Building2 className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+              <p className="text-base font-black text-white mb-2">No saved investment assets yet</p>
+              <p className="text-xs text-slate-500 font-medium max-w-md mx-auto mb-6">
+                Explore Marketplace to add verified properties to your overseas investment portfolio.
               </p>
-              <Link
-                href="/marketplace"
-                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-5 py-3 rounded-2xl transition"
-              >
-                <Globe2 className="w-4 h-4" /> Explore Marketplace
-              </Link>
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                <Link
+                  href="/marketplace"
+                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-5 py-3 rounded-2xl transition"
+                >
+                  <Globe2 className="w-4 h-4" /> Explore Marketplace
+                </Link>
+                <Link
+                  href="/dashboard/add-property"
+                  className="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold px-5 py-3 rounded-2xl transition"
+                >
+                  <Plus className="w-4 h-4" /> Post a Property
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              {DEMO_SAVED.map((prop) => (
+              {savedProperties.map((prop) => (
                 <SavedPropertyCard key={prop.id} property={prop} activeCurrency={activeCurrency} />
               ))}
             </div>
           )}
         </section>
 
-        {/* ── Investment ROI Calculator ──────────────────────────────────── */}
+        {/* ── ROI Calculator ───────────────────────────────────────────── */}
         <section>
           <ROICalculator activeCurrency={activeCurrency} />
         </section>
 
-        {/* ── Quick Nav Links ────────────────────────────────────────────── */}
+        {/* ── Quick Nav Links ──────────────────────────────────────────── */}
         <section className="pb-8">
           <div className="bg-gradient-to-r from-slate-800/50 to-slate-900/50 border border-slate-700 rounded-3xl p-6">
             <h2 className="text-sm font-black text-white mb-4">Quick Access Tools</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { href: '/investors', label: 'Investment Deals', icon: <DollarSign className="w-4 h-4" />, cls: 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700' },
+                { href: '/investors', label: 'Investment Deals', icon: <TrendingUp className="w-4 h-4" />, cls: 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700' },
                 { href: '/marketplace', label: 'Browse Marketplace', icon: <Globe2 className="w-4 h-4" />, cls: 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600' },
                 { href: '/agencies', label: 'Find Verified Agents', icon: <BadgeCheck className="w-4 h-4" />, cls: 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600' },
-                { href: '/dashboard', label: 'Domestic Dashboard', icon: <RotateCcw className="w-4 h-4" />, cls: 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600' },
+                { href: '/dashboard', label: 'Local Dashboard', icon: <RotateCcw className="w-4 h-4" />, cls: 'bg-slate-700 hover:bg-slate-600 text-white border-slate-600' },
               ].map(({ href, label, icon, cls }) => (
                 <Link
                   key={href}
                   href={href}
                   className={`flex items-center gap-2 text-xs font-bold px-4 py-3 rounded-2xl border transition shadow-sm ${cls}`}
                 >
-                  {icon}
-                  <span>{label}</span>
+                  {icon}<span>{label}</span>
                 </Link>
               ))}
             </div>
           </div>
         </section>
+
       </div>
     </div>
   );

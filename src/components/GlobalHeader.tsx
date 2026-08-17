@@ -227,47 +227,47 @@ export default function GlobalHeader() {
           </Link>
         )}
 
-        {/* 🏢 AGENCY / AGENT: Show ONLY Agency Portal */}
+        {/* 🏢 AGENCY / AGENT: Show Agency Dashboard */}
         {isAgencyUser && (
           <Link
             href="/agency/dashboard"
             className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1.5"
           >
             <span>🏢</span>
-            <span>Agency Portal</span>
+            <span>Agency Dashboard</span>
           </Link>
         )}
 
-        {/* 💼 INVESTOR: Show ONLY Investor Portal */}
+        {/* 💼 INVESTOR: Show Overseas Investment Portal */}
         {isInvestorUser && (
           <Link
             href="/investors"
             className="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-xl transition shadow shadow-amber-950/50 flex items-center gap-1.5"
           >
             <span>💼</span>
-            <span>Investor Portal</span>
+            <span>Overseas Investment Portal</span>
           </Link>
         )}
 
-        {/* 🌍 OVERSEAS BUYER: Show Overseas Buyer Portal */}
+        {/* 🌍 OVERSEAS BUYER: Show Overseas Investment Portal */}
         {isOverseasBuyer && (
           <Link
             href="/overseas/dashboard"
             className="text-xs bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-indigo-950/50 flex items-center gap-1.5"
           >
             <span>🌍</span>
-            <span>Overseas Portal</span>
+            <span>Overseas Investment Portal</span>
           </Link>
         )}
 
-        {/* 🏠 STANDARD USER: Show User Dashboard / My Listings */}
+        {/* 🏠 STANDARD USER: Show My Listings / Dashboard */}
         {isStandardUser && (
           <Link
             href="/dashboard"
             className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition shadow shadow-emerald-950/50 flex items-center gap-1.5"
           >
             <span>🏠</span>
-            <span>User Dashboard</span>
+            <span>My Listings / Dashboard</span>
           </Link>
         )}
 

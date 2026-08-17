@@ -52,6 +52,9 @@ export async function middleware(req: NextRequest) {
     if (isArchitectDashboardRoute) {
       loginUrl.searchParams.set('role', 'architect');
       loginUrl.searchParams.set('callbackUrl', pathname);
+    } else if (isOverseasRoute) {
+      loginUrl.searchParams.set('role', 'overseas_buyer');
+      loginUrl.searchParams.set('callbackUrl', pathname);
     } else if (isInvestorRoute) {
       loginUrl.searchParams.set('role', 'investor');
       loginUrl.searchParams.set('callbackUrl', pathname === '/investors' ? '/investors/dashboard' : pathname);
@@ -109,7 +112,9 @@ export async function middleware(req: NextRequest) {
     const isInvestorUser =
       !isArchitectUser &&
       !isAgencyUser &&
-      userAccountRoleType === 'OVERSEAS_INVESTOR';
+      (userAccountRoleType === 'OVERSEAS_INVESTOR' ||
+        userAccountRoleType === 'INVESTOR' ||
+        userRole === 'INVESTOR');
 
     const isOverseasBuyer =
       !isArchitectUser &&
@@ -239,12 +244,18 @@ export async function middleware(req: NextRequest) {
           );
         }
         if (isAgencyUser) {
-          return NextResponse.redirect(new URL('/agency/dashboard', req.url));
+          const redirectUrl = new URL('/agency/dashboard', req.url);
+          redirectUrl.searchParams.set('unauthorized', 'overseas_portal_restricted');
+          return NextResponse.redirect(redirectUrl);
         }
         if (isArchitectUser) {
-          return NextResponse.redirect(new URL('/architects/dashboard', req.url));
+          const redirectUrl = new URL('/architects/dashboard', req.url);
+          redirectUrl.searchParams.set('unauthorized', 'overseas_portal_restricted');
+          return NextResponse.redirect(redirectUrl);
         }
-        return NextResponse.redirect(new URL('/dashboard', req.url));
+        const redirectUrl = new URL('/dashboard', req.url);
+        redirectUrl.searchParams.set('unauthorized', 'overseas_portal_restricted');
+        return NextResponse.redirect(redirectUrl);
       }
     }
 

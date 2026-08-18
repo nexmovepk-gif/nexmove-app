@@ -447,12 +447,11 @@ export default function OverseasBuyerDashboard() {
                   <ShieldCheck className="w-3 h-3" /> SBP Escrow Protected
                 </span>
               </div>
-              <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight">
-                Overseas Investment Command Centre
+              <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
+                {t('overseasHeroTitle', 'Overseas Investment Command Centre')}
               </h1>
-              <p className="text-sm text-slate-400 font-medium mt-2 max-w-2xl">
-                {user?.name ? `Welcome back, ${user.name}.` : 'Welcome.'}{' '}
-                Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.
+              <p className="text-slate-400 text-sm mt-2 max-w-xl">
+                {t('overseasHeroSubtitle', 'Welcome back, Ali Hamza. Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.')}
               </p>
             </div>
 
@@ -505,7 +504,9 @@ export default function OverseasBuyerDashboard() {
           <section>
             <div className="flex items-center gap-2 mb-4">
               <PieChart className="w-4 h-4 text-emerald-600" />
-              <h2 className="text-base font-black text-slate-900">Investment Analytics Hub</h2>
+              <h2 className="text-base font-black text-slate-900">
+                {t('analyticsHub', 'Investment Analytics Hub')}
+              </h2>
               <span className="text-[10px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded-full">
                 Live {activeCurrency} View
               </span>
@@ -520,9 +521,14 @@ export default function OverseasBuyerDashboard() {
                     <Wallet className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Reserved Assets</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      {t('totalReserved', 'Total Reserved Assets')}
+                    </p>
                     <p className="text-[10px] text-slate-400 font-medium">
-                      {hasProperties ? `${savedProperties.length} Properties` : 'No properties yet'}
+                      {hasProperties
+                        ? `${savedProperties.length} ${t('propertiesText', 'Properties')}`
+                        : t('noPropertiesYet', 'No properties yet')
+                      }
                     </p>
                   </div>
                 </div>
@@ -552,8 +558,12 @@ export default function OverseasBuyerDashboard() {
                     <TrendingUp className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Projected Returns</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Yield & 3-Year Capital Gain</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      {t('projectedReturns', 'Projected Returns')}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-medium">
+                      {t('yieldCapitalGain', 'Yield & 3-Year Capital Gain')}
+                    </p>
                   </div>
                 </div>
                 {loading ? (
@@ -586,9 +596,12 @@ export default function OverseasBuyerDashboard() {
                     <ShieldCheck className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Escrow Protection</p>
-                    <p className="text-[10px] text-slate-400 font-medium">FBR & SBP Compliance</p>
-                  </div>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      {t('escrowProtection', 'Escrow Protection')}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-medium">
+                      {t('fbrSbpCompliance', 'FBR & SBP Compliance')}
+                    </p>                  </div>
                 </div>
                 <div className="space-y-2">
                   {[

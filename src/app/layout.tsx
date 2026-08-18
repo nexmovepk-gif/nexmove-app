@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Script from "next/script";
 import SessionProvider from "@/components/SessionProvider";
 import GlobalHeader from "@/components/GlobalHeader";
 import AIAssistant from "@/components/AIAssistant";
@@ -46,6 +47,24 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-900 min-h-screen`}
       >
+        {/* Hidden Container & Initialization for Platform-Wide Google Translation */}
+        <div id="google_translate_element" className="hidden absolute" />
+        <Script
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
+        <Script id="google-translate-init" strategy="afterInteractive">
+          {`
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,en',
+                autoDisplay: false
+              }, 'google_translate_element');
+            }
+          `}
+        </Script>
+
         <SessionProvider>
           <LanguageProvider>
             <CurrencyProvider>

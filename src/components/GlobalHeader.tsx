@@ -140,7 +140,19 @@ export default function GlobalHeader() {
           <select
             id="language-switcher-header"
             value={language}
-            onChange={(e) => setLanguage(e.target.value as Language)}
+            onChange={(e) => {
+              const selectedLang = e.target.value as Language;
+              setLanguage(selectedLang);
+
+              // Auto-translate entire platform via Google Translate engine
+              setTimeout(() => {
+                const gtSelect = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+                if (gtSelect) {
+                  gtSelect.value = selectedLang;
+                  gtSelect.dispatchEvent(new Event('change'));
+                }
+              }, 100);
+            }}
             className="bg-transparent text-xs font-bold text-emerald-400 focus:outline-none cursor-pointer py-0.5 uppercase"
             aria-label="Select Language"
           >

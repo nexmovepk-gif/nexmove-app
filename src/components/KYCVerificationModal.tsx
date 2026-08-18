@@ -59,37 +59,37 @@ const DOC_TYPES: {
   negKeywords: string[];
   errorMsg: string;
 }[] = [
-  {
-    id: 'NICOP',
-    emoji: '🪪',
-    title: 'NICOP',
-    desc: 'National Identity Card for Overseas Pakistanis',
-    keywords: ['nicop', 'cnic', 'identity', 'overseas', 'national'],
-    negKeywords: ['passport', 'pass', 'allotment', 'title', 'deed', 'poc', 'origin'],
-    errorMsg:
-      'Validation Failed: Please upload a valid NICOP / Overseas CNIC document.',
-  },
-  {
-    id: 'PASSPORT',
-    emoji: '🛂',
-    title: 'Foreign Passport',
-    desc: 'US, UK, UAE, EU & International Investors',
-    keywords: ['passport', 'pass', 'foreign', 'us_', 'uk_', 'intl'],
-    negKeywords: ['nicop', 'cnic', 'allotment', 'title', 'deed', 'poc'],
-    errorMsg:
-      'Validation Failed: Please upload a valid Foreign Passport document.',
-  },
-  {
-    id: 'POC',
-    emoji: '🌐',
-    title: 'POC Card',
-    desc: 'Pakistan Origin Certificate — Foreign National Investors',
-    keywords: ['poc', 'origin', 'pakistan_origin', 'certificate'],
-    negKeywords: ['passport', 'nicop', 'cnic', 'allotment', 'title', 'deed'],
-    errorMsg:
-      'Validation Failed: Please upload a valid POC (Pakistan Origin Certificate) card.',
-  },
-];
+    {
+      id: 'NICOP',
+      emoji: '🪪',
+      title: 'NICOP',
+      desc: 'National Identity Card for Overseas Pakistanis',
+      keywords: ['nicop', 'cnic', 'identity', 'overseas', 'national'],
+      negKeywords: ['passport', 'pass', 'allotment', 'title', 'deed', 'poc', 'origin'],
+      errorMsg:
+        'Validation Failed: Please upload a valid NICOP / Overseas CNIC document.',
+    },
+    {
+      id: 'PASSPORT',
+      emoji: '🛂',
+      title: 'Foreign Passport',
+      desc: 'US, UK, UAE, EU & International Investors',
+      keywords: ['passport', 'pass', 'foreign', 'us_', 'uk_', 'intl'],
+      negKeywords: ['nicop', 'cnic', 'allotment', 'title', 'deed', 'poc'],
+      errorMsg:
+        'Validation Failed: Please upload a valid Foreign Passport document.',
+    },
+    {
+      id: 'POC',
+      emoji: '🌐',
+      title: 'POC Card',
+      desc: 'Pakistan Origin Certificate — Foreign National Investors',
+      keywords: ['poc', 'origin', 'pakistan_origin', 'certificate'],
+      negKeywords: ['passport', 'nicop', 'cnic', 'allotment', 'title', 'deed'],
+      errorMsg:
+        'Validation Failed: Please upload a valid POC (Pakistan Origin Certificate) card.',
+    },
+  ];
 
 // ── Validation helper ──────────────────────────────────────────────────────────
 
@@ -216,8 +216,8 @@ export default function KYCVerificationModal({
                     docType === 'PASSPORT'
                       ? '[Foreign National]'
                       : docType === 'POC'
-                      ? '[Pakistan-Origin Foreign National]'
-                      : '[Overseas Pakistani]',
+                        ? '[Pakistan-Origin Foreign National]'
+                        : '[Overseas Pakistani]',
                   expiryDate: '[Extracted from Document]',
                   fbrStatus: 'OVERSEAS_FILER',
                   riskScorePct: 98.6,
@@ -374,11 +374,10 @@ export default function KYCVerificationModal({
                         }
                       }}
                       disabled={isScanning}
-                      className={`p-4 rounded-2xl border text-left transition flex flex-col gap-1.5 ${
-                        isActive
+                      className={`p-4 rounded-2xl border text-left transition flex flex-col gap-1.5 ${isActive
                           ? 'bg-emerald-50 border-emerald-500 shadow-sm'
                           : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                      } ${isScanning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        } ${isScanning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                     >
                       <span className="text-xl">{doc.emoji}</span>
                       <span className={`text-xs font-black ${isActive ? 'text-emerald-900' : 'text-slate-800'}`}>
@@ -408,13 +407,12 @@ export default function KYCVerificationModal({
                 onDragOver={(e) => { e.preventDefault(); if (!isScanning) setIsDragging(true); }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center gap-4 min-h-[180px] transition-all duration-200 ${
-                  isScanning
+                className={`relative border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center gap-4 min-h-[180px] transition-all duration-200 ${isScanning
                     ? 'border-amber-400 bg-amber-50/60 cursor-not-allowed'
                     : isDragging
-                    ? 'border-emerald-500 bg-emerald-50/60 scale-[1.01]'
-                    : 'border-slate-300 bg-slate-50/80 hover:border-emerald-400 hover:bg-emerald-50/30 cursor-pointer'
-                }`}
+                      ? 'border-emerald-500 bg-emerald-50/60 scale-[1.01]'
+                      : 'border-slate-300 bg-slate-50/80 hover:border-emerald-400 hover:bg-emerald-50/30 cursor-pointer'
+                  }`}
               >
                 {!isScanning && (
                   <input
@@ -455,9 +453,8 @@ export default function KYCVerificationModal({
                 ) : (
                   /* ── Idle Drop Zone ── */
                   <>
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                      isDragging ? 'bg-emerald-100' : 'bg-slate-100'
-                    }`}>
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${isDragging ? 'bg-emerald-100' : 'bg-slate-100'
+                      }`}>
                       <Upload className={`w-6 h-6 ${isDragging ? 'text-emerald-600' : 'text-slate-400'}`} />
                     </div>
                     <div className="text-center">
@@ -508,11 +505,10 @@ export default function KYCVerificationModal({
           {/* ── Result Panel ─────────────────────────────────────────── */}
           {kycResult && isTerminal && (
             <div
-              className={`rounded-3xl border p-5 ${
-                kycResult.escrowStatus === 'REJECTED'
+              className={`rounded-3xl border p-5 ${kycResult.escrowStatus === 'REJECTED'
                   ? 'bg-slate-950 border-red-800/60'
                   : 'bg-slate-900 border-slate-700'
-              }`}
+                }`}
             >
               {/* Result header */}
               <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
@@ -549,7 +545,7 @@ export default function KYCVerificationModal({
                         : 'Overseas Filer — 15% WHT',
                     color: kycResult.escrowStatus === 'REJECTED' ? 'text-red-400' : 'text-amber-400',
                   },
-                ].map(({ label, value, mono, emerald, color }) => (
+                ].map(({ label, value, emerald, color }) => (
                   <div
                     key={label}
                     className="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-3 flex flex-col gap-1"
@@ -558,9 +554,8 @@ export default function KYCVerificationModal({
                       {label}
                     </span>
                     <span
-                      className={`text-sm font-bold break-all ${
-                        color ?? (emerald ? 'text-emerald-400 font-mono' : 'text-white')
-                      }`}
+                      className={`text-sm font-bold break-all ${color ?? (emerald ? 'text-emerald-400 font-mono' : 'text-white')
+                        }`}
                     >
                       {value}
                     </span>

@@ -12,7 +12,7 @@ export default function GlobalHeader() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { currency, setCurrency } = useCurrency();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
 
   const user = session?.user;
   const isSuperAdmin =

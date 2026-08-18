@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { documentType, fileName, documentNumber, fullName } = body;
+    const { documentType, documentNumber, fullName } = body;
 
     if (!documentType || !['PASSPORT', 'NICOP', 'POC'].includes(documentType)) {
       return NextResponse.json(
@@ -32,8 +32,8 @@ export async function POST(req: Request) {
         documentType === 'PASSPORT'
           ? 'Foreign National'
           : documentType === 'POC'
-          ? 'Pakistan-Origin Foreign National'
-          : 'Overseas Pakistani',
+            ? 'Pakistan-Origin Foreign National'
+            : 'Overseas Pakistani',
       expiryDate: new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       fbrStatus: 'OVERSEAS_FILER',
       riskScorePct: 98.8,

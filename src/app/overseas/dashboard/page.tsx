@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/components/LanguageContext';
+import KYCVerificationModal from '@/components/KYCVerificationModal';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
@@ -299,6 +301,8 @@ function SavedPropertyCard({
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 
 export default function OverseasBuyerDashboard() {
+  const { t } = useLanguage();
+  const [isKycOpen, setIsKycOpen] = useState(false);
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const user = session?.user;
@@ -433,9 +437,12 @@ export default function OverseasBuyerDashboard() {
                 <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
                   <Globe2 className="w-3 h-3" /> Overseas Buyer Portal
                 </span>
-                <span className="inline-flex items-center gap-1.5 bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
-                  <BadgeCheck className="w-3 h-3" /> NICOP Verified Gateway
-                </span>
+                <button
+                  onClick={() => setIsKycOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-all cursor-pointer">
+                  <BadgeCheck className="w-3 h-3 text-blue-400" />
+                  {t('nicopVerification', 'NICOP Verified Gateway')}
+                </button>
                 <span className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
                   <ShieldCheck className="w-3 h-3" /> SBP Escrow Protected
                 </span>
@@ -459,11 +466,10 @@ export default function OverseasBuyerDashboard() {
                     <button
                       key={code}
                       onClick={() => setActiveCurrency(code)}
-                      className={`text-[10px] font-black px-3 py-1.5 rounded-xl border transition-all duration-150 flex items-center gap-1 ${
-                        isActive
-                          ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40'
-                          : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
-                      }`}
+                      className={`text-[10px] font-black px-3 py-1.5 rounded-xl border transition-all duration-150 flex items-center gap-1 ${isActive
+                        ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40'
+                        : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+                        }`}
                     >
                       <span>{c.flag}</span><span>{c.code}</span>
                     </button>
@@ -628,8 +634,8 @@ export default function OverseasBuyerDashboard() {
                     {ESCROW_MILESTONES.map((milestone, idx) => {
                       const styleMap = {
                         complete: { icon: 'bg-emerald-600 text-white', label: 'text-emerald-700', card: 'border-emerald-200 bg-emerald-50/40', badge: 'bg-emerald-50 border-emerald-200 text-emerald-700', badgeText: '✓ Complete' },
-                        active:   { icon: 'bg-amber-500 text-white shadow-md shadow-amber-500/20',   label: 'text-amber-700',   card: 'border-amber-300 bg-amber-50/60 shadow-sm', badge: 'bg-amber-100 border-amber-300 text-amber-800', badgeText: '⟳ In Progress' },
-                        pending:  { icon: 'bg-slate-100 text-slate-400 border border-slate-200', label: 'text-slate-400', card: 'border-slate-200 bg-slate-50/50', badge: 'bg-slate-100 border-slate-200 text-slate-500', badgeText: '○ Pending' },
+                        active: { icon: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', label: 'text-amber-700', card: 'border-amber-300 bg-amber-50/60 shadow-sm', badge: 'bg-amber-100 border-amber-300 text-amber-800', badgeText: '⟳ In Progress' },
+                        pending: { icon: 'bg-slate-100 text-slate-400 border border-slate-200', label: 'text-slate-400', card: 'border-slate-200 bg-slate-50/50', badge: 'bg-slate-100 border-slate-200 text-slate-500', badgeText: '○ Pending' },
                       }[milestone.status];
 
                       return (
@@ -770,6 +776,11 @@ export default function OverseasBuyerDashboard() {
 
         </div>
       </main>
+      <KYCVerificationModal
+        isOpen={isKycOpen}
+        onClose={() => setIsKycOpen(false)}
+        onVerified={() => setIsKycOpen(false)}
+      />
     </div>
   );
 }

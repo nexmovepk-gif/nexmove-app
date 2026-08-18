@@ -12,6 +12,7 @@ export interface Translations {
 }
 
 export const translations: Translations = {
+
   // Navigation & General
   home: { en: 'Home', ar: 'الرئيسية' },
   marketplace: { en: 'Marketplace', ar: 'السوق العقاري' },
@@ -48,6 +49,12 @@ export const translations: Translations = {
     en: 'Exchange Rate Locked for Escrow Protection',
     ar: 'تم تجميد وتثبيت سعر الصرف لحماية الضمان المالي',
   },
+  // Added Cards Keys
+  analyticsHub: { en: 'Investment Analytics Hub', ar: 'مركز تحليلات الاستثمار' },
+  totalReserved: { en: 'TOTAL RESERVED ASSETS', ar: 'إجمالي الأصول المحجوزة' },
+  projectedReturns: { en: 'PROJECTED RETURNS', ar: 'العوائد المتوقعة' },
+  escrowProtection: { en: 'ESCROW PROTECTION', ar: 'حماية حساب الضمان' },
+  nicopVerification: { en: 'NICOP Verification', ar: 'التحقق من بطاقة المغترب (NICOP)' },
 };
 
 interface LanguageContextType {
@@ -60,7 +67,7 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
-  setLanguage: () => {},
+  setLanguage: () => { },
   t: (key: string, fallback?: string) => fallback || key,
   dir: 'ltr',
   isRtl: false,

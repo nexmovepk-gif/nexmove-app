@@ -21,8 +21,8 @@ export async function GET(
 
     const avgRating =
       arch.reviews.length > 0
-        ? arch.reviews.reduce((acc, r) => acc + r.rating, 0) / arch.reviews.length
-        : 4.9
+        ? parseFloat((arch.reviews.reduce((acc, r) => acc + r.rating, 0) / arch.reviews.length).toFixed(1))
+        : 0
 
     const images =
       arch.portfolioImages.length > 0

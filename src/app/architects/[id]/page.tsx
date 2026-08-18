@@ -78,15 +78,30 @@ function StarRater({ value, onChange }: { value: number; onChange: (v: number) =
 }
 
 // ── Star Display (read-only) ───────────────────────────────────────────────
-function StarDisplay({ rating }: { rating: number }) {
+function StarDisplay({ rating, reviewCount }: { rating: number; reviewCount?: number }) {
+  const hasReviews = (reviewCount ?? 0) > 0 && rating > 0
   return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <span key={i} className={`text-sm leading-none ${i <= Math.round(rating) ? 'text-amber-400' : 'text-slate-200'}`}>
-          ★
-        </span>
-      ))}
-      <span className="ml-1 text-xs font-bold text-slate-600">{rating.toFixed(1)}</span>
+    <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <span
+            key={i}
+            className={`text-sm leading-none ${
+              hasReviews && i <= Math.round(rating) ? 'text-amber-400' : 'text-slate-200'
+            }`}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+      {hasReviews ? (
+        <div className="flex items-center gap-1">
+          <span className="text-xs font-bold text-slate-800">{rating.toFixed(1)}★</span>
+          <span className="text-xs text-slate-400">({reviewCount} review{reviewCount !== 1 ? 's' : ''})</span>
+        </div>
+      ) : (
+        <span className="text-xs font-medium text-slate-400">0.0 (No reviews yet)</span>
+      )}
     </div>
   )
 }
@@ -149,10 +164,11 @@ function ProjectImageGallery({ urls, title }: { urls: string[]; title: string })
 }
 
 // ── Review Submit Modal ────────────────────────────────────────────────────
-function ReviewModal({ architectId, architectName, onClose }: {
+function ReviewModal({ architectId, architectName, onClose, onReviewSubmitted }: {
   architectId: string
   architectName: string
   onClose: () => void
+  onReviewSubmitted?: () => void
 }) {
   const [rating, setRating] = useState(0)
   const [name, setName] = useState('')
@@ -176,6 +192,7 @@ function ReviewModal({ architectId, architectName, onClose }: {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to submit review')
       setSuccess(true)
+      onReviewSubmitted?.()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error submitting review')
     } finally {
@@ -256,7 +273,7 @@ export default function ArchitectPublicProfilePage() {
   const [ratingMap, setRatingMap] = useState<Record<string, number>>({})
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
 
-  useEffect(() => {
+  const fetchArchitect = () => {
     if (!id) return
     fetch(`/api/public/architects/${id}`)
       .then((res) => {
@@ -278,6 +295,10 @@ export default function ArchitectPublicProfilePage() {
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchArchitect()
   }, [id])
 
   const toggleLike = async (postId: string) => {
@@ -399,7 +420,7 @@ export default function ArchitectPublicProfilePage() {
                   {architect.location}
                 </p>
                 <div className="mt-1.5">
-                  <StarDisplay rating={architect.avgRating} />
+                  <StarDisplay rating={architect.avgRating} reviewCount={architect.reviewCount} />
                 </div>
               </div>
             </div>
@@ -441,11 +462,15 @@ export default function ArchitectPublicProfilePage() {
             </div>
             <div>
               <span className="text-slate-400 block text-[10px] font-normal uppercase mb-0.5">Rating</span>
-              <span className="text-amber-500">★ {architect.avgRating.toFixed(1)}</span>
+              {architect.reviewCount > 0 && architect.avgRating > 0 ? (
+                <span className="text-amber-500">★ {architect.avgRating.toFixed(1)}</span>
+              ) : (
+                <span className="text-slate-400">★ 0.0</span>
+              )}
             </div>
             <div>
               <span className="text-slate-400 block text-[10px] font-normal uppercase mb-0.5">Reviews</span>
-              <span>{architect.reviewCount}</span>
+              <span>{architect.reviewCount > 0 ? architect.reviewCount : '0 (New)'}</span>
             </div>
           </div>
         </div>
@@ -644,6 +669,7 @@ export default function ArchitectPublicProfilePage() {
           architectId={architect.id}
           architectName={architect.name}
           onClose={() => setReviewModalOpen(false)}
+          onReviewSubmitted={fetchArchitect}
         />
       )}
     </main>

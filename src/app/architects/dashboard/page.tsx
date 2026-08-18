@@ -557,8 +557,12 @@ export default function ArchitectDashboardPage() {
                   <p className="text-[10px] text-slate-400 font-medium">Posts</p>
                 </div>
                 <div className="bg-[#f8fafc] border border-slate-200/80 rounded-xl px-3 py-2 text-center">
-                  <span className="text-lg font-black text-amber-500">4.9★</span>
-                  <p className="text-[10px] text-slate-400 font-medium">Rating</p>
+                  <span className="text-lg font-black text-amber-500">
+                    {profile?.avgRating && profile.avgRating > 0 ? `${profile.avgRating.toFixed(1)}★` : '0.0★'}
+                  </span>
+                  <p className="text-[10px] text-slate-400 font-medium">
+                    {profile?.reviewCount && profile.reviewCount > 0 ? `${profile.reviewCount} Review${profile.reviewCount > 1 ? 's' : ''}` : 'Rating'}
+                  </p>
                 </div>
               </div>
 

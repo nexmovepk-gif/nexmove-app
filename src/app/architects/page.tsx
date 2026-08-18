@@ -63,7 +63,7 @@ interface PageStats {
 const STATS_DEFAULTS: PageStats = {
   verifiedCount: 0,
   specializationsCount: 0,
-  avgRating: 4.9,
+  avgRating: 0,
   completedProjectsCount: 0,
 }
 
@@ -303,7 +303,9 @@ export default function ArchitectsPage() {
               </div>
               <div className="flex items-center justify-between border-t border-slate-200/80 pt-2">
                 <span className="text-xs text-slate-500">Avg. Rating</span>
-                <span className="text-lg font-black text-amber-500">{stats.avgRating}★</span>
+                <span className="text-lg font-black text-amber-500">
+                  {stats.avgRating > 0 ? `${stats.avgRating.toFixed(1)}★` : '0.0★'}
+                </span>
               </div>
             </div>
           </div>
@@ -505,12 +507,23 @@ export default function ArchitectsPage() {
 
                     {/* Stats Bar */}
                     <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-auto">
-                      <div className="flex items-center gap-1 text-xs text-amber-500 font-bold">
-                        <span>★</span>
-                        <span>{arch.avgRating.toFixed(1)}</span>
+                      <div className="flex items-center gap-1 text-xs">
+                        {arch.reviewCount > 0 && arch.avgRating > 0 ? (
+                          <div className="flex items-center gap-1 text-amber-500 font-bold">
+                            <span>★</span>
+                            <span>{arch.avgRating.toFixed(1)}</span>
+                            <span className="text-slate-400 font-normal text-[11px]">({arch.reviewCount})</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 text-slate-400 font-medium">
+                            <span>★</span>
+                            <span>0.0</span>
+                            <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-normal">New</span>
+                          </div>
+                        )}
                       </div>
                       <span className="text-[11px] font-medium text-slate-500">
-                        {arch.experienceYears}y · {arch.completedProjects} projects
+                        {arch.experienceYears}y · {arch.completedProjects} project{arch.completedProjects !== 1 ? 's' : ''}
                       </span>
                     </div>
 

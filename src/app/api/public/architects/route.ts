@@ -69,8 +69,8 @@ export async function GET(req: NextRequest) {
     let mapped: Architect[] = dbArchitects.map((arch) => {
       const avgRating =
         arch.reviews.length > 0
-          ? arch.reviews.reduce((acc, r) => acc + r.rating, 0) / arch.reviews.length
-          : 4.8 // high default rating for verified professionals
+          ? parseFloat((arch.reviews.reduce((acc, r) => acc + r.rating, 0) / arch.reviews.length).toFixed(1))
+          : 0
 
       const images = arch.portfolioImages.length > 0
         ? arch.portfolioImages
@@ -142,10 +142,11 @@ export async function GET(req: NextRequest) {
     // Compute aggregate stats across all approved architects
     const uniqueSpecs = new Set(dbArchitects.map((a) => a.specialization)).size
     const totalProjects = dbArchitects.reduce((acc, a) => acc + a.projects.length, 0)
+    const architectsWithReviews = mapped.filter((a) => a.reviewCount > 0)
     const overallAvgRating =
-      mapped.length > 0
-        ? mapped.reduce((acc, a) => acc + a.avgRating, 0) / mapped.length
-        : 4.9
+      architectsWithReviews.length > 0
+        ? architectsWithReviews.reduce((acc, a) => acc + a.avgRating, 0) / architectsWithReviews.length
+        : 0
 
     const stats = {
       verifiedCount: mapped.length,

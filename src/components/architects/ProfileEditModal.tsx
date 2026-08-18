@@ -28,6 +28,8 @@ export interface ArchitectProfileData {
   avatarGradient?: string | null
   isVerified?: boolean
   verificationStatus?: string
+  avgRating?: number
+  reviewCount?: number
 }
 
 interface ProfileEditModalProps {
@@ -50,24 +52,31 @@ const SPECIALIZATION_OPTIONS = [
 ]
 
 // ── Star Rating Display Component ────────────────────────────
-function StarDisplay({ rating, max = 5 }: { rating: number; max?: number }) {
+function StarDisplay({ rating, reviewCount, max = 5 }: { rating: number; reviewCount?: number; max?: number }) {
+  const hasReviews = (reviewCount ?? 0) > 0 && rating > 0
   return (
-    <div className="flex items-center gap-0.5">
-      {Array.from({ length: max }).map((_, i) => {
-        const filled = i < Math.floor(rating)
-        const half = !filled && i < rating
-        return (
-          <span
-            key={i}
-            className={`text-base leading-none ${
-              filled ? 'text-amber-400' : half ? 'text-amber-300' : 'text-slate-200'
-            }`}
-          >
-            ★
-          </span>
-        )
-      })}
-      <span className="ml-1.5 text-xs font-bold text-slate-700">{rating.toFixed(1)}</span>
+    <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-0.5">
+        {Array.from({ length: max }).map((_, i) => {
+          const filled = hasReviews && i < Math.floor(rating)
+          const half = hasReviews && !filled && i < rating
+          return (
+            <span
+              key={i}
+              className={`text-base leading-none ${
+                filled ? 'text-amber-400' : half ? 'text-amber-300' : 'text-slate-200'
+              }`}
+            >
+              ★
+            </span>
+          )
+        })}
+      </div>
+      {hasReviews ? (
+        <span className="text-xs font-bold text-slate-700">{rating.toFixed(1)} ({reviewCount})</span>
+      ) : (
+        <span className="text-xs font-medium text-slate-400">0.0 (No reviews yet)</span>
+      )}
     </div>
   )
 }
@@ -355,7 +364,7 @@ export default function ProfileEditModal({
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
                       Average Rating
                     </span>
-                    <StarDisplay rating={4.9} />
+                    <StarDisplay rating={profile.avgRating || 0} reviewCount={profile.reviewCount || 0} />
                   </div>
                   <div className="text-right">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">

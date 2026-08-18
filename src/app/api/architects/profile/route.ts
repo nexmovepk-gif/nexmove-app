@@ -19,12 +19,12 @@ export async function GET(req: Request) {
     if (architectId) {
       profile = await prisma.architectProfile.findUnique({
         where: { id: architectId },
-        include: { user: true, projects: true },
+        include: { user: true, projects: true, reviews: true },
       });
     } else if (session?.user?.email) {
       const user = await prisma.user.findUnique({
         where: { email: session.user.email },
-        include: { architectProfile: { include: { projects: true } } },
+        include: { architectProfile: { include: { projects: true, reviews: true } } },
       });
       profile = user?.architectProfile || null;
     }
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
     if (!profile) {
       // Fallback: Return first profile or empty object
       profile = await prisma.architectProfile.findFirst({
-        include: { user: true, projects: true },
+        include: { user: true, projects: true, reviews: true },
         orderBy: { createdAt: "desc" },
       });
     }
@@ -41,7 +41,13 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Architect profile not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ profile });
+    const avgRating =
+      profile.reviews && profile.reviews.length > 0
+        ? parseFloat((profile.reviews.reduce((acc, r) => acc + r.rating, 0) / profile.reviews.length).toFixed(1))
+        : 0;
+    const reviewCount = profile.reviews ? profile.reviews.length : 0;
+
+    return NextResponse.json({ profile: { ...profile, avgRating, reviewCount } });
   } catch (error) {
     console.error("[Architect Profile GET] Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

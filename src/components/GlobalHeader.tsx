@@ -5,12 +5,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from './CurrencyContext';
+import { useLanguage, Language } from './LanguageContext';
 import { CURRENCIES, CurrencyCode } from '@/lib/currency';
 
 export default function GlobalHeader() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const { currency, setCurrency } = useCurrency();
+  const { language, setLanguage, t } = useLanguage();
 
   const user = session?.user;
   const isSuperAdmin =
@@ -130,8 +132,23 @@ export default function GlobalHeader() {
         )}
       </div>
 
-      {/* Right: Currency Switcher, Persistent Navigation & Role-Based Action Buttons */}
-      <div className="flex items-center gap-2.5 flex-shrink-0">
+      {/* Right: Language Selector, Currency Switcher, Persistent Navigation & Role-Based Action Buttons */}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Language Switcher (EN / AR) */}
+        <div className="flex items-center gap-1 bg-slate-900 border border-slate-700/80 rounded-lg px-2 py-0.5">
+          <span className="text-xs text-slate-400">🌐</span>
+          <select
+            id="language-switcher-header"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as Language)}
+            className="bg-transparent text-xs font-bold text-emerald-400 focus:outline-none cursor-pointer py-0.5 uppercase"
+            aria-label="Select Language"
+          >
+            <option value="en" className="bg-slate-900 text-slate-100 font-bold">EN</option>
+            <option value="ar" className="bg-slate-900 text-slate-100 font-bold">AR (العربية)</option>
+          </select>
+        </div>
+
         {/* Currency Switcher */}
         <div className="flex items-center gap-1 bg-slate-900 border border-slate-700/80 rounded-lg px-2 py-0.5">
           <span className="text-[10px] text-slate-400 font-bold hidden sm:inline">

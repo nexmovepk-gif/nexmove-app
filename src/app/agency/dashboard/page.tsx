@@ -200,30 +200,33 @@ export default function AgencyDashboardPage() {
       <section style={{ backgroundColor: '#F8FAFC' }} className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-          {/* ── 3. 5-Day Advance Subscription Renewal Warning Banner ───────── */}
+          {/* ── 5-Day Advance Subscription Expiration Warning Banner ───────── */}
           {subscriptionData &&
             subscriptionData.status === 'ACTIVE' &&
             subscriptionData.remainingDays !== null &&
             subscriptionData.remainingDays <= 5 &&
             !renewalBannerDismissed && (
-              <div className="mb-6 bg-amber-50 border-2 border-amber-400/80 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md animate-in fade-in">
+              <div className="mb-6 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-amber-500/5 border-2 border-amber-500/40 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg shadow-amber-950/20 backdrop-blur-sm animate-in fade-in">
                 <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-800 flex items-center justify-center text-lg flex-shrink-0 font-bold">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-500/20 border border-amber-500/30 text-amber-900 flex items-center justify-center text-xl flex-shrink-0 font-bold shadow-sm">
                     ⚠️
                   </div>
                   <div className="flex flex-col">
                     <span className="text-xs sm:text-sm font-black text-amber-950 leading-snug">
-                      Your NexMove Agency Subscription expires on{' '}
+                      Your NexMove Agency Subscription expires{' '}
                       <span className="underline decoration-amber-600 font-black">
+                        {subscriptionData.remainingDays === 0
+                          ? 'today'
+                          : `in ${subscriptionData.remainingDays} day${subscriptionData.remainingDays > 1 ? 's' : ''}`}
+                      </span>{' '}
+                      (on{' '}
+                      <span className="font-extrabold underline decoration-amber-600">
                         {formatSubscriptionDate(subscriptionData.endDate)}
                       </span>
-                      {subscriptionData.remainingDays === 0
-                        ? ' (Expires Today!)'
-                        : ` (${subscriptionData.remainingDays} day${subscriptionData.remainingDays > 1 ? 's' : ''} remaining)`}
-                      . Please renew before expiration to avoid service interruption.
+                      ). Please renew your subscription to prevent service interruption.
                     </span>
                     <span className="text-[11px] text-amber-800 font-medium mt-0.5">
-                      Avoid automated lockout of property listings, leads distribution, and escrow protection.
+                      Avoid automated lockout of property listings, live leads distribution, and escrow shield protection.
                     </span>
                   </div>
                 </div>
@@ -235,14 +238,14 @@ export default function AgencyDashboardPage() {
                       setCheckoutPlanPrice(15000);
                       setShowBankCheckout(true);
                     }}
-                    className="text-xs font-black bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl shadow transition"
+                    className="text-xs font-black bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-4 py-2.5 rounded-xl shadow-md transition"
                   >
                     Renew Now
                   </button>
                   <button
                     onClick={() => setRenewalBannerDismissed(true)}
                     title="Dismiss warning"
-                    className="text-amber-700 hover:text-amber-950 text-xs font-bold w-8 h-8 rounded-xl flex items-center justify-center hover:bg-amber-200/60 transition"
+                    className="text-amber-800 hover:text-amber-950 text-xs font-bold w-8 h-8 rounded-xl flex items-center justify-center hover:bg-amber-200/60 transition"
                   >
                     ✕
                   </button>

@@ -82,12 +82,23 @@ interface ManagedAgency {
   licenseNumber: string | null;
   phone: string | null;
   address: string | null;
+  description?: string | null;
+  ntn?: string | null;
+  cnicNumber?: string | null;
+  cnicFrontUrl?: string | null;
+  cnicBackUrl?: string | null;
+  storefrontPhoto?: string | null;
+  ownerPhoto?: string | null;
+  commercialLicenseDoc?: string | null;
   verified: boolean;
+  verifiedLicense?: boolean;
   isKycVerified: boolean;
   subscriptionStatus: SubscriptionStatus;
   subscriptionEndDate: string | null;
   userCount: number;
   listingCount: number;
+  propertyCount?: number;
+  dealCount?: number;
   createdAt: string;
 }
 
@@ -96,14 +107,29 @@ interface ManagedUser {
   name: string | null;
   email: string;
   phone: string | null;
+  address?: string | null;
   role: string;
   accountRoleType: string | null;
+  cnicNumber?: string | null;
+  cnicFrontUrl?: string | null;
+  cnicBackUrl?: string | null;
+  nicopNumber?: string | null;
+  passportNumber?: string | null;
+  overseasCountry?: string | null;
+  overseasCity?: string | null;
+  overseasDocPhoto?: string | null;
+  liveSelfieUrl?: string | null;
+  taxIdNumber?: string | null;
   isKycVerified: boolean;
+  isOverseasVerified?: boolean;
   subscriptionStatus: SubscriptionStatus;
   subscriptionEndDate: string | null;
   agencyId: string | null;
   agencyName: string | null;
-  architectProfile?: { id: string; name: string; specialization: string; isVerified: boolean } | null;
+  architectProfile?: { id: string; name: string; specialization: string; pcatpNo?: string | null; isVerified: boolean } | null;
+  listingCount?: number;
+  propertyCount?: number;
+  dealsCount?: number;
   createdAt: string;
 }
 
@@ -143,6 +169,12 @@ export default function AdminDashboard() {
   });
   const [managementLoading, setManagementLoading] = useState(false);
   const [managementView, setManagementView] = useState<"agencies" | "users">("agencies");
+
+  // ─── Profile Details Modal State ───────────────────────────────────────────
+  const [selectedDetail, setSelectedDetail] = useState<{
+    type: "agency" | "user";
+    data: ManagedAgency | ManagedUser;
+  } | null>(null);
 
   const isSuperAdmin =
     session?.user?.email?.toLowerCase() === "nexmove.pk@gmail.com" ||
@@ -215,6 +247,18 @@ export default function AdminDashboard() {
           totalUsers: json.users?.length || 0,
           filteredAgencies: json.agencies?.length || 0,
           filteredUsers: json.users?.length || 0,
+        });
+
+        // If a detail modal is open, keep its state synced
+        setSelectedDetail((current) => {
+          if (!current) return null;
+          if (current.type === "agency") {
+            const found = (json.agencies as ManagedAgency[])?.find((a) => a.id === current.data.id);
+            return found ? { type: "agency", data: found } : current;
+          } else {
+            const found = (json.users as ManagedUser[])?.find((u) => u.id === current.data.id);
+            return found ? { type: "user", data: found } : current;
+          }
         });
       }
     } catch {
@@ -297,6 +341,23 @@ export default function AdminDashboard() {
         )
       );
 
+      // Also sync modal if open
+      setSelectedDetail((current) => {
+        if (current && current.type === "agency" && current.data.id === agencyId) {
+          return {
+            type: "agency",
+            data: {
+              ...(current.data as ManagedAgency),
+              subscriptionStatus: updatedAgency.subscriptionStatus ?? current.data.subscriptionStatus,
+              subscriptionEndDate: updatedAgency.subscriptionEndDate ?? current.data.subscriptionEndDate,
+              isKycVerified: updatedAgency.isKycVerified ?? (current.data as ManagedAgency).isKycVerified,
+              verified: updatedAgency.verified ?? (current.data as ManagedAgency).verified,
+            },
+          };
+        }
+        return current;
+      });
+
       addToast(
         updates.extensionDays
           ? `✓ Extended ${agencyName}'s subscription by ${updates.extensionDays} days!`
@@ -350,6 +411,22 @@ export default function AdminDashboard() {
             : u
         )
       );
+
+      // Sync modal if open
+      setSelectedDetail((current) => {
+        if (current && current.type === "user" && current.data.id === userId) {
+          return {
+            type: "user",
+            data: {
+              ...(current.data as ManagedUser),
+              subscriptionStatus: updatedUser.subscriptionStatus ?? current.data.subscriptionStatus,
+              subscriptionEndDate: updatedUser.subscriptionEndDate ?? current.data.subscriptionEndDate,
+              isKycVerified: updatedUser.isKycVerified ?? (current.data as ManagedUser).isKycVerified,
+            },
+          };
+        }
+        return current;
+      });
 
       addToast(`✓ Updated ${userEmail} subscription: ${updates.subscriptionStatus || "Saved"}`, "success");
     } catch (err) {
@@ -567,7 +644,7 @@ export default function AdminDashboard() {
                     <span>👥 User & Agency Management Control Board</span>
                   </h2>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Real-time database queries, individual subscription status toggles, advance dates & KYC guards.
+                    Real-time database queries, inspect complete profiles, individual status toggles & KYC guards.
                   </p>
                 </div>
 
@@ -680,17 +757,22 @@ export default function AdminDashboard() {
                     return (
                       <div
                         key={agency.id}
-                        className="bg-slate-900/50 border border-slate-800 hover:border-purple-500/30 rounded-3xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition shadow-lg"
+                        className="bg-slate-900/50 border border-slate-800 hover:border-purple-500/30 rounded-3xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition shadow-lg group"
                       >
-                        {/* Agency Info */}
-                        <div className="flex items-start gap-3.5 flex-1 min-w-0">
-                          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-black text-base flex-shrink-0 shadow">
+                        {/* Agency Info (Clickable to open details) */}
+                        <div
+                          onClick={() => setSelectedDetail({ type: "agency", data: agency })}
+                          className="flex items-start gap-3.5 flex-1 min-w-0 cursor-pointer"
+                        >
+                          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-black text-base flex-shrink-0 shadow group-hover:scale-105 transition-transform">
                             {agency.name.charAt(0).toUpperCase()}
                           </div>
 
                           <div className="flex flex-col gap-1 min-w-0 flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-bold text-sm text-slate-100">{agency.name}</span>
+                              <span className="font-bold text-sm text-slate-100 group-hover:text-purple-300 transition-colors">
+                                {agency.name}
+                              </span>
                               
                               {/* Status Badge */}
                               <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 ${badge.bg} ${badge.text} ${badge.border}`}>
@@ -738,9 +820,18 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
-                        {/* ── INDIVIDUAL ACTION BUTTONS & TOGGLES (No Full Reload) ── */}
+                        {/* ── INDIVIDUAL ACTION BUTTONS & VIEW DETAILS ── */}
                         <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto flex-shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-800/80">
                           
+                          {/* Inspect / View Details Button */}
+                          <button
+                            onClick={() => setSelectedDetail({ type: "agency", data: agency })}
+                            className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-3 py-2 rounded-xl border border-slate-700 transition flex items-center gap-1.5"
+                          >
+                            <span>🔍</span>
+                            <span>View Details</span>
+                          </button>
+
                           {/* Fast Toggle: ACTIVE <-> SUSPENDED */}
                           <button
                             onClick={() =>
@@ -805,26 +896,6 @@ export default function AdminDashboard() {
                             <span>+30d Renew</span>
                           </button>
 
-                          {/* Toggle KYC Action */}
-                          <button
-                            onClick={() =>
-                              handleUpdateAgencySubscription(
-                                agency.id,
-                                agency.name,
-                                { isKycVerified: !agency.isKycVerified, verified: !agency.isKycVerified }
-                              )
-                            }
-                            disabled={isRowActionLoading}
-                            title="Toggle KYC Verification Status"
-                            className={`text-xs px-2.5 py-2 rounded-xl border transition ${
-                              agency.isKycVerified
-                                ? "bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200"
-                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
-                            }`}
-                          >
-                            {agency.isKycVerified ? "Revoke KYC" : "Verify KYC"}
-                          </button>
-
                         </div>
                       </div>
                     );
@@ -860,16 +931,22 @@ export default function AdminDashboard() {
                     return (
                       <div
                         key={u.id}
-                        className="bg-slate-900/50 border border-slate-800 hover:border-purple-500/30 rounded-3xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition shadow-lg"
+                        className="bg-slate-900/50 border border-slate-800 hover:border-purple-500/30 rounded-3xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition shadow-lg group"
                       >
-                        <div className="flex items-start gap-3.5 flex-1 min-w-0">
-                          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-700 to-purple-700 flex items-center justify-center text-white font-black text-base flex-shrink-0 shadow">
+                        {/* User Info (Clickable) */}
+                        <div
+                          onClick={() => setSelectedDetail({ type: "user", data: u })}
+                          className="flex items-start gap-3.5 flex-1 min-w-0 cursor-pointer"
+                        >
+                          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-700 to-purple-700 flex items-center justify-center text-white font-black text-base flex-shrink-0 shadow group-hover:scale-105 transition-transform">
                             {(u.name || u.email).charAt(0).toUpperCase()}
                           </div>
 
                           <div className="flex flex-col gap-1 min-w-0 flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-bold text-sm text-slate-100">{u.name || "Unnamed User"}</span>
+                              <span className="font-bold text-sm text-slate-100 group-hover:text-purple-300 transition-colors">
+                                {u.name || "Unnamed User"}
+                              </span>
                               <span className="text-xs text-slate-400">({u.email})</span>
                               
                               <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${badge.bg} ${badge.text} ${badge.border}`}>
@@ -898,6 +975,14 @@ export default function AdminDashboard() {
 
                         {/* User Actions */}
                         <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto flex-shrink-0">
+                          <button
+                            onClick={() => setSelectedDetail({ type: "user", data: u })}
+                            className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-3 py-2 rounded-xl border border-slate-700 transition flex items-center gap-1.5"
+                          >
+                            <span>🔍</span>
+                            <span>View Details</span>
+                          </button>
+
                           <button
                             onClick={() =>
                               handleUpdateUserSubscription(
@@ -942,24 +1027,6 @@ export default function AdminDashboard() {
                             <option value="EXPIRED">EXPIRED</option>
                             <option value="SUSPENDED">SUSPENDED</option>
                           </select>
-
-                          <button
-                            onClick={() =>
-                              handleUpdateUserSubscription(
-                                u.id,
-                                u.email,
-                                { isKycVerified: !u.isKycVerified }
-                              )
-                            }
-                            disabled={isUserActionLoading}
-                            className={`text-xs px-2.5 py-2 rounded-xl border transition ${
-                              u.isKycVerified
-                                ? "bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200"
-                                : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
-                            }`}
-                          >
-                            {u.isKycVerified ? "Revoke KYC" : "Verify KYC"}
-                          </button>
                         </div>
                       </div>
                     );
@@ -1274,7 +1341,380 @@ export default function AdminDashboard() {
         )}
 
       </div>
+
+      {/* ════════════════════════════════════════════════════════════════ */}
+      {/* ── 1. Complete Profile & Agency Details Modal / Drawer ───────── */}
+      {/* ════════════════════════════════════════════════════════════════ */}
+      {selectedDetail && (
+        <DetailsModal
+          detail={selectedDetail}
+          onClose={() => setSelectedDetail(null)}
+          onUpdateAgencySubscription={handleUpdateAgencySubscription}
+          onUpdateUserSubscription={handleUpdateUserSubscription}
+          actionLoading={actionLoading}
+        />
+      )}
     </main>
+  );
+}
+
+// ─── Profile & Agency Details Modal Component ─────────────────────────────────
+
+function DetailsModal({
+  detail,
+  onClose,
+  onUpdateAgencySubscription,
+  onUpdateUserSubscription,
+  actionLoading,
+}: {
+  detail: { type: "agency" | "user"; data: ManagedAgency | ManagedUser };
+  onClose: () => void;
+  onUpdateAgencySubscription: (
+    agencyId: string,
+    agencyName: string,
+    updates: {
+      subscriptionStatus?: SubscriptionStatus;
+      extensionDays?: number;
+      isKycVerified?: boolean;
+      verified?: boolean;
+    }
+  ) => Promise<void>;
+  onUpdateUserSubscription: (
+    userId: string,
+    userEmail: string,
+    updates: {
+      subscriptionStatus?: SubscriptionStatus;
+      extensionDays?: number;
+      isKycVerified?: boolean;
+    }
+  ) => Promise<void>;
+  actionLoading: string | null;
+}) {
+  const isAgency = detail.type === "agency";
+  const agency = isAgency ? (detail.data as ManagedAgency) : null;
+  const user = !isAgency ? (detail.data as ManagedUser) : null;
+
+  const subscriptionStatus = detail.data.subscriptionStatus;
+  const subscriptionEndDate = detail.data.subscriptionEndDate;
+  const badge = getSubscriptionBadgeStyle(subscriptionStatus);
+  const daysRemaining = calculateRemainingDays(subscriptionEndDate);
+  const isKycVerified = Boolean(
+    isAgency ? agency?.isKycVerified || agency?.verified : user?.isKycVerified || user?.isOverseasVerified
+  );
+
+  const title = isAgency ? agency?.name : user?.name || user?.email;
+  const subtitle = isAgency ? `License: ${agency?.licenseNumber || "Not Registered"}` : user?.email;
+
+  const isRowLoading = actionLoading?.includes(detail.data.id);
+
+  return (
+    <div className="fixed inset-0 z-[9990] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in">
+      <div className="bg-[#0b0f19] border border-purple-500/30 rounded-3xl max-w-3xl w-full shadow-2xl shadow-purple-950/60 overflow-hidden flex flex-col max-h-[92vh]">
+        
+        {/* Modal Top Header */}
+        <div className="px-6 py-5 border-b border-slate-800 bg-gradient-to-r from-purple-950/40 via-indigo-950/20 to-slate-900 flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white font-black text-xl flex-shrink-0 shadow-lg ${
+              isAgency ? "bg-gradient-to-br from-emerald-600 to-teal-700" : "bg-gradient-to-br from-indigo-600 to-purple-700"
+            }`}>
+              {isAgency ? "🏢" : "👤"}
+            </div>
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-lg sm:text-xl font-black text-slate-100 truncate">{title}</h3>
+                <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 ${badge.bg} ${badge.text} ${badge.border}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
+                  {badge.label}
+                </span>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                  isKycVerified
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                }`}>
+                  {isKycVerified ? "✓ KYC VERIFIED" : "⏳ KYC PENDING"}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 truncate mt-0.5">{subtitle}</p>
+            </div>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 text-sm font-bold w-9 h-9 rounded-xl flex items-center justify-center transition flex-shrink-0"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Modal Scrollable Body */}
+        <div className="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
+          
+          {/* Section 1: Overview & Contact Grid */}
+          <div>
+            <h4 className="text-[11px] font-black uppercase text-purple-400 tracking-wider mb-3 flex items-center gap-1.5">
+              <span>📋</span> Overview & Contact Details
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80">
+              <DetailRow label="Entity Type" value={isAgency ? "Real Estate Agency Tenant" : "Individual Platform User"} />
+              <DetailRow label="Role / Category" value={isAgency ? "Agency Tenant" : (user?.accountRoleType || user?.role || "Public User")} />
+              {isAgency ? (
+                <>
+                  <DetailRow label="Official License" value={agency?.licenseNumber || "Not registered"} />
+                  <DetailRow label="Phone Number" value={agency?.phone || "Not provided"} />
+                  <DetailRow label="Office Address" value={agency?.address || "Not provided"} />
+                  <DetailRow label="NTN Tax ID" value={agency?.ntn || "Not provided"} />
+                </>
+              ) : (
+                <>
+                  <DetailRow label="Email Address" value={user?.email || "N/A"} />
+                  <DetailRow label="Phone Number" value={user?.phone || "Not provided"} />
+                  <DetailRow label="Residential Address" value={user?.address || "Not provided"} />
+                  <DetailRow label="Linked Agency" value={user?.agencyName || "Independent"} />
+                </>
+              )}
+              <DetailRow
+                label="Registered Date"
+                value={new Date(detail.data.createdAt).toLocaleDateString("en-PK", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              />
+              <DetailRow label="Record UUID" value={<span className="font-mono text-[10px] text-slate-400">{detail.data.id}</span>} />
+            </div>
+          </div>
+
+          {/* Section 2: Complete KYC & Identity Verification */}
+          <div>
+            <h4 className="text-[11px] font-black uppercase text-emerald-400 tracking-wider mb-3 flex items-center gap-1.5">
+              <span>🪪</span> Complete KYC & Legal Verification
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80">
+              <DetailRow
+                label="KYC Status"
+                value={
+                  <span className={`font-bold ${isKycVerified ? "text-emerald-400" : "text-amber-400"}`}>
+                    {isKycVerified ? "✓ Fully Verified & Approved" : "⏳ Pending Review / Unverified"}
+                  </span>
+                }
+              />
+              {isAgency ? (
+                <>
+                  <DetailRow label="Owner CNIC" value={agency?.cnicNumber || "Not provided"} />
+                  <DetailRow label="Official License Doc" value={agency?.commercialLicenseDoc ? "✓ Document Uploaded" : "Not uploaded"} />
+                  <DetailRow label="Storefront Photo" value={agency?.storefrontPhoto ? "✓ Photo Verified" : "Not uploaded"} />
+                  <DetailRow label="Owner Identity Photo" value={agency?.ownerPhoto ? "✓ Photo Uploaded" : "Not uploaded"} />
+                </>
+              ) : (
+                <>
+                  <DetailRow label="CNIC / National ID" value={user?.cnicNumber || "Not provided"} />
+                  <DetailRow label="NICOP / Overseas ID" value={user?.nicopNumber || "N/A"} />
+                  <DetailRow label="Passport Number" value={user?.passportNumber || "N/A"} />
+                  <DetailRow
+                    label="Overseas Location"
+                    value={
+                      user?.overseasCountry
+                        ? `${user.overseasCity ? `${user.overseasCity}, ` : ""}${user.overseasCountry}`
+                        : "Pakistan Resident"
+                    }
+                  />
+                  <DetailRow label="Live Selfie Capture" value={user?.liveSelfieUrl ? "✓ Live Selfie Verified" : "Not captured"} />
+                  <DetailRow label="FBR / Tax ID" value={user?.taxIdNumber || "Not registered"} />
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Section 3: Subscription & Billing Status */}
+          <div>
+            <h4 className="text-[11px] font-black uppercase text-indigo-400 tracking-wider mb-3 flex items-center gap-1.5">
+              <span>💳</span> Subscription Status & Access Guard
+            </h4>
+            <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80 flex flex-col gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="flex flex-col bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Status</span>
+                  <span className={`text-sm font-black mt-0.5 ${badge.text}`}>{subscriptionStatus}</span>
+                </div>
+                <div className="flex flex-col bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Expiration Date</span>
+                  <span className="text-sm font-black text-slate-200 mt-0.5">{formatSubscriptionDate(subscriptionEndDate)}</span>
+                </div>
+                <div className="flex flex-col bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                  <span className="text-[10px] text-slate-500 uppercase font-bold">Time Remaining</span>
+                  <span className={`text-sm font-black mt-0.5 ${
+                    daysRemaining !== null && daysRemaining <= 5 ? "text-rose-400" : "text-emerald-400"
+                  }`}>
+                    {daysRemaining !== null
+                      ? daysRemaining > 0
+                        ? `${daysRemaining} Days Left`
+                        : daysRemaining === 0
+                        ? "Expires Today"
+                        : `${Math.abs(daysRemaining)} Days Overdue`
+                      : "Indefinite"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Extension Actions inside Modal */}
+              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/60">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Quick Renew:</span>
+                <button
+                  onClick={() =>
+                    isAgency
+                      ? onUpdateAgencySubscription(agency!.id, agency!.name, { extensionDays: 30, subscriptionStatus: "ACTIVE" })
+                      : onUpdateUserSubscription(user!.id, user!.email, { extensionDays: 30, subscriptionStatus: "ACTIVE" })
+                  }
+                  disabled={Boolean(isRowLoading)}
+                  className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1"
+                >
+                  <span>+30 Days</span>
+                </button>
+                <button
+                  onClick={() =>
+                    isAgency
+                      ? onUpdateAgencySubscription(agency!.id, agency!.name, { extensionDays: 90, subscriptionStatus: "ACTIVE" })
+                      : onUpdateUserSubscription(user!.id, user!.email, { extensionDays: 90, subscriptionStatus: "ACTIVE" })
+                  }
+                  disabled={Boolean(isRowLoading)}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1"
+                >
+                  <span>+90 Days</span>
+                </button>
+                <button
+                  onClick={() =>
+                    isAgency
+                      ? onUpdateAgencySubscription(agency!.id, agency!.name, { extensionDays: 365, subscriptionStatus: "ACTIVE" })
+                      : onUpdateUserSubscription(user!.id, user!.email, { extensionDays: 365, subscriptionStatus: "ACTIVE" })
+                  }
+                  disabled={Boolean(isRowLoading)}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1"
+                >
+                  <span>+1 Year</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Activity & Managed Inventory (For Agencies) */}
+          {isAgency && (
+            <div>
+              <h4 className="text-[11px] font-black uppercase text-amber-400 tracking-wider mb-3 flex items-center gap-1.5">
+                <span>📊</span> Managed Inventory & Tenant Metrics
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80">
+                <MetricBox label="Agents / Members" value={String(agency?.userCount || 0)} color="indigo" />
+                <MetricBox label="Active Listings" value={String(agency?.listingCount || 0)} color="emerald" />
+                <MetricBox label="Managed Properties" value={String(agency?.propertyCount || agency?.listingCount || 0)} color="teal" />
+                <MetricBox label="Closed Deals" value={String(agency?.dealCount || 0)} color="purple" />
+              </div>
+            </div>
+          )}
+
+        </div>
+
+        {/* Modal Action Footer */}
+        <div className="px-6 py-4 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            {/* Status select */}
+            <span className="text-[11px] font-bold text-slate-400">Set Status:</span>
+            <select
+              value={subscriptionStatus}
+              onChange={(e) =>
+                isAgency
+                  ? onUpdateAgencySubscription(agency!.id, agency!.name, { subscriptionStatus: e.target.value as SubscriptionStatus })
+                  : onUpdateUserSubscription(user!.id, user!.email, { subscriptionStatus: e.target.value as SubscriptionStatus })
+              }
+              disabled={Boolean(isRowLoading)}
+              className="bg-slate-900 border border-slate-700 text-xs font-bold text-slate-200 rounded-xl px-3 py-2 focus:outline-none cursor-pointer"
+            >
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="PENDING_PAYMENT">PENDING PAYMENT</option>
+              <option value="EXPIRED">EXPIRED</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+            </select>
+
+            {/* KYC Toggle in modal */}
+            <button
+              onClick={() =>
+                isAgency
+                  ? onUpdateAgencySubscription(agency!.id, agency!.name, { isKycVerified: !agency?.isKycVerified, verified: !agency?.verified })
+                  : onUpdateUserSubscription(user!.id, user!.email, { isKycVerified: !user?.isKycVerified })
+              }
+              disabled={Boolean(isRowLoading)}
+              className={`text-xs font-bold px-3 py-2 rounded-xl border transition ${
+                isKycVerified
+                  ? "bg-slate-800 text-slate-300 border-slate-700 hover:text-white"
+                  : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+              }`}
+            >
+              {isKycVerified ? "Revoke KYC" : "✓ Verify KYC"}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Fast Toggle: Active <-> Suspended */}
+            <button
+              onClick={() =>
+                isAgency
+                  ? onUpdateAgencySubscription(agency!.id, agency!.name, {
+                      subscriptionStatus: subscriptionStatus === "ACTIVE" ? "SUSPENDED" : "ACTIVE",
+                    })
+                  : onUpdateUserSubscription(user!.id, user!.email, {
+                      subscriptionStatus: subscriptionStatus === "ACTIVE" ? "SUSPENDED" : "ACTIVE",
+                    })
+              }
+              disabled={Boolean(isRowLoading)}
+              className={`text-xs font-bold px-4 py-2 rounded-xl border transition flex items-center gap-1.5 ${
+                subscriptionStatus === "ACTIVE"
+                  ? "bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20"
+                  : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+              }`}
+            >
+              {isRowLoading ? (
+                <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <span>{subscriptionStatus === "ACTIVE" ? "🔒 Suspend Access" : "⚡ Activate Account"}</span>
+              )}
+            </button>
+
+            <button
+              onClick={onClose}
+              className="bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold px-4 py-2 rounded-xl transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{label}</span>
+      <span className="text-xs font-semibold text-slate-200 break-words">{value}</span>
+    </div>
+  );
+}
+
+function MetricBox({ label, value, color }: { label: string; value: string; color: string }) {
+  const colorMap: Record<string, string> = {
+    indigo: "text-indigo-400",
+    emerald: "text-emerald-400",
+    teal: "text-teal-400",
+    purple: "text-purple-400",
+  };
+  return (
+    <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex flex-col items-center justify-center text-center">
+      <span className="text-[10px] text-slate-500 uppercase font-bold">{label}</span>
+      <span className={`text-lg font-black mt-1 ${colorMap[color] ?? "text-slate-200"}`}>{value}</span>
+    </div>
   );
 }
 

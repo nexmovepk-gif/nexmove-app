@@ -15,21 +15,21 @@ export default function BismillahSplash() {
         setIsMounted(true);
         setIsVisible(true);
 
-        // Keep active for exactly 2.0 seconds, then start smooth fade-out
+        // Keep active for exactly 3.5 seconds, then start smooth fade-out
         const timer = setTimeout(() => {
           setIsFadingOut(true);
 
           // Mark in sessionStorage as completed
           sessionStorage.setItem("nexmove_splash_shown", "true");
 
-          // Unmount after fade out transition completes (700ms)
+          // Unmount after 0.5s fade-out transition completes (total 4.0s)
           const unmountTimer = setTimeout(() => {
             setIsVisible(false);
             setIsMounted(false);
-          }, 700);
+          }, 500);
 
           return () => clearTimeout(unmountTimer);
-        }, 2000);
+        }, 3500);
 
         return () => clearTimeout(timer);
       }
@@ -48,7 +48,7 @@ export default function BismillahSplash() {
     <div
       id="nexmove-bismillah-splash"
       aria-hidden={!isVisible}
-      className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#0B0F19] overflow-hidden select-none transition-all duration-700 ease-in-out ${
+      className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#0B0F19] overflow-hidden select-none transition-all duration-500 ease-in-out ${
         isFadingOut ? "opacity-0 scale-[1.03] blur-sm pointer-events-none" : "opacity-100 scale-100"
       }`}
     >

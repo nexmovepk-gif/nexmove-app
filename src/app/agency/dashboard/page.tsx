@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import ActivityCenter, { ActivityNotification } from '@/components/ActivityCenter';
 import VerifiedBadge, { VerificationTier } from '@/components/VerifiedBadge';
 import AIEscrowGuard from '@/components/AIEscrowGuard';
@@ -40,6 +41,12 @@ const PROPERTY_TYPES = ['HOUSE', 'APARTMENT', 'FLAT', 'PLOT', 'COMMERCIAL', 'OFF
 const PURPOSES = ['FOR_SALE', 'FOR_RENT', 'LEASE'];
 
 export default function AgencyDashboardPage() {
+  const { data: session } = useSession();
+  const sessionUser = session?.user;
+
+  // Derive display name: agency name preferred over user full name
+  const displayName = sessionUser?.agencyName || sessionUser?.name || null;
+
   const [listings, setListings] = useState<AIListingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [agencyTier, setAgencyTier] = useState<VerificationTier>('GOLD');
@@ -253,14 +260,25 @@ export default function AgencyDashboardPage() {
               </div>
             )}
 
-          {/* ── Page Header ──────────────────────────────────────────────── */}
+          {/* ── Page Header ────────────────────────────────────────────────── */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
             <div>
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-                  Agency Command Center
+                  {displayName ? `Welcome, ${displayName} 👋` : 'Agency Command Center'}
                 </h1>
-                <VerifiedBadge type="AGENCY" verified={true} tier={agencyTier} size="md" />
+                {subscriptionData ? (
+                  <VerifiedBadge
+                    type="AGENCY"
+                    verified={subscriptionData.isKycVerified}
+                    tier={agencyTier}
+                    size="md"
+                  />
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full border font-bold text-xs px-3 py-1 bg-slate-100 border-slate-200 text-slate-400">
+                    <Loader2 className="w-3 h-3 animate-spin" /> Checking KYC…
+                  </span>
+                )}
                 <button
                   onClick={() => setShowUpgradeModal(true)}
                   className="text-[11px] font-bold text-purple-700 border border-purple-300 bg-purple-50 hover:bg-purple-100 px-3 py-1 rounded-full transition"
@@ -269,7 +287,9 @@ export default function AgencyDashboardPage() {
                 </button>
               </div>
               <p className="text-sm text-slate-500 font-medium mt-1">
-                Multi-tenant agency portal with Next-Gen AI health analytics, live buyer demand heatmaps & escrow protection.
+                {displayName
+                  ? `${displayName} — Multi-tenant agency portal with Next-Gen AI health analytics, live buyer demand heatmaps & escrow protection.`
+                  : 'Multi-tenant agency portal with Next-Gen AI health analytics, live buyer demand heatmaps & escrow protection.'}
               </p>
             </div>
 

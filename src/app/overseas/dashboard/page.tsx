@@ -307,10 +307,25 @@ export default function OverseasBuyerDashboard() {
   const { data: session, status: sessionStatus } = useSession();
   const user = session?.user;
 
+  // Display name: prefer full name from session
+  const displayName = user?.name || null;
+
   const [activeCurrency, setActiveCurrency] = useState<CurrencyCode>('USD');
   const [savedProperties, setSavedProperties] = useState<SavedProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // KYC status from DB
+  const [isKycVerified, setIsKycVerified] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch('/api/agency/status')
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.subscription) setIsKycVerified(Boolean(data.subscription.isKycVerified));
+      })
+      .catch(() => {});
+  }, []);
 
   // Fetch real properties for this user from the database
   const fetchProperties = useCallback(async () => {
@@ -439,19 +454,33 @@ export default function OverseasBuyerDashboard() {
                 </span>
                 <button
                   onClick={() => setIsKycOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-all cursor-pointer">
-                  <BadgeCheck className="w-3 h-3 text-blue-400" />
-                  {t('nicopVerification', 'NICOP Verified Gateway')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                    isKycVerified === true
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'
+                      : isKycVerified === false
+                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20'
+                      : 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20'
+                  }`}>
+                  <BadgeCheck className="w-3 h-3" />
+                  {isKycVerified === true
+                    ? '✓ NICOP Verified'
+                    : isKycVerified === false
+                    ? '⏳ NICOP Pending'
+                    : t('nicopVerification', 'NICOP Verified Gateway')}
                 </button>
                 <span className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
                   <ShieldCheck className="w-3 h-3" /> SBP Escrow Protected
                 </span>
               </div>
               <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
-                {t('overseasHeroTitle', 'Overseas Investment Command Centre')}
+                {displayName
+                  ? `Welcome, ${displayName} 👋`
+                  : t('overseasHeroTitle', 'Overseas Investment Command Centre')}
               </h1>
               <p className="text-slate-400 text-sm mt-2 max-w-xl">
-                {t('overseasHeroSubtitle', 'Welcome back, Ali Hamza. Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.')}
+                {displayName
+                  ? `${displayName} — Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.`
+                  : t('overseasHeroSubtitle', 'Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.')}
               </p>
             </div>
 

@@ -398,6 +398,14 @@ export default function ArchitectDashboardPage() {
             </Link>
             <span className="text-slate-300 hidden sm:block">|</span>
             <span className="text-xs font-bold text-slate-500 hidden sm:block">Architect Portal</span>
+            {(profile?.name || session?.user?.name) && (
+              <>
+                <span className="text-slate-200 hidden md:block">·</span>
+                <span className="text-xs font-semibold text-teal-700 hidden md:block">
+                  Welcome, {profile?.name || session?.user?.name} 👋
+                </span>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-2">

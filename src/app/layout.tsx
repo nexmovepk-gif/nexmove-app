@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Script from "next/script";
 import SessionProvider from "@/components/SessionProvider";
+import ImpersonationBanner from "@/components/ImpersonationBanner";
 import GlobalHeader from "@/components/GlobalHeader";
 import AIAssistant from "@/components/AIAssistant";
 import { CurrencyProvider } from "@/components/CurrencyContext";
@@ -69,6 +70,7 @@ export default function RootLayout({
           <LanguageProvider>
             <CurrencyProvider>
               <AIEscrowProvider>
+                <ImpersonationBanner />
                 <GlobalHeader />
                 {children}
                 <AIAssistant />

@@ -249,7 +249,7 @@ export default function AdminDashboard() {
           filteredUsers: json.users?.length || 0,
         });
 
-        // If a detail modal is open, keep its state synced
+        // Keep detail modal state synced if open
         setSelectedDetail((current) => {
           if (!current) return null;
           if (current.type === "agency") {
@@ -326,7 +326,6 @@ export default function AdminDashboard() {
       const json = await res.json();
       const updatedAgency = json.agency;
 
-      // Update local state without full page reload
       setManagedAgencies((prev) =>
         prev.map((a) =>
           a.id === agencyId
@@ -341,7 +340,6 @@ export default function AdminDashboard() {
         )
       );
 
-      // Also sync modal if open
       setSelectedDetail((current) => {
         if (current && current.type === "agency" && current.data.id === agencyId) {
           return {
@@ -412,7 +410,6 @@ export default function AdminDashboard() {
         )
       );
 
-      // Sync modal if open
       setSelectedDetail((current) => {
         if (current && current.type === "user" && current.data.id === userId) {
           return {
@@ -429,6 +426,32 @@ export default function AdminDashboard() {
       });
 
       addToast(`✓ Updated ${userEmail} subscription: ${updates.subscriptionStatus || "Saved"}`, "success");
+    } catch (err) {
+      addToast((err as Error).message, "error");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // ─── Super Admin Impersonation Action Handler ─────────────────────────────
+  const handleStartImpersonation = async (targetUserId?: string, targetAgencyId?: string) => {
+    const key = `impersonate-${targetUserId || targetAgencyId}`;
+    setActionLoading(key);
+    try {
+      const res = await fetch("/api/admin/impersonate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetUserId, targetAgencyId }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to start impersonation");
+      }
+      const data = await res.json();
+      addToast(`✓ Switching to ${data.targetUser?.name || "Target"}'s dashboard as Super Admin...`, "success");
+      setSelectedDetail(null);
+      router.push(data.destinationUrl || "/agency/dashboard");
+      router.refresh();
     } catch (err) {
       addToast((err as Error).message, "error");
     } finally {
@@ -630,12 +653,9 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* ════════════════════════════════════════════════════════════════ */}
-        {/* ── Tab 1: User & Agency Management (Live Search & Toggle) ─────── */}
-        {/* ════════════════════════════════════════════════════════════════ */}
+        {/* ── Tab Content renders ── */}
         {activeTab === "management" && (
           <section className="flex flex-col gap-4">
-            
             {/* Search & Filter Bar Controls */}
             <div className="bg-slate-900/60 border border-slate-800/80 rounded-3xl p-4 sm:p-5 flex flex-col gap-4 shadow-xl">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -648,7 +668,6 @@ export default function AdminDashboard() {
                   </p>
                 </div>
 
-                {/* Switch between Agencies & Users view */}
                 <div className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-2xl border border-slate-800 self-start md:self-auto">
                   <button
                     onClick={() => setManagementView("agencies")}
@@ -675,7 +694,6 @@ export default function AdminDashboard() {
 
               {/* Filters Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* Real-time Search Input */}
                 <div className="relative">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm">🔍</span>
                   <input
@@ -695,7 +713,6 @@ export default function AdminDashboard() {
                   )}
                 </div>
 
-                {/* Role Filter Dropdown */}
                 <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-2xl px-3 py-2">
                   <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider flex-shrink-0">Role:</span>
                   <select
@@ -711,7 +728,6 @@ export default function AdminDashboard() {
                   </select>
                 </div>
 
-                {/* Subscription Status Filter Dropdown */}
                 <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-2xl px-3 py-2">
                   <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider flex-shrink-0">Status:</span>
                   <select
@@ -729,7 +745,7 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* ── Render: Managed Agencies ── */}
+            {/* Render: Managed Agencies */}
             {managementView === "agencies" && (
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between px-1">
@@ -759,7 +775,6 @@ export default function AdminDashboard() {
                         key={agency.id}
                         className="bg-slate-900/50 border border-slate-800 hover:border-purple-500/30 rounded-3xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition shadow-lg group"
                       >
-                        {/* Agency Info (Clickable to open details) */}
                         <div
                           onClick={() => setSelectedDetail({ type: "agency", data: agency })}
                           className="flex items-start gap-3.5 flex-1 min-w-0 cursor-pointer"
@@ -774,13 +789,11 @@ export default function AdminDashboard() {
                                 {agency.name}
                               </span>
                               
-                              {/* Status Badge */}
                               <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 ${badge.bg} ${badge.text} ${badge.border}`}>
                                 <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
                                 {badge.label}
                               </span>
 
-                              {/* KYC Badge */}
                               <span
                                 className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                                   agency.isKycVerified || agency.verified
@@ -803,7 +816,6 @@ export default function AdminDashboard() {
                               <Chip color="slate">{agency.userCount} Agents</Chip>
                               <Chip color="slate">{agency.listingCount} Properties</Chip>
                               
-                              {/* Expiry Pill */}
                               <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                                 daysRemaining !== null && daysRemaining <= 5
                                   ? "bg-rose-500/10 text-rose-400 border-rose-500/30 font-black"
@@ -820,10 +832,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
-                        {/* ── INDIVIDUAL ACTION BUTTONS & VIEW DETAILS ── */}
                         <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto flex-shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-800/80">
-                          
-                          {/* Inspect / View Details Button */}
                           <button
                             onClick={() => setSelectedDetail({ type: "agency", data: agency })}
                             className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-3 py-2 rounded-xl border border-slate-700 transition flex items-center gap-1.5"
@@ -832,7 +841,6 @@ export default function AdminDashboard() {
                             <span>View Details</span>
                           </button>
 
-                          {/* Fast Toggle: ACTIVE <-> SUSPENDED */}
                           <button
                             onClick={() =>
                               handleUpdateAgencySubscription(
@@ -861,7 +869,6 @@ export default function AdminDashboard() {
                             )}
                           </button>
 
-                          {/* Quick Status Dropdown */}
                           <select
                             value={agency.subscriptionStatus}
                             onChange={(e) =>
@@ -880,7 +887,6 @@ export default function AdminDashboard() {
                             <option value="SUSPENDED">SUSPENDED</option>
                           </select>
 
-                          {/* +30 Days Renewal Extension Action */}
                           <button
                             onClick={() =>
                               handleUpdateAgencySubscription(
@@ -895,7 +901,6 @@ export default function AdminDashboard() {
                           >
                             <span>+30d Renew</span>
                           </button>
-
                         </div>
                       </div>
                     );
@@ -904,7 +909,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* ── Render: Managed Users ── */}
+            {/* Render: Managed Users */}
             {managementView === "users" && (
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between px-1">
@@ -933,7 +938,6 @@ export default function AdminDashboard() {
                         key={u.id}
                         className="bg-slate-900/50 border border-slate-800 hover:border-purple-500/30 rounded-3xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 transition shadow-lg group"
                       >
-                        {/* User Info (Clickable) */}
                         <div
                           onClick={() => setSelectedDetail({ type: "user", data: u })}
                           className="flex items-start gap-3.5 flex-1 min-w-0 cursor-pointer"
@@ -973,7 +977,6 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
-                        {/* User Actions */}
                         <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto flex-shrink-0">
                           <button
                             onClick={() => setSelectedDetail({ type: "user", data: u })}
@@ -1034,11 +1037,10 @@ export default function AdminDashboard() {
                 )}
               </div>
             )}
-
           </section>
         )}
 
-        {/* ── Tab: Architects ─────────────────────────────────────────── */}
+        {/* Tab 2: Architects */}
         {activeTab === "architects" && (
           <section className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -1065,18 +1067,15 @@ export default function AdminDashboard() {
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                    {/* Avatar */}
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
                       {arch.name?.charAt(0).toUpperCase() ?? "A"}
                     </div>
-                    {/* Info */}
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-bold text-sm text-slate-100">{arch.name}</span>
                         {arch.companyName && (
                           <span className="text-xs font-semibold text-slate-400">({arch.companyName})</span>
                         )}
-                        {/* Overseas Badge */}
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                             arch.isOverseas
@@ -1086,7 +1085,6 @@ export default function AdminDashboard() {
                         >
                           {arch.isOverseas ? "🌐 OVERSEAS" : "🇵🇰 PAKISTAN"}
                         </span>
-                        {/* Verification Status Badge */}
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                             arch.verificationStatus === "VERIFIED" || arch.isVerified
@@ -1105,7 +1103,6 @@ export default function AdminDashboard() {
                         {(arch.city || arch.country || arch.location) ? ` · ${arch.city ? `${arch.city}, ` : ""}${arch.country || arch.location || ""}` : ""}
                       </span>
 
-                      {/* Contact & License Info */}
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400 mt-0.5">
                         {arch.user?.email && <span>📧 {arch.user.email}</span>}
                         {(arch.phone || arch.user?.phone) && <span>📞 {arch.phone || arch.user?.phone}</span>}
@@ -1114,7 +1111,6 @@ export default function AdminDashboard() {
                         )}
                       </div>
 
-                      {/* Bio excerpt */}
                       {arch.bio && (
                         <p className="text-[11px] text-slate-500 line-clamp-2 mt-1">{arch.bio}</p>
                       )}
@@ -1132,7 +1128,6 @@ export default function AdminDashboard() {
                         <Chip color="slate">Applied: {formatDate(arch.createdAt)}</Chip>
                       </div>
                     </div>
-                    {/* Actions — hide if already verified */}
                     {!arch.isVerified && arch.verificationStatus !== "VERIFIED" && (
                       <div className="flex gap-2 flex-shrink-0 self-start">
                         <ActionButton
@@ -1154,7 +1149,7 @@ export default function AdminDashboard() {
           </section>
         )}
 
-        {/* ── Tab: Agencies ────────────────────────────────────────────── */}
+        {/* Tab 3: Agencies */}
         {activeTab === "agencies" && (
           <section className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -1176,11 +1171,9 @@ export default function AdminDashboard() {
                   key={agency.id}
                   className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:border-purple-500/30 transition"
                 >
-                  {/* Avatar */}
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-700 to-teal-600 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
                     {agency.name?.charAt(0).toUpperCase() ?? "A"}
                   </div>
-                  {/* Info */}
                   <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                     <span className="font-bold text-sm text-slate-100">{agency.name}</span>
                     <span className="text-xs text-slate-400 truncate">
@@ -1195,7 +1188,6 @@ export default function AdminDashboard() {
                       <Chip color="slate">Joined: {formatDate(agency.createdAt)}</Chip>
                     </div>
                   </div>
-                  {/* Actions */}
                   <div className="flex gap-2 flex-shrink-0">
                     <ActionButton
                       variant="approve"
@@ -1214,7 +1206,7 @@ export default function AdminDashboard() {
           </section>
         )}
 
-        {/* ── Tab: KYC Reviews ─────────────────────────────────────────── */}
+        {/* Tab 4: KYC Reviews */}
         {activeTab === "kyc" && (
           <section className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -1236,11 +1228,9 @@ export default function AdminDashboard() {
                   key={user.id}
                   className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:border-purple-500/30 transition"
                 >
-                  {/* Avatar */}
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-700 to-purple-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
                     {(user.name ?? user.email)?.charAt(0).toUpperCase() ?? "U"}
                   </div>
-                  {/* Info */}
                   <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                     <span className="font-bold text-sm text-slate-100">{user.name ?? "Unnamed User"}</span>
                     <span className="text-xs text-slate-400 truncate">{user.email}</span>
@@ -1257,7 +1247,6 @@ export default function AdminDashboard() {
                       <Chip color="slate">Registered: {formatDate(user.createdAt)}</Chip>
                     </div>
                   </div>
-                  {/* Actions — only if not yet verified */}
                   {!user.isOverseasVerified && (
                     <div className="flex gap-2 flex-shrink-0">
                       <ActionButton
@@ -1278,7 +1267,7 @@ export default function AdminDashboard() {
           </section>
         )}
 
-        {/* ── Tab: System ──────────────────────────────────────────────── */}
+        {/* Tab 5: System Health */}
         {activeTab === "system" && (
           <section className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
@@ -1309,7 +1298,6 @@ export default function AdminDashboard() {
               <EmptyState emoji="❌" text="Failed to retrieve system status. Click Refresh to retry." />
             )}
 
-            {/* Quick Navigation */}
             <div className="flex flex-col gap-2 mt-2">
               <p className="text-[11px] text-slate-500 uppercase tracking-widest font-bold">Quick Navigation</p>
               <Link
@@ -1342,15 +1330,14 @@ export default function AdminDashboard() {
 
       </div>
 
-      {/* ════════════════════════════════════════════════════════════════ */}
-      {/* ── 1. Complete Profile & Agency Details Modal / Drawer ───────── */}
-      {/* ════════════════════════════════════════════════════════════════ */}
+      {/* ── Complete Profile & Agency Details Modal / Drawer ───────── */}
       {selectedDetail && (
         <DetailsModal
           detail={selectedDetail}
           onClose={() => setSelectedDetail(null)}
           onUpdateAgencySubscription={handleUpdateAgencySubscription}
           onUpdateUserSubscription={handleUpdateUserSubscription}
+          onStartImpersonation={handleStartImpersonation}
           actionLoading={actionLoading}
         />
       )}
@@ -1365,6 +1352,7 @@ function DetailsModal({
   onClose,
   onUpdateAgencySubscription,
   onUpdateUserSubscription,
+  onStartImpersonation,
   actionLoading,
 }: {
   detail: { type: "agency" | "user"; data: ManagedAgency | ManagedUser };
@@ -1388,6 +1376,7 @@ function DetailsModal({
       isKycVerified?: boolean;
     }
   ) => Promise<void>;
+  onStartImpersonation: (targetUserId?: string, targetAgencyId?: string) => Promise<void>;
   actionLoading: string | null;
 }) {
   const isAgency = detail.type === "agency";
@@ -1406,6 +1395,7 @@ function DetailsModal({
   const subtitle = isAgency ? `License: ${agency?.licenseNumber || "Not Registered"}` : user?.email;
 
   const isRowLoading = actionLoading?.includes(detail.data.id);
+  const isImpersonating = actionLoading?.startsWith("impersonate-");
 
   return (
     <div className="fixed inset-0 z-[9990] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in">
@@ -1438,12 +1428,33 @@ function DetailsModal({
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 text-sm font-bold w-9 h-9 rounded-xl flex items-center justify-center transition flex-shrink-0"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Primary Action Button: Inspect Dashboard / Impersonate */}
+            <button
+              onClick={() =>
+                isAgency
+                  ? onStartImpersonation(undefined, agency!.id)
+                  : onStartImpersonation(user!.id, undefined)
+              }
+              disabled={Boolean(isImpersonating)}
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs px-3.5 py-2 rounded-xl shadow-lg shadow-purple-950/60 transition flex items-center gap-1.5 disabled:opacity-50"
+            >
+              {isImpersonating ? (
+                <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <span>👁️</span>
+              )}
+              <span className="hidden sm:inline">{isAgency ? "Inspect Agency Dashboard" : "Inspect User Dashboard"}</span>
+              <span className="sm:hidden">Inspect</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 text-sm font-bold w-9 h-9 rounded-xl flex items-center justify-center transition flex-shrink-0"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Modal Scrollable Body */}

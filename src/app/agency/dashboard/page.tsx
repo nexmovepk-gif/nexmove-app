@@ -265,20 +265,14 @@ export default function AgencyDashboardPage() {
             <div>
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-                  {displayName ? `Welcome, ${displayName} 👋` : 'Agency Command Center'}
+                  {displayName ? `Welcome, ${displayName}` : 'Agency Command Center'}
                 </h1>
-                {subscriptionData ? (
-                  <VerifiedBadge
-                    type="AGENCY"
-                    verified={subscriptionData.isKycVerified}
-                    tier={agencyTier}
-                    size="md"
-                  />
-                ) : (
-                  <span className="inline-flex items-center gap-1 rounded-full border font-bold text-xs px-3 py-1 bg-slate-100 border-slate-200 text-slate-400">
-                    <Loader2 className="w-3 h-3 animate-spin" /> Checking KYC…
-                  </span>
-                )}
+                <VerifiedBadge
+                  type="AGENCY"
+                  verified={subscriptionData ? subscriptionData.isKycVerified : Boolean(sessionUser?.isKycVerified)}
+                  tier={agencyTier}
+                  size="md"
+                />
                 <button
                   onClick={() => setShowUpgradeModal(true)}
                   className="text-[11px] font-bold text-purple-700 border border-purple-300 bg-purple-50 hover:bg-purple-100 px-3 py-1 rounded-full transition"

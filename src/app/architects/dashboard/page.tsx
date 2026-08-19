@@ -402,7 +402,7 @@ export default function ArchitectDashboardPage() {
               <>
                 <span className="text-slate-200 hidden md:block">·</span>
                 <span className="text-xs font-semibold text-teal-700 hidden md:block">
-                  Welcome, {profile?.name || session?.user?.name} 👋
+                  Welcome, {profile?.name || session?.user?.name}
                 </span>
               </>
             )}

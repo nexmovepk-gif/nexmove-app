@@ -11,6 +11,20 @@ interface VerifiedBadgeProps {
 
 export default function VerifiedBadge({ type, verified, tier = 'GOLD', size = 'sm' }: VerifiedBadgeProps) {
   if (!verified) {
+    if (type === 'USER' || type === 'AGENCY' || type === 'ARCHITECT') {
+      return (
+        <span
+          className={`inline-flex items-center gap-1 rounded-full border font-bold
+            ${size === 'md' ? 'text-xs px-3 py-1' : 'text-[10px] px-2.5 py-0.5'}
+            bg-amber-50 border-amber-300 text-amber-800 shadow-xs`}
+        >
+          <svg className="w-3 h-3 flex-shrink-0 text-amber-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          ⏳ KYC Pending
+        </span>
+      );
+    }
     return (
       <span
         className={`inline-flex items-center gap-1 rounded-full border font-bold
@@ -20,7 +34,7 @@ export default function VerifiedBadge({ type, verified, tier = 'GOLD', size = 's
         <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
         </svg>
-        {type === 'AGENCY' ? 'Unverified Agency' : type === 'ARCHITECT' ? 'Pending Verification' : type === 'USER' ? 'Unverified Profile' : 'Unverified Docs'}
+        Unverified Docs
       </span>
     );
   }
@@ -30,13 +44,13 @@ export default function VerifiedBadge({ type, verified, tier = 'GOLD', size = 's
     return (
       <span
         className={`inline-flex items-center gap-1 rounded-full border font-bold
-          ${size === 'md' ? 'text-xs px-3 py-1' : 'text-[10px] px-2 py-0.5'}
-          bg-emerald-50 border-emerald-300 text-emerald-800`}
+          ${size === 'md' ? 'text-xs px-3 py-1' : 'text-[10px] px-2.5 py-0.5'}
+          bg-emerald-50 border-emerald-300 text-emerald-800 shadow-xs`}
       >
         <svg className="w-3 h-3 flex-shrink-0 text-emerald-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
         </svg>
-        Verified Member
+        ✓ KYC Verified
       </span>
     );
   }

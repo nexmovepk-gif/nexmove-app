@@ -315,12 +315,18 @@ export default function OverseasBuyerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // KYC status from DB
-  const [isKycVerified, setIsKycVerified] = useState<boolean | null>(null);
+  // KYC status initialized from session, synchronized with DB
+  const [isKycVerified, setIsKycVerified] = useState<boolean>(Boolean(user?.isKycVerified));
+
+  useEffect(() => {
+    if (user?.isKycVerified !== undefined) {
+      setIsKycVerified(Boolean(user.isKycVerified));
+    }
+  }, [user?.isKycVerified]);
 
   useEffect(() => {
     fetch('/api/agency/status')
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (data?.subscription) setIsKycVerified(Boolean(data.subscription.isKycVerified));
       })
@@ -474,7 +480,7 @@ export default function OverseasBuyerDashboard() {
               </div>
               <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
                 {displayName
-                  ? `Welcome, ${displayName} 👋`
+                  ? `Welcome, ${displayName}`
                   : t('overseasHeroTitle', 'Overseas Investment Command Centre')}
               </h1>
               <p className="text-slate-400 text-sm mt-2 max-w-xl">

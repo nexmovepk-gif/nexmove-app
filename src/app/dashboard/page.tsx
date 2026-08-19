@@ -46,8 +46,14 @@ function UserDashboardContent() {
   const { data: session } = useSession();
   const sessionUser = session?.user;
 
-  // KYC status fetched from DB
-  const [isKycVerified, setIsKycVerified] = useState<boolean | null>(null);
+  // KYC status initialized from session, synchronized with DB
+  const [isKycVerified, setIsKycVerified] = useState<boolean>(Boolean(sessionUser?.isKycVerified));
+
+  useEffect(() => {
+    if (sessionUser?.isKycVerified !== undefined) {
+      setIsKycVerified(Boolean(sessionUser.isKycVerified));
+    }
+  }, [sessionUser?.isKycVerified]);
 
   const [listings, setListings] = useState<AIListingItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +67,7 @@ function UserDashboardContent() {
   // Fetch KYC & subscription status from DB
   useEffect(() => {
     fetch('/api/agency/status')
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (data?.subscription) {
           setIsKycVerified(Boolean(data.subscription.isKycVerified));
@@ -191,18 +197,17 @@ function UserDashboardContent() {
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-                {sessionUser?.name ? `Welcome, ${sessionUser.name} 👋` : 'My Property Portfolio'}
+                {sessionUser?.name ? `Welcome, ${sessionUser.name}` : 'My Property Portfolio'}
               </h1>
               <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5" /> User Dashboard
               </span>
-              {isKycVerified === null ? (
-                <span className="inline-flex items-center gap-1 rounded-full border font-bold text-[10px] px-2 py-0.5 bg-slate-100 border-slate-200 text-slate-400">
-                  <Loader2 className="w-2.5 h-2.5 animate-spin" /> Checking KYC…
-                </span>
-              ) : (
-                <VerifiedBadge type="USER" verified={isKycVerified} tier="GOLD" size="sm" />
-              )}
+              <VerifiedBadge
+                type="USER"
+                verified={Boolean(isKycVerified || sessionUser?.isKycVerified)}
+                tier="GOLD"
+                size="sm"
+              />
             </div>
             <p className="text-sm text-slate-500 font-medium mt-1">
               {sessionUser?.name

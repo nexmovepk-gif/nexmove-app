@@ -362,6 +362,7 @@ export default function AdminDashboard() {
           : `✓ ${agencyName} updated: ${updates.subscriptionStatus || (updates.isKycVerified !== undefined ? "KYC updated" : "Saved")}`,
         "success"
       );
+      router.refresh();
     } catch (err) {
       addToast((err as Error).message, "error");
     } finally {
@@ -425,7 +426,8 @@ export default function AdminDashboard() {
         return current;
       });
 
-      addToast(`✓ Updated ${userEmail} subscription: ${updates.subscriptionStatus || "Saved"}`, "success");
+      addToast(`✓ Updated ${userEmail} subscription: ${updates.subscriptionStatus || (updates.isKycVerified !== undefined ? "KYC updated" : "Saved")}`, "success");
+      router.refresh();
     } catch (err) {
       addToast((err as Error).message, "error");
     } finally {

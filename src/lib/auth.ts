@@ -18,6 +18,7 @@ declare module 'next-auth' {
       agencyId?: string | null
       agencyName?: string | null
       isArchitect?: boolean
+      isKycVerified?: boolean
     }
   }
 }
@@ -32,6 +33,7 @@ interface AdaptedUser {
   agencyId: string | null
   agencyName: string | null
   isArchitect: boolean
+  isKycVerified: boolean
 }
 
 export interface RegisteredUser {
@@ -106,6 +108,13 @@ export const authOptions: NextAuthOptions = {
                 isArchitect = false
               }
 
+              const isKycVerified = Boolean(
+                dbUser.isKycVerified ||
+                dbUser.isOverseasVerified ||
+                dbUser.agency?.isKycVerified ||
+                dbUser.agency?.verified
+              )
+
               return {
                 id: dbUser.id,
                 email: dbUser.email,
@@ -115,6 +124,7 @@ export const authOptions: NextAuthOptions = {
                 agencyId: dbUser.agencyId ?? null,
                 agencyName: dbUser.agency?.name ?? null,
                 isArchitect,
+                isKycVerified,
               }
             }
           }
@@ -144,6 +154,7 @@ export const authOptions: NextAuthOptions = {
         token.agencyId = u.agencyId ?? null
         token.agencyName = u.agencyName ?? null
         token.isArchitect = u.isArchitect ?? false
+        token.isKycVerified = u.isKycVerified ?? false
       }
       return token
     },
@@ -156,6 +167,7 @@ export const authOptions: NextAuthOptions = {
         session.user.agencyId = token.agencyId as string | null
         session.user.agencyName = token.agencyName as string | null
         session.user.isArchitect = Boolean(token.isArchitect)
+        session.user.isKycVerified = Boolean(token.isKycVerified)
       }
       return session
     },

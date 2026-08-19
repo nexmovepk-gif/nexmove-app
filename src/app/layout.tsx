@@ -6,6 +6,7 @@ import SessionProvider from "@/components/SessionProvider";
 import ImpersonationBanner from "@/components/ImpersonationBanner";
 import GlobalHeader from "@/components/GlobalHeader";
 import AIAssistant from "@/components/AIAssistant";
+import BismillahSplash from "@/components/BismillahSplash";
 import { CurrencyProvider } from "@/components/CurrencyContext";
 import { LanguageProvider } from "@/components/LanguageContext";
 import { AIEscrowProvider } from "@/components/AIEscrowContext";
@@ -65,6 +66,8 @@ export default function RootLayout({
             }
           `}
         </Script>
+
+        <BismillahSplash />
 
         <SessionProvider>
           <LanguageProvider>

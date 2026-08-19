@@ -20,3 +20,78 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Bismillah Splash Screen Animations */
+@keyframes bismillah-rtl-reveal {
+  0% {
+    clip-path: inset(0 0 0 100%);
+    opacity: 0.2;
+    transform: scale(0.98);
+    filter: blur(4px);
+  }
+  30% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0%);
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes bismillah-glow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+@keyframes bismillah-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bismillah-fade-in-delayed {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  50% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bismillah-rtl-animated {
+  animation: bismillah-rtl-reveal 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: clip-path, opacity, transform;
+}
+
+.animate-bismillah-glow {
+  animation: bismillah-glow 3s ease-in-out infinite;
+}
+
+.animate-bismillah-fade-in {
+  animation: bismillah-fade-in 0.8s ease-out forwards;
+}
+
+.animate-bismillah-fade-in-delayed {
+  animation: bismillah-fade-in-delayed 1.2s ease-out forwards;
+}
+

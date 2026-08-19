@@ -3,6 +3,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
+import SubscriptionGuard from '@/components/SubscriptionGuard'
 
 interface Listing {
   id: string
@@ -80,7 +81,8 @@ export default function AgencyDashboard() {
   const user = session.user
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <SubscriptionGuard>
+      <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       {/* Top Header */}
       <header className="border-b border-slate-800 bg-slate-900/40 backdrop-blur-md sticky top-0 z-50 px-4 py-4 flex items-center justify-between">
         <div className="flex flex-col">
@@ -202,8 +204,8 @@ export default function AgencyDashboard() {
             </div>
           )}
         </section>
-
       </div>
     </main>
+    </SubscriptionGuard>
   )
 }

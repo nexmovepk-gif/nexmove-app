@@ -20,6 +20,13 @@ enum Role {
   SUPER_ADMIN
 }
 
+enum SubscriptionStatus {
+  ACTIVE
+  PENDING_PAYMENT
+  EXPIRED
+  SUSPENDED
+}
+
 enum ListingStatus {
   DRAFT
   ACTIVE
@@ -74,64 +81,70 @@ enum ListingSource {
 // ─── Core Models ─────────────────────────────────────────────────────────────
 
 model User {
-  id                  String            @id @default(uuid())
-  email               String            @unique
+  id                  String              @id @default(uuid())
+  email               String              @unique
   password            String?
   name                String?
-  role                Role              @default(PUBLIC_USER)
-  accountRoleType     String?           // e.g. BUYER, LOCAL_PUBLIC, OVERSEAS_BUYER, OVERSEAS_INVESTOR, AGENCY_ADMIN, AGENCY_AGENT
-  cnicNumber          String?           // CNIC / National ID
-  cnicFrontUrl        String?           // CNIC Front Photo URL / Storage Reference
-  cnicBackUrl         String?           // CNIC Back Photo URL / Storage Reference
-  nicopNumber         String?           // Overseas NICOP / National ID
-  passportNumber      String?           // Overseas Passport Number for Foreign KYC
-  overseasCountry     String?           // Overseas Country of residence
-  overseasCity        String?           // Overseas City
-  overseasPostalCode  String?           // Overseas Postal Code
-  overseasDocPhoto    String?           // Overseas Document Photo URL
-  isOverseasVerified  Boolean           @default(false)   // Overseas KYC status
+  role                Role                @default(PUBLIC_USER)
+  accountRoleType     String?             // e.g. BUYER, LOCAL_PUBLIC, OVERSEAS_BUYER, OVERSEAS_INVESTOR, AGENCY_ADMIN, AGENCY_AGENT
+  subscriptionStatus  SubscriptionStatus  @default(ACTIVE)
+  subscriptionEndDate DateTime?
+  isKycVerified       Boolean             @default(false)
+  cnicNumber          String?             // CNIC / National ID
+  cnicFrontUrl        String?             // CNIC Front Photo URL / Storage Reference
+  cnicBackUrl         String?             // CNIC Back Photo URL / Storage Reference
+  nicopNumber         String?             // Overseas NICOP / National ID
+  passportNumber      String?             // Overseas Passport Number for Foreign KYC
+  overseasCountry     String?             // Overseas Country of residence
+  overseasCity        String?             // Overseas City
+  overseasPostalCode  String?             // Overseas Postal Code
+  overseasDocPhoto    String?             // Overseas Document Photo URL
+  isOverseasVerified  Boolean             @default(false)   // Overseas KYC status
   phone               String?
   address             String?
-  liveSelfieUrl       String?           // Live Photo Capture / Selfie Verification URL
-  taxIdNumber         String?           // FBR / Local Tax Identification Number (Optional/Overseas Investor)
+  liveSelfieUrl       String?             // Live Photo Capture / Selfie Verification URL
+  taxIdNumber         String?             // FBR / Local Tax Identification Number (Optional/Overseas Investor)
 
   agencyId            String?
-  agency              Agency?           @relation(fields: [agencyId], references: [id])
+  agency              Agency?             @relation(fields: [agencyId], references: [id])
 
   listings            Listing[]
   properties          Property[]
   clients             Client[]
   ledgers             FinancialLedger[]
 
-  dealsBuyer          Deal[]            @relation("BuyerAgentRelation")
-  dealsSeller         Deal[]            @relation("SellerAgentRelation")
+  dealsBuyer          Deal[]              @relation("BuyerAgentRelation")
+  dealsSeller         Deal[]              @relation("SellerAgentRelation")
   expenses            Expense[]
   rentCollections     RentCollection[]
   architectProfile    ArchitectProfile?
 
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 }
 
 model Agency {
-  id                  String            @id @default(uuid())
+  id                  String              @id @default(uuid())
   name                String
-  licenseNumber       String?           @unique
-  verified            Boolean           @default(false)    // Agency verified (Phase 1)
-  verifiedLicense     Boolean           @default(false)    // Phase 2: Official license badge
+  licenseNumber       String?             @unique
+  verified            Boolean             @default(false)    // Agency verified (Phase 1)
+  verifiedLicense     Boolean             @default(false)    // Phase 2: Official license badge
+  subscriptionStatus  SubscriptionStatus  @default(ACTIVE)
+  subscriptionEndDate DateTime?
+  isKycVerified       Boolean             @default(false)
   logo                String?
   phone               String?
   address             String?
   description         String?                              // Phase 2: Public profile bio
-  ntn                 String?           // Legal Tax Registration Number (NTN)
-  cnicNumber          String?           // Agency Owner CNIC Number
-  cnicFrontUrl        String?           // Agency Owner CNIC Front Photo URL
-  cnicBackUrl         String?           // Agency Owner CNIC Back Photo URL
-  latitude            Float?            // Map location Latitude
-  longitude           Float?            // Map location Longitude
-  storefrontPhoto     String?           // Agency Storefront photo URL
-  ownerPhoto          String?           // Agency Owner Passport/Identity photo URL
-  commercialLicenseDoc String?          // Overseas Agency Tax Reg / Commercial License Document URL
+  ntn                 String?             // Legal Tax Registration Number (NTN)
+  cnicNumber          String?             // Agency Owner CNIC Number
+  cnicFrontUrl        String?             // Agency Owner CNIC Front Photo URL
+  cnicBackUrl         String?             // Agency Owner CNIC Back Photo URL
+  latitude            Float?              // Map location Latitude
+  longitude           Float?              // Map location Longitude
+  storefrontPhoto     String?             // Agency Storefront photo URL
+  ownerPhoto          String?             // Agency Owner Passport/Identity photo URL
+  commercialLicenseDoc String?            // Overseas Agency Tax Reg / Commercial License Document URL
 
   users               User[]
   listings            Listing[]
@@ -145,8 +158,8 @@ model Agency {
   deals               Deal[]
 
 
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 }
 
 model Listing {

@@ -19,6 +19,16 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  EXPIRED: 'EXPIRED',
+  SUSPENDED: 'SUSPENDED'
+} as const
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
+
+
 export const ListingStatus = {
   DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',

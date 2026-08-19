@@ -1013,10 +1013,6 @@ export type EnumPropertyPurposeFieldUpdateOperationsInput = {
   set?: $Enums.PropertyPurpose
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type PropertyUpdateimagesInput = {
   set?: string[]
   push?: string | string[]

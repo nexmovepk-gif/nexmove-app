@@ -42,6 +42,9 @@ export type AgencyMinAggregateOutputType = {
   licenseNumber: string | null
   verified: boolean | null
   verifiedLicense: boolean | null
+  subscriptionStatus: $Enums.SubscriptionStatus | null
+  subscriptionEndDate: Date | null
+  isKycVerified: boolean | null
   logo: string | null
   phone: string | null
   address: string | null
@@ -65,6 +68,9 @@ export type AgencyMaxAggregateOutputType = {
   licenseNumber: string | null
   verified: boolean | null
   verifiedLicense: boolean | null
+  subscriptionStatus: $Enums.SubscriptionStatus | null
+  subscriptionEndDate: Date | null
+  isKycVerified: boolean | null
   logo: string | null
   phone: string | null
   address: string | null
@@ -88,6 +94,9 @@ export type AgencyCountAggregateOutputType = {
   licenseNumber: number
   verified: number
   verifiedLicense: number
+  subscriptionStatus: number
+  subscriptionEndDate: number
+  isKycVerified: number
   logo: number
   phone: number
   address: number
@@ -123,6 +132,9 @@ export type AgencyMinAggregateInputType = {
   licenseNumber?: true
   verified?: true
   verifiedLicense?: true
+  subscriptionStatus?: true
+  subscriptionEndDate?: true
+  isKycVerified?: true
   logo?: true
   phone?: true
   address?: true
@@ -146,6 +158,9 @@ export type AgencyMaxAggregateInputType = {
   licenseNumber?: true
   verified?: true
   verifiedLicense?: true
+  subscriptionStatus?: true
+  subscriptionEndDate?: true
+  isKycVerified?: true
   logo?: true
   phone?: true
   address?: true
@@ -169,6 +184,9 @@ export type AgencyCountAggregateInputType = {
   licenseNumber?: true
   verified?: true
   verifiedLicense?: true
+  subscriptionStatus?: true
+  subscriptionEndDate?: true
+  isKycVerified?: true
   logo?: true
   phone?: true
   address?: true
@@ -279,6 +297,9 @@ export type AgencyGroupByOutputType = {
   licenseNumber: string | null
   verified: boolean
   verifiedLicense: boolean
+  subscriptionStatus: $Enums.SubscriptionStatus
+  subscriptionEndDate: Date | null
+  isKycVerified: boolean
   logo: string | null
   phone: string | null
   address: string | null
@@ -325,6 +346,9 @@ export type AgencyWhereInput = {
   licenseNumber?: Prisma.StringNullableFilter<"Agency"> | string | null
   verified?: Prisma.BoolFilter<"Agency"> | boolean
   verifiedLicense?: Prisma.BoolFilter<"Agency"> | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFilter<"Agency"> | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.DateTimeNullableFilter<"Agency"> | Date | string | null
+  isKycVerified?: Prisma.BoolFilter<"Agency"> | boolean
   logo?: Prisma.StringNullableFilter<"Agency"> | string | null
   phone?: Prisma.StringNullableFilter<"Agency"> | string | null
   address?: Prisma.StringNullableFilter<"Agency"> | string | null
@@ -358,6 +382,9 @@ export type AgencyOrderByWithRelationInput = {
   licenseNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   verified?: Prisma.SortOrder
   verifiedLicense?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   logo?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -394,6 +421,9 @@ export type AgencyWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Agency"> | string
   verified?: Prisma.BoolFilter<"Agency"> | boolean
   verifiedLicense?: Prisma.BoolFilter<"Agency"> | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFilter<"Agency"> | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.DateTimeNullableFilter<"Agency"> | Date | string | null
+  isKycVerified?: Prisma.BoolFilter<"Agency"> | boolean
   logo?: Prisma.StringNullableFilter<"Agency"> | string | null
   phone?: Prisma.StringNullableFilter<"Agency"> | string | null
   address?: Prisma.StringNullableFilter<"Agency"> | string | null
@@ -427,6 +457,9 @@ export type AgencyOrderByWithAggregationInput = {
   licenseNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   verified?: Prisma.SortOrder
   verifiedLicense?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   logo?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -458,6 +491,9 @@ export type AgencyScalarWhereWithAggregatesInput = {
   licenseNumber?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   verified?: Prisma.BoolWithAggregatesFilter<"Agency"> | boolean
   verifiedLicense?: Prisma.BoolWithAggregatesFilter<"Agency"> | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusWithAggregatesFilter<"Agency"> | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Agency"> | Date | string | null
+  isKycVerified?: Prisma.BoolWithAggregatesFilter<"Agency"> | boolean
   logo?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
@@ -481,6 +517,9 @@ export type AgencyCreateInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -514,6 +553,9 @@ export type AgencyUncheckedCreateInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -547,6 +589,9 @@ export type AgencyUpdateInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -580,6 +625,9 @@ export type AgencyUncheckedUpdateInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -613,6 +661,9 @@ export type AgencyCreateManyInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -636,6 +687,9 @@ export type AgencyUpdateManyMutationInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -659,6 +713,9 @@ export type AgencyUncheckedUpdateManyInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -687,6 +744,9 @@ export type AgencyCountOrderByAggregateInput = {
   licenseNumber?: Prisma.SortOrder
   verified?: Prisma.SortOrder
   verifiedLicense?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -715,6 +775,9 @@ export type AgencyMaxOrderByAggregateInput = {
   licenseNumber?: Prisma.SortOrder
   verified?: Prisma.SortOrder
   verifiedLicense?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -738,6 +801,9 @@ export type AgencyMinOrderByAggregateInput = {
   licenseNumber?: Prisma.SortOrder
   verified?: Prisma.SortOrder
   verifiedLicense?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   logo?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -925,6 +991,9 @@ export type AgencyCreateWithoutUsersInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -957,6 +1026,9 @@ export type AgencyUncheckedCreateWithoutUsersInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1005,6 +1077,9 @@ export type AgencyUpdateWithoutUsersInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1037,6 +1112,9 @@ export type AgencyUncheckedUpdateWithoutUsersInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1069,6 +1147,9 @@ export type AgencyCreateWithoutListingsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1101,6 +1182,9 @@ export type AgencyUncheckedCreateWithoutListingsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1149,6 +1233,9 @@ export type AgencyUpdateWithoutListingsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1181,6 +1268,9 @@ export type AgencyUncheckedUpdateWithoutListingsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1213,6 +1303,9 @@ export type AgencyCreateWithoutPropertiesInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1245,6 +1338,9 @@ export type AgencyUncheckedCreateWithoutPropertiesInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1293,6 +1389,9 @@ export type AgencyUpdateWithoutPropertiesInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1325,6 +1424,9 @@ export type AgencyUncheckedUpdateWithoutPropertiesInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1357,6 +1459,9 @@ export type AgencyCreateWithoutPublicListingsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1389,6 +1494,9 @@ export type AgencyUncheckedCreateWithoutPublicListingsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1437,6 +1545,9 @@ export type AgencyUpdateWithoutPublicListingsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1469,6 +1580,9 @@ export type AgencyUncheckedUpdateWithoutPublicListingsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1501,6 +1615,9 @@ export type AgencyCreateWithoutAgencyReviewsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1533,6 +1650,9 @@ export type AgencyUncheckedCreateWithoutAgencyReviewsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1581,6 +1701,9 @@ export type AgencyUpdateWithoutAgencyReviewsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1613,6 +1736,9 @@ export type AgencyUncheckedUpdateWithoutAgencyReviewsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1645,6 +1771,9 @@ export type AgencyCreateWithoutClientsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1677,6 +1806,9 @@ export type AgencyUncheckedCreateWithoutClientsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1725,6 +1857,9 @@ export type AgencyUpdateWithoutClientsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1757,6 +1892,9 @@ export type AgencyUncheckedUpdateWithoutClientsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1789,6 +1927,9 @@ export type AgencyCreateWithoutLedgersInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1821,6 +1962,9 @@ export type AgencyUncheckedCreateWithoutLedgersInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1869,6 +2013,9 @@ export type AgencyUpdateWithoutLedgersInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1901,6 +2048,9 @@ export type AgencyUncheckedUpdateWithoutLedgersInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1933,6 +2083,9 @@ export type AgencyCreateWithoutDealsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -1965,6 +2118,9 @@ export type AgencyUncheckedCreateWithoutDealsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -2013,6 +2169,9 @@ export type AgencyUpdateWithoutDealsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2045,6 +2204,9 @@ export type AgencyUncheckedUpdateWithoutDealsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2077,6 +2239,9 @@ export type AgencyCreateWithoutExpensesInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -2109,6 +2274,9 @@ export type AgencyUncheckedCreateWithoutExpensesInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -2157,6 +2325,9 @@ export type AgencyUpdateWithoutExpensesInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2189,6 +2360,9 @@ export type AgencyUncheckedUpdateWithoutExpensesInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2221,6 +2395,9 @@ export type AgencyCreateWithoutRentCollectionsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -2253,6 +2430,9 @@ export type AgencyUncheckedCreateWithoutRentCollectionsInput = {
   licenseNumber?: string | null
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   logo?: string | null
   phone?: string | null
   address?: string | null
@@ -2301,6 +2481,9 @@ export type AgencyUpdateWithoutRentCollectionsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2333,6 +2516,9 @@ export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
   licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2477,6 +2663,9 @@ export type AgencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   licenseNumber?: boolean
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   logo?: boolean
   phone?: boolean
   address?: boolean
@@ -2511,6 +2700,9 @@ export type AgencySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   licenseNumber?: boolean
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   logo?: boolean
   phone?: boolean
   address?: boolean
@@ -2534,6 +2726,9 @@ export type AgencySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   licenseNumber?: boolean
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   logo?: boolean
   phone?: boolean
   address?: boolean
@@ -2557,6 +2752,9 @@ export type AgencySelectScalar = {
   licenseNumber?: boolean
   verified?: boolean
   verifiedLicense?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   logo?: boolean
   phone?: boolean
   address?: boolean
@@ -2574,7 +2772,7 @@ export type AgencySelectScalar = {
   updatedAt?: boolean
 }
 
-export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "logo" | "phone" | "address" | "description" | "ntn" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "commercialLicenseDoc" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
+export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "subscriptionStatus" | "subscriptionEndDate" | "isKycVerified" | "logo" | "phone" | "address" | "description" | "ntn" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "commercialLicenseDoc" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
 export type AgencyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
   listings?: boolean | Prisma.Agency$listingsArgs<ExtArgs>
@@ -2611,6 +2809,9 @@ export type $AgencyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     licenseNumber: string | null
     verified: boolean
     verifiedLicense: boolean
+    subscriptionStatus: $Enums.SubscriptionStatus
+    subscriptionEndDate: Date | null
+    isKycVerified: boolean
     logo: string | null
     phone: string | null
     address: string | null
@@ -3064,6 +3265,9 @@ export interface AgencyFieldRefs {
   readonly licenseNumber: Prisma.FieldRef<"Agency", 'String'>
   readonly verified: Prisma.FieldRef<"Agency", 'Boolean'>
   readonly verifiedLicense: Prisma.FieldRef<"Agency", 'Boolean'>
+  readonly subscriptionStatus: Prisma.FieldRef<"Agency", 'SubscriptionStatus'>
+  readonly subscriptionEndDate: Prisma.FieldRef<"Agency", 'DateTime'>
+  readonly isKycVerified: Prisma.FieldRef<"Agency", 'Boolean'>
   readonly logo: Prisma.FieldRef<"Agency", 'String'>
   readonly phone: Prisma.FieldRef<"Agency", 'String'>
   readonly address: Prisma.FieldRef<"Agency", 'String'>

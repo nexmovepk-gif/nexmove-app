@@ -1512,6 +1512,9 @@ export const UserScalarFieldEnum = {
   name: 'name',
   role: 'role',
   accountRoleType: 'accountRoleType',
+  subscriptionStatus: 'subscriptionStatus',
+  subscriptionEndDate: 'subscriptionEndDate',
+  isKycVerified: 'isKycVerified',
   cnicNumber: 'cnicNumber',
   cnicFrontUrl: 'cnicFrontUrl',
   cnicBackUrl: 'cnicBackUrl',
@@ -1540,6 +1543,9 @@ export const AgencyScalarFieldEnum = {
   licenseNumber: 'licenseNumber',
   verified: 'verified',
   verifiedLicense: 'verifiedLicense',
+  subscriptionStatus: 'subscriptionStatus',
+  subscriptionEndDate: 'subscriptionEndDate',
+  isKycVerified: 'isKycVerified',
   logo: 'logo',
   phone: 'phone',
   address: 'address',
@@ -1885,9 +1891,16 @@ export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
- * Reference to a field of type 'Boolean'
+ * Reference to a field of type 'SubscriptionStatus'
  */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+export type EnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SubscriptionStatus[]'
+ */
+export type ListEnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus[]'>
     
 
 
@@ -1902,6 +1915,13 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

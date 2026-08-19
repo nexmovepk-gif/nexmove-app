@@ -31,6 +31,9 @@ export type UserMinAggregateOutputType = {
   name: string | null
   role: $Enums.Role | null
   accountRoleType: string | null
+  subscriptionStatus: $Enums.SubscriptionStatus | null
+  subscriptionEndDate: Date | null
+  isKycVerified: boolean | null
   cnicNumber: string | null
   cnicFrontUrl: string | null
   cnicBackUrl: string | null
@@ -57,6 +60,9 @@ export type UserMaxAggregateOutputType = {
   name: string | null
   role: $Enums.Role | null
   accountRoleType: string | null
+  subscriptionStatus: $Enums.SubscriptionStatus | null
+  subscriptionEndDate: Date | null
+  isKycVerified: boolean | null
   cnicNumber: string | null
   cnicFrontUrl: string | null
   cnicBackUrl: string | null
@@ -83,6 +89,9 @@ export type UserCountAggregateOutputType = {
   name: number
   role: number
   accountRoleType: number
+  subscriptionStatus: number
+  subscriptionEndDate: number
+  isKycVerified: number
   cnicNumber: number
   cnicFrontUrl: number
   cnicBackUrl: number
@@ -111,6 +120,9 @@ export type UserMinAggregateInputType = {
   name?: true
   role?: true
   accountRoleType?: true
+  subscriptionStatus?: true
+  subscriptionEndDate?: true
+  isKycVerified?: true
   cnicNumber?: true
   cnicFrontUrl?: true
   cnicBackUrl?: true
@@ -137,6 +149,9 @@ export type UserMaxAggregateInputType = {
   name?: true
   role?: true
   accountRoleType?: true
+  subscriptionStatus?: true
+  subscriptionEndDate?: true
+  isKycVerified?: true
   cnicNumber?: true
   cnicFrontUrl?: true
   cnicBackUrl?: true
@@ -163,6 +178,9 @@ export type UserCountAggregateInputType = {
   name?: true
   role?: true
   accountRoleType?: true
+  subscriptionStatus?: true
+  subscriptionEndDate?: true
+  isKycVerified?: true
   cnicNumber?: true
   cnicFrontUrl?: true
   cnicBackUrl?: true
@@ -262,6 +280,9 @@ export type UserGroupByOutputType = {
   name: string | null
   role: $Enums.Role
   accountRoleType: string | null
+  subscriptionStatus: $Enums.SubscriptionStatus
+  subscriptionEndDate: Date | null
+  isKycVerified: boolean
   cnicNumber: string | null
   cnicFrontUrl: string | null
   cnicBackUrl: string | null
@@ -309,6 +330,9 @@ export type UserWhereInput = {
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   accountRoleType?: Prisma.StringNullableFilter<"User"> | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFilter<"User"> | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  isKycVerified?: Prisma.BoolFilter<"User"> | boolean
   cnicNumber?: Prisma.StringNullableFilter<"User"> | string | null
   cnicFrontUrl?: Prisma.StringNullableFilter<"User"> | string | null
   cnicBackUrl?: Prisma.StringNullableFilter<"User"> | string | null
@@ -345,6 +369,9 @@ export type UserOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   accountRoleType?: Prisma.SortOrderInput | Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   cnicFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   cnicBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -384,6 +411,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   accountRoleType?: Prisma.StringNullableFilter<"User"> | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFilter<"User"> | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  isKycVerified?: Prisma.BoolFilter<"User"> | boolean
   cnicNumber?: Prisma.StringNullableFilter<"User"> | string | null
   cnicFrontUrl?: Prisma.StringNullableFilter<"User"> | string | null
   cnicBackUrl?: Prisma.StringNullableFilter<"User"> | string | null
@@ -420,6 +450,9 @@ export type UserOrderByWithAggregationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   accountRoleType?: Prisma.SortOrderInput | Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   cnicNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   cnicFrontUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   cnicBackUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -452,6 +485,9 @@ export type UserScalarWhereWithAggregatesInput = {
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   accountRoleType?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusWithAggregatesFilter<"User"> | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  isKycVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   cnicNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   cnicFrontUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   cnicBackUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -478,6 +514,9 @@ export type UserCreateInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -513,6 +552,9 @@ export type UserUncheckedCreateInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -548,6 +590,9 @@ export type UserUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -583,6 +628,9 @@ export type UserUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -618,6 +666,9 @@ export type UserCreateManyInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -644,6 +695,9 @@ export type UserUpdateManyMutationInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -669,6 +723,9 @@ export type UserUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -695,6 +752,9 @@ export type UserCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   accountRoleType?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   cnicNumber?: Prisma.SortOrder
   cnicFrontUrl?: Prisma.SortOrder
   cnicBackUrl?: Prisma.SortOrder
@@ -721,6 +781,9 @@ export type UserMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   accountRoleType?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   cnicNumber?: Prisma.SortOrder
   cnicFrontUrl?: Prisma.SortOrder
   cnicBackUrl?: Prisma.SortOrder
@@ -747,6 +810,9 @@ export type UserMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   accountRoleType?: Prisma.SortOrder
+  subscriptionStatus?: Prisma.SortOrder
+  subscriptionEndDate?: Prisma.SortOrder
+  isKycVerified?: Prisma.SortOrder
   cnicNumber?: Prisma.SortOrder
   cnicFrontUrl?: Prisma.SortOrder
   cnicBackUrl?: Prisma.SortOrder
@@ -796,6 +862,14 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
+}
+
+export type EnumSubscriptionStatusFieldUpdateOperationsInput = {
+  set?: $Enums.SubscriptionStatus
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -987,6 +1061,9 @@ export type UserCreateWithoutAgencyInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1021,6 +1098,9 @@ export type UserUncheckedCreateWithoutAgencyInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1084,6 +1164,9 @@ export type UserScalarWhereInput = {
   name?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   accountRoleType?: Prisma.StringNullableFilter<"User"> | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFilter<"User"> | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  isKycVerified?: Prisma.BoolFilter<"User"> | boolean
   cnicNumber?: Prisma.StringNullableFilter<"User"> | string | null
   cnicFrontUrl?: Prisma.StringNullableFilter<"User"> | string | null
   cnicBackUrl?: Prisma.StringNullableFilter<"User"> | string | null
@@ -1110,6 +1193,9 @@ export type UserCreateWithoutListingsInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1144,6 +1230,9 @@ export type UserUncheckedCreateWithoutListingsInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1194,6 +1283,9 @@ export type UserUpdateWithoutListingsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1228,6 +1320,9 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1262,6 +1357,9 @@ export type UserCreateWithoutPropertiesInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1296,6 +1394,9 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1346,6 +1447,9 @@ export type UserUpdateWithoutPropertiesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1380,6 +1484,9 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1414,6 +1521,9 @@ export type UserCreateWithoutClientsInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1448,6 +1558,9 @@ export type UserUncheckedCreateWithoutClientsInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1498,6 +1611,9 @@ export type UserUpdateWithoutClientsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1532,6 +1648,9 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1566,6 +1685,9 @@ export type UserCreateWithoutLedgersInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1600,6 +1722,9 @@ export type UserUncheckedCreateWithoutLedgersInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1650,6 +1775,9 @@ export type UserUpdateWithoutLedgersInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1684,6 +1812,9 @@ export type UserUncheckedUpdateWithoutLedgersInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1718,6 +1849,9 @@ export type UserCreateWithoutDealsBuyerInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1752,6 +1886,9 @@ export type UserUncheckedCreateWithoutDealsBuyerInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1791,6 +1928,9 @@ export type UserCreateWithoutDealsSellerInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1825,6 +1965,9 @@ export type UserUncheckedCreateWithoutDealsSellerInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -1875,6 +2018,9 @@ export type UserUpdateWithoutDealsBuyerInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1909,6 +2055,9 @@ export type UserUncheckedUpdateWithoutDealsBuyerInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1954,6 +2103,9 @@ export type UserUpdateWithoutDealsSellerInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1988,6 +2140,9 @@ export type UserUncheckedUpdateWithoutDealsSellerInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2022,6 +2177,9 @@ export type UserCreateWithoutExpensesInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -2056,6 +2214,9 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -2106,6 +2267,9 @@ export type UserUpdateWithoutExpensesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2140,6 +2304,9 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2174,6 +2341,9 @@ export type UserCreateWithoutRentCollectionsInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -2208,6 +2378,9 @@ export type UserUncheckedCreateWithoutRentCollectionsInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -2258,6 +2431,9 @@ export type UserUpdateWithoutRentCollectionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2292,6 +2468,9 @@ export type UserUncheckedUpdateWithoutRentCollectionsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2326,6 +2505,9 @@ export type UserCreateWithoutArchitectProfileInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -2360,6 +2542,9 @@ export type UserUncheckedCreateWithoutArchitectProfileInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -2410,6 +2595,9 @@ export type UserUpdateWithoutArchitectProfileInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2444,6 +2632,9 @@ export type UserUncheckedUpdateWithoutArchitectProfileInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2478,6 +2669,9 @@ export type UserCreateManyAgencyInput = {
   name?: string | null
   role?: $Enums.Role
   accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
   cnicNumber?: string | null
   cnicFrontUrl?: string | null
   cnicBackUrl?: string | null
@@ -2503,6 +2697,9 @@ export type UserUpdateWithoutAgencyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2537,6 +2734,9 @@ export type UserUncheckedUpdateWithoutAgencyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2571,6 +2771,9 @@ export type UserUncheckedUpdateManyWithoutAgencyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2690,6 +2893,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   name?: boolean
   role?: boolean
   accountRoleType?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   cnicNumber?: boolean
   cnicFrontUrl?: boolean
   cnicBackUrl?: boolean
@@ -2727,6 +2933,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   role?: boolean
   accountRoleType?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   cnicNumber?: boolean
   cnicFrontUrl?: boolean
   cnicBackUrl?: boolean
@@ -2754,6 +2963,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   name?: boolean
   role?: boolean
   accountRoleType?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   cnicNumber?: boolean
   cnicFrontUrl?: boolean
   cnicBackUrl?: boolean
@@ -2781,6 +2993,9 @@ export type UserSelectScalar = {
   name?: boolean
   role?: boolean
   accountRoleType?: boolean
+  subscriptionStatus?: boolean
+  subscriptionEndDate?: boolean
+  isKycVerified?: boolean
   cnicNumber?: boolean
   cnicFrontUrl?: boolean
   cnicBackUrl?: boolean
@@ -2800,7 +3015,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "accountRoleType" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "nicopNumber" | "passportNumber" | "overseasCountry" | "overseasCity" | "overseasPostalCode" | "overseasDocPhoto" | "isOverseasVerified" | "phone" | "address" | "liveSelfieUrl" | "taxIdNumber" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "accountRoleType" | "subscriptionStatus" | "subscriptionEndDate" | "isKycVerified" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "nicopNumber" | "passportNumber" | "overseasCountry" | "overseasCity" | "overseasPostalCode" | "overseasDocPhoto" | "isOverseasVerified" | "phone" | "address" | "liveSelfieUrl" | "taxIdNumber" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.User$agencyArgs<ExtArgs>
   listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
@@ -2842,6 +3057,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     name: string | null
     role: $Enums.Role
     accountRoleType: string | null
+    subscriptionStatus: $Enums.SubscriptionStatus
+    subscriptionEndDate: Date | null
+    isKycVerified: boolean
     cnicNumber: string | null
     cnicFrontUrl: string | null
     cnicBackUrl: string | null
@@ -3298,6 +3516,9 @@ export interface UserFieldRefs {
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly accountRoleType: Prisma.FieldRef<"User", 'String'>
+  readonly subscriptionStatus: Prisma.FieldRef<"User", 'SubscriptionStatus'>
+  readonly subscriptionEndDate: Prisma.FieldRef<"User", 'DateTime'>
+  readonly isKycVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly cnicNumber: Prisma.FieldRef<"User", 'String'>
   readonly cnicFrontUrl: Prisma.FieldRef<"User", 'String'>
   readonly cnicBackUrl: Prisma.FieldRef<"User", 'String'>

@@ -6,7 +6,9 @@ import ActivityCenter, { ActivityNotification } from '@/components/ActivityCente
 import VerifiedBadge, { VerificationTier } from '@/components/VerifiedBadge';
 import AIEscrowGuard from '@/components/AIEscrowGuard';
 import BankTransferCheckoutModal from '@/components/BankTransferCheckoutModal';
+import SubscriptionGuard from '@/components/SubscriptionGuard';
 import AIListingCard, { AIListingItem, ListingStatusKey } from '@/components/AIListingCard';
+import { formatSubscriptionDate, SubscriptionStatus } from '@/types/subscription';
 import {
   Search, SlidersHorizontal, Plus, LogOut,
   Sparkles, Flame, CheckCircle2, Clock, CalendarClock,
@@ -46,6 +48,15 @@ export default function AgencyDashboardPage() {
   const [checkoutPlanTitle, setCheckoutPlanTitle] = useState('Professional Plan');
   const [checkoutPlanPrice, setCheckoutPlanPrice] = useState(15000);
 
+  // Subscription status for 5-day advance renewal notification
+  const [subscriptionData, setSubscriptionData] = useState<{
+    status: SubscriptionStatus;
+    endDate: string | null;
+    remainingDays: number | null;
+    isKycVerified: boolean;
+  } | null>(null);
+  const [renewalBannerDismissed, setRenewalBannerDismissed] = useState(false);
+
   const [income] = useState<number>(0);
   const [expense] = useState<number>(0);
   const netCashFlow = income - expense;
@@ -57,6 +68,25 @@ export default function AgencyDashboardPage() {
   const [showFilters, setShowFilters] = useState(false);
 
   const [notifications, setNotifications] = useState<ActivityNotification[]>([]);
+
+  const fetchSubscriptionStatus = async () => {
+    try {
+      const res = await fetch('/api/agency/status');
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.subscription) {
+          setSubscriptionData({
+            status: json.subscription.status,
+            endDate: json.subscription.endDate,
+            remainingDays: json.subscription.remainingDays,
+            isKycVerified: json.subscription.isKycVerified,
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch subscription status:', err);
+    }
+  };
 
   const fetchAgencyListings = async () => {
     try {
@@ -102,6 +132,7 @@ export default function AgencyDashboardPage() {
 
   useEffect(() => {
     fetchAgencyListings();
+    fetchSubscriptionStatus();
   }, []);
 
   const handleStatusChange = async (id: string, newStatus: ListingStatusKey) => {
@@ -165,9 +196,59 @@ export default function AgencyDashboardPage() {
   const totalEarlyMatches = listings.reduce((acc, l) => acc + (l.earlyMatchAlertsSent || 0), 0);
 
   return (
-    <>
+    <SubscriptionGuard>
       <section style={{ backgroundColor: '#F8FAFC' }} className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+          {/* ── 3. 5-Day Advance Subscription Renewal Warning Banner ───────── */}
+          {subscriptionData &&
+            subscriptionData.status === 'ACTIVE' &&
+            subscriptionData.remainingDays !== null &&
+            subscriptionData.remainingDays <= 5 &&
+            !renewalBannerDismissed && (
+              <div className="mb-6 bg-amber-50 border-2 border-amber-400/80 rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-md animate-in fade-in">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-800 flex items-center justify-center text-lg flex-shrink-0 font-bold">
+                    ⚠️
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs sm:text-sm font-black text-amber-950 leading-snug">
+                      Your NexMove Agency Subscription expires on{' '}
+                      <span className="underline decoration-amber-600 font-black">
+                        {formatSubscriptionDate(subscriptionData.endDate)}
+                      </span>
+                      {subscriptionData.remainingDays === 0
+                        ? ' (Expires Today!)'
+                        : ` (${subscriptionData.remainingDays} day${subscriptionData.remainingDays > 1 ? 's' : ''} remaining)`}
+                      . Please renew before expiration to avoid service interruption.
+                    </span>
+                    <span className="text-[11px] text-amber-800 font-medium mt-0.5">
+                      Avoid automated lockout of property listings, leads distribution, and escrow protection.
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-start sm:self-auto flex-shrink-0">
+                  <button
+                    onClick={() => {
+                      setCheckoutPlanTitle('Professional Plan (Renewal)');
+                      setCheckoutPlanPrice(15000);
+                      setShowBankCheckout(true);
+                    }}
+                    className="text-xs font-black bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl shadow transition"
+                  >
+                    Renew Now
+                  </button>
+                  <button
+                    onClick={() => setRenewalBannerDismissed(true)}
+                    title="Dismiss warning"
+                    className="text-amber-700 hover:text-amber-950 text-xs font-bold w-8 h-8 rounded-xl flex items-center justify-center hover:bg-amber-200/60 transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
 
           {/* ── Page Header ──────────────────────────────────────────────── */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
@@ -191,7 +272,10 @@ export default function AgencyDashboardPage() {
 
             <div className="flex items-center gap-2.5">
               <button
-                onClick={() => fetchAgencyListings()}
+                onClick={() => {
+                  fetchAgencyListings();
+                  fetchSubscriptionStatus();
+                }}
                 title="Refresh listings"
                 className="p-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-600 transition shadow-sm"
               >
@@ -623,6 +707,6 @@ export default function AgencyDashboardPage() {
         selectedPlanTitle={checkoutPlanTitle}
         selectedPlanPricePKR={checkoutPlanPrice}
       />
-    </>
+    </SubscriptionGuard>
   );
 }

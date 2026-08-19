@@ -48,14 +48,10 @@ export async function GET(req: NextRequest) {
     const projectType = searchParams.get('projectType')
     const verifiedOnly = searchParams.get('verifiedOnly') === 'true'
 
-    // Fetch approved architect profiles from Prisma database
+    // Fetch architect profiles from Prisma database
     const dbArchitects = await prisma.architectProfile.findMany({
       where: {
-        OR: [
-          { status: 'APPROVED' },
-          { verificationStatus: 'VERIFIED' },
-          { isVerified: true },
-        ],
+        NOT: { status: 'REJECTED' },
       },
       include: {
         user: true,
@@ -76,6 +72,14 @@ export async function GET(req: NextRequest) {
         ? arch.portfolioImages
         : arch.portfolioUrl ? [arch.portfolioUrl] : []
 
+      const isVerified = Boolean(
+        arch.isVerified ||
+        arch.status === 'APPROVED' ||
+        arch.verificationStatus === 'VERIFIED' ||
+        arch.user?.isKycVerified ||
+        arch.user?.isOverseasVerified
+      )
+
       return {
         id: arch.id,
         name: arch.name,
@@ -94,8 +98,8 @@ export async function GET(req: NextRequest) {
         coverImage: arch.coverBannerUrl || arch.coverImage || null,
         coverBannerUrl: arch.coverBannerUrl || arch.coverImage || null,
         councilLicenseNo: arch.pcatpNo || arch.councilLicenseNo || 'VERIFIED-PCATP',
-        verificationStatus: (arch.verificationStatus as unknown as Architect['verificationStatus']) || 'VERIFIED',
-        verified: arch.isVerified || arch.status === 'APPROVED' || arch.verificationStatus === 'VERIFIED',
+        verificationStatus: isVerified ? 'VERIFIED' : (arch.verificationStatus as unknown as Architect['verificationStatus']) || 'PENDING',
+        verified: isVerified,
         experienceYears: arch.experienceYears || 5,
         experienceLevel: (arch.experienceLevel as unknown as Architect['experienceLevel']) || 'Senior',
         software: arch.software.length > 0 ? arch.software : ['Revit', 'AutoCAD', 'SketchUp', '3ds Max'],

@@ -28,28 +28,77 @@ function LoginForm() {
     setError(null)
     setLoading(true)
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
+    try {
+      const result = await signIn('credentials', {
+        email: email.trim(),
+        password,
+        redirect: false,
+      })
 
-    setLoading(false)
+      if (result?.error) {
+        setError('Invalid credentials. Please check your email and password.')
+        setLoading(false)
+        return
+      }
 
-    if (result?.error) {
-      setError('Invalid credentials. Please check your email and password.')
-    } else {
-      if (callbackUrl) {
+      // Fetch the authenticated session to dynamically route based on role
+      const sessionRes = await fetch('/api/auth/session')
+      const sessionData = await sessionRes.json()
+      const user = sessionData?.user
+
+      const userRole = user?.role as string | undefined
+      const userEmail = (user?.email as string | undefined)?.toLowerCase()
+      const userAccountRoleType = user?.accountRoleType as string | undefined
+      const userAgencyId = user?.agencyId as string | null | undefined
+      const isArchitect = Boolean(user?.isArchitect) || userRole === 'ARCHITECT' || userAccountRoleType === 'ARCHITECT'
+
+      const isSuperAdmin =
+        userEmail === 'nexmove.pk@gmail.com' ||
+        userRole === 'SUPER_ADMIN' ||
+        userRole === 'ADMIN'
+
+      const isAgency =
+        !isSuperAdmin &&
+        !isArchitect &&
+        (userRole === 'AGENCY_MANAGER' ||
+          userRole === 'AGENCY_AGENT' ||
+          userAccountRoleType === 'AGENCY_ADMIN' ||
+          userAccountRoleType === 'AGENCY_AGENT' ||
+          userAccountRoleType === 'AGENCY_MANAGER' ||
+          userAccountRoleType === 'OVERSEAS_AGENCY' ||
+          Boolean(userAgencyId))
+
+      const isOverseas =
+        !isSuperAdmin &&
+        !isArchitect &&
+        !isAgency &&
+        (userRole === 'OVERSEAS_BUYER' ||
+          userAccountRoleType === 'OVERSEAS_BUYER' ||
+          userAccountRoleType === 'OVERSEAS_INVESTOR' ||
+          userAccountRoleType === 'INVESTOR' ||
+          userRole === 'INVESTOR')
+
+      // Direct dynamic role-based routing
+      if (callbackUrl && !callbackUrl.includes('/login')) {
         router.push(callbackUrl)
-      } else if (email.includes('superadmin') || email.toLowerCase() === 'nexmove.pk@gmail.com') {
+      } else if (isSuperAdmin) {
         router.push('/admin/dashboard')
-      } else if (isInvestorPortal || email.includes('investor')) {
-        router.push('/investors/dashboard')
-      } else if (isAgencyPortal || email.includes('agency')) {
+      } else if (isArchitect) {
+        router.push('/architects/dashboard')
+      } else if (isAgency) {
         router.push('/agency/dashboard')
+      } else if (isOverseas) {
+        router.push('/overseas/dashboard')
       } else {
         router.push('/dashboard')
       }
+
+      router.refresh()
+    } catch (err) {
+      console.error('Login error:', err)
+      setError('An unexpected error occurred during login. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 

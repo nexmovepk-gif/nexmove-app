@@ -3,6 +3,7 @@
 // Sets verificationStatus = VERIFIED | REJECTED and isVerified = true | false
 
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -110,6 +111,14 @@ export async function POST(req: Request) {
       } catch (emailErr) {
         console.warn("[Admin Approve Architect] Approval email failed (non-blocking):", emailErr);
       }
+    }
+
+    try {
+      revalidatePath('/architects');
+      revalidatePath('/architects/dashboard');
+      revalidatePath('/admin/dashboard');
+    } catch (revErr) {
+      console.warn('[Admin Approve Architect] Revalidate error:', revErr);
     }
 
     return NextResponse.json({

@@ -31,6 +31,14 @@ export async function GET(
         ? [arch.portfolioUrl]
         : []
 
+    const isVerified = Boolean(
+      arch.isVerified ||
+      arch.status === 'APPROVED' ||
+      arch.verificationStatus === 'VERIFIED' ||
+      arch.user?.isKycVerified ||
+      arch.user?.isOverseasVerified
+    )
+
     const architect = {
       id: arch.id,
       name: arch.name,
@@ -49,8 +57,8 @@ export async function GET(
       coverImage: arch.coverBannerUrl || arch.coverImage || null,
       coverBannerUrl: arch.coverBannerUrl || arch.coverImage || null,
       councilLicenseNo: arch.pcatpNo || arch.councilLicenseNo || 'VERIFIED-PCATP',
-      verificationStatus: arch.verificationStatus || 'VERIFIED',
-      verified: arch.isVerified || arch.status === 'APPROVED' || arch.verificationStatus === 'VERIFIED',
+      verificationStatus: isVerified ? 'VERIFIED' : arch.verificationStatus || 'PENDING',
+      verified: isVerified,
       experienceYears: arch.experienceYears || 5,
       experienceLevel: arch.experienceLevel || 'Senior',
       software: arch.software.length > 0 ? arch.software : ['Revit', 'AutoCAD', 'SketchUp', '3ds Max'],

@@ -536,7 +536,7 @@ export default function ArchitectDashboardPage() {
                   </h2>
                   <VerifiedBadge
                     type="ARCHITECT"
-                    verified={profile?.isVerified || profile?.verificationStatus === 'VERIFIED'}
+                    verified={Boolean(profile?.isVerified || profile?.verificationStatus === 'VERIFIED' || session?.user?.isKycVerified)}
                   />
                 </div>
                 <p className="text-xs font-semibold text-slate-600">

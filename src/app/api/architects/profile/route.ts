@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     } else if (session?.user?.email) {
       const user = await prisma.user.findUnique({
         where: { email: session.user.email },
-        include: { architectProfile: { include: { projects: true, reviews: true } } },
+        include: { architectProfile: { include: { user: true, projects: true, reviews: true } } },
       });
       profile = user?.architectProfile || null;
     }
@@ -47,7 +47,25 @@ export async function GET(req: Request) {
         : 0;
     const reviewCount = profile.reviews ? profile.reviews.length : 0;
 
-    return NextResponse.json({ profile: { ...profile, avgRating, reviewCount } });
+    const profileUser = (profile as Record<string, unknown>).user as { isKycVerified?: boolean; isOverseasVerified?: boolean } | undefined;
+
+    const isVerified = Boolean(
+      profile.isVerified ||
+      profile.status === "APPROVED" ||
+      profile.verificationStatus === "VERIFIED" ||
+      profileUser?.isKycVerified ||
+      profileUser?.isOverseasVerified
+    );
+
+    return NextResponse.json({
+      profile: {
+        ...profile,
+        isVerified,
+        verificationStatus: isVerified ? "VERIFIED" : profile.verificationStatus || "PENDING",
+        avgRating,
+        reviewCount,
+      },
+    });
   } catch (error) {
     console.error("[Architect Profile GET] Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

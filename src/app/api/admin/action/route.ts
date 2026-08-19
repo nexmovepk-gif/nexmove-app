@@ -1,5 +1,6 @@
-﻿// src/app/api/admin/action/route.ts
+// src/app/api/admin/action/route.ts
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -38,6 +39,13 @@ export async function POST(req: Request) {
           isVerified: action === "approve",
         },
       });
+      try {
+        revalidatePath('/architects');
+        revalidatePath('/architects/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin Action] Revalidate error:', revErr);
+      }
       return NextResponse.json({ success: true, architect: updated });
     }
 
@@ -49,6 +57,13 @@ export async function POST(req: Request) {
           verifiedLicense: action === "approve",
         },
       });
+      try {
+        revalidatePath('/agencies');
+        revalidatePath('/agency/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin Action] Revalidate error:', revErr);
+      }
       return NextResponse.json({ success: true, agency: updated });
     }
 
@@ -59,6 +74,12 @@ export async function POST(req: Request) {
           isOverseasVerified: action === "approve",
         },
       });
+      try {
+        revalidatePath('/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin Action] Revalidate error:', revErr);
+      }
       return NextResponse.json({ success: true, user: updated });
     }
 

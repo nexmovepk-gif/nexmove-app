@@ -2,6 +2,7 @@
 // API Route for Super Admin to update an INDIVIDUAL agency's subscription status & end date
 
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -110,6 +111,14 @@ export async function PATCH(req: Request) {
         }
       }
 
+      try {
+        revalidatePath('/agencies');
+        revalidatePath('/agency/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin Agency Subscription] Revalidate error:', revErr);
+      }
+
       return NextResponse.json({
         success: true,
         message: `Agency "${updatedAgency.name}" subscription updated to ${updatedAgency.subscriptionStatus}`,
@@ -171,6 +180,15 @@ export async function PATCH(req: Request) {
           subscriptionEndDate: true,
         },
       });
+
+      try {
+        revalidatePath('/architects');
+        revalidatePath('/architects/dashboard');
+        revalidatePath('/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin User Subscription] Revalidate error:', revErr);
+      }
 
       return NextResponse.json({
         success: true,

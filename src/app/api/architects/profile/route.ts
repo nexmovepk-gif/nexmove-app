@@ -49,12 +49,12 @@ export async function GET(req: Request) {
 
     const profileUser = (profile as Record<string, unknown>).user as { isKycVerified?: boolean; isOverseasVerified?: boolean } | undefined;
 
+    // Strict live DB verification check:
+    // If user is linked, user.isKycVerified must be true AND profile must be verified
     const isVerified = Boolean(
-      profile.isVerified ||
-      profile.status === "APPROVED" ||
-      profile.verificationStatus === "VERIFIED" ||
-      profileUser?.isKycVerified ||
-      profileUser?.isOverseasVerified
+      profileUser
+        ? (profileUser.isKycVerified || profileUser.isOverseasVerified) && profile.isVerified
+        : profile.isVerified && profile.verificationStatus === "VERIFIED"
     );
 
     return NextResponse.json({

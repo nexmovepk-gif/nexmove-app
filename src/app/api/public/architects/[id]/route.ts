@@ -34,12 +34,11 @@ export async function GET(
         ? [arch.portfolioUrl]
         : []
 
+    // Strict live DB verification check
     const isVerified = Boolean(
-      arch.isVerified ||
-      arch.status === 'APPROVED' ||
-      arch.verificationStatus === 'VERIFIED' ||
-      arch.user?.isKycVerified ||
-      arch.user?.isOverseasVerified
+      arch.user
+        ? (arch.user.isKycVerified || arch.user.isOverseasVerified) && arch.isVerified
+        : arch.isVerified && arch.verificationStatus === 'VERIFIED'
     )
 
     const architect = {

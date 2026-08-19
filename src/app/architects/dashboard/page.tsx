@@ -164,7 +164,7 @@ export default function ArchitectDashboardPage() {
   const loadDashboardData = useCallback(async () => {
     setLoading(true)
     try {
-      const profRes = await fetch('/api/architects/profile')
+      const profRes = await fetch('/api/architects/profile', { cache: 'no-store' })
       if (profRes.ok) {
         const profData = await profRes.json()
         if (profData.profile) {
@@ -173,7 +173,7 @@ export default function ArchitectDashboardPage() {
         }
       }
 
-      const projRes = await fetch('/api/architects/projects')
+      const projRes = await fetch('/api/architects/projects', { cache: 'no-store' })
       if (projRes.ok) {
         const projData = await projRes.json()
         const fetchedProjects: Project[] = projData.projects || []
@@ -536,7 +536,7 @@ export default function ArchitectDashboardPage() {
                   </h2>
                   <VerifiedBadge
                     type="ARCHITECT"
-                    verified={Boolean(profile?.isVerified || profile?.verificationStatus === 'VERIFIED' || session?.user?.isKycVerified)}
+                    verified={Boolean(profile?.isVerified)}
                   />
                 </div>
                 <p className="text-xs font-semibold text-slate-600">

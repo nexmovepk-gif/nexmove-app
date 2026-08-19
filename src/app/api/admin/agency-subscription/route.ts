@@ -189,17 +189,30 @@ export async function PATCH(req: Request) {
         },
       });
 
-      // If user has an architect profile, sync verification status
-      if (existingUser.architectProfile && typeof isKycVerified === 'boolean') {
+      // If user has an architect profile, sync verification & subscription status
+      if (existingUser.architectProfile) {
         try {
-          await prisma.architectProfile.update({
-            where: { id: existingUser.architectProfile.id },
-            data: {
-              isVerified: isKycVerified,
-              status: isKycVerified ? 'APPROVED' : 'PENDING',
-              verificationStatus: isKycVerified ? 'VERIFIED' : 'PENDING',
-            },
-          });
+          const archUpdate: Record<string, unknown> = {};
+          if (typeof isKycVerified === 'boolean') {
+            archUpdate.isVerified = isKycVerified;
+            archUpdate.verificationStatus = isKycVerified ? 'VERIFIED' : 'PENDING';
+            archUpdate.status = isKycVerified ? 'APPROVED' : 'PENDING';
+          }
+          if (subscriptionStatus === 'SUSPENDED') {
+            archUpdate.status = 'SUSPENDED';
+            archUpdate.isVerified = false;
+          } else if (subscriptionStatus === 'ACTIVE') {
+            if (isKycVerified !== undefined) {
+              archUpdate.status = isKycVerified ? 'APPROVED' : 'PENDING';
+              archUpdate.isVerified = isKycVerified;
+            }
+          }
+          if (Object.keys(archUpdate).length > 0) {
+            await prisma.architectProfile.update({
+              where: { id: existingUser.architectProfile.id },
+              data: archUpdate,
+            });
+          }
         } catch (archErr) {
           console.warn('[Admin User Subscription] Architect profile sync warning:', archErr);
         }

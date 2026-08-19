@@ -19,6 +19,7 @@ declare module 'next-auth' {
       agencyName?: string | null
       isArchitect?: boolean
       isKycVerified?: boolean
+      subscriptionStatus?: string | null
     }
   }
 }
@@ -34,6 +35,7 @@ interface AdaptedUser {
   agencyName: string | null
   isArchitect: boolean
   isKycVerified: boolean
+  subscriptionStatus: string | null
 }
 
 export interface RegisteredUser {
@@ -130,6 +132,7 @@ export const authOptions: NextAuthOptions = {
                 agencyName: dbUser.agency?.name ?? null,
                 isArchitect,
                 isKycVerified,
+                subscriptionStatus: dbUser.subscriptionStatus ?? null,
               }
             }
           }
@@ -160,6 +163,7 @@ export const authOptions: NextAuthOptions = {
         token.agencyName = u.agencyName ?? null
         token.isArchitect = u.isArchitect ?? false
         token.isKycVerified = u.isKycVerified ?? false
+        token.subscriptionStatus = u.subscriptionStatus ?? null
       }
       return token
     },
@@ -173,6 +177,7 @@ export const authOptions: NextAuthOptions = {
         session.user.agencyName = token.agencyName as string | null
         session.user.isArchitect = Boolean(token.isArchitect)
         session.user.isKycVerified = Boolean(token.isKycVerified)
+        session.user.subscriptionStatus = (token.subscriptionStatus as string) ?? null
       }
       return session
     },

@@ -48,10 +48,23 @@ export async function GET(req: NextRequest) {
     const projectType = searchParams.get('projectType')
     const verifiedOnly = searchParams.get('verifiedOnly') === 'true'
 
-    // Fetch architect profiles from Prisma database
+    // Fetch architect profiles from Prisma database, excluding SUSPENDED accounts
     const dbArchitects = await prisma.architectProfile.findMany({
       where: {
-        NOT: { status: 'REJECTED' },
+        AND: [
+          { NOT: { status: 'REJECTED' } },
+          { NOT: { status: 'SUSPENDED' } },
+          {
+            OR: [
+              { user: null },
+              {
+                user: {
+                  subscriptionStatus: { not: 'SUSPENDED' },
+                },
+              },
+            ],
+          },
+        ],
       },
       include: {
         user: true,
@@ -72,12 +85,12 @@ export async function GET(req: NextRequest) {
         ? arch.portfolioImages
         : arch.portfolioUrl ? [arch.portfolioUrl] : []
 
+      // Strict live DB verification check:
+      // If user is linked, user.isKycVerified must be true AND profile must be verified
       const isVerified = Boolean(
-        arch.isVerified ||
-        arch.status === 'APPROVED' ||
-        arch.verificationStatus === 'VERIFIED' ||
-        arch.user?.isKycVerified ||
-        arch.user?.isOverseasVerified
+        arch.user
+          ? (arch.user.isKycVerified || arch.user.isOverseasVerified) && arch.isVerified
+          : arch.isVerified && arch.verificationStatus === 'VERIFIED'
       )
 
       return {

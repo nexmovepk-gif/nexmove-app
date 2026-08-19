@@ -36,7 +36,7 @@ export default function AgenciesPage() {
   const fetchAgencies = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/public/agencies')
+      const res = await fetch('/api/public/agencies', { cache: 'no-store' })
       const data = await res.json()
       setAgencies(data.agencies || [])
     } catch (err) {

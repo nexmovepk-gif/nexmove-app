@@ -2,6 +2,9 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET() {
   try {
     const agencies = await prisma.agency.findMany({
@@ -32,13 +35,16 @@ export async function GET() {
           : 0
 
       const activeListings = (agency.listings?.length || 0) + (agency.publicListings?.length || 0)
+      const isKycVerified = Boolean(agency.isKycVerified || agency.verified)
 
       return {
         id: agency.id,
         name: agency.name,
-        verified: agency.verified,
-        verifiedLicense: agency.verifiedLicense,
-        tier: agency.verified ? ('GOLD' as const) : ('SILVER' as const),
+        verified: isKycVerified,
+        isKycVerified,
+        verifiedLicense: Boolean(agency.verifiedLicense),
+        subscriptionStatus: agency.subscriptionStatus,
+        tier: isKycVerified ? ('GOLD' as const) : ('SILVER' as const),
         ntn: agency.ntn || undefined,
         logo: agency.logo,
         storefrontPhoto: agency.storefrontPhoto,

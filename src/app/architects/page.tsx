@@ -183,7 +183,7 @@ export default function ArchitectsPage() {
   const [verifiedOnly, setVerifiedOnly] = useState(false)
 
   useEffect(() => {
-    fetch('/api/public/architects/stats')
+    fetch('/api/public/architects/stats', { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : STATS_DEFAULTS))
       .then((data: PageStats) => setStats(data))
       .catch(() => setStats(STATS_DEFAULTS))
@@ -196,7 +196,7 @@ export default function ArchitectsPage() {
       if (specialization !== 'All') params.set('specialization', specialization)
       if (verifiedOnly) params.set('verifiedOnly', 'true')
 
-      const res = await fetch(`/api/public/architects?${params.toString()}`)
+      const res = await fetch(`/api/public/architects?${params.toString()}`, { cache: 'no-store' })
       const data = await res.json()
       setArchitects(data.architects || [])
     } catch (err) {

@@ -7,6 +7,9 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { SubscriptionStatus } from '@/generated/client/enums';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 function checkSuperAdmin(session: { user?: { role?: string | null; email?: string | null } } | null): boolean {
   return (
     session?.user?.role === 'SUPER_ADMIN' ||

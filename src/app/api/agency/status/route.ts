@@ -7,6 +7,9 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { calculateRemainingDays, isSubscriptionExpiringSoon, isSubscriptionLocked } from '@/types/subscription';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   const session = await getServerSession(authOptions);
 

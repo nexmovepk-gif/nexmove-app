@@ -96,16 +96,21 @@ export const authOptions: NextAuthOptions = {
               const isSuperAdminEmail = dbUser.email.toLowerCase() === 'nexmove.pk@gmail.com'
               const finalRole = isSuperAdminEmail ? 'SUPER_ADMIN' : String(dbUser.role)
 
-              // Detect if user has a linked Architect Profile
-              let isArchitect = false
+              // Detect if user has a linked Architect Profile or registered as Architect
+              let isArchitect = dbUser.accountRoleType === 'ARCHITECT' || String(dbUser.role) === 'ARCHITECT'
               try {
-                const architectProfile = await prisma.architectProfile.findUnique({
-                  where: { userId: dbUser.id },
+                const architectProfile = await prisma.architectProfile.findFirst({
+                  where: {
+                    OR: [
+                      { userId: dbUser.id },
+                      ...(dbUser.phone ? [{ phone: dbUser.phone }] : []),
+                    ],
+                  },
                   select: { id: true },
                 })
-                isArchitect = Boolean(architectProfile)
+                if (architectProfile) isArchitect = true
               } catch {
-                isArchitect = false
+                // fallback to role check
               }
 
               const isKycVerified = Boolean(

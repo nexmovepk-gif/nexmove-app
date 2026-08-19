@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { PropertyPurpose, ListingStatus } from '@/generated/client/enums';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // ─── GET /api/properties ───────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {

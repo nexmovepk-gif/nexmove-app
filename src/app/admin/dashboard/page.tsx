@@ -195,8 +195,8 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const [approvalsRes, pendingRes] = await Promise.all([
-        fetch("/api/admin/approvals"),
-        fetch("/api/admin/pending"),
+        fetch("/api/admin/approvals", { cache: "no-store" }),
+        fetch("/api/admin/pending", { cache: "no-store" }),
       ]);
 
       const approvalsJson = approvalsRes.ok ? await approvalsRes.json() : {};
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
       if (roleFilter !== "ALL") params.set("role", roleFilter);
       if (statusFilter !== "ALL") params.set("subscriptionStatus", statusFilter);
 
-      const res = await fetch(`/api/admin/users-agencies?${params.toString()}`);
+      const res = await fetch(`/api/admin/users-agencies?${params.toString()}`, { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to search database");
 
       const json = await res.json();

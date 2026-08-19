@@ -47,11 +47,14 @@ export async function POST(req: Request) {
       },
     });
 
-    if (updated.userId && isApproval) {
+    if (updated.userId) {
       try {
         await prisma.user.update({
           where: { id: updated.userId },
-          data: { isOverseasVerified: true },
+          data: {
+            isKycVerified: isApproval,
+            isOverseasVerified: isApproval,
+          },
         });
       } catch (uErr) {
         console.warn("[Admin Approve Architect] Failed to update user model:", uErr);
@@ -114,6 +117,7 @@ export async function POST(req: Request) {
     }
 
     try {
+      revalidatePath('/', 'layout');
       revalidatePath('/architects');
       revalidatePath('/architects/dashboard');
       revalidatePath('/admin/dashboard');

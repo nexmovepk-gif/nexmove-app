@@ -36,10 +36,27 @@ export async function POST(req: Request) {
         where: { id },
         data: {
           verificationStatus: action === "approve" ? "VERIFIED" : "REJECTED",
+          status: action === "approve" ? "APPROVED" : "REJECTED",
           isVerified: action === "approve",
         },
       });
+
+      if (updated.userId) {
+        try {
+          await prisma.user.update({
+            where: { id: updated.userId },
+            data: {
+              isKycVerified: action === "approve",
+              isOverseasVerified: action === "approve",
+            },
+          });
+        } catch (uErr) {
+          console.warn("[Admin Action] Failed to update user model:", uErr);
+        }
+      }
+
       try {
+        revalidatePath('/', 'layout');
         revalidatePath('/architects');
         revalidatePath('/architects/dashboard');
         revalidatePath('/admin/dashboard');
@@ -55,9 +72,21 @@ export async function POST(req: Request) {
         data: {
           verified: action === "approve",
           verifiedLicense: action === "approve",
+          isKycVerified: action === "approve",
         },
       });
+
       try {
+        await prisma.user.updateMany({
+          where: { agencyId: id },
+          data: { isKycVerified: action === "approve" },
+        });
+      } catch (cascadeErr) {
+        console.warn('[Admin Action] Agency user cascade error:', cascadeErr);
+      }
+
+      try {
+        revalidatePath('/', 'layout');
         revalidatePath('/agencies');
         revalidatePath('/agency/dashboard');
         revalidatePath('/admin/dashboard');
@@ -68,14 +97,40 @@ export async function POST(req: Request) {
     }
 
     if (type === "user") {
+      const existingUser = await prisma.user.findUnique({
+        where: { id },
+        include: { architectProfile: true },
+      });
+
       const updated = await prisma.user.update({
         where: { id },
         data: {
+          isKycVerified: action === "approve",
           isOverseasVerified: action === "approve",
         },
       });
+
+      if (existingUser?.architectProfile) {
+        try {
+          await prisma.architectProfile.update({
+            where: { id: existingUser.architectProfile.id },
+            data: {
+              isVerified: action === "approve",
+              status: action === "approve" ? "APPROVED" : "PENDING",
+              verificationStatus: action === "approve" ? "VERIFIED" : "PENDING",
+            },
+          });
+        } catch (archErr) {
+          console.warn('[Admin Action] User architect profile sync warning:', archErr);
+        }
+      }
+
       try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/architects');
+        revalidatePath('/architects/dashboard');
         revalidatePath('/dashboard');
+        revalidatePath('/overseas/dashboard');
         revalidatePath('/admin/dashboard');
       } catch (revErr) {
         console.warn('[Admin Action] Revalidate error:', revErr);

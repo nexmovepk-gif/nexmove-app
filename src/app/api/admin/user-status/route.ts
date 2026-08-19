@@ -1,5 +1,5 @@
-// src/app/api/admin/agency-subscription/route.ts
-// API Route for Super Admin to update an INDIVIDUAL agency's subscription status & end date
+// src/app/api/admin/user-status/route.ts
+// Direct Super Admin Mutation API for User & Agency Status, Subscription, and KYC Verification
 
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
@@ -25,24 +25,22 @@ export async function PATCH(req: Request) {
   try {
     const body = await req.json();
     const {
-      agencyId,
       userId,
+      agencyId,
       subscriptionStatus,
-      subscriptionEndDate,
-      extensionDays,
       isKycVerified,
-      verified,
+      extensionDays,
+      subscriptionEndDate,
     } = body;
 
-    // Support updating either an Agency or a User
-    if (!agencyId && !userId) {
+    if (!userId && !agencyId) {
       return NextResponse.json(
-        { error: 'Missing target identifier: agencyId or userId required' },
+        { error: 'Missing target identifier: userId or agencyId required' },
         { status: 400 }
       );
     }
 
-    // ── Update Agency Subscription ──────────────────────────────────────
+    // ── Update Agency Status / KYC ───────────────────────────────────────────
     if (agencyId) {
       const existingAgency = await prisma.agency.findUnique({
         where: { id: agencyId },
@@ -56,31 +54,24 @@ export async function PATCH(req: Request) {
 
       if (subscriptionStatus) {
         const validStatuses: SubscriptionStatus[] = ['ACTIVE', 'PENDING_PAYMENT', 'EXPIRED', 'SUSPENDED'];
-        if (!validStatuses.includes(subscriptionStatus)) {
-          return NextResponse.json({ error: 'Invalid subscription status' }, { status: 400 });
+        if (validStatuses.includes(subscriptionStatus)) {
+          updateData.subscriptionStatus = subscriptionStatus;
         }
-        updateData.subscriptionStatus = subscriptionStatus;
       }
 
       if (typeof isKycVerified === 'boolean') {
         updateData.isKycVerified = isKycVerified;
+        updateData.verified = isKycVerified;
+        updateData.verifiedLicense = isKycVerified;
       }
 
-      if (typeof verified === 'boolean') {
-        updateData.verified = verified;
-      }
-
-      // Handle subscriptionEndDate or extensionDays
       if (typeof extensionDays === 'number' && extensionDays > 0) {
         const baseDate = existingAgency.subscriptionEndDate && existingAgency.subscriptionEndDate > new Date()
           ? new Date(existingAgency.subscriptionEndDate)
           : new Date();
         baseDate.setDate(baseDate.getDate() + extensionDays);
         updateData.subscriptionEndDate = baseDate;
-        // Automatically ensure status is ACTIVE if extending
-        if (!subscriptionStatus) {
-          updateData.subscriptionStatus = 'ACTIVE';
-        }
+        if (!subscriptionStatus) updateData.subscriptionStatus = 'ACTIVE';
       } else if (subscriptionEndDate !== undefined) {
         updateData.subscriptionEndDate = subscriptionEndDate ? new Date(subscriptionEndDate) : null;
       }
@@ -91,28 +82,29 @@ export async function PATCH(req: Request) {
         select: {
           id: true,
           name: true,
-          licenseNumber: true,
           verified: true,
+          verifiedLicense: true,
           isKycVerified: true,
           subscriptionStatus: true,
           subscriptionEndDate: true,
         },
       });
 
-      // Also cascade update agency users' subscription status and KYC if agency is modified
+      // Cascade update to all users associated with this agency
       try {
-        const agencyUserUpdates: Record<string, unknown> = {};
-        if (subscriptionStatus) agencyUserUpdates.subscriptionStatus = subscriptionStatus;
-        if (typeof isKycVerified === 'boolean') agencyUserUpdates.isKycVerified = isKycVerified;
+        const userCascadeData: Record<string, unknown> = {};
+        if (updateData.subscriptionStatus) userCascadeData.subscriptionStatus = updateData.subscriptionStatus;
+        if (typeof isKycVerified === 'boolean') userCascadeData.isKycVerified = isKycVerified;
+        if (updateData.subscriptionEndDate) userCascadeData.subscriptionEndDate = updateData.subscriptionEndDate;
 
-        if (Object.keys(agencyUserUpdates).length > 0) {
+        if (Object.keys(userCascadeData).length > 0) {
           await prisma.user.updateMany({
             where: { agencyId },
-            data: agencyUserUpdates,
+            data: userCascadeData,
           });
         }
       } catch (cascadeErr) {
-        console.warn('[Admin Agency Subscription] User cascade error:', cascadeErr);
+        console.warn('[Admin User Status] Agency user cascade error:', cascadeErr);
       }
 
       try {
@@ -121,22 +113,20 @@ export async function PATCH(req: Request) {
         revalidatePath('/agency/dashboard');
         revalidatePath('/admin/dashboard');
       } catch (revErr) {
-        console.warn('[Admin Agency Subscription] Revalidate error:', revErr);
+        console.warn('[Admin User Status] Revalidation warning:', revErr);
       }
 
       return NextResponse.json({
         success: true,
-        message: `Agency "${updatedAgency.name}" subscription updated to ${updatedAgency.subscriptionStatus}`,
+        message: `Agency "${updatedAgency.name}" status updated successfully`,
         agency: {
           ...updatedAgency,
-          subscriptionEndDate: updatedAgency.subscriptionEndDate
-            ? updatedAgency.subscriptionEndDate.toISOString()
-            : null,
+          subscriptionEndDate: updatedAgency.subscriptionEndDate ? updatedAgency.subscriptionEndDate.toISOString() : null,
         },
       });
     }
 
-    // ── Update User Subscription ────────────────────────────────────────
+    // ── Update User Status / KYC ─────────────────────────────────────────────
     if (userId) {
       const existingUser = await prisma.user.findUnique({
         where: { id: userId },
@@ -151,10 +141,9 @@ export async function PATCH(req: Request) {
 
       if (subscriptionStatus) {
         const validStatuses: SubscriptionStatus[] = ['ACTIVE', 'PENDING_PAYMENT', 'EXPIRED', 'SUSPENDED'];
-        if (!validStatuses.includes(subscriptionStatus)) {
-          return NextResponse.json({ error: 'Invalid subscription status' }, { status: 400 });
+        if (validStatuses.includes(subscriptionStatus)) {
+          updateData.subscriptionStatus = subscriptionStatus;
         }
-        updateData.subscriptionStatus = subscriptionStatus;
       }
 
       if (typeof isKycVerified === 'boolean') {
@@ -168,9 +157,7 @@ export async function PATCH(req: Request) {
           : new Date();
         baseDate.setDate(baseDate.getDate() + extensionDays);
         updateData.subscriptionEndDate = baseDate;
-        if (!subscriptionStatus) {
-          updateData.subscriptionStatus = 'ACTIVE';
-        }
+        if (!subscriptionStatus) updateData.subscriptionStatus = 'ACTIVE';
       } else if (subscriptionEndDate !== undefined) {
         updateData.subscriptionEndDate = subscriptionEndDate ? new Date(subscriptionEndDate) : null;
       }
@@ -201,7 +188,7 @@ export async function PATCH(req: Request) {
             },
           });
         } catch (archErr) {
-          console.warn('[Admin User Subscription] Architect profile sync warning:', archErr);
+          console.warn('[Admin User Status] Architect profile sync warning:', archErr);
         }
       }
 
@@ -212,30 +199,24 @@ export async function PATCH(req: Request) {
         revalidatePath('/dashboard');
         revalidatePath('/admin/dashboard');
       } catch (revErr) {
-        console.warn('[Admin User Subscription] Revalidate error:', revErr);
+        console.warn('[Admin User Status] Revalidation warning:', revErr);
       }
 
       return NextResponse.json({
         success: true,
-        message: `User "${updatedUser.email}" subscription updated to ${updatedUser.subscriptionStatus}`,
+        message: `User "${updatedUser.email}" status updated successfully`,
         user: {
           ...updatedUser,
-          subscriptionEndDate: updatedUser.subscriptionEndDate
-            ? updatedUser.subscriptionEndDate.toISOString()
-            : null,
+          subscriptionEndDate: updatedUser.subscriptionEndDate ? updatedUser.subscriptionEndDate.toISOString() : null,
         },
       });
     }
 
     return NextResponse.json({ error: 'No update performed' }, { status: 400 });
   } catch (error) {
-    console.error('[Admin Agency Subscription PATCH] Error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error while updating subscription' },
-      { status: 500 }
-    );
+    console.error('[Admin User Status PATCH] Error:', error);
+    return NextResponse.json({ error: 'Internal server error while updating status' }, { status: 500 });
   }
 }
 
-// POST alias for compatibility
 export { PATCH as POST };

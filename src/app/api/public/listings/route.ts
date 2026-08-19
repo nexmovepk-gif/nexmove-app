@@ -4,6 +4,9 @@ import { extractFromMetadata } from '@/lib/aiExtraction'
 import { prisma } from '@/lib/prisma'
 import { PropertyType } from '@/generated/client/enums'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // ─── GET /api/public/listings ─────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {

@@ -1,10 +1,11 @@
 // src/app/api/admin/approve/route.ts
 // Generalized approval endpoint — sets APPROVED/VERIFIED status for:
-//   type: "architect"  => ArchitectProfile
-//   type: "agency"     => Agency
+//   type: "architect"  => ArchitectProfile & User
+//   type: "agency"     => Agency & Agency Users
 //   type: "user"       => User (KYC verification)
 
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -51,11 +52,14 @@ export async function POST(req: Request) {
         include: { user: true },
       });
 
-      if (updated.userId && isApproval) {
+      if (updated.userId) {
         try {
           await prisma.user.update({
             where: { id: updated.userId },
-            data: { isOverseasVerified: true },
+            data: {
+              isKycVerified: isApproval,
+              isOverseasVerified: isApproval,
+            },
           });
         } catch (uErr) {
           console.warn("[Admin Approve] Failed to update user model:", uErr);
@@ -93,6 +97,15 @@ export async function POST(req: Request) {
         }
       }
 
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/architects');
+        revalidatePath('/architects/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin Approve] Revalidate error:', revErr);
+      }
+
       return NextResponse.json({
         success: true,
         message: `Architect ${isApproval ? "approved" : "rejected"} successfully.`,
@@ -106,9 +119,29 @@ export async function POST(req: Request) {
         data: {
           verified: isApproval,
           verifiedLicense: isApproval,
+          isKycVerified: isApproval,
         },
-        select: { id: true, name: true, verified: true },
+        select: { id: true, name: true, verified: true, isKycVerified: true },
       });
+
+      try {
+        await prisma.user.updateMany({
+          where: { agencyId: id },
+          data: { isKycVerified: isApproval },
+        });
+      } catch (cascadeErr) {
+        console.warn('[Admin Approve] Agency user cascade error:', cascadeErr);
+      }
+
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/agencies');
+        revalidatePath('/agency/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin Approve] Revalidate error:', revErr);
+      }
+
       return NextResponse.json({
         success: true,
         message: `Agency ${isApproval ? "approved" : "rejected"} successfully.`,
@@ -117,11 +150,46 @@ export async function POST(req: Request) {
     }
 
     if (type === "user") {
+      const existingUser = await prisma.user.findUnique({
+        where: { id },
+        include: { architectProfile: true },
+      });
+
       const updated = await prisma.user.update({
         where: { id },
-        data: { isOverseasVerified: isApproval },
-        select: { id: true, email: true, isOverseasVerified: true },
+        data: {
+          isKycVerified: isApproval,
+          isOverseasVerified: isApproval,
+        },
+        select: { id: true, email: true, isKycVerified: true, isOverseasVerified: true },
       });
+
+      if (existingUser?.architectProfile) {
+        try {
+          await prisma.architectProfile.update({
+            where: { id: existingUser.architectProfile.id },
+            data: {
+              isVerified: isApproval,
+              status: isApproval ? "APPROVED" : "PENDING",
+              verificationStatus: isApproval ? "VERIFIED" : "PENDING",
+            },
+          });
+        } catch (archErr) {
+          console.warn('[Admin Approve] User architect profile sync warning:', archErr);
+        }
+      }
+
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/architects');
+        revalidatePath('/architects/dashboard');
+        revalidatePath('/dashboard');
+        revalidatePath('/overseas/dashboard');
+        revalidatePath('/admin/dashboard');
+      } catch (revErr) {
+        console.warn('[Admin Approve] Revalidate error:', revErr);
+      }
+
       return NextResponse.json({
         success: true,
         message: `User KYC ${isApproval ? "approved" : "rejected"} successfully.`,

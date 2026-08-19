@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
@@ -13,16 +16,44 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { documentType, documentNumber, fullName } = body;
+    const { documentType, documentNumber, fullName, nicopNumber, passportNumber, cnicNumber } = body;
 
-    if (!documentType || !['PASSPORT', 'NICOP', 'POC'].includes(documentType)) {
+    if (!documentType || !['PASSPORT', 'NICOP', 'POC', 'CNIC'].includes(documentType)) {
       return NextResponse.json(
-        { error: 'Invalid document type. Supported types are PASSPORT, NICOP, POC.' },
+        { error: 'Invalid document type. Supported types are PASSPORT, NICOP, POC, CNIC.' },
         { status: 400 }
       );
     }
 
     const today = new Date().toISOString().split('T')[0];
+    const userId = session.user.id;
+
+    // Persist KYC document identifiers to the database
+    try {
+      const updateFields: Record<string, unknown> = {};
+
+      if (documentType === 'NICOP' && (nicopNumber || documentNumber)) {
+        updateFields.nicopNumber = nicopNumber || documentNumber;
+      }
+      if (documentType === 'PASSPORT' && (passportNumber || documentNumber)) {
+        updateFields.passportNumber = passportNumber || documentNumber;
+      }
+      if (documentType === 'CNIC' && (cnicNumber || documentNumber)) {
+        updateFields.cnicNumber = cnicNumber || documentNumber;
+      }
+      if (fullName) {
+        updateFields.name = fullName;
+      }
+
+      if (Object.keys(updateFields).length > 0 && userId) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: updateFields,
+        });
+      }
+    } catch (dbErr) {
+      console.warn('[KYC Verify] Failed to persist KYC data to DB (non-blocking):', dbErr);
+    }
 
     const kycResult = {
       documentType,
@@ -33,7 +64,9 @@ export async function POST(req: Request) {
           ? 'Foreign National'
           : documentType === 'POC'
             ? 'Pakistan-Origin Foreign National'
-            : 'Overseas Pakistani',
+            : documentType === 'NICOP'
+              ? 'Overseas Pakistani'
+              : 'Pakistan National',
       expiryDate: new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       fbrStatus: 'OVERSEAS_FILER',
       riskScorePct: 98.8,
@@ -43,7 +76,7 @@ export async function POST(req: Request) {
       extractedAt: today,
       verifiedBy: 'AI_GATEWAY_AUTO_VERIFIER',
       userEmail: session.user.email,
-      userId: session.user.id,
+      userId,
     };
 
     return NextResponse.json({
@@ -59,3 +92,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

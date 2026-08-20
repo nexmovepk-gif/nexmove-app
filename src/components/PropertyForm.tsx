@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useId } from 'react';
 import Link from 'next/link';
-import { extractFromMetadata } from '@/lib/aiExtraction';
 
 export type PropertyPurposeType = 'FOR_SALE' | 'FOR_RENT' | 'LEASE';
 
@@ -260,6 +259,20 @@ export default function PropertyForm({
   const [isValuationEstimated, setIsValuationEstimated] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [ownershipScore, setOwnershipScore] = useState<number | null>(null);
+  const [uploadedDocUrl, setUploadedDocUrl] = useState<string | null>(null);
+  const [docValidationError, setDocValidationError] = useState<string | null>(null);
+  const [docTypeLabel, setDocTypeLabel] = useState<string | null>(null);
+
+  // ── Toast Notifications State
+  const [toasts, setToasts] = useState<Array<{ id: string; message: string; type: 'success' | 'error' | 'info' }>>([]);
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 5000);
+  };
 
   // ── AI Valuation
   const [valuationLoading, setValuationLoading] = useState(false);
@@ -367,46 +380,102 @@ export default function PropertyForm({
     setPanoramaPreviewUrl(URL.createObjectURL(file));
   };
 
-  // ── Title Deed OCR Extraction
-  const handleTitleDeedUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ── Title Deed OCR & Content Verification
+  const handleTitleDeedUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Reset input value to allow re-selecting same file
+    e.target.value = '';
+
     setFileName(file.name);
     setIsAiExtracting(true);
     setAiExtracted(false);
+    setDocValidationError(null);
+    setDocTypeLabel(null);
 
-    setTimeout(() => {
-      const result = extractFromMetadata({
-        fileName: file.name,
-        fileType: file.type,
-        fileSizeBytes: file.size,
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/documents/verify-upload', {
+        method: 'POST',
+        body: formData,
       });
+
+      const data = await res.json();
       setIsAiExtracting(false);
+
+      if (!res.ok || !data.isValid || data.verifiedScore === 0) {
+        const errorMsg =
+          data.errorMessage ||
+          'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.';
+        setOwnershipScore(0);
+        setAiConfidence(0);
+        setAiExtracted(false);
+        setDocValidationError(errorMsg);
+        showToast(errorMsg, 'error');
+        return;
+      }
+
+      // Valid Document Success Flow
+      setOwnershipScore(data.verifiedScore);
+      setAiConfidence(data.confidence ? Math.round(data.confidence * 100) : 95);
       setAiExtracted(true);
-      setAiConfidence(result.confidence > 0 ? Math.round(result.confidence * 100) : null);
-
-      const calculatedScore =
-        result.confidence > 0
-          ? Math.round((95 + result.confidence * 4.2) * 10) / 10
-          : 96.8;
-      setOwnershipScore(calculatedScore);
-
-      if (result.propertyType) {
-        const pType = result.propertyType.toLowerCase();
-        const found = PROPERTY_CATEGORIES.flatMap((c) => c.options).find(
-          (o) => o.toLowerCase().includes(pType)
-        );
-        if (found) setPropertyType(found);
+      setDocTypeLabel(data.documentTypeLabel || 'Verified Document');
+      if (data.fileUrl) {
+        setUploadedDocUrl(data.fileUrl);
       }
-      if (result.bedrooms != null && !bedrooms) setBedrooms(String(result.bedrooms));
-      if (result.bathrooms != null && !bathrooms) setBathrooms(String(result.bathrooms));
-      if (result.areaSqFt != null && !areaSqFt) setAreaSqFt(String(result.areaSqFt));
-      if (result.locationHint && !city) setCity(result.locationHint);
-      if (!price && result.bedrooms != null && result.areaSqFt != null) {
-        setPrice(String(result.bedrooms * 3500000 + result.areaSqFt * 12000));
-        setIsValuationEstimated(true);
+
+      showToast(`✓ Document verified successfully as ${data.documentTypeLabel || 'Legal Document'}!`, 'success');
+
+      // Auto-fill property specs from verified document parameters
+      const params = data.extractedParams;
+      if (params) {
+        if (params.suggestedTitle && !title) {
+          setTitle(params.suggestedTitle);
+        }
+        if (params.propertyType) {
+          const pType = params.propertyType.toLowerCase();
+          const found = PROPERTY_CATEGORIES.flatMap((c) => c.options).find((o) =>
+            o.toLowerCase().includes(pType)
+          );
+          if (found) setPropertyType(found);
+        }
+        if (params.bedrooms != null && !bedrooms) {
+          setBedrooms(String(params.bedrooms));
+        }
+        if (params.bathrooms != null && !bathrooms) {
+          setBathrooms(String(params.bathrooms));
+        }
+        if (params.areaSqFt != null && !areaSqFt) {
+          setAreaSqFt(String(params.areaSqFt));
+        }
+        if (params.city && !city) {
+          setCity(params.city);
+        }
+        if (params.societyOrLocation && !address) {
+          const addr = params.plotOrUnitNo
+            ? `${params.plotOrUnitNo}, ${params.societyOrLocation}`
+            : params.societyOrLocation;
+          setAddress(addr);
+        }
+        if (!price && params.areaSqFt != null) {
+          const beds = params.bedrooms ?? 2;
+          setPrice(String(beds * 3500000 + params.areaSqFt * 12000));
+          setIsValuationEstimated(true);
+        }
       }
-    }, 1200);
+    } catch (err) {
+      console.error('Error verifying document:', err);
+      setIsAiExtracting(false);
+      const errorMsg = 'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.';
+      setOwnershipScore(0);
+      setAiConfidence(0);
+      setAiExtracted(false);
+      setDocValidationError(errorMsg);
+      showToast(errorMsg, 'error');
+    }
   };
 
   // ── City Rate Estimator for AI Valuation
@@ -503,7 +572,9 @@ export default function PropertyForm({
       bathrooms: bathrooms ? Number(bathrooms) : undefined,
       isAvailable,
       availableDate: !isAvailable && availableDate ? availableDate : undefined,
-      images: galleryImages.map((img) => img.name),
+      images: uploadedDocUrl
+        ? [uploadedDocUrl, ...galleryImages.map((img) => img.name)]
+        : galleryImages.map((img) => img.name),
       videoUrl: videoUrl || undefined,
       panoramaUrl: panoramaFileName || undefined,
       virtualTourUrl: virtualTourUrl || undefined,
@@ -565,6 +636,9 @@ export default function PropertyForm({
     setAiConfidence(null);
     setFileName(null);
     setOwnershipScore(null);
+    setUploadedDocUrl(null);
+    setDocValidationError(null);
+    setDocTypeLabel(null);
     setIsValuationEstimated(false);
     setValuationResult(null);
     setValuationWarning(null);
@@ -679,11 +753,15 @@ export default function PropertyForm({
                 {isAiExtracting ? (
                   <span className="text-xs font-bold text-teal-300 bg-teal-950/80 border border-teal-800 px-3 py-2 rounded-xl flex items-center gap-1.5">
                     <div className="w-3 h-3 border-2 border-teal-400 border-t-transparent rounded-full animate-spin" />
-                    Extracting Specs...
+                    Extracting &amp; Uploading...
                   </span>
-                ) : ownershipScore ? (
-                  <span className="text-xs font-bold text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-2 rounded-xl">
-                    ✓ Verified Score: {ownershipScore}%
+                ) : ownershipScore === 0 ? (
+                  <span className="text-xs font-bold text-red-400 bg-red-950/90 border border-red-800 px-3 py-2 rounded-xl flex items-center gap-1">
+                    <span>❌</span> Invalid Document (0%)
+                  </span>
+                ) : ownershipScore !== null ? (
+                  <span className="text-xs font-bold text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-2 rounded-xl flex items-center gap-1">
+                    <span>✓</span> Verified Score: {ownershipScore}%
                   </span>
                 ) : (
                   <span className="text-xs font-bold text-slate-400 bg-slate-800 border border-slate-700 px-3 py-2 rounded-xl">
@@ -695,14 +773,14 @@ export default function PropertyForm({
                   type="file"
                   ref={titleDeedInputRef}
                   onChange={handleTitleDeedUpload}
-                  accept=".pdf,.png,.jpg,.jpeg,.docx"
+                  accept=".pdf,.png,.jpg,.jpeg,.webp"
                   className="hidden"
                 />
                 <button
                   type="button"
                   onClick={() => titleDeedInputRef.current?.click()}
                   disabled={isAiExtracting}
-                  className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5"
+                  className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5 disabled:opacity-50"
                 >
                   <IconFileText className="w-4 h-4" />
                   <span>Upload Doc</span>
@@ -710,10 +788,42 @@ export default function PropertyForm({
               </div>
             </div>
 
+            {/* Error banner when invalid document is uploaded */}
+            {docValidationError && (
+              <div className="mt-4 p-3.5 bg-red-950/50 border border-red-500/40 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-red-300">
+                <span className="flex items-center gap-2">
+                  <span className="text-red-400 font-bold">⚠️ Error:</span> {docValidationError}
+                </span>
+                <span className="text-red-400 font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-800 self-start sm:self-auto">
+                  Score: 0%
+                </span>
+              </div>
+            )}
+
+            {/* Success banner when valid document is verified */}
             {aiExtracted && fileName && (
-              <div className="mt-4 p-3.5 bg-emerald-950/40 border border-emerald-500/30 rounded-2xl flex items-center justify-between text-xs text-emerald-300">
-                <span>✓ Auto-extracted details from <strong>{fileName}</strong></span>
-                {aiConfidence && <span>AI Confidence: {aiConfidence}%</span>}
+              <div className="mt-4 p-3.5 bg-emerald-950/40 border border-emerald-500/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-emerald-300">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span>✓ Auto-extracted details from <strong>{fileName}</strong></span>
+                  {docTypeLabel && (
+                    <span className="bg-emerald-800/50 text-emerald-200 border border-emerald-700/60 px-2 py-0.5 rounded-md text-[10px] font-bold">
+                      {docTypeLabel}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  {uploadedDocUrl && (
+                    <a
+                      href={uploadedDocUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-teal-300 hover:text-teal-200 underline font-semibold text-[11px]"
+                    >
+                      Supabase Storage Doc ↗
+                    </a>
+                  )}
+                  {aiConfidence && <span>AI Confidence: {aiConfidence}%</span>}
+                </div>
               </div>
             )}
           </div>
@@ -1482,6 +1592,36 @@ export default function PropertyForm({
           </div>
         </form>
       )}
+
+      {/* ── Floating Toast Notifications Container ── */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2.5 pointer-events-none max-w-sm sm:max-w-md w-full px-4 sm:px-0">
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            className={`pointer-events-auto flex items-start justify-between gap-3 px-4 py-3.5 rounded-2xl shadow-2xl border text-xs font-bold transition-all duration-300 animate-in fade-in slide-in-from-bottom-3 ${
+              t.type === 'error'
+                ? 'bg-red-950/95 text-red-100 border-red-700 shadow-red-950/60'
+                : t.type === 'success'
+                ? 'bg-emerald-950/95 text-emerald-100 border-emerald-700 shadow-emerald-950/60'
+                : 'bg-slate-900/95 text-slate-100 border-slate-700 shadow-slate-950/60'
+            }`}
+          >
+            <div className="flex items-start gap-2.5">
+              <span className="text-sm mt-0.5">
+                {t.type === 'error' ? '❌' : t.type === 'success' ? '✅' : 'ℹ️'}
+              </span>
+              <p className="leading-snug">{t.message}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))}
+              className="text-white/60 hover:text-white text-xs px-1"
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

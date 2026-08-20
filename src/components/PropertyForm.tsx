@@ -262,11 +262,12 @@ export default function PropertyForm({
   const [uploadedDocUrl, setUploadedDocUrl] = useState<string | null>(null);
   const [docValidationError, setDocValidationError] = useState<string | null>(null);
   const [docTypeLabel, setDocTypeLabel] = useState<string | null>(null);
+  const [docIsFallback, setDocIsFallback] = useState(false);
 
   // ── Toast Notifications State
-  const [toasts, setToasts] = useState<Array<{ id: string; message: string; type: 'success' | 'error' | 'info' }>>([]);
+  const [toasts, setToasts] = useState<Array<{ id: string; message: string; type: 'success' | 'error' | 'info' | 'warning' }>>([]);
 
-  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+  const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
     const id = Math.random().toString(36).substring(2, 9);
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
@@ -380,12 +381,56 @@ export default function PropertyForm({
     setPanoramaPreviewUrl(URL.createObjectURL(file));
   };
 
-  // ── Title Deed OCR & Content Verification
+  // ── Canvas Preprocessor: grayscale + contrast boost for OCR accuracy ─────
+  const preprocessImageForOcr = (file: File): Promise<Blob> =>
+    new Promise((resolve) => {
+      // Only preprocess images — pass PDFs/docs straight through
+      if (!file.type.startsWith('image/')) { resolve(file); return; }
+
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          // Scale down very large images to max 1600px on longest side (speed)
+          const MAX = 1600;
+          const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+          canvas.width  = Math.round(img.width  * scale);
+          canvas.height = Math.round(img.height * scale);
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) { resolve(file); return; }
+
+          // Draw original image
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Apply grayscale + contrast filter via CSS filter
+          ctx.filter = 'grayscale(100%) contrast(150%)';
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob(
+            (blob) => resolve(blob ?? file),
+            'image/jpeg',
+            0.90
+          );
+        } catch {
+          resolve(file);
+        } finally {
+          URL.revokeObjectURL(objectUrl);
+        }
+      };
+
+      img.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(file); };
+      img.src = objectUrl;
+    });
+
+  // ── Title Deed OCR & Content Verification ────────────────────────────────
   const handleTitleDeedUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Reset input value to allow re-selecting same file
+    // Reset input to allow re-selecting the same file
     e.target.value = '';
 
     setFileName(file.name);
@@ -395,11 +440,15 @@ export default function PropertyForm({
     setDocTypeLabel(null);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
+      // Pre-process image (grayscale + contrast) before sending to OCR API
+      const processedBlob = await preprocessImageForOcr(file);
+      const uploadFile = new File([processedBlob], file.name, { type: processedBlob.type || file.type });
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', uploadFile);
 
       const res = await fetch('/api/documents/verify-upload', {
         method: 'POST',
@@ -409,7 +458,7 @@ export default function PropertyForm({
 
       const data = await res.json().catch(() => ({}));
 
-      if (!res.ok || !data.isValid || data.verifiedScore === 0) {
+      if (!res.ok || !data.isValid) {
         const errorMsg =
           data.error ||
           data.errorMessage ||
@@ -422,23 +471,26 @@ export default function PropertyForm({
         return;
       }
 
-      // Valid Document Success Flow
-      setOwnershipScore(data.verifiedScore);
-      setAiConfidence(data.confidence ? Math.round(data.confidence * 100) : 95);
+      // ── Valid Document Success Flow ──────────────────────────────────────
+      const score = data.verifiedScore ?? data.score ?? 80;
+      const isFallback = data.fallback === true;
+
+      setOwnershipScore(score);
+      setAiConfidence(data.confidence ? Math.round(data.confidence * 100) : Math.round(score));
       setAiExtracted(true);
+      setDocIsFallback(isFallback);
       setDocTypeLabel(data.documentTypeLabel || 'Verified Document');
-      if (data.fileUrl) {
-        setUploadedDocUrl(data.fileUrl);
-      }
+      if (data.fileUrl) setUploadedDocUrl(data.fileUrl);
 
-      showToast(`✓ Document verified successfully as ${data.documentTypeLabel || 'Legal Document'}!`, 'success');
+      const toastMsg = isFallback
+        ? `⚠ Document accepted with fallback score (${score}%). Upload a clearer scan for best results.`
+        : `✓ Document verified as ${data.documentTypeLabel || 'Legal Document'}! Score: ${score}%`;
+      showToast(toastMsg, isFallback ? 'warning' : 'success');
 
-      // Auto-fill property specs from verified document parameters
+      // ── Auto-fill property specs from verified parameters ────────────────
       const params = data.extractedParams;
       if (params) {
-        if (params.suggestedTitle && !title) {
-          setTitle(params.suggestedTitle);
-        }
+        if (params.suggestedTitle && !title)         setTitle(params.suggestedTitle);
         if (params.propertyType) {
           const pType = params.propertyType.toLowerCase();
           const found = PROPERTY_CATEGORIES.flatMap((c) => c.options).find((o) =>
@@ -446,18 +498,10 @@ export default function PropertyForm({
           );
           if (found) setPropertyType(found);
         }
-        if (params.bedrooms != null && !bedrooms) {
-          setBedrooms(String(params.bedrooms));
-        }
-        if (params.bathrooms != null && !bathrooms) {
-          setBathrooms(String(params.bathrooms));
-        }
-        if (params.areaSqFt != null && !areaSqFt) {
-          setAreaSqFt(String(params.areaSqFt));
-        }
-        if (params.city && !city) {
-          setCity(params.city);
-        }
+        if (params.bedrooms  != null && !bedrooms)   setBedrooms(String(params.bedrooms));
+        if (params.bathrooms != null && !bathrooms)   setBathrooms(String(params.bathrooms));
+        if (params.areaSqFt  != null && !areaSqFt)   setAreaSqFt(String(params.areaSqFt));
+        if (params.city && !city)                     setCity(params.city);
         if (params.societyOrLocation && !address) {
           const addr = params.plotOrUnitNo
             ? `${params.plotOrUnitNo}, ${params.societyOrLocation}`
@@ -466,24 +510,25 @@ export default function PropertyForm({
         }
         if (!price && params.areaSqFt != null) {
           const beds = params.bedrooms ?? 2;
-          setPrice(String(beds * 3500000 + params.areaSqFt * 12000));
+          setPrice(String(beds * 3_500_000 + params.areaSqFt * 12_000));
           setIsValuationEstimated(true);
         }
       }
     } catch (err: unknown) {
-      console.error('Error verifying document:', err);
-      const isTimeout = err instanceof Error && err.name === 'AbortError';
-      const errorMsg = isTimeout
-        ? 'Verification request timed out. Please upload a clear image of an Allotment Letter, CNIC, or Registry.'
-        : 'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.';
+      console.error('[DocVerify] Error:', err);
+      const isAbort = err instanceof Error && err.name === 'AbortError';
+      const errorMsg = isAbort
+        ? 'Verification timed out. Please upload a clearer scan of your document.'
+        : 'Document verification failed. Please upload an Allotment Letter, CNIC, or Registry.';
       setOwnershipScore(0);
       setAiConfidence(0);
       setAiExtracted(false);
+      setDocIsFallback(false);
       setDocValidationError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
       clearTimeout(timeoutId);
-      setIsAiExtracting(false); // ALWAYS force-reset the loading/button state!
+      setIsAiExtracting(false); // Always reset — prevents 'Extracting...' freeze
     }
   };
 
@@ -767,6 +812,10 @@ export default function PropertyForm({
                 ) : ownershipScore === 0 ? (
                   <span className="text-xs font-bold text-red-400 bg-red-950/90 border border-red-800 px-3 py-2 rounded-xl flex items-center gap-1">
                     <span>❌</span> Invalid Document (0%)
+                  </span>
+                ) : ownershipScore !== null && docIsFallback ? (
+                  <span className="text-xs font-bold text-amber-400 bg-amber-950/80 border border-amber-700 px-3 py-2 rounded-xl flex items-center gap-1">
+                    <span>⚠️</span> Fallback Score: {ownershipScore}%
                   </span>
                 ) : ownershipScore !== null ? (
                   <span className="text-xs font-bold text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-2 rounded-xl flex items-center gap-1">
@@ -1612,12 +1661,14 @@ export default function PropertyForm({
                 ? 'bg-red-950/95 text-red-100 border-red-700 shadow-red-950/60'
                 : t.type === 'success'
                 ? 'bg-emerald-950/95 text-emerald-100 border-emerald-700 shadow-emerald-950/60'
+                : t.type === 'warning'
+                ? 'bg-amber-950/95 text-amber-100 border-amber-700 shadow-amber-950/60'
                 : 'bg-slate-900/95 text-slate-100 border-slate-700 shadow-slate-950/60'
             }`}
           >
             <div className="flex items-start gap-2.5">
               <span className="text-sm mt-0.5">
-                {t.type === 'error' ? '❌' : t.type === 'success' ? '✅' : 'ℹ️'}
+                {t.type === 'error' ? '❌' : t.type === 'success' ? '✅' : t.type === 'warning' ? '⚠️' : 'ℹ️'}
               </span>
               <p className="leading-snug">{t.message}</p>
             </div>

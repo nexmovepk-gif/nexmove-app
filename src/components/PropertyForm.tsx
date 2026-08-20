@@ -394,6 +394,9 @@ export default function PropertyForm({
     setDocValidationError(null);
     setDocTypeLabel(null);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
+
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -401,13 +404,14 @@ export default function PropertyForm({
       const res = await fetch('/api/documents/verify-upload', {
         method: 'POST',
         body: formData,
+        signal: controller.signal,
       });
 
-      const data = await res.json();
-      setIsAiExtracting(false);
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data.isValid || data.verifiedScore === 0) {
         const errorMsg =
+          data.error ||
           data.errorMessage ||
           'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.';
         setOwnershipScore(0);
@@ -466,15 +470,20 @@ export default function PropertyForm({
           setIsValuationEstimated(true);
         }
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error verifying document:', err);
-      setIsAiExtracting(false);
-      const errorMsg = 'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.';
+      const isTimeout = err instanceof Error && err.name === 'AbortError';
+      const errorMsg = isTimeout
+        ? 'Verification request timed out. Please upload a clear image of an Allotment Letter, CNIC, or Registry.'
+        : 'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.';
       setOwnershipScore(0);
       setAiConfidence(0);
       setAiExtracted(false);
       setDocValidationError(errorMsg);
       showToast(errorMsg, 'error');
+    } finally {
+      clearTimeout(timeoutId);
+      setIsAiExtracting(false); // ALWAYS force-reset the loading/button state!
     }
   };
 

@@ -3,7 +3,7 @@
 
 export interface DocumentAnalysisResult {
   isValid: boolean;
-  documentType: 'ALLOTMENT_LETTER' | 'REGISTRY_SALE_DEED' | 'CNIC_NICOP' | 'TITLE_DEED' | 'OTHER_LEGAL' | 'INVALID';
+  documentType: 'ALLOTMENT_LETTER' | 'REGISTRY_SALE_DEED' | 'CNIC_NICOP' | 'TITLE_DEED' | 'BLUEPRINT_PLAN' | 'OTHER_LEGAL' | 'INVALID';
   documentTypeLabel: string;
   verifiedScore: number; // 0 for invalid, dynamic 85.0 – 99.5 for valid
   confidence: number;   // 0.0 – 1.0
@@ -101,6 +101,23 @@ const CNIC_NICOP_KEYWORDS = [
   'cardholder',
 ];
 
+const BLUEPRINT_KEYWORDS = [
+  'blueprint',
+  'floor plan',
+  'site plan',
+  'architectural drawing',
+  'master plan',
+  'layout plan',
+  'sanctioned plan',
+  'elevation',
+  'structural drawing',
+  'key plan',
+  'ground floor',
+  'first floor',
+  'basement plan',
+  'approved plan',
+];
+
 const GENERAL_PROPERTY_KEYWORDS = [
   'plot',
   'plot no',
@@ -127,6 +144,14 @@ const GENERAL_PROPERTY_KEYWORDS = [
   'demarcation',
 ];
 
+// Non-document rejection keywords
+const EXPLICIT_INVALID_KEYWORDS = [
+  'car', 'cars', 'vehicle', 'van', 'suv', 'sedan', 'automobile', 'toyota', 'honda', 'suzuki',
+  'hyundai', 'kia', 'mercedes', 'bmw', 'audi', 'bike', 'motorcycle', 'truck', 'auto',
+  'cat', 'dog', 'pet', 'animal', 'scenery', 'sunset', 'selfie', 'food', 'meal', 'dinner',
+  'clothing', 'shirt', 'dress', 'shoes', 'screenshot_game', 'meme', 'receipt_groceries',
+];
+
 const CITY_MAPPINGS: Record<string, string[]> = {
   Islamabad: ['islamabad', 'cda', 'f-6', 'f-7', 'f-8', 'f-10', 'f-11', 'g-11', 'g-13', 'i-8', 'e-11', 'd-12', 'gulberg greens', 'b-17'],
   Rawalpindi: ['rawalpindi', 'pindi', 'bahria', 'bahria town', 'chaklala', 'adiala', 'satellite town', 'rda', 'dha rawalpindi'],
@@ -138,10 +163,21 @@ const CITY_MAPPINGS: Record<string, string[]> = {
   Quetta: ['quetta', 'cantt quetta', 'samungli', 'jinnah town'],
 };
 
+// ─── Fast Buffer String Extractor ─────────────────────────────────────────────
+
+export function extractBufferStrings(buffer: Buffer): string {
+  try {
+    const raw = buffer.toString('utf-8');
+    const matches = raw.match(/[a-zA-Z0-9_\-\.\s]{4,}/g) || [];
+    return matches.slice(0, 500).join(' ');
+  } catch {
+    return '';
+  }
+}
+
 // ─── Extractors ───────────────────────────────────────────────────────────────
 
 function extractArea(text: string): { areaSqFt: number | null; label?: string } {
-  // Kanal regex (e.g. "1 Kanal", "2 Kanal")
   const kanalMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:kanal|kanals)\b/i);
   if (kanalMatch) {
     const kanals = parseFloat(kanalMatch[1]);
@@ -149,7 +185,6 @@ function extractArea(text: string): { areaSqFt: number | null; label?: string } 
     return { areaSqFt: sqft, label: `${kanals} Kanal` };
   }
 
-  // Marla regex (e.g. "5 Marla", "10 Marla", "20 Marla")
   const marlaMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:marla|marlas)\b/i);
   if (marlaMatch) {
     const marlas = parseFloat(marlaMatch[1]);
@@ -157,7 +192,6 @@ function extractArea(text: string): { areaSqFt: number | null; label?: string } 
     return { areaSqFt: sqft, label: `${marlas} Marla` };
   }
 
-  // Square Yards (e.g. "200 sq yards", "500 sq yds")
   const sqYardsMatch = text.match(/(\d+(?:,\d+)?(?:\.\d+)?)\s*(?:sq(?:uare)?\s*(?:yards?|yds?))\b/i);
   if (sqYardsMatch) {
     const yards = parseFloat(sqYardsMatch[1].replace(/,/g, ''));
@@ -165,7 +199,6 @@ function extractArea(text: string): { areaSqFt: number | null; label?: string } 
     return { areaSqFt: sqft, label: `${yards} Sq Yds` };
   }
 
-  // Square Feet (e.g. "2250 sq ft", "1800 sqft")
   const sqftMatch = text.match(/(\d+(?:,\d+)?(?:\.\d+)?)\s*(?:sq(?:uare)?\s*(?:ft|feet)?|sqft)\b/i);
   if (sqftMatch) {
     const sqft = parseFloat(sqftMatch[1].replace(/,/g, ''));
@@ -203,7 +236,6 @@ function extractCityAndSociety(text: string): { city: string | null; society: st
     }
   }
 
-  // Match famous societies
   const societyMatches = [
     'DHA Phase 1', 'DHA Phase 2', 'DHA Phase 5', 'DHA Phase 6', 'DHA Phase 7', 'DHA Phase 8', 'DHA Phase 9', 'DHA',
     'Bahria Town Phase 1', 'Bahria Town Phase 4', 'Bahria Town Phase 7', 'Bahria Town Phase 8', 'Bahria Town', 'Bahria Orchard',
@@ -273,18 +305,49 @@ export function analyzeDocumentContent(
 ): DocumentAnalysisResult {
   const combinedText = `${fileName} ${ocrText}`.toLowerCase().replace(/[\r\n\t]+/g, ' ');
 
+  // Quick check for explicit invalid keywords without strong legal context
+  const invalidHits = EXPLICIT_INVALID_KEYWORDS.filter((kw) => {
+    const regex = new RegExp(`\\b${kw}\\b`, 'i');
+    return regex.test(combinedText);
+  });
+
   // Count keyword hits
   const allotmentHits = ALLOTMENT_KEYWORDS.filter((kw) => combinedText.includes(kw));
   const registryHits = REGISTRY_KEYWORDS.filter((kw) => combinedText.includes(kw));
   const cnicHits = CNIC_NICOP_KEYWORDS.filter((kw) => combinedText.includes(kw));
+  const blueprintHits = BLUEPRINT_KEYWORDS.filter((kw) => combinedText.includes(kw));
   const propertyHits = GENERAL_PROPERTY_KEYWORDS.filter((kw) => combinedText.includes(kw));
 
-  const totalLegalHits = allotmentHits.length + registryHits.length + cnicHits.length;
+  const totalLegalHits = allotmentHits.length + registryHits.length + cnicHits.length + blueprintHits.length;
   const totalPropertyHits = propertyHits.length;
 
   const detectedKeywords = Array.from(
-    new Set([...allotmentHits, ...registryHits, ...cnicHits, ...propertyHits])
+    new Set([...allotmentHits, ...registryHits, ...cnicHits, ...blueprintHits, ...propertyHits])
   );
+
+  // If prominent invalid hits exist (e.g. car, van) and no strong legal presence, reject immediately
+  if (invalidHits.length > 0 && totalLegalHits === 0 && totalPropertyHits <= 1) {
+    return {
+      isValid: false,
+      documentType: 'INVALID',
+      documentTypeLabel: 'Invalid Document',
+      verifiedScore: 0,
+      confidence: 0,
+      errorMessage: 'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.',
+      extractedParams: {
+        propertyType: null,
+        bedrooms: null,
+        bathrooms: null,
+        areaSqFt: null,
+        city: null,
+        societyOrLocation: null,
+        plotOrUnitNo: null,
+        suggestedTitle: null,
+        detectedKeywords: [],
+      },
+      rawOcrSnippet: ocrText.slice(0, 150),
+    };
+  }
 
   // Determine document type
   let documentType: DocumentAnalysisResult['documentType'] = 'INVALID';
@@ -299,6 +362,9 @@ export function analyzeDocumentContent(
   } else if (cnicHits.length >= 2 || (cnicHits.length >= 1 && combinedText.includes('pakistan'))) {
     documentType = 'CNIC_NICOP';
     documentTypeLabel = 'National ID / NICOP';
+  } else if (blueprintHits.length >= 1 && totalPropertyHits >= 1) {
+    documentType = 'BLUEPRINT_PLAN';
+    documentTypeLabel = 'Architectural Blueprint / Layout Plan';
   } else if (totalLegalHits >= 1 && totalPropertyHits >= 2) {
     documentType = 'TITLE_DEED';
     documentTypeLabel = 'Property Title Document';
@@ -336,11 +402,9 @@ export function analyzeDocumentContent(
   // ── Compute Dynamic Verified Score (88.0% – 99.4%) ───────────────────────────
   let baseScore = 88.0;
 
-  // Add points based on keyword depth
   baseScore += Math.min(6.0, totalLegalHits * 1.5);
   baseScore += Math.min(3.5, totalPropertyHits * 0.8);
 
-  // Bonus for strong official entity presence (DHA, NADRA, Sub-Registrar, CDA, Bahria)
   if (
     combinedText.includes('dha') ||
     combinedText.includes('nadra') ||
@@ -351,7 +415,6 @@ export function analyzeDocumentContent(
     baseScore += 1.8;
   }
 
-  // Extract parameters
   const areaInfo = extractArea(combinedText);
   const bedCount = extractBedrooms(combinedText);
   const { city, society } = extractCityAndSociety(combinedText);

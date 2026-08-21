@@ -4,17 +4,15 @@ import Stripe from 'stripe';
 
 export const dynamic = 'force-dynamic';
 
+const stripe = new Stripe(
+  'sk_test_51U6wuc1Hife0dd70yuEg7PbDINulnYn2oHuJ6Ex40jy4q8gLhq5f48vgcmDcLNEPhnGfdVswtjjjMBUykNjmsrHq00IxqJpQLj',
+  {
+    apiVersion: '2023-10-16' as Stripe.LatestApiVersion,
+  }
+);
+
 export async function POST(req: NextRequest) {
   try {
-    const rawKey = process.env.STRIPE_SECRET_KEY || '';
-    const cleanKey = rawKey.replace(/[^a-zA-Z0-9_]/g, '').trim();
-
-    if (!cleanKey || !cleanKey.startsWith('sk_test_')) {
-      return NextResponse.json({ error: 'Invalid Stripe Secret Key configuration.' }, { status: 500 });
-    }
-
-    const stripe = new Stripe(cleanKey, { apiVersion: '2023-10-16' as Stripe.LatestApiVersion });
-
     const body = await req.json();
     const {
       propertyId,
@@ -54,7 +52,8 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      customer_email: buyerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail) ? buyerEmail : undefined,
+      customer_email:
+        buyerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail) ? buyerEmail : undefined,
       line_items: [
         {
           price_data: {
@@ -89,7 +88,8 @@ export async function POST(req: NextRequest) {
       sessionId: session.id,
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Failed to create Stripe Escrow checkout session';
+    const message =
+      error instanceof Error ? error.message : 'Failed to create Stripe Escrow checkout session';
     console.error('[Stripe Escrow Checkout] Error creating session:', error);
     return NextResponse.json(
       {

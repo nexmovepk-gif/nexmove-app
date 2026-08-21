@@ -10,8 +10,8 @@ import {
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// OCR budget: 2 s on Vercel hobby / edge environments
-const OCR_TIMEOUT_MS = 2000;
+// Local OCR timeout budget (5.0s) to ensure accurate character extraction even for low-res scans
+const OCR_TIMEOUT_MS = 5000;
 
 const VALID_MIMES = new Set([
   'image/jpeg',
@@ -43,7 +43,14 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return NextResponse.json(
-        { success: false, isValid: false, verifiedScore: 0, error: 'No document file provided.' },
+        {
+          success: false,
+          valid: false,
+          isValid: false,
+          score: 0,
+          verifiedScore: 0,
+          error: 'No document file provided for verification.',
+        },
         { status: 400 }
       );
     }
@@ -51,14 +58,16 @@ export async function POST(req: NextRequest) {
     fileName = file.name || 'document.jpg';
     fileType = file.type || 'application/octet-stream';
 
-    // 1. MIME / extension guard
+    // 1. File Type / MIME validation
     if (!isValidDocumentMime(fileType, fileName)) {
       return NextResponse.json(
         {
           success: false,
+          valid: false,
           isValid: false,
+          score: 0,
           verifiedScore: 0,
-          error: 'Invalid file type. Please upload a PDF, JPEG, PNG, or WEBP document.',
+          error: 'Invalid Document Structure Uploaded',
         },
         { status: 400 }
       );
@@ -69,15 +78,22 @@ export async function POST(req: NextRequest) {
 
     if (buffer.length === 0) {
       return NextResponse.json(
-        { success: false, isValid: false, verifiedScore: 0, error: 'Uploaded file is empty.' },
+        {
+          success: false,
+          valid: false,
+          isValid: false,
+          score: 0,
+          verifiedScore: 0,
+          error: 'Invalid Document Structure Uploaded',
+        },
         { status: 400 }
       );
     }
 
-    // 2. Fast string extraction from raw buffer (milliseconds, language-agnostic)
+    // 2. Fast Raw Buffer String Extraction
     const fastBufferText = extractBufferStrings(buffer);
 
-    // 3. Timed OCR for images only
+    // 3. Local OCR Processing (Tesseract.js - zero paid API required)
     let ocrText = fastBufferText;
     const isImage =
       fileType.startsWith('image/') || /\.(png|jpe?g|webp|bmp|tiff)$/i.test(fileName);
@@ -92,7 +108,11 @@ export async function POST(req: NextRequest) {
             return result.data.text || '';
           } finally {
             if (worker) {
-              try { await worker.terminate(); } catch { /* ignore */ }
+              try {
+                await worker.terminate();
+              } catch {
+                // worker cleanup
+              }
             }
           }
         })();
@@ -102,28 +122,28 @@ export async function POST(req: NextRequest) {
         );
 
         const recognized = await Promise.race([ocrRace, timeout]);
-        if (recognized) ocrText = `${ocrText} ${recognized}`;
+        if (recognized) {
+          ocrText = `${ocrText} ${recognized}`;
+        }
       } catch (ocrErr) {
-        console.warn('[OCR] Fallback to buffer heuristic:', ocrErr);
+        console.warn('[Local OCR] Fast string fallback utilized:', ocrErr);
       }
     }
 
-    // 4. Analysis — pass fileMime & formatVerified so the library can apply 80% fallback
-    const formatVerified = isValidDocumentMime(fileType, fileName);
-    const analysis = analyzeDocumentContent(ocrText, fileName, fileType, formatVerified);
+    // 4. Strict Signature Verification Analysis
+    const analysis = analyzeDocumentContent(ocrText, fileName);
 
-    // 5. Invalid document → 400
-    if (!analysis.isValid) {
+    // 5. IF ZERO signatures match: Return HTTP 400 with { valid: false, score: 0 }
+    if (!analysis.isValid || analysis.score === 0) {
       return NextResponse.json(
         {
           success: false,
+          valid: false,
           isValid: false,
-          verifiedScore: 0,
           score: 0,
-          error: 'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.',
-          errorMessage:
-            analysis.errorMessage ||
-            'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.',
+          verifiedScore: 0,
+          error: 'Invalid Document Structure Uploaded',
+          errorMessage: 'Invalid Document Structure Uploaded',
           documentType: 'INVALID',
           documentTypeLabel: 'Invalid Document',
           extractedParams: analysis.extractedParams,
@@ -132,43 +152,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 6. Upload valid document to Supabase Storage
+    // 6. IF MATCHED: Upload to Supabase Storage and Return 200 with dynamic score
     const uploadResult = await uploadPropertyDocument(buffer, fileName, fileType);
 
     return NextResponse.json(
       {
         success: true,
+        valid: true,
         isValid: true,
+        score: analysis.score,
         verifiedScore: analysis.verifiedScore,
-        score: analysis.verifiedScore,
         confidence: analysis.confidence,
-        fallback: analysis.fallback ?? false,
         documentType: analysis.documentType,
         documentTypeLabel: analysis.documentTypeLabel,
         extractedParams: analysis.extractedParams,
         fileUrl: uploadResult.fileUrl,
         storagePath: uploadResult.storagePath,
         bucket: uploadResult.bucket,
-        message: `Document verified successfully as ${analysis.documentTypeLabel}.${
-          analysis.fallback
-            ? ' (Fallback score applied — document may be compressed or blurry.)'
-            : ''
-        }`,
+        message: `Document verified successfully as ${analysis.documentTypeLabel}.`,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('[Verify Document API] Error:', error);
+    console.error('[Verify Document API] Processing error:', error);
     return NextResponse.json(
       {
         success: false,
+        valid: false,
         isValid: false,
-        verifiedScore: 0,
         score: 0,
+        verifiedScore: 0,
         error:
           error instanceof Error
             ? error.message
-            : 'Document verification failed. Please upload an Allotment Letter, CNIC, or Registry.',
+            : 'Invalid Document Structure Uploaded',
       },
       { status: 400 }
     );

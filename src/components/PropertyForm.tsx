@@ -262,7 +262,6 @@ export default function PropertyForm({
   const [uploadedDocUrl, setUploadedDocUrl] = useState<string | null>(null);
   const [docValidationError, setDocValidationError] = useState<string | null>(null);
   const [docTypeLabel, setDocTypeLabel] = useState<string | null>(null);
-  const [docIsFallback, setDocIsFallback] = useState(false);
 
   // ── Toast Notifications State
   const [toasts, setToasts] = useState<Array<{ id: string; message: string; type: 'success' | 'error' | 'info' | 'warning' }>>([]);
@@ -381,11 +380,14 @@ export default function PropertyForm({
     setPanoramaPreviewUrl(URL.createObjectURL(file));
   };
 
-  // ── Canvas Preprocessor: grayscale + contrast boost for OCR accuracy ─────
+  // ── High-Contrast Grayscale Preprocessor & Low-Res Upscaler for OCR Accuracy ─
   const preprocessImageForOcr = (file: File): Promise<Blob> =>
     new Promise((resolve) => {
-      // Only preprocess images — pass PDFs/docs straight through
-      if (!file.type.startsWith('image/')) { resolve(file); return; }
+      // Pass PDFs and non-image documents directly to API
+      if (!file.type.startsWith('image/')) {
+        resolve(file);
+        return;
+      }
 
       const img = new Image();
       const objectUrl = URL.createObjectURL(file);
@@ -393,26 +395,38 @@ export default function PropertyForm({
       img.onload = () => {
         try {
           const canvas = document.createElement('canvas');
-          // Scale down very large images to max 1600px on longest side (speed)
-          const MAX = 1600;
-          const scale = Math.min(1, MAX / Math.max(img.width, img.height));
-          canvas.width  = Math.round(img.width  * scale);
+          const maxDim = Math.max(img.width, img.height);
+          const TARGET_DIM = 1600;
+
+          // Auto-upscale low-resolution scans (e.g. 400-900px) or downscale massive files for optimal OCR
+          let scale = 1;
+          if (maxDim < TARGET_DIM) {
+            scale = Math.min(3.0, TARGET_DIM / maxDim);
+          } else if (maxDim > 2200) {
+            scale = 2200 / maxDim;
+          }
+
+          canvas.width = Math.round(img.width * scale);
           canvas.height = Math.round(img.height * scale);
 
           const ctx = canvas.getContext('2d');
-          if (!ctx) { resolve(file); return; }
+          if (!ctx) {
+            resolve(file);
+            return;
+          }
 
-          // Draw original image
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          // Enable high-quality smoothing for upscaled low-resolution text
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
 
-          // Apply grayscale + contrast filter via CSS filter
-          ctx.filter = 'grayscale(100%) contrast(150%)';
+          // High-contrast grayscale filter for crisp character edges on CNICs, stamps & title deeds
+          ctx.filter = 'grayscale(100%) contrast(180%) brightness(105%)';
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
           canvas.toBlob(
             (blob) => resolve(blob ?? file),
             'image/jpeg',
-            0.90
+            0.95
           );
         } catch {
           resolve(file);
@@ -421,16 +435,19 @@ export default function PropertyForm({
         }
       };
 
-      img.onerror = () => { URL.revokeObjectURL(objectUrl); resolve(file); };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(file);
+      };
       img.src = objectUrl;
     });
 
-  // ── Title Deed OCR & Content Verification ────────────────────────────────
+  // ── Strict Document OCR & Content Verification ───────────────────────────
   const handleTitleDeedUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Reset input to allow re-selecting the same file
+    // Reset input to allow re-selecting the same file if needed
     e.target.value = '';
 
     setFileName(file.name);
@@ -443,13 +460,16 @@ export default function PropertyForm({
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
-      // Pre-process image (grayscale + contrast) before sending to OCR API
+      // 1. High-contrast canvas pre-processing
       const processedBlob = await preprocessImageForOcr(file);
-      const uploadFile = new File([processedBlob], file.name, { type: processedBlob.type || file.type });
+      const uploadFile = new File([processedBlob], file.name, {
+        type: processedBlob.type || file.type,
+      });
 
       const formData = new FormData();
       formData.append('file', uploadFile);
 
+      // 2. Strict verification API call
       const res = await fetch('/api/documents/verify-upload', {
         method: 'POST',
         body: formData,
@@ -458,11 +478,11 @@ export default function PropertyForm({
 
       const data = await res.json().catch(() => ({}));
 
-      if (!res.ok || !data.isValid) {
-        const errorMsg =
-          data.error ||
-          data.errorMessage ||
-          'Invalid document uploaded. Please upload an Allotment Letter, CNIC, or Registry.';
+      // 3. Strict validation check (Zero fallback allowed)
+      const isValid = res.ok && (data.valid === true || data.isValid === true) && (data.score > 0 || data.verifiedScore > 0);
+
+      if (!isValid) {
+        const errorMsg = 'Invalid Document Structure Uploaded';
         setOwnershipScore(0);
         setAiConfidence(0);
         setAiExtracted(false);
@@ -471,26 +491,25 @@ export default function PropertyForm({
         return;
       }
 
-      // ── Valid Document Success Flow ──────────────────────────────────────
-      const score = data.verifiedScore ?? data.score ?? 80;
-      const isFallback = data.fallback === true;
+      // 4. Strict Success Flow (Dynamic Score 85% – 98%)
+      const score = data.score ?? data.verifiedScore ?? 85;
 
       setOwnershipScore(score);
       setAiConfidence(data.confidence ? Math.round(data.confidence * 100) : Math.round(score));
       setAiExtracted(true);
-      setDocIsFallback(isFallback);
       setDocTypeLabel(data.documentTypeLabel || 'Verified Document');
-      if (data.fileUrl) setUploadedDocUrl(data.fileUrl);
+      if (data.fileUrl) {
+        setUploadedDocUrl(data.fileUrl);
+      }
 
-      const toastMsg = isFallback
-        ? `⚠ Document accepted with fallback score (${score}%). Upload a clearer scan for best results.`
-        : `✓ Document verified as ${data.documentTypeLabel || 'Legal Document'}! Score: ${score}%`;
-      showToast(toastMsg, isFallback ? 'warning' : 'success');
+      showToast(`✓ Document verified successfully as ${data.documentTypeLabel || 'Legal Document'}! Score: ${score}%`, 'success');
 
-      // ── Auto-fill property specs from verified parameters ────────────────
+      // 5. Auto-fill property specs from verified document
       const params = data.extractedParams;
       if (params) {
-        if (params.suggestedTitle && !title)         setTitle(params.suggestedTitle);
+        if (params.suggestedTitle && !title) {
+          setTitle(params.suggestedTitle);
+        }
         if (params.propertyType) {
           const pType = params.propertyType.toLowerCase();
           const found = PROPERTY_CATEGORIES.flatMap((c) => c.options).find((o) =>
@@ -498,10 +517,18 @@ export default function PropertyForm({
           );
           if (found) setPropertyType(found);
         }
-        if (params.bedrooms  != null && !bedrooms)   setBedrooms(String(params.bedrooms));
-        if (params.bathrooms != null && !bathrooms)   setBathrooms(String(params.bathrooms));
-        if (params.areaSqFt  != null && !areaSqFt)   setAreaSqFt(String(params.areaSqFt));
-        if (params.city && !city)                     setCity(params.city);
+        if (params.bedrooms != null && !bedrooms) {
+          setBedrooms(String(params.bedrooms));
+        }
+        if (params.bathrooms != null && !bathrooms) {
+          setBathrooms(String(params.bathrooms));
+        }
+        if (params.areaSqFt != null && !areaSqFt) {
+          setAreaSqFt(String(params.areaSqFt));
+        }
+        if (params.city && !city) {
+          setCity(params.city);
+        }
         if (params.societyOrLocation && !address) {
           const addr = params.plotOrUnitNo
             ? `${params.plotOrUnitNo}, ${params.societyOrLocation}`
@@ -515,20 +542,17 @@ export default function PropertyForm({
         }
       }
     } catch (err: unknown) {
-      console.error('[DocVerify] Error:', err);
-      const isAbort = err instanceof Error && err.name === 'AbortError';
-      const errorMsg = isAbort
-        ? 'Verification timed out. Please upload a clearer scan of your document.'
-        : 'Document verification failed. Please upload an Allotment Letter, CNIC, or Registry.';
+      console.error('[DocVerify] Verification error:', err);
+      const errorMsg = 'Invalid Document Structure Uploaded';
       setOwnershipScore(0);
       setAiConfidence(0);
       setAiExtracted(false);
-      setDocIsFallback(false);
       setDocValidationError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
       clearTimeout(timeoutId);
-      setIsAiExtracting(false); // Always reset — prevents 'Extracting...' freeze
+      // Strictly reset loading state regardless of outcome
+      setIsAiExtracting(false);
     }
   };
 
@@ -654,11 +678,11 @@ export default function PropertyForm({
         body: JSON.stringify(payload),
       }).catch(() => {});
 
-      setLoading(false);
       setSubmitted(true);
     } catch (err) {
-      setLoading(false);
       setSubmitError(err instanceof Error ? err.message : 'Failed to submit property listing.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -813,11 +837,7 @@ export default function PropertyForm({
                   <span className="text-xs font-bold text-red-400 bg-red-950/90 border border-red-800 px-3 py-2 rounded-xl flex items-center gap-1">
                     <span>❌</span> Invalid Document (0%)
                   </span>
-                ) : ownershipScore !== null && docIsFallback ? (
-                  <span className="text-xs font-bold text-amber-400 bg-amber-950/80 border border-amber-700 px-3 py-2 rounded-xl flex items-center gap-1">
-                    <span>⚠️</span> Fallback Score: {ownershipScore}%
-                  </span>
-                ) : ownershipScore !== null ? (
+                ) : ownershipScore !== null && ownershipScore > 0 ? (
                   <span className="text-xs font-bold text-emerald-400 bg-emerald-950 border border-emerald-800 px-3 py-2 rounded-xl flex items-center gap-1">
                     <span>✓</span> Verified Score: {ownershipScore}%
                   </span>

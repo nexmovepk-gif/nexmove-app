@@ -1,10 +1,10 @@
 // src/lib/documentValidation.ts
-// Production Document Validation Engine for NexMove
-// Hybrid keyword + structural analysis covering Pakistani & global IDs.
+// Strict Local Document & Title Verification Engine for NexMove (No External Paid API Required)
 
 export interface DocumentAnalysisResult {
   isValid: boolean;
-  score: number; // alias: verifiedScore — 0 for invalid, 80–98 for valid
+  valid: boolean; // alias for API response consistency
+  score: number; // 0 for invalid, dynamic 85.0 – 98.0 for valid
   verifiedScore: number;
   confidence: number; // 0.0 – 1.0
   documentType:
@@ -14,12 +14,10 @@ export interface DocumentAnalysisResult {
     | 'TITLE_DEED'
     | 'BLUEPRINT_PLAN'
     | 'PROPERTY_DOCUMENT'
-    | 'GLOBAL_ID'
     | 'OTHER_LEGAL'
     | 'INVALID';
   documentTypeLabel: string;
   errorMessage?: string;
-  fallback?: boolean; // true when score was computed via fallback (80%)
   extractedParams: {
     propertyType: 'House' | 'Flat / Apartment' | 'Residential Plot' | 'Commercial Plot' | 'Villa / Farmhouse' | null;
     bedrooms: number | null;
@@ -35,11 +33,8 @@ export interface DocumentAnalysisResult {
   rawOcrSnippet?: string;
 }
 
-// ─── Normalizer ───────────────────────────────────────────────────────────────
+// ─── Text Normalizer ─────────────────────────────────────────────────────────
 
-/**
- * Normalize text: lowercase, strip special chars, collapse whitespace.
- */
 export function normalizeText(raw: string): string {
   return raw
     .toLowerCase()
@@ -48,57 +43,92 @@ export function normalizeText(raw: string): string {
     .trim();
 }
 
-// ─── Keyword Signatures ───────────────────────────────────────────────────────
+// ─── Strict Signatures ───────────────────────────────────────────────────────
 
-// Pakistani & Global Identity Card signatures
-const CNIC_PRIMARY = [
-  'cnic', 'nicop', 'nadra', 'national identity card', 'identity card', 'national id',
-  'islamic republic of pakistan', 'republic of pakistan',
-];
-const CNIC_SECONDARY = [
-  'identity', 'card', 'republic', 'pakistan', 'national', 'dob', 'gender', 'holder',
-  'father', 'husband', 'issue', 'expiry', 'date of birth', 'date of issue',
-  'date of expiry', 'family no', 'identity number', 'cardholder',
-  'country of stay', 'government of pakistan',
-];
-
-// Global IDs (passport, driving licence, etc.)
-const GLOBAL_ID_KEYWORDS = [
-  'passport', 'driving licence', 'driver license', 'driving license',
-  'foreign national', 'visa', 'immigration', 'border control',
-  'social security', 'iqama', 'residence permit', 'nid', 'voter id',
-  'pan card', 'aadhar', 'emirates id', 'iqama number',
-];
-
-// Property / Legal document signatures
-const PROPERTY_PRIMARY = [
-  'allotment', 'deed', 'registry', 'dha', 'authority', 'plot', 'sector', 'phase',
-  'transfer', 'letter', 'blueprint', 'society', 'title', 'pcatp',
-  'khasra', 'khewat', 'allotment letter', 'sale deed',
-];
-const PROPERTY_SECONDARY = [
-  'sub registrar', 'sub-registrar', 'bainama', 'stamp paper', 'fard', 'fard malkiat',
-  'intiqal', 'mutation', 'khatooni', 'mauza', 'tehsil', 'patwari', 'halqa', 'court fee',
-  'conveyance deed', 'gift deed', 'power of attorney', 'mukhtar nama', 'purchaser',
-  'vendor', 'deed of transfer', 'possession order', 'membership no', 'allottee',
-  'allotted', 'intimation letter', 'allocation',
-  // Housing authorities and societies
-  'cda', 'lda', 'fda', 'kda', 'rda', 'bahria', 'bahria town', 'gulberg',
-  'fazaia', 'naval anchorage', 'wapda town', 'park view', 'defence housing',
-  // Blueprint / plans
-  'floor plan', 'site plan', 'architectural drawing', 'master plan', 'layout plan',
-  'sanctioned plan', 'elevation', 'structural drawing', 'key plan',
-  'ground floor', 'first floor', 'basement plan', 'approved plan',
-];
-const GENERAL_PROPERTY = [
-  'plot no', 'block', 'marla', 'kanal', 'sq ft', 'sqft', 'sq yards',
-  'square yards', 'square feet', 'residential', 'commercial',
-  'frontage', 'boundary', 'measuring', 'dimensions', 'demarcation',
-  'street', 'boulevard', 'corner', 'house no',
+export const ID_SIGNATURES = [
+  'cnic',
+  'identity',
+  'national',
+  'republic',
+  'pakistan',
+  'nadra',
+  'father',
+  'nicop',
+  'cardholder',
+  'husband',
+  'date of birth',
+  'date of issue',
+  'date of expiry',
+  'smart national',
+  'snic',
+  'country of stay',
+  'overseas',
+  'poc',
+  'pakistan origin',
+  'government of pakistan',
+  'islamic republic',
+  'citizen',
+  'id number',
 ];
 
-// Explicit invalid-image keyword patterns (vehicles, animals, food, scenery)
-const INVALID_SIGNALS = [
+export const LEGAL_SIGNATURES = [
+  'allotment',
+  'allottee',
+  'registry',
+  'deed',
+  'title deed',
+  'sale deed',
+  'conveyance deed',
+  'pcatp',
+  'transfer',
+  'transfer order',
+  'transfer letter',
+  'khasra',
+  'khewat',
+  'khatooni',
+  'fard',
+  'fard malkiat',
+  'jamabandi',
+  'aks shajra',
+  'bainama',
+  'intiqal',
+  'mutation',
+  'sub registrar',
+  'sub-registrar',
+  'patwari',
+  'tehsildar',
+  'possession order',
+  'possession certificate',
+  'authority letter',
+  'power of attorney',
+  'mukhtarnama',
+  'agreement to sell',
+  'stamp paper',
+  'blueprint',
+  'floor plan',
+  'site plan',
+  'architectural drawing',
+  'town planning',
+  'society',
+  'dha',
+  'cda',
+  'lda',
+  'rda',
+  'fda',
+  'kda',
+  'gda',
+  'mda',
+  'bahria',
+  'bahria town',
+  'gulberg',
+  'noc',
+  'property tax',
+  'excise and taxation',
+  'holding no',
+];
+
+// Explicit non-document rejection terms (vehicles, proposals, food, selfie, pets, random objects)
+const NON_DOC_SIGNALS = [
   'toyota', 'honda', 'suzuki', 'hyundai', 'kia', 'mercedes', 'bmw', 'audi',
   'ford', 'tesla', 'nissan', 'volkswagen', 'mitsubishi',
   'car', 'cars', 'vehicle', 'van', 'suv', 'sedan', 'truck', 'automobile',
@@ -106,35 +136,39 @@ const INVALID_SIGNALS = [
   'cat', 'dog', 'animal', 'pet', 'wildlife', 'elephant', 'lion',
   'selfie', 'food', 'meal', 'dinner', 'restaurant', 'pizza', 'burger',
   'scenery', 'sunset', 'beach', 'forest', 'mountain',
+  'proposal', 'marriage proposal', 'business proposal', 'resume', 'cv', 'curriculum vitae',
+  'invoice', 'receipt', 'shopping', 'menu', 'fashion', 'clothing', 'shoe', 'shoes', 'dress', 'shirt',
 ];
 
-// ─── City Mappings ────────────────────────────────────────────────────────────
+// ─── City & Society Lists ───────────────────────────────────────────────────
 
 const CITY_MAPPINGS: Record<string, string[]> = {
-  Islamabad: ['islamabad', 'cda', 'f-6', 'f-7', 'f-8', 'f-10', 'f-11', 'g-11', 'g-13', 'i-8', 'e-11', 'd-12', 'b-17', 'gulberg greens'],
-  Rawalpindi: ['rawalpindi', 'pindi', 'bahria', 'bahria town', 'chaklala', 'adiala', 'satellite town', 'rda', 'dha rawalpindi'],
-  Lahore: ['lahore', 'dha lahore', 'gulberg', 'johar town', 'model town', 'cantt', 'lda', 'bahria orchard', 'wapda town', 'lake city'],
-  Karachi: ['karachi', 'clifton', 'defence', 'dha karachi', 'gulshan', 'pechs', 'north nazimabad', 'scheme 33', 'bahria karachi', 'kda'],
+  Islamabad: ['islamabad', 'cda', 'f-6', 'f-7', 'f-8', 'f-10', 'f-11', 'g-11', 'g-13', 'i-8', 'e-11', 'd-12', 'b-17', 'gulberg greens', 'mumtaz city', 'top city'],
+  Rawalpindi: ['rawalpindi', 'pindi', 'bahria', 'bahria town', 'chaklala', 'adiala', 'satellite town', 'rda', 'dha rawalpindi', 'dha phase 2'],
+  Lahore: ['lahore', 'dha lahore', 'gulberg', 'johar town', 'model town', 'cantt', 'lda', 'bahria orchard', 'wapda town', 'lake city', 'valancia'],
+  Karachi: ['karachi', 'clifton', 'defence', 'dha karachi', 'gulshan', 'pechs', 'north nazimabad', 'scheme 33', 'bahria karachi', 'kda', 'malir cantt'],
   Peshawar: ['peshawar', 'hayatabad', 'university town', 'warsak', 'regi model town'],
-  Faisalabad: ['faisalabad', 'madina town', 'fda', 'peoples colony', 'canal road'],
-  Multan: ['multan', 'mda', 'bosan road', 'cantt multan', 'dha multan'],
+  Faisalabad: ['faisalabad', 'madina town', 'fda', 'peoples colony', 'canal road', 'kohinoor city'],
+  Multan: ['multan', 'mda', 'bosan road', 'cantt multan', 'dha multan', 'royal orchard'],
   Quetta: ['quetta', 'cantt quetta', 'samungli', 'jinnah town'],
+  Gujranwala: ['gujranwala', 'dha gujranwala', 'dc colony', 'master city', 'gda'],
+  Sialkot: ['sialkot', 'cantt sialkot', 'citi housing', 'sambrial'],
 };
 
 const SOCIETY_LIST = [
-  'DHA Phase 1', 'DHA Phase 2', 'DHA Phase 5', 'DHA Phase 6', 'DHA Phase 7',
-  'DHA Phase 8', 'DHA Phase 9', 'DHA',
-  'Bahria Town Phase 1', 'Bahria Town Phase 4', 'Bahria Town Phase 7',
-  'Bahria Town Phase 8', 'Bahria Town', 'Bahria Orchard',
+  'DHA Phase 1', 'DHA Phase 2', 'DHA Phase 3', 'DHA Phase 4', 'DHA Phase 5',
+  'DHA Phase 6', 'DHA Phase 7', 'DHA Phase 8', 'DHA Phase 9', 'DHA',
+  'Bahria Town Phase 1', 'Bahria Town Phase 2', 'Bahria Town Phase 3', 'Bahria Town Phase 4',
+  'Bahria Town Phase 7', 'Bahria Town Phase 8', 'Bahria Town', 'Bahria Orchard', 'Bahria Town Karachi',
   'Gulberg Greens', 'Gulberg Residencia', 'Gulberg',
   'CDA Sector F-6', 'CDA Sector F-7', 'CDA Sector F-8', 'CDA Sector F-10',
   'CDA Sector F-11', 'CDA Sector G-11', 'CDA Sector G-13', 'CDA Sector I-8',
-  'CDA Sector D-12', 'CDA Sector B-17',
-  'Model Town', 'Johar Town', 'Lake City', 'Wapda Town',
-  'Clifton', 'PECHS', 'Hayatabad',
+  'CDA Sector D-12', 'CDA Sector B-17', 'Top City-1', 'Mumtaz City',
+  'Model Town', 'Johar Town', 'Lake City', 'Wapda Town', 'Valencia Town',
+  'Clifton', 'PECHS', 'North Nazimabad', 'Hayatabad', 'Citi Housing',
 ];
 
-// ─── Fast Buffer String Extractor ─────────────────────────────────────────────
+// ─── Fast Buffer String Extractor ───────────────────────────────────────────
 
 export function extractBufferStrings(buffer: Buffer): string {
   try {
@@ -146,7 +180,7 @@ export function extractBufferStrings(buffer: Buffer): string {
   }
 }
 
-// ─── Extractors ───────────────────────────────────────────────────────────────
+// ─── Param Extraction Helpers ───────────────────────────────────────────────
 
 function extractArea(text: string): { areaSqFt: number | null; label?: string } {
   const kanalMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:kanal|kanals)\b/);
@@ -159,7 +193,7 @@ function extractArea(text: string): { areaSqFt: number | null; label?: string } 
     const m = parseFloat(marlaMatch[1]);
     return { areaSqFt: Math.round(m * 272), label: `${m} Marla` };
   }
-  const sqYardsMatch = text.match(/(\d+(?:,\d+)?(?:\.\d+)?)\s*(?:sq(?:uare)?\s*(?:yards?|yds?))\b/);
+  const sqYardsMatch = text.match(/(\d+(?:,\d+)?(?:\.\d+)?)\s*(?:sq(?:uare)?\s*(?:yards?|yds?)|gaj|ghaz)\b/);
   if (sqYardsMatch) {
     const y = parseFloat(sqYardsMatch[1].replace(/,/g, ''));
     return { areaSqFt: Math.round(y * 9), label: `${y} Sq Yds` };
@@ -181,6 +215,8 @@ function extractBedrooms(text: string): number | null {
     [/\b4\s*(?:bed|bedroom|br|beds)\b/, 4],
     [/\b5\s*(?:bed|bedroom|br|beds)\b/, 5],
     [/\b6\s*(?:bed|bedroom|br|beds)\b/, 6],
+    [/\b7\s*(?:bed|bedroom|br|beds)\b/, 7],
+    [/\b8\s*(?:bed|bedroom|br|beds)\b/, 8],
   ];
   for (const [p, n] of patterns) if (p.test(text)) return n;
   return null;
@@ -189,20 +225,26 @@ function extractBedrooms(text: string): number | null {
 function extractCityAndSociety(text: string): { city: string | null; society: string | null } {
   let matchedCity: string | null = null;
   for (const [cityName, aliases] of Object.entries(CITY_MAPPINGS)) {
-    if (aliases.some((a) => text.includes(a))) { matchedCity = cityName; break; }
+    if (aliases.some((a) => text.includes(a))) {
+      matchedCity = cityName;
+      break;
+    }
   }
   let matchedSociety: string | null = null;
   for (const s of SOCIETY_LIST) {
-    if (text.includes(s.toLowerCase())) { matchedSociety = s; break; }
+    if (text.includes(s.toLowerCase())) {
+      matchedSociety = s;
+      break;
+    }
   }
   return { city: matchedCity, society: matchedSociety };
 }
 
 function extractPlotNumber(text: string): string | null {
-  const m = text.match(/\b(?:plot|flat|unit|house)\s*(?:no\.?|#|number)?\s*([a-z0-9\/-]+)/i);
+  const m = text.match(/\b(?:plot|flat|unit|house|shop|office)\s*(?:no\.?|#|number)?\s*([a-z0-9\/-]+)/i);
   if (m && m[1]) {
     const v = m[1].trim();
-    if (v.length <= 15 && !['is', 'and', 'the', 'of', 'for'].includes(v)) {
+    if (v.length <= 15 && !['is', 'and', 'the', 'of', 'for', 'with', 'in', 'to'].includes(v.toLowerCase())) {
       return `Plot ${v.toUpperCase()}`;
     }
   }
@@ -213,9 +255,9 @@ function classifyPropertyType(
   text: string,
   docType: DocumentAnalysisResult['documentType']
 ): DocumentAnalysisResult['extractedParams']['propertyType'] {
-  if (/\b(commercial|shop|plaza|office)\b/.test(text)) return 'Commercial Plot';
+  if (/\b(commercial|shop|plaza|office|building)\b/.test(text)) return 'Commercial Plot';
   if (/\b(flat|apartment|studio|penthouse)\b/.test(text)) return 'Flat / Apartment';
-  if (/\b(villa|farmhouse)\b/.test(text)) return 'Villa / Farmhouse';
+  if (/\b(villa|farmhouse|farm house)\b/.test(text)) return 'Villa / Farmhouse';
   if (/\b(plot|allocation)\b/.test(text) || docType === 'ALLOTMENT_LETTER') {
     if (/\b(house|constructed|bungalow)\b/.test(text)) return 'House';
     return 'Residential Plot';
@@ -224,164 +266,136 @@ function classifyPropertyType(
   return 'House';
 }
 
-// ─── Keyword Scorer ───────────────────────────────────────────────────────────
-
-function countHits(text: string, keywords: string[]): string[] {
-  return keywords.filter((kw) => text.includes(kw));
+function countHits(text: string, signatures: string[]): string[] {
+  return signatures.filter((sig) => {
+    const idx = text.indexOf(sig);
+    if (idx === -1) return false;
+    return true;
+  });
 }
 
-// ─── Main Analysis Function ───────────────────────────────────────────────────
+// ─── Main Strict Document Analysis ───────────────────────────────────────────
 
 /**
- * Analyze OCR text + filename against Pakistani/global document keyword signatures.
- * Returns isValid=false (score=0) for vehicles, animals, random photos.
- * Falls back to score=80 when format is valid but OCR yields no matches (compressed/blurry image).
+ * Strict Document Verification Engine:
+ * - Checks for ID Signatures and Legal Signatures.
+ * - If AT LEAST ONE signature matches: returns valid = true, dynamic score (85% - 98%), and extracts specs.
+ * - If ZERO signatures match (or non-document signals dominate): returns valid = false, score = 0 (HTTP 400).
+ * - No automatic fallback score (e.g. 80%) allowed under any condition.
  */
 export function analyzeDocumentContent(
   rawOcrText: string,
-  fileName: string = '',
-  fileMime: string = '',
-  /** If true, the file format was verified valid (PDF/image) — enables 80% fallback */
-  formatVerified = false,
+  fileName: string = ''
 ): DocumentAnalysisResult {
-  // Normalize all text sources
   const norm = normalizeText(`${fileName} ${rawOcrText}`);
 
-  // ── Invalid-image signal check ────────────────────────────────────────────
-  const invalidHits = INVALID_SIGNALS.filter((kw) => {
+  // 1. Detect non-document signals (cars, proposals, animals, food, selfies, scenery)
+  const nonDocHits = NON_DOC_SIGNALS.filter((kw) => {
     const idx = norm.indexOf(kw);
     if (idx === -1) return false;
-    // Ensure it's a word boundary (not e.g. "caramel")
     const before = idx === 0 ? ' ' : norm[idx - 1];
     const after = idx + kw.length >= norm.length ? ' ' : norm[idx + kw.length];
     return /[\s\-]/.test(before) || /[\s\-,.]/.test(after) || idx === 0;
   });
 
-  // ── Keyword hit counts ────────────────────────────────────────────────────
-  const cnicPrimaryHits   = countHits(norm, CNIC_PRIMARY);
-  const cnicSecondaryHits = countHits(norm, CNIC_SECONDARY);
-  const globalIdHits      = countHits(norm, GLOBAL_ID_KEYWORDS);
-  const propPrimaryHits   = countHits(norm, PROPERTY_PRIMARY);
-  const propSecondaryHits = countHits(norm, PROPERTY_SECONDARY);
-  const generalPropHits   = countHits(norm, GENERAL_PROPERTY);
+  // 2. Count strict ID and Legal signatures
+  const idHits = countHits(norm, ID_SIGNATURES);
+  const legalHits = countHits(norm, LEGAL_SIGNATURES);
+  const totalHits = idHits.length + legalHits.length;
+  const detectedKeywords = Array.from(new Set([...idHits, ...legalHits]));
 
-  const totalIdHits       = cnicPrimaryHits.length + cnicSecondaryHits.length + globalIdHits.length;
-  const totalPropHits     = propPrimaryHits.length + propSecondaryHits.length + generalPropHits.length;
-  const totalLegalHits    = totalIdHits + totalPropHits;
-
-  const detectedKeywords  = Array.from(new Set([
-    ...cnicPrimaryHits, ...cnicSecondaryHits, ...globalIdHits,
-    ...propPrimaryHits, ...propSecondaryHits, ...generalPropHits,
-  ]));
-
-  // ── Reject obvious non-documents (vehicles, scenery, food, selfies) ───────
-  // Only reject if invalid signals are present AND total legal/property keywords are near-zero.
-  if (invalidHits.length >= 1 && totalLegalHits <= 1) {
+  // Strict Rule: If non-doc signals match and document signatures are missing/negligible -> Reject immediately
+  if (nonDocHits.length >= 1 && totalHits === 0) {
     return buildInvalidResult(rawOcrText);
   }
 
-  // ── Determine document classification ─────────────────────────────────────
-  let documentType: DocumentAnalysisResult['documentType'] = 'INVALID';
-  let documentTypeLabel = 'Unrecognized Document';
+  // Strict Rule: If ZERO document signatures match -> Return HTTP 400 (score 0, valid false)
+  if (totalHits === 0) {
+    return buildInvalidResult(rawOcrText);
+  }
 
-  if (cnicPrimaryHits.length >= 1 ||
-      (cnicSecondaryHits.length >= 2 && norm.includes('pakistan'))) {
+  // 3. Classify Document Type
+  let documentType: DocumentAnalysisResult['documentType'] = 'PROPERTY_DOCUMENT';
+  let documentTypeLabel = 'Property Document';
+
+  if (idHits.some((k) => ['cnic', 'identity', 'national', 'nadra', 'nicop', 'snic', 'poc'].includes(k))) {
     documentType = 'CNIC_NICOP';
     documentTypeLabel = 'CNIC / National Identity Card';
-  } else if (globalIdHits.length >= 1) {
-    documentType = 'GLOBAL_ID';
-    documentTypeLabel = 'Global Identity Document';
-  } else if (propPrimaryHits.some((k) => ['blueprint', 'floor plan', 'site plan', 'layout plan', 'sanctioned plan'].includes(k))) {
+  } else if (legalHits.includes('blueprint') || legalHits.includes('floor plan') || legalHits.includes('site plan') || legalHits.includes('architectural drawing')) {
     documentType = 'BLUEPRINT_PLAN';
     documentTypeLabel = 'Architectural Blueprint / Layout Plan';
-  } else if (
-    propPrimaryHits.includes('allotment') ||
-    propPrimaryHits.includes('allotment letter') ||
-    (propPrimaryHits.includes('authority') && generalPropHits.length >= 1)
-  ) {
+  } else if (legalHits.includes('allotment') || legalHits.includes('allottee')) {
     documentType = 'ALLOTMENT_LETTER';
     documentTypeLabel = 'Allotment Letter / Transfer Order';
   } else if (
-    propPrimaryHits.includes('deed') || propPrimaryHits.includes('registry') ||
-    propPrimaryHits.includes('khasra') || propPrimaryHits.includes('khewat') ||
-    propSecondaryHits.includes('sub registrar') || propSecondaryHits.includes('sub-registrar')
+    legalHits.includes('registry') ||
+    legalHits.includes('deed') ||
+    legalHits.includes('sale deed') ||
+    legalHits.includes('conveyance deed') ||
+    legalHits.includes('khasra') ||
+    legalHits.includes('khewat') ||
+    legalHits.includes('khatooni') ||
+    legalHits.includes('jamabandi') ||
+    legalHits.includes('fard') ||
+    legalHits.includes('fard malkiat') ||
+    legalHits.includes('bainama') ||
+    legalHits.includes('intiqal') ||
+    legalHits.includes('mutation')
   ) {
     documentType = 'REGISTRY_SALE_DEED';
     documentTypeLabel = 'Registry / Sale Deed / Fard';
-  } else if (propPrimaryHits.includes('title')) {
+  } else if (legalHits.includes('transfer') || legalHits.includes('transfer letter') || legalHits.includes('transfer order') || legalHits.includes('title deed')) {
     documentType = 'TITLE_DEED';
-    documentTypeLabel = 'Property Title Document';
-  } else if (propPrimaryHits.length >= 1 || generalPropHits.length >= 2) {
-    documentType = 'PROPERTY_DOCUMENT';
-    documentTypeLabel = 'Property Document';
-  } else if (totalLegalHits >= 1) {
+    documentTypeLabel = 'Property Transfer / Title Deed';
+  } else {
     documentType = 'OTHER_LEGAL';
-    documentTypeLabel = 'Legal Document';
+    documentTypeLabel = 'Legal Property Document';
   }
 
-  // ── Validate: at least 1 primary keyword must match ───────────────────────
-  const hasPrimaryHit =
-    cnicPrimaryHits.length >= 1 ||
-    globalIdHits.length >= 1 ||
-    propPrimaryHits.length >= 1 ||
-    cnicSecondaryHits.length >= 2;
-
-  const hasStructuralHint = generalPropHits.length >= 2;
-
-  if (!hasPrimaryHit && !hasStructuralHint) {
-    // Check fallback: valid format (PDF/image) but OCR found nothing (compressed/blurry)
-    if (formatVerified && totalLegalHits === 0) {
-      return buildFallbackResult(rawOcrText, fileMime);
-    }
-    return buildInvalidResult(rawOcrText);
-  }
-
-  // ── Dynamic Score Calculation (85–98%) ────────────────────────────────────
+  // 4. Dynamic Confidence Score Calculation (85% – 98%)
   let baseScore = 85.0;
 
-  // Primary keyword depth bonus
-  baseScore += Math.min(8.0, (cnicPrimaryHits.length + propPrimaryHits.length + globalIdHits.length) * 2.0);
-  // Secondary keyword bonus
-  baseScore += Math.min(3.0, (cnicSecondaryHits.length + propSecondaryHits.length) * 0.5);
-  // General property bonus
-  baseScore += Math.min(2.0, generalPropHits.length * 0.4);
+  // Signature depth bonus (+1.2% per extra signature hit, up to +7%)
+  baseScore += Math.min(7.0, (totalHits - 1) * 1.2);
 
-  // Official entity bonus
-  if (/\b(dha|nadra|cda|bahria|sub.?registrar|authority|government)\b/.test(norm)) baseScore += 1.5;
+  // Authority & Government endorsement bonus (+2%)
+  if (/\b(dha|nadra|cda|bahria|rda|lda|kda|gda|mda|pcatp|sub registrar|patwari|tehsildar|excise)\b/.test(norm)) {
+    baseScore += 2.0;
+  }
 
-  // Extraction-based bonus
+  // Extract property specs
   const areaInfo = extractArea(norm);
   const bedCount = extractBedrooms(norm);
   const { city, society } = extractCityAndSociety(norm);
   const plotNo = extractPlotNumber(norm);
   const propertyType = classifyPropertyType(norm, documentType);
 
-  if (areaInfo.areaSqFt) baseScore += 1.0;
-  if (city) baseScore += 0.8;
-  if (society) baseScore += 0.8;
+  if (areaInfo.areaSqFt) baseScore += 1.5;
+  if (city) baseScore += 1.0;
+  if (society) baseScore += 1.0;
   if (plotNo) baseScore += 0.5;
 
-  const verifiedScore = Math.min(98.0, Math.round(baseScore * 10) / 10);
+  const verifiedScore = Math.min(98.0, Math.max(85.0, Math.round(baseScore * 10) / 10));
   const confidence = Math.min(0.98, Math.round((verifiedScore / 100) * 1000) / 1000);
 
-  // Suggested title
-  const parts: string[] = [];
-  if (areaInfo.label) parts.push(areaInfo.label);
-  if (propertyType) parts.push(propertyType);
-  if (society) parts.push(`in ${society}`);
-  else if (city) parts.push(`in ${city}`);
-  const suggestedTitle = parts.length >= 2 ? parts.join(' ') : null;
+  // Suggested title auto-construction
+  const titleParts: string[] = [];
+  if (areaInfo.label) titleParts.push(areaInfo.label);
+  if (propertyType) titleParts.push(propertyType);
+  if (society) titleParts.push(`in ${society}`);
+  else if (city) titleParts.push(`in ${city}`);
+  const suggestedTitle = titleParts.length >= 2 ? titleParts.join(' ') : null;
 
   const bathrooms = bedCount ? Math.max(1, Math.floor(bedCount * 0.8)) : null;
 
   return {
     isValid: true,
+    valid: true,
     score: verifiedScore,
     verifiedScore,
     confidence,
     documentType,
     documentTypeLabel,
-    fallback: false,
     extractedParams: {
       propertyType,
       bedrooms: bedCount,
@@ -398,42 +412,30 @@ export function analyzeDocumentContent(
   };
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Invalid Helper ──────────────────────────────────────────────────────────
 
 function buildInvalidResult(rawOcrText: string): DocumentAnalysisResult {
   return {
     isValid: false,
+    valid: false,
     score: 0,
     verifiedScore: 0,
     confidence: 0,
     documentType: 'INVALID',
     documentTypeLabel: 'Invalid Document',
-    fallback: false,
-    errorMessage: 'Invalid document structure. Please upload CNIC or Allotment Letter.',
+    errorMessage: 'Invalid Document Structure Uploaded',
     extractedParams: {
-      propertyType: null, bedrooms: null, bathrooms: null, areaSqFt: null,
-      city: null, societyOrLocation: null, plotOrUnitNo: null,
-      suggestedTitle: null, detectedKeywords: [],
+      propertyType: null,
+      bedrooms: null,
+      bathrooms: null,
+      areaSqFt: null,
+      city: null,
+      societyOrLocation: null,
+      plotOrUnitNo: null,
+      suggestedTitle: null,
+      detectedKeywords: [],
     },
     rawOcrSnippet: rawOcrText.slice(0, 150),
   };
 }
 
-function buildFallbackResult(rawOcrText: string, fileMime: string): DocumentAnalysisResult {
-  const label = fileMime.includes('pdf') ? 'PDF Document' : 'Uploaded Document';
-  return {
-    isValid: true,
-    score: 80,
-    verifiedScore: 80,
-    confidence: 0.80,
-    documentType: 'OTHER_LEGAL',
-    documentTypeLabel: label,
-    fallback: true,
-    extractedParams: {
-      propertyType: null, bedrooms: null, bathrooms: null, areaSqFt: null,
-      city: null, societyOrLocation: null, plotOrUnitNo: null,
-      suggestedTitle: null, detectedKeywords: [],
-    },
-    rawOcrSnippet: rawOcrText.slice(0, 150),
-  };
-}

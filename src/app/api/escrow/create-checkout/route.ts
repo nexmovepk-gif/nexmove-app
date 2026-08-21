@@ -1,4 +1,5 @@
 // src/app/api/escrow/create-checkout/route.ts
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -51,10 +52,13 @@ export async function POST(req: NextRequest) {
           apiVersion: '2023-10-16' as Stripe.LatestApiVersion,
         });
 
-        // Parameters compatible with both Managed Payments and Standard Stripe Accounts
-        const sessionParams: Stripe.Checkout.SessionCreateParams = {
+        // managed_payments: { enabled: false } disables Managed Payments on this account
+        // allowing standard payment_method_types to be used without tax_code requirements.
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        const sessionParams: Record<string, unknown> = {
           mode: 'payment',
           payment_method_types: ['card'],
+          managed_payments: { enabled: false },
           customer_email:
             buyerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail) ? buyerEmail : undefined,
           line_items: [
@@ -65,7 +69,7 @@ export async function POST(req: NextRequest) {
                   name: `NexMove Escrow Token: ${propertyTitle}`,
                   description: `5% Non-Refundable Token Deposit for Property ID: ${propertyId}. Held in NexMove Escrow Vault.`,
                 },
-                unit_amount: Math.round(numericTokenAmount * 100), // PKR in paisas
+                unit_amount: Math.round(numericTokenAmount * 100),
               },
               quantity: 1,
             },
@@ -80,11 +84,11 @@ export async function POST(req: NextRequest) {
           success_url: successUrl,
           cancel_url: cancelUrl,
         };
+        /* eslint-enable @typescript-eslint/no-explicit-any */
 
-        // If managed payments is active on the account, disable it explicitly for raw card payment_method_types
-        (sessionParams as any).managed_payments = { enabled: false };
-
-        const session = await stripe.checkout.sessions.create(sessionParams);
+        const session = await stripe.checkout.sessions.create(
+          sessionParams as Stripe.Checkout.SessionCreateParams
+        );
 
         if (session.url) {
           return NextResponse.json({

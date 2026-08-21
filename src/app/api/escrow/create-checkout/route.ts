@@ -4,22 +4,18 @@ import Stripe from 'stripe';
 
 export const dynamic = 'force-dynamic';
 
-const stripe = new Stripe(
-  'sk_test_51U6wuc1Hife0dd70yuEg7PbDINulnYn2oHuJ6Ex40jy4q8gLhq5f48vgcmDcLNEPhnGfdVswtjjjMBUykNjmsrHq00IxqJpQLj',
-  {
-    apiVersion: '2023-10-16' as Stripe.LatestApiVersion,
-  }
-);
-
 export async function POST(req: NextRequest) {
   try {
+    const rawKey = process.env.STRIPE_SECRET_KEY || '';
+    const cleanKey = rawKey.replace(/[^a-zA-Z0-9_]/g, '').trim();
+
     const body = await req.json();
     const {
       propertyId,
       propertyTitle = 'NexMove Property Reservation',
       tokenAmount,
-      buyerName,
-      buyerPhone,
+      buyerName = 'Buyer',
+      buyerPhone = '',
       buyerEmail,
     } = body;
 
@@ -48,45 +44,71 @@ export async function POST(req: NextRequest) {
     const successUrl = `${origin}/marketplace/${propertyId}?status=success&session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${origin}/marketplace/${propertyId}?status=cancelled`;
 
-    // Create Stripe Checkout Session in 'payment' mode
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
-      customer_email:
-        buyerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail) ? buyerEmail : undefined,
-      line_items: [
-        {
-          price_data: {
-            currency: 'pkr',
-            product_data: {
-              name: `NexMove Escrow Token: ${propertyTitle}`,
-              description: `5% Non-Refundable Token Deposit for Property ID: ${propertyId}. Held in NexMove Escrow Vault.`,
-            },
-            unit_amount: Math.round(numericTokenAmount * 100), // PKR in paisas
-          },
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        propertyId: String(propertyId),
-        buyerName: String(buyerName || 'Anonymous Buyer'),
-        buyerPhone: String(buyerPhone || ''),
-        propertyTitle: String(propertyTitle),
-        tokenAmount: String(numericTokenAmount),
-      },
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-    });
+    // Attempt real Stripe checkout if a key is configured
+    if (cleanKey && cleanKey.startsWith('sk_test_')) {
+      try {
+        const stripe = new Stripe(cleanKey, {
+          apiVersion: '2023-10-16' as Stripe.LatestApiVersion,
+        });
 
-    if (!session.url) {
-      throw new Error('Failed to generate Stripe Checkout URL');
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'],
+          mode: 'payment',
+          customer_email:
+            buyerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail) ? buyerEmail : undefined,
+          line_items: [
+            {
+              price_data: {
+                currency: 'pkr',
+                product_data: {
+                  name: `NexMove Escrow Token: ${propertyTitle}`,
+                  description: `5% Non-Refundable Token Deposit for Property ID: ${propertyId}. Held in NexMove Escrow Vault.`,
+                },
+                unit_amount: Math.round(numericTokenAmount * 100), // PKR in paisas
+              },
+              quantity: 1,
+            },
+          ],
+          metadata: {
+            propertyId: String(propertyId),
+            buyerName: String(buyerName),
+            buyerPhone: String(buyerPhone),
+            propertyTitle: String(propertyTitle),
+            tokenAmount: String(numericTokenAmount),
+          },
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+        });
+
+        if (session.url) {
+          return NextResponse.json({
+            success: true,
+            url: session.url,
+            sessionId: session.id,
+          });
+        }
+      } catch (stripeError: unknown) {
+        const stripeMsg = stripeError instanceof Error ? stripeError.message : '';
+        console.error('[Stripe Escrow Checkout Error from Stripe API]:', stripeMsg);
+
+        // If Stripe rejects the key as invalid/unregistered, provide an actionable explanation
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Stripe API rejected the Secret Key: ${stripeMsg}. Please obtain a valid Test Secret Key from your Stripe Dashboard (https://dashboard.stripe.com/test/apikeys) and set it in .env as STRIPE_SECRET_KEY.`,
+          },
+          { status: 401 }
+        );
+      }
     }
 
-    return NextResponse.json({
-      success: true,
-      url: session.url,
-      sessionId: session.id,
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Missing or invalid STRIPE_SECRET_KEY in .env. Please configure your active Stripe test key.',
+      },
+      { status: 500 }
+    );
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : 'Failed to create Stripe Escrow checkout session';

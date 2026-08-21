@@ -1,4 +1,5 @@
 // src/app/marketplace/[id]/page.tsx
+import { Suspense } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ListingDetailClient, { PublicListingItem } from '@/components/ListingDetailClient';
@@ -122,5 +123,9 @@ export default async function ListingDetailPage({ params }: { params: { id: stri
     );
   }
 
-  return <ListingDetailClient listing={listing} />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-xs text-slate-500 font-bold">Loading property details...</div>}>
+      <ListingDetailClient listing={listing} />
+    </Suspense>
+  );
 }

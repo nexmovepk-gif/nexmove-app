@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import AIEscrowGuard from '@/components/AIEscrowGuard';
 
@@ -40,6 +41,10 @@ const TYPE_ICONS: Record<string, string> = {
 };
 
 export default function ListingDetailClient({ listing }: { listing: PublicListingItem }) {
+  const searchParams = useSearchParams();
+  const checkoutStatus = searchParams.get('status');
+  const sessionId = searchParams.get('session_id');
+
   const [activeTab, setActiveTab] = useState<'overview' | '3d' | 'floorplan'>('overview');
   const [active3DRoom, setActive3DRoom] = useState<'living' | 'master' | 'balcony'>('living');
 
@@ -47,22 +52,51 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'ESCROW_BANK' | 'CARD' | 'CRYPTO'>('ESCROW_BANK');
+  const [paymentMethod, setPaymentMethod] = useState<'ESCROW_BANK' | 'CARD' | 'CRYPTO'>('CARD');
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [tokenPaidSuccess, setTokenPaidSuccess] = useState(false);
   const [isProcessingToken, setIsProcessingToken] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const tokenAmount = Math.round(listing.price * 0.05); // 5% token deposit
 
-  const handlePayToken = (e: React.FormEvent) => {
+  const handlePayToken = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreedTerms) return;
 
+    setCheckoutError(null);
     setIsProcessingToken(true);
-    setTimeout(() => {
+
+    try {
+      const response = await fetch('/api/escrow/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          propertyId: listing.id,
+          propertyTitle: listing.title,
+          tokenAmount,
+          buyerName: buyerName.trim(),
+          buyerPhone: buyerPhone.trim(),
+          buyerEmail: listing.contactEmail || undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success || !data.url) {
+        throw new Error(data.error || 'Failed to initiate Stripe Checkout');
+      }
+
+      // Redirect the buyer directly to Stripe Checkout session URL
+      window.location.href = data.url;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to connect to Stripe Escrow Checkout. Please try again.';
+      console.error('[Escrow Token Payment Error]', err);
+      setCheckoutError(message);
       setIsProcessingToken(false);
-      setTokenPaidSuccess(true);
-    }, 1200);
+    }
   };
 
   const date = new Date(listing.createdAt).toLocaleDateString('en-PK', {
@@ -72,6 +106,39 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 pb-16">
       <div className="max-w-3xl mx-auto px-4 py-8 flex flex-col gap-6">
+
+        {/* ── Status Feedback Banner for Stripe Redirects ────────────────── */}
+        {checkoutStatus === 'success' && (
+          <div className="bg-emerald-50 border border-emerald-400 rounded-3xl p-5 shadow-sm flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
+            <span className="text-3xl">🎉</span>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-black text-emerald-950">Escrow Token Payment Successful!</h2>
+                <span className="bg-emerald-200 text-emerald-900 font-bold text-[10px] px-2.5 py-0.5 rounded-full uppercase">HELD_IN_ESCROW</span>
+              </div>
+              <p className="text-xs text-emerald-800 font-medium mt-1">
+                Your 5% token deposit for <span className="font-bold">{listing.title}</span> has been secured in the <span className="font-bold">NexMove Escrow Vault</span> via Stripe. The seller & listing agent have been notified to initiate the deed transfer process.
+              </p>
+              {sessionId && (
+                <p className="text-[11px] font-mono text-emerald-700 mt-1">
+                  Stripe Session ID: {sessionId}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {checkoutStatus === 'cancelled' && (
+          <div className="bg-amber-50 border border-amber-400 rounded-3xl p-5 shadow-sm flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
+            <span className="text-2xl">⚠️</span>
+            <div className="flex-1">
+              <h2 className="text-sm font-bold text-amber-950">Escrow Payment Cancelled</h2>
+              <p className="text-xs text-amber-800 font-medium mt-0.5">
+                The Stripe Checkout session was cancelled. No charges were made and the property remains available. You can retry reservation anytime below.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ── Top Hero Card ──────────────────────────────────────────────── */}
         <div className="bg-white border border-slate-200 rounded-3xl p-6 flex flex-col gap-4 shadow-sm">
@@ -396,6 +463,12 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
 
                 {/* Form Inputs */}
                 <div className="space-y-3">
+                  {checkoutError && (
+                    <div className="bg-red-50 border border-red-300 text-red-700 text-xs p-3 rounded-xl font-medium animate-in fade-in">
+                      ⚠️ {checkoutError}
+                    </div>
+                  )}
+
                   <div>
                     <label className="text-xs font-bold text-slate-900 block mb-1">Buyer Full Name *</label>
                     <input
@@ -427,8 +500,8 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
                       onChange={(e) => setPaymentMethod(e.target.value as 'ESCROW_BANK' | 'CARD' | 'CRYPTO')}
                       className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500"
                     >
+                      <option value="CARD">💳 Credit / Debit Card (Stripe Checkout)</option>
                       <option value="ESCROW_BANK">🏦 NexMove Escrow Bank Wire</option>
-                      <option value="CARD">💳 Credit / Debit Card (Stripe)</option>
                       <option value="CRYPTO">🪙 Crypto / USDT Escrow</option>
                     </select>
                   </div>
@@ -454,7 +527,17 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
                   disabled={!agreedTerms || isProcessingToken}
                   className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs py-3 rounded-2xl transition shadow-md flex items-center justify-center gap-2"
                 >
-                  {isProcessingToken ? 'Processing Escrow Deposit...' : `Pay ${formatPrice(tokenAmount)} Token Now`}
+                  {isProcessingToken ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Redirecting to Stripe Escrow Checkout...
+                    </>
+                  ) : (
+                    `Pay ${formatPrice(tokenAmount)} Token Now`
+                  )}
                 </button>
               </form>
             ) : (

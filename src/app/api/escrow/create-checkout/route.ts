@@ -1,11 +1,20 @@
 // src/app/api/escrow/create-checkout/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import Stripe from 'stripe';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    const rawKey = process.env.STRIPE_SECRET_KEY || '';
+    const cleanKey = rawKey.replace(/[^a-zA-Z0-9_]/g, '').trim();
+
+    if (!cleanKey || !cleanKey.startsWith('sk_test_')) {
+      return NextResponse.json({ error: 'Invalid Stripe Secret Key configuration.' }, { status: 500 });
+    }
+
+    const stripe = new Stripe(cleanKey, { apiVersion: '2023-10-16' as Stripe.LatestApiVersion });
+
     const body = await req.json();
     const {
       propertyId,

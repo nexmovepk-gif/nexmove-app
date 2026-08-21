@@ -51,9 +51,10 @@ export async function POST(req: NextRequest) {
           apiVersion: '2023-10-16' as Stripe.LatestApiVersion,
         });
 
-        const session = await stripe.checkout.sessions.create({
-          payment_method_types: ['card'],
+        // Parameters compatible with both Managed Payments and Standard Stripe Accounts
+        const sessionParams: Stripe.Checkout.SessionCreateParams = {
           mode: 'payment',
+          payment_method_types: ['card'],
           customer_email:
             buyerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail) ? buyerEmail : undefined,
           line_items: [
@@ -78,7 +79,12 @@ export async function POST(req: NextRequest) {
           },
           success_url: successUrl,
           cancel_url: cancelUrl,
-        });
+        };
+
+        // If managed payments is active on the account, disable it explicitly for raw card payment_method_types
+        (sessionParams as any).managed_payments = { enabled: false };
+
+        const session = await stripe.checkout.sessions.create(sessionParams);
 
         if (session.url) {
           return NextResponse.json({
@@ -91,11 +97,10 @@ export async function POST(req: NextRequest) {
         const stripeMsg = stripeError instanceof Error ? stripeError.message : '';
         console.error('[Stripe Escrow Checkout Error from Stripe API]:', stripeMsg);
 
-        // If Stripe rejects the key as invalid/unregistered, provide an actionable explanation
         return NextResponse.json(
           {
             success: false,
-            error: `Stripe API rejected the Secret Key: ${stripeMsg}. Please obtain a valid Test Secret Key from your Stripe Dashboard (https://dashboard.stripe.com/test/apikeys) and set it in .env as STRIPE_SECRET_KEY.`,
+            error: `Stripe API: ${stripeMsg}`,
           },
           { status: 401 }
         );

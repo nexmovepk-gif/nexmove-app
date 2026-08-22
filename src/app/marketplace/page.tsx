@@ -10,12 +10,16 @@ interface Listing {
   id: string;
   title: string;
   propertyType: string;
+  purpose?: string;
   price: number;
   address: string;
   city: string;
   areaSqFt: number | null;
   bedrooms: number | null;
   bathrooms: number | null;
+  images?: string[];
+  videoUrl?: string | null;
+  panoramaUrl?: string | null;
   verifiedProperty: boolean;
   aiExtracted: boolean;
   agencyName: string | null;
@@ -27,7 +31,7 @@ interface Listing {
 
 const PROPERTY_TYPES = ['', 'HOUSE', 'APARTMENT', 'PLOT', 'COMMERCIAL', 'VILLA'];
 const TYPE_ICONS: Record<string, string> = {
-  HOUSE: '🏠', APARTMENT: '🏢', PLOT: 'MAP', COMMERCIAL: '🏪', VILLA: '🏯',
+  HOUSE: '🏠', APARTMENT: '🏢', PLOT: '🗺️', COMMERCIAL: '🏪', VILLA: '🏯',
 };
 
 export default function MarketplacePage() {
@@ -69,7 +73,7 @@ export default function MarketplacePage() {
               Verified Marketplace
             </span>
             <h1 className="text-3xl font-black text-white mt-2">Property Marketplace</h1>
-            <p className="text-xs text-slate-300 mt-1">Verified properties from trusted owners & partner agencies</p>
+            <p className="text-xs text-slate-300 mt-1">Verified properties from trusted owners &amp; partner agencies</p>
           </div>
           <Link
             href="/agency/submit-listing"
@@ -154,14 +158,31 @@ export default function MarketplacePage() {
                 <Link
                   key={lst.id}
                   href={`/marketplace/${lst.id}`}
-                  className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition duration-200 group"
+                  className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition duration-200 group"
                 >
-                  {/* Left Column: Title & Location */}
-                  <div className="flex items-start gap-3.5">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-2xl flex-shrink-0">
-                      {TYPE_ICONS[lst.propertyType] ?? '🏠'}
+                  {/* Left Column: Image Thumbnail & Title & Location */}
+                  <div className="flex items-start gap-4">
+                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 shadow-sm">
+                      {lst.images && lst.images.length > 0 ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={lst.images[0]}
+                          alt={lst.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-3xl">
+                          {TYPE_ICONS[lst.propertyType.toUpperCase()] ?? '🏠'}
+                        </div>
+                      )}
+                      {lst.images && lst.images.length > 1 && (
+                        <span className="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                          +{lst.images.length}
+                        </span>
+                      )}
                     </div>
-                    <div className="flex flex-col gap-1">
+
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
                           {lst.propertyType}
@@ -171,11 +192,21 @@ export default function MarketplacePage() {
                             AI Extracted
                           </span>
                         )}
+                        {lst.panoramaUrl && (
+                          <span className="text-[10px] bg-teal-100 border border-teal-300 text-teal-800 px-2 py-0.5 rounded-full font-bold">
+                            360° Tour
+                          </span>
+                        )}
+                        {lst.videoUrl && (
+                          <span className="text-[10px] bg-purple-100 border border-purple-300 text-purple-800 px-2 py-0.5 rounded-full font-bold">
+                            Video
+                          </span>
+                        )}
                       </div>
-                      <h2 className="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition leading-snug">
+                      <h2 className="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition leading-snug truncate">
                         {lst.title}
                       </h2>
-                      <span className="text-xs text-slate-500 font-medium">
+                      <span className="text-xs text-slate-500 font-medium truncate">
                         {lst.address}{lst.city ? `, ${lst.city}` : ''}
                       </span>
 
@@ -183,7 +214,7 @@ export default function MarketplacePage() {
                       <div className="flex flex-wrap gap-2 items-center mt-1">
                         <VerifiedBadge type="PROPERTY" verified={lst.verifiedProperty} />
                         {lst.agencyName && (
-                          <span className="text-[11px] flex items-center gap-1 text-slate-600 font-semibold">
+                          <span className="text-[11px] flex items-center gap-1 text-slate-600 font-semibold truncate">
                             via {lst.agencyName}
                             {lst.agencyVerified && (
                               <VerifiedBadge type="AGENCY" verified={true} tier={lst.agencyTier ?? 'GOLD'} />

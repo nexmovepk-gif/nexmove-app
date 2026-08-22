@@ -238,6 +238,8 @@ export default function PropertyForm({
   const [videoFileName, setVideoFileName] = useState<string | null>(null);
   const [panoramaFileName, setPanoramaFileName] = useState<string | null>(null);
   const [panoramaPreviewUrl, setPanoramaPreviewUrl] = useState<string | null>(null);
+  const [floorPlanFileName, setFloorPlanFileName] = useState<string | null>(null);
+  const [floorPlanPreviewUrl, setFloorPlanPreviewUrl] = useState<string | null>(null);
   const [virtualTourUrl, setVirtualTourUrl] = useState('');
 
   // ── 5. Features & Amenities
@@ -296,6 +298,7 @@ export default function PropertyForm({
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const videoFileInputRef = useRef<HTMLInputElement>(null);
   const panoramaInputRef = useRef<HTMLInputElement>(null);
+  const floorPlanInputRef = useRef<HTMLInputElement>(null);
 
   // Unique IDs for accessibility
   const titleId = useId();
@@ -342,42 +345,105 @@ export default function PropertyForm({
     );
   };
 
-  // ── Gallery Multi-Image Upload
-  const handleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ── Helper: File to Optimized Base64 Data URL for persistent cross-client rendering
+  const fileToDataUrl = (file: File, maxWidth = 1920, quality = 0.85): Promise<string> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => resolve('');
+        reader.readAsDataURL(file);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          } else {
+            resolve(event.target?.result as string);
+          }
+        };
+        img.onerror = () => resolve(event.target?.result as string);
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // ── Gallery Multi-Image Upload (Persistent Data URLs)
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const newImages: Array<{ name: string; url: string; size: number }> = [];
-    Array.from(files).forEach((file) => {
-      const tempUrl = URL.createObjectURL(file);
-      newImages.push({
-        name: file.name,
-        url: tempUrl,
-        size: file.size,
-      });
-    });
+    showToast(`Processing ${files.length} property ${files.length === 1 ? 'image' : 'images'}...`, 'info');
+    const fileList = Array.from(files);
+    const newImages = await Promise.all(
+      fileList.map(async (file) => {
+        const dataUrl = await fileToDataUrl(file, 1920, 0.85);
+        return {
+          name: file.name,
+          url: dataUrl,
+          size: file.size,
+        };
+      })
+    );
 
     setGalleryImages((prev) => [...prev, ...newImages]);
+    showToast(`${newImages.length} images added to gallery`, 'success');
   };
 
   const removeGalleryImage = (index: number) => {
     setGalleryImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // ── Video File Upload
+  // ── Video File Upload (Persistent Data URL or URL input)
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setVideoFileName(file.name);
-    setVideoUrl(URL.createObjectURL(file));
+    showToast(`Loading video: ${file.name}...`, 'info');
+    const reader = new FileReader();
+    reader.onload = () => {
+      setVideoUrl(reader.result as string);
+      showToast('Video ready for playback', 'success');
+    };
+    reader.readAsDataURL(file);
   };
 
-  // ── 360 Panorama Upload
-  const handlePanoramaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ── 360 Panorama Upload (Persistent Data URL)
+  const handlePanoramaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setPanoramaFileName(file.name);
-    setPanoramaPreviewUrl(URL.createObjectURL(file));
+    showToast('Processing 360° panorama image...', 'info');
+    const dataUrl = await fileToDataUrl(file, 2560, 0.9);
+    setPanoramaPreviewUrl(dataUrl);
+    showToast('360° panorama loaded successfully', 'success');
+  };
+
+  // ── Floor Plan Blueprint Upload (Persistent Data URL)
+  const handleFloorPlanUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFloorPlanFileName(file.name);
+    showToast('Processing floor plan blueprint...', 'info');
+    const dataUrl = await fileToDataUrl(file, 2048, 0.9);
+    setFloorPlanPreviewUrl(dataUrl);
+    showToast('Floor plan blueprint loaded', 'success');
   };
 
   // ── High-Contrast Grayscale Preprocessor & Low-Res Upscaler for OCR Accuracy ─
@@ -636,6 +702,13 @@ export default function PropertyForm({
     const matchedCategory =
       PROPERTY_CATEGORIES.find((c) => c.options.includes(propertyType))?.category || 'OTHER';
 
+    // Collect all real uploaded image URLs (gallery images, floor plan, and title deed)
+    const allImages: string[] = [
+      ...galleryImages.map((img) => img.url),
+      ...(floorPlanPreviewUrl ? [floorPlanPreviewUrl] : []),
+      ...(uploadedDocUrl ? [uploadedDocUrl] : []),
+    ];
+
     const payload = {
       title,
       description,
@@ -650,11 +723,9 @@ export default function PropertyForm({
       bathrooms: bathrooms ? Number(bathrooms) : undefined,
       isAvailable,
       availableDate: !isAvailable && availableDate ? availableDate : undefined,
-      images: uploadedDocUrl
-        ? [uploadedDocUrl, ...galleryImages.map((img) => img.name)]
-        : galleryImages.map((img) => img.name),
+      images: allImages,
       videoUrl: videoUrl || undefined,
-      panoramaUrl: panoramaFileName || undefined,
+      panoramaUrl: panoramaPreviewUrl || undefined,
       virtualTourUrl: virtualTourUrl || undefined,
       features: selectedFeatures,
       contactName,
@@ -704,6 +775,8 @@ export default function PropertyForm({
     setVideoFileName(null);
     setPanoramaFileName(null);
     setPanoramaPreviewUrl(null);
+    setFloorPlanFileName(null);
+    setFloorPlanPreviewUrl(null);
     setVirtualTourUrl('');
     setSelectedFeatures(['Electricity', 'Water Supply']);
     setContactName('');
@@ -1466,7 +1539,7 @@ export default function PropertyForm({
                 <input
                   ref={panoramaInputRef}
                   type="file"
-                  accept=".jpg,.jpeg,image/jpeg"
+                  accept=".jpg,.jpeg,image/jpeg,image/png"
                   onChange={handlePanoramaUpload}
                   className="hidden"
                 />
@@ -1478,8 +1551,39 @@ export default function PropertyForm({
                   <span>📷 {panoramaFileName ? `Panorama: ${panoramaFileName}` : 'Upload 360° .JPG Photo'}</span>
                 </button>
                 {panoramaPreviewUrl && (
-                  <div className="text-[11px] text-purple-700 font-semibold flex items-center gap-1.5">
-                    <span>✓ 360° image ready for panoramic viewer</span>
+                  <div className="text-[11px] text-purple-700 font-semibold flex items-center gap-1.5 bg-purple-50 p-2 rounded-xl border border-purple-200">
+                    <span>✓ 360° equirectangular image loaded for 3D Viewer</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Floor Plan Blueprint Upload */}
+              <div className="flex flex-col gap-2 p-4 bg-gray-50 border border-gray-200 rounded-2xl">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🗺️ Floor Plan Blueprint (.jpg / .png)</span>
+                  </label>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                    2D / 3D Layout
+                  </span>
+                </div>
+                <input
+                  ref={floorPlanInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFloorPlanUpload}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => floorPlanInputRef.current?.click()}
+                  className="bg-white border border-dashed border-gray-300 hover:border-emerald-500 text-gray-800 text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2"
+                >
+                  <span>📐 {floorPlanFileName ? `Floor Plan: ${floorPlanFileName}` : 'Upload Floor Plan Image / CAD Blueprint'}</span>
+                </button>
+                {floorPlanPreviewUrl && (
+                  <div className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1.5 bg-emerald-50 p-2 rounded-xl border border-emerald-200">
+                    <span>✓ Architectural blueprint loaded for Floor Plan tab</span>
                   </div>
                 )}
               </div>

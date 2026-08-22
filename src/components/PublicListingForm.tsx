@@ -115,6 +115,16 @@ export default function PublicListingForm() {
 
     setLoading(true)
     try {
+      let imageDataUrl: string | null = null;
+      if (uploadedFile && uploadedFile.type.startsWith('image/')) {
+        imageDataUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => resolve('');
+          reader.readAsDataURL(uploadedFile);
+        });
+      }
+
       const res = await fetch('/api/public/listings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -124,6 +134,7 @@ export default function PublicListingForm() {
           areaSqFt: form.areaSqFt ? Number(form.areaSqFt) : undefined,
           bedrooms: form.bedrooms ? Number(form.bedrooms) : undefined,
           bathrooms: form.bathrooms ? Number(form.bathrooms) : undefined,
+          images: imageDataUrl ? [imageDataUrl] : [],
           uploadedFileName: uploadedFile?.name,
           uploadedFileType: uploadedFile?.type,
           uploadedFileSizeBytes: uploadedFile?.size,

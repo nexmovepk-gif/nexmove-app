@@ -508,6 +508,20 @@ export default function PropertyForm({
       img.src = objectUrl;
     });
 
+  // ── Browser-based Optical Character Extractor (Tesseract.js) ─────────────
+  const runClientOcr = async (fileOrBlob: Blob): Promise<string> => {
+    try {
+      const { createWorker } = await import('tesseract.js');
+      const worker = await createWorker('eng');
+      const res = await worker.recognize(fileOrBlob);
+      await worker.terminate();
+      return res.data?.text || '';
+    } catch (err) {
+      console.warn('[Client OCR] Browser OCR note:', err);
+      return '';
+    }
+  };
+
   // ── Strict Document OCR & Content Verification ───────────────────────────
   const handleTitleDeedUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -523,19 +537,27 @@ export default function PropertyForm({
     setDocTypeLabel(null);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
 
     try {
+      showToast('Analyzing legal document & extracting property specs...', 'info');
+
       // 1. High-contrast canvas pre-processing
       const processedBlob = await preprocessImageForOcr(file);
       const uploadFile = new File([processedBlob], file.name, {
         type: processedBlob.type || file.type,
       });
 
+      // 2. Client-side OCR extraction
+      const clientOcrText = await runClientOcr(processedBlob);
+
       const formData = new FormData();
       formData.append('file', uploadFile);
+      if (clientOcrText) {
+        formData.append('clientExtractedText', clientOcrText);
+      }
 
-      // 2. Strict verification API call
+      // 3. Verification API call
       const res = await fetch('/api/documents/verify-upload', {
         method: 'POST',
         body: formData,

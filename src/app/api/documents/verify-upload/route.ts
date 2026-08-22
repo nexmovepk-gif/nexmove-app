@@ -10,8 +10,8 @@ import {
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Local OCR timeout budget (5.0s) to ensure accurate character extraction even for low-res scans
-const OCR_TIMEOUT_MS = 5000;
+// Local OCR timeout budget (10.0s)
+const OCR_TIMEOUT_MS = 10000;
 
 const VALID_MIMES = new Set([
   'image/jpeg',
@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
+    const clientExtractedText = (formData.get('clientExtractedText') as string | null) || '';
 
     if (!file) {
       return NextResponse.json(
@@ -90,15 +91,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Fast Raw Buffer String Extraction
+    // 2. Buffer String Extraction
     const fastBufferText = extractBufferStrings(buffer);
 
-    // 3. Local OCR Processing (Tesseract.js - zero paid API required)
-    let ocrText = fastBufferText;
+    // 3. Combine with Client-side OCR if available
+    let ocrText = `${fastBufferText} ${clientExtractedText}`.trim();
     const isImage =
       fileType.startsWith('image/') || /\.(png|jpe?g|webp|bmp|tiff)$/i.test(fileName);
 
-    if (isImage) {
+    // If client didn't extract text or was empty, attempt server OCR
+    if (isImage && clientExtractedText.trim().length < 15) {
       try {
         const ocrRace = (async (): Promise<string> => {
           let worker = null;
@@ -123,10 +125,10 @@ export async function POST(req: NextRequest) {
 
         const recognized = await Promise.race([ocrRace, timeout]);
         if (recognized) {
-          ocrText = `${ocrText} ${recognized}`;
+          ocrText = `${ocrText} ${recognized}`.trim();
         }
       } catch (ocrErr) {
-        console.warn('[Local OCR] Fast string fallback utilized:', ocrErr);
+        console.warn('[Local OCR] Server OCR fallback utilized:', ocrErr);
       }
     }
 

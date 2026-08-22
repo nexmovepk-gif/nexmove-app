@@ -48,14 +48,17 @@ export function normalizeText(raw: string): string {
 export const ID_SIGNATURES = [
   'cnic',
   'identity',
-  'national',
+  'identity card',
+  'national identity',
   'republic',
   'pakistan',
   'nadra',
   'father',
+  'father name',
   'nicop',
   'cardholder',
   'husband',
+  'husband name',
   'date of birth',
   'date of issue',
   'date of expiry',
@@ -72,44 +75,107 @@ export const ID_SIGNATURES = [
 ];
 
 export const LEGAL_SIGNATURES = [
+  // Primary Legal Instruments & Deeds
   'allotment',
+  'allotment letter',
   'allottee',
   'registry',
   'deed',
   'title deed',
   'sale deed',
   'conveyance deed',
-  'pcatp',
-  'transfer',
-  'transfer order',
-  'transfer letter',
+  'gift deed',
+  'relinquishment deed',
+  'trust deed',
+  'agreement to sell',
+  'agreement',
+  'affidavit',
+  'stamp paper',
+  'stamp',
+  'bayana',
+  'bainama',
+  'power of attorney',
+  'mukhtarnama',
+  'mukhtar nama',
+  'general power of attorney',
+  'special power of attorney',
+  'gpa',
+  'spa',
+
+  // Land Revenue, Fard, Intiqal & Records
   'khasra',
   'khewat',
   'khatooni',
   'fard',
   'fard malkiat',
+  'malkiat',
   'jamabandi',
+  'fard jamabandi',
   'aks shajra',
-  'bainama',
+  'tatima',
   'intiqal',
   'mutation',
+  'mutation order',
+  'halqa patwari',
+  'patwari',
+  'girdawar',
+  'tehsildar',
+  'naib tehsildar',
   'sub registrar',
   'sub-registrar',
-  'patwari',
-  'tehsildar',
+  'registrar',
+  'district collector',
+  'deputy commissioner',
+  'revenue department',
+
+  // Transfer, Possession & Clearances
+  'transfer',
+  'transfer order',
+  'transfer letter',
+  'transfer slip',
   'possession order',
   'possession certificate',
+  'possession letter',
   'authority letter',
-  'power of attorney',
-  'mukhtarnama',
-  'agreement to sell',
-  'stamp paper',
+  'undertaking',
+  'attested',
+  'oath commissioner',
+  'notary public',
+  'advocate',
+  'witness',
+  'vendee',
+  'vendor',
+  'purchaser',
+  'seller',
+  'first party',
+  'second party',
+
+  // Blueprints, Architecture & Cadastral Plans
   'blueprint',
   'floor plan',
   'site plan',
+  'layout plan',
+  'master plan',
   'architectural drawing',
+  'architectural plan',
+  'architect',
+  'pcatp',
+  'structural drawing',
+  'building plan',
+  'approval letter',
+  'sanctioned plan',
+  'completion certificate',
+  'cad drawing',
+  'cadastral',
+  'elevation',
+  'ground floor',
+  'first floor',
+  'dimensions',
   'town planning',
+
+  // Development Authorities & Societies
   'society',
+  'housing society',
   'dha',
   'cda',
   'lda',
@@ -121,14 +187,62 @@ export const LEGAL_SIGNATURES = [
   'bahria',
   'bahria town',
   'gulberg',
+  'gulberg greens',
+  'lake city',
+  'model town',
+  'johar town',
+  'wapda town',
+  'citi housing',
+  'fazaia',
+  'askari',
+  'naval anchorage',
+  'top city',
+  'mumtaz city',
+  'b-17',
+  'g-13',
+  'f-11',
+  'f-10',
+  'f-8',
+  'f-7',
+  'f-6',
+  'd-12',
+
+  // Taxes, Utilities & NOC
   'noc',
+  'no objection',
+  'no objection certificate',
   'property tax',
   'excise and taxation',
   'holding no',
+  'tax challan',
+  'challan',
+  'token',
+  'pt-10',
+  'pt10',
+  'fbr',
+
+  // Property Units & Dimensions in Document
+  'residential plot',
+  'commercial plot',
+  'plot no',
+  'plot number',
+  'unit no',
+  'flat no',
+  'house no',
+  'street no',
+  'sector',
+  'phase',
+  'block',
+  'kanal',
+  'marla',
+  'sqft',
+  'square feet',
+  'square yards',
+  'sq yds',
 ];
 
 // Explicit non-document rejection terms (vehicles, proposals, food, selfie, pets, random objects)
-const NON_DOC_SIGNALS = [
+export const NON_DOC_SIGNALS = [
   'toyota', 'honda', 'suzuki', 'hyundai', 'kia', 'mercedes', 'bmw', 'audi',
   'ford', 'tesla', 'nissan', 'volkswagen', 'mitsubishi',
   'car', 'cars', 'vehicle', 'van', 'suv', 'sedan', 'truck', 'automobile',
@@ -173,8 +287,8 @@ const SOCIETY_LIST = [
 export function extractBufferStrings(buffer: Buffer): string {
   try {
     const raw = buffer.toString('utf-8');
-    const matches = raw.match(/[a-zA-Z0-9_\-\.\s]{4,}/g) || [];
-    return matches.slice(0, 500).join(' ');
+    const matches = raw.match(/[a-zA-Z0-9_\-\.\s]{3,}/g) || [];
+    return matches.slice(0, 1000).join(' ');
   } catch {
     return '';
   }
@@ -276,13 +390,6 @@ function countHits(text: string, signatures: string[]): string[] {
 
 // ─── Main Strict Document Analysis ───────────────────────────────────────────
 
-/**
- * Strict Document Verification Engine:
- * - Checks for ID Signatures and Legal Signatures.
- * - If AT LEAST ONE signature matches: returns valid = true, dynamic score (85% - 98%), and extracts specs.
- * - If ZERO signatures match (or non-document signals dominate): returns valid = false, score = 0 (HTTP 400).
- * - No automatic fallback score (e.g. 80%) allowed under any condition.
- */
 export function analyzeDocumentContent(
   rawOcrText: string,
   fileName: string = ''
@@ -318,13 +425,20 @@ export function analyzeDocumentContent(
   let documentType: DocumentAnalysisResult['documentType'] = 'PROPERTY_DOCUMENT';
   let documentTypeLabel = 'Property Document';
 
-  if (idHits.some((k) => ['cnic', 'identity', 'national', 'nadra', 'nicop', 'snic', 'poc'].includes(k))) {
+  if (idHits.some((k) => ['cnic', 'identity', 'identity card', 'national identity', 'national', 'nadra', 'nicop', 'snic', 'poc'].includes(k))) {
     documentType = 'CNIC_NICOP';
     documentTypeLabel = 'CNIC / National Identity Card';
-  } else if (legalHits.includes('blueprint') || legalHits.includes('floor plan') || legalHits.includes('site plan') || legalHits.includes('architectural drawing')) {
+  } else if (
+    legalHits.includes('blueprint') ||
+    legalHits.includes('floor plan') ||
+    legalHits.includes('site plan') ||
+    legalHits.includes('layout plan') ||
+    legalHits.includes('architectural drawing') ||
+    legalHits.includes('building plan')
+  ) {
     documentType = 'BLUEPRINT_PLAN';
     documentTypeLabel = 'Architectural Blueprint / Layout Plan';
-  } else if (legalHits.includes('allotment') || legalHits.includes('allottee')) {
+  } else if (legalHits.includes('allotment') || legalHits.includes('allotment letter') || legalHits.includes('allottee')) {
     documentType = 'ALLOTMENT_LETTER';
     documentTypeLabel = 'Allotment Letter / Transfer Order';
   } else if (
@@ -340,11 +454,19 @@ export function analyzeDocumentContent(
     legalHits.includes('fard malkiat') ||
     legalHits.includes('bainama') ||
     legalHits.includes('intiqal') ||
-    legalHits.includes('mutation')
+    legalHits.includes('mutation') ||
+    legalHits.includes('stamp paper')
   ) {
     documentType = 'REGISTRY_SALE_DEED';
     documentTypeLabel = 'Registry / Sale Deed / Fard';
-  } else if (legalHits.includes('transfer') || legalHits.includes('transfer letter') || legalHits.includes('transfer order') || legalHits.includes('title deed')) {
+  } else if (
+    legalHits.includes('transfer') ||
+    legalHits.includes('transfer letter') ||
+    legalHits.includes('transfer order') ||
+    legalHits.includes('title deed') ||
+    legalHits.includes('possession order') ||
+    legalHits.includes('possession certificate')
+  ) {
     documentType = 'TITLE_DEED';
     documentTypeLabel = 'Property Transfer / Title Deed';
   } else {
@@ -359,7 +481,7 @@ export function analyzeDocumentContent(
   baseScore += Math.min(7.0, (totalHits - 1) * 1.2);
 
   // Authority & Government endorsement bonus (+2%)
-  if (/\b(dha|nadra|cda|bahria|rda|lda|kda|gda|mda|pcatp|sub registrar|patwari|tehsildar|excise)\b/.test(norm)) {
+  if (/\b(dha|nadra|cda|bahria|rda|lda|kda|gda|mda|pcatp|sub registrar|patwari|tehsildar|excise|revenue)\b/.test(norm)) {
     baseScore += 2.0;
   }
 
@@ -438,4 +560,3 @@ function buildInvalidResult(rawOcrText: string): DocumentAnalysisResult {
     rawOcrSnippet: rawOcrText.slice(0, 150),
   };
 }
-

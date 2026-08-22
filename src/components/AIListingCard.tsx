@@ -194,16 +194,26 @@ export default function AIListingCard({
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex items-start gap-3 flex-1 min-w-0">
               <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200/60 flex items-center justify-center overflow-hidden shadow-inner">
-                {listing.images && listing.images.length > 0 ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={listing.images[0]}
-                    alt={listing.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  TYPE_ICONS[listing.propertyType.toUpperCase()] ?? <Home className="w-5 h-5 text-slate-600" />
-                )}
+                {(() => {
+                  const validImgs = (listing.images || []).filter(
+                    (u) =>
+                      typeof u === 'string' &&
+                      (u.startsWith('http://') ||
+                        u.startsWith('https://') ||
+                        u.startsWith('data:image/') ||
+                        u.startsWith('/'))
+                  );
+                  return validImgs.length > 0 ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={validImgs[0]}
+                      alt={listing.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    TYPE_ICONS[listing.propertyType.toUpperCase()] ?? <Home className="w-5 h-5 text-slate-600" />
+                  );
+                })()}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5 flex-wrap">

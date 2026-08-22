@@ -293,6 +293,17 @@ function PanoramaViewer({ imageUrl }: { imageUrl: string }) {
   );
 }
 
+function isValidImageUrl(url: string | null | undefined): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  return (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('/')
+  );
+}
+
 // ─── Main Client Component ──────────────────────────────────────────────────
 
 export default function ListingDetailClient({ listing }: { listing: PublicListingItem }) {
@@ -306,6 +317,7 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
   // Photo Gallery State
   const [activePhotoIdx, setActivePhotoIdx] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [imgLoadFailed, setImgLoadFailed] = useState<Record<string, boolean>>({});
 
   // 3D Tour Room State (for demo / room presets)
   const [active3DRoom, setActive3DRoom] = useState<'living' | 'master' | 'balcony'>('living');
@@ -322,9 +334,10 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
 
   const tokenAmount = Math.round(listing.price * 0.05); // 5% token deposit
 
-  // Extract photos list
-  const photos = Array.isArray(listing.images) && listing.images.length > 0 ? listing.images : [];
-  const currentPhoto = photos[activePhotoIdx] || null;
+  // Extract photos list - strictly filter valid URLs / Data URLs (ignoring plain filenames from old tests)
+  const rawPhotos = Array.isArray(listing.images) ? listing.images : [];
+  const photos = rawPhotos.filter((url) => isValidImageUrl(url) && !imgLoadFailed[url]);
+  const currentPhoto = photos[activePhotoIdx] || (photos.length > 0 ? photos[0] : null);
 
   // Dedicated or detected Floor Plan
   const floorPlanImage =
@@ -567,6 +580,10 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
                   <img
                     src={currentPhoto || photos[0]}
                     alt={`${listing.title} photo ${activePhotoIdx + 1}`}
+                    onError={() => {
+                      const failed = currentPhoto || photos[0];
+                      if (failed) setImgLoadFailed((prev) => ({ ...prev, [failed]: true }));
+                    }}
                     className="w-full h-full object-cover transition duration-300"
                   />
 
@@ -626,6 +643,7 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
                         <img
                           src={url}
                           alt={`Thumbnail ${idx + 1}`}
+                          onError={() => setImgLoadFailed((prev) => ({ ...prev, [url]: true }))}
                           className="w-full h-full object-cover"
                         />
                       </button>

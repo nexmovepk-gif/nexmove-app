@@ -34,6 +34,17 @@ const TYPE_ICONS: Record<string, string> = {
   HOUSE: '🏠', APARTMENT: '🏢', PLOT: '🗺️', COMMERCIAL: '🏪', VILLA: '🏯',
 };
 
+function isValidImageUrl(url: string | null | undefined): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  return (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('data:image/') ||
+    trimmed.startsWith('/')
+  );
+}
+
 export default function MarketplacePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -154,86 +165,89 @@ export default function MarketplacePage() {
             </div>
 
             <div className="grid grid-cols-1 gap-4">
-              {listings.map((lst) => (
-                <Link
-                  key={lst.id}
-                  href={`/marketplace/${lst.id}`}
-                  className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition duration-200 group"
-                >
-                  {/* Left Column: Image Thumbnail & Title & Location */}
-                  <div className="flex items-start gap-4">
-                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 shadow-sm">
-                      {lst.images && lst.images.length > 0 ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={lst.images[0]}
-                          alt={lst.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-3xl">
-                          {TYPE_ICONS[lst.propertyType.toUpperCase()] ?? '🏠'}
+              {listings.map((lst) => {
+                const validImages = (lst.images || []).filter(isValidImageUrl);
+                return (
+                  <Link
+                    key={lst.id}
+                    href={`/marketplace/${lst.id}`}
+                    className="bg-white hover:bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition duration-200 group"
+                  >
+                    {/* Left Column: Image Thumbnail & Title & Location */}
+                    <div className="flex items-start gap-4">
+                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0 shadow-sm">
+                        {validImages.length > 0 ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={validImages[0]}
+                            alt={lst.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-3xl">
+                            {TYPE_ICONS[lst.propertyType.toUpperCase()] ?? '🏠'}
+                          </div>
+                        )}
+                        {validImages.length > 1 && (
+                          <span className="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                            +{validImages.length}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col gap-1 flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+                            {lst.propertyType}
+                          </span>
+                          {lst.aiExtracted && (
+                            <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+                              AI Extracted
+                            </span>
+                          )}
+                          {lst.panoramaUrl && (
+                            <span className="text-[10px] bg-teal-100 border border-teal-300 text-teal-800 px-2 py-0.5 rounded-full font-bold">
+                              360° Tour
+                            </span>
+                          )}
+                          {lst.videoUrl && (
+                            <span className="text-[10px] bg-purple-100 border border-purple-300 text-purple-800 px-2 py-0.5 rounded-full font-bold">
+                              Video
+                            </span>
+                          )}
                         </div>
-                      )}
-                      {lst.images && lst.images.length > 1 && (
-                        <span className="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
-                          +{lst.images.length}
+                        <h2 className="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition leading-snug truncate">
+                          {lst.title}
+                        </h2>
+                        <span className="text-xs text-slate-500 font-medium truncate">
+                          {lst.address}{lst.city ? `, ${lst.city}` : ''}
                         </span>
-                      )}
+
+                        {/* Badges row */}
+                        <div className="flex flex-wrap gap-2 items-center mt-1">
+                          <VerifiedBadge type="PROPERTY" verified={lst.verifiedProperty} />
+                          {lst.agencyName && (
+                            <span className="text-[11px] flex items-center gap-1 text-slate-600 font-semibold truncate">
+                              via {lst.agencyName}
+                              {lst.agencyVerified && (
+                                <VerifiedBadge type="AGENCY" verified={true} tier={lst.agencyTier ?? 'GOLD'} />
+                              )}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="flex flex-col gap-1 flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
-                          {lst.propertyType}
-                        </span>
-                        {lst.aiExtracted && (
-                          <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
-                            AI Extracted
-                          </span>
-                        )}
-                        {lst.panoramaUrl && (
-                          <span className="text-[10px] bg-teal-100 border border-teal-300 text-teal-800 px-2 py-0.5 rounded-full font-bold">
-                            360° Tour
-                          </span>
-                        )}
-                        {lst.videoUrl && (
-                          <span className="text-[10px] bg-purple-100 border border-purple-300 text-purple-800 px-2 py-0.5 rounded-full font-bold">
-                            Video
-                          </span>
-                        )}
-                      </div>
-                      <h2 className="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition leading-snug truncate">
-                        {lst.title}
-                      </h2>
-                      <span className="text-xs text-slate-500 font-medium truncate">
-                        {lst.address}{lst.city ? `, ${lst.city}` : ''}
+                    {/* Right Column: Price & Action */}
+                    <div className="flex sm:flex-col items-end justify-between sm:justify-center border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0 gap-2 flex-shrink-0">
+                      <span className="text-xl font-black text-emerald-700">{formatPrice(lst.price)}</span>
+                      <span className="text-xs bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition shadow">
+                        View Listing →
                       </span>
-
-                      {/* Badges row */}
-                      <div className="flex flex-wrap gap-2 items-center mt-1">
-                        <VerifiedBadge type="PROPERTY" verified={lst.verifiedProperty} />
-                        {lst.agencyName && (
-                          <span className="text-[11px] flex items-center gap-1 text-slate-600 font-semibold truncate">
-                            via {lst.agencyName}
-                            {lst.agencyVerified && (
-                              <VerifiedBadge type="AGENCY" verified={true} tier={lst.agencyTier ?? 'GOLD'} />
-                            )}
-                          </span>
-                        )}
-                      </div>
                     </div>
-                  </div>
-
-                  {/* Right Column: Price & Action */}
-                  <div className="flex sm:flex-col items-end justify-between sm:justify-center border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0 gap-2 flex-shrink-0">
-                    <span className="text-xl font-black text-emerald-700">{formatPrice(lst.price)}</span>
-                    <span className="text-xs bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition shadow">
-                      View Listing →
-                    </span>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

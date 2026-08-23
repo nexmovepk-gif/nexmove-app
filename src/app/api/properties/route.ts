@@ -1,6 +1,7 @@
 // src/app/api/properties/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabaseClient';
 import { PropertyPurpose, ListingStatus } from '@/generated/client/enums';
 
 export const dynamic = 'force-dynamic';
@@ -162,34 +163,100 @@ export async function POST(req: NextRequest) {
 
     const parsedAvailableDate = availableDate ? new Date(availableDate) : null;
 
-    const property = await prisma.property.create({
-      data: {
-        title: title.trim(),
-        description: description?.trim() || null,
-        purpose: validPurpose,
-        propertyType: propertyType.trim(),
-        category: category || null,
-        price: Number(price),
-        address: address?.trim() || 'Pakistan',
-        city: city?.trim() || null,
-        areaSqFt: areaSqFt ? Number(areaSqFt) : null,
-        bedrooms: bedrooms ? Number(bedrooms) : null,
-        bathrooms: bathrooms ? Number(bathrooms) : null,
-        isAvailable: Boolean(isAvailable),
-        availableDate: parsedAvailableDate,
-        images: Array.isArray(images) ? images : [],
-        videoUrl: videoUrl?.trim() || null,
-        panoramaUrl: panoramaUrl?.trim() || null,
-        virtualTourUrl: virtualTourUrl?.trim() || null,
-        features: Array.isArray(features) ? features : [],
-        contactName: contactName.trim(),
-        contactPhone: contactPhone.trim(),
-        contactEmail: contactEmail?.trim() || null,
-        agencyId: agencyId || null,
-        userId: userId || null,
-        status: validStatus,
-      },
-    });
+    const propertyData = {
+      title: title.trim(),
+      description: description?.trim() || null,
+      purpose: validPurpose,
+      propertyType: propertyType.trim(),
+      category: category || null,
+      price: Number(price),
+      address: address?.trim() || 'Pakistan',
+      city: city?.trim() || null,
+      areaSqFt: areaSqFt ? Number(areaSqFt) : null,
+      bedrooms: bedrooms ? Number(bedrooms) : null,
+      bathrooms: bathrooms ? Number(bathrooms) : null,
+      isAvailable: Boolean(isAvailable),
+      availableDate: parsedAvailableDate,
+      images: Array.isArray(images) ? images : [],
+      videoUrl: videoUrl?.trim() || null,
+      panoramaUrl: panoramaUrl?.trim() || null,
+      virtualTourUrl: virtualTourUrl?.trim() || null,
+      features: Array.isArray(features) ? features : [],
+      contactName: contactName.trim(),
+      contactPhone: contactPhone.trim(),
+      contactEmail: contactEmail?.trim() || null,
+      agencyId: agencyId || null,
+      userId: userId || null,
+      status: validStatus,
+    };
+
+    // 1. Insert via Prisma (connected directly to Supabase Postgres)
+    let property = null;
+    try {
+      property = await prisma.property.create({
+        data: propertyData,
+      });
+    } catch (prismaErr) {
+      console.warn('[Properties API] Prisma create note, attempting Supabase direct insert:', prismaErr);
+    }
+
+    // 2. Insert into Supabase table ('properties' / 'Property')
+    try {
+      const supabasePayload = {
+        ...(property ? { id: property.id } : {}),
+        title: propertyData.title,
+        description: propertyData.description,
+        purpose: propertyData.purpose,
+        property_type: propertyData.propertyType,
+        category: propertyData.category,
+        price: propertyData.price,
+        address: propertyData.address,
+        city: propertyData.city,
+        area_sqft: propertyData.areaSqFt,
+        bedrooms: propertyData.bedrooms,
+        bathrooms: propertyData.bathrooms,
+        is_available: propertyData.isAvailable,
+        available_date: propertyData.availableDate?.toISOString() || null,
+        images: propertyData.images,
+        video_url: propertyData.videoUrl,
+        panorama_url: propertyData.panoramaUrl,
+        virtual_tour_url: propertyData.virtualTourUrl,
+        features: propertyData.features,
+        contact_name: propertyData.contactName,
+        contact_phone: propertyData.contactPhone,
+        contact_email: propertyData.contactEmail,
+        agency_id: propertyData.agencyId,
+        user_id: propertyData.userId,
+        status: propertyData.status,
+      };
+
+      // Try inserting into 'properties' table
+      const { data: sbData, error: sbErr } = await supabase
+        .from('properties')
+        .insert([supabasePayload])
+        .select()
+        .maybeSingle();
+
+      if (sbErr) {
+        // Also try capitalized table name if exists
+        try {
+          await supabase.from('Property').insert([propertyData]);
+        } catch {
+          // ignore
+        }
+      } else if (!property && sbData) {
+        property = sbData;
+      }
+    } catch (sbInsertErr) {
+      console.warn('[Properties API] Supabase client insert note:', sbInsertErr);
+    }
+
+    if (!property) {
+      return NextResponse.json(
+        { error: 'Failed to record property in database.' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

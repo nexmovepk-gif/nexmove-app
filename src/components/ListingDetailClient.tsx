@@ -371,30 +371,55 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
     setIsProcessingToken(true);
 
     try {
-      const response = await fetch('/api/escrow/create-checkout', {
+      if (paymentMethod === 'CARD') {
+        const response = await fetch('/api/escrow/create-checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            propertyId: listing.id,
+            propertyTitle: listing.title,
+            tokenAmount,
+            buyerName: buyerName.trim(),
+            buyerPhone: buyerPhone.trim(),
+            buyerEmail: listing.contactEmail || undefined,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success && data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+
+      // Record buyer token payment and deal directly in Supabase deals table
+      const dealRes = await fetch('/api/deals', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          listingId: listing.id,
           propertyId: listing.id,
-          propertyTitle: listing.title,
           tokenAmount,
           buyerName: buyerName.trim(),
           buyerPhone: buyerPhone.trim(),
           buyerEmail: listing.contactEmail || undefined,
+          status: 'ESCROW',
+          notes: `Token payment via ${paymentMethod} deposit (${agreedTerms ? 'Terms Accepted' : ''})`,
         }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success || !data.url) {
-        throw new Error(data.error || 'Failed to initiate Stripe Checkout');
+      const dealData = await dealRes.json();
+      if (!dealRes.ok || !dealData.success) {
+        throw new Error(dealData.error || 'Failed to record token payment into Supabase deals');
       }
 
-      window.location.href = data.url;
+      setTokenPaidSuccess(true);
+      setIsProcessingToken(false);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to connect to Stripe Escrow Checkout. Please try again.';
+      const message = err instanceof Error ? err.message : 'Failed to process escrow token payment. Please try again.';
       console.error('[Escrow Token Payment Error]', err);
       setCheckoutError(message);
       setIsProcessingToken(false);

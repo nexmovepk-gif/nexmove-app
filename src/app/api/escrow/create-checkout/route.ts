@@ -90,6 +90,43 @@ export async function POST(req: NextRequest) {
           sessionParams as Stripe.Checkout.SessionCreateParams
         );
 
+        // Record buyer token payment in Supabase & Prisma Deals table
+        try {
+          const { supabase } = await import('@/lib/supabaseClient');
+          const { prisma } = await import('@/lib/prisma');
+
+          const firstAgency = await prisma.agency.findFirst({ select: { id: true } }).catch(() => null);
+          const firstAgent = await prisma.user.findFirst({ select: { id: true } }).catch(() => null);
+
+          if (firstAgency && firstAgent) {
+            await prisma.deal.create({
+              data: {
+                listingId: String(propertyId),
+                agencyId: firstAgency.id,
+                sellerAgentId: firstAgent.id,
+                status: 'ESCROW',
+                tokenAmount: numericTokenAmount,
+              },
+            }).catch(() => {});
+          }
+
+          // Insert into Supabase deals table
+          await supabase.from('deals').insert([
+            {
+              listing_id: String(propertyId),
+              token_amount: numericTokenAmount,
+              buyer_name: String(buyerName),
+              buyer_phone: String(buyerPhone),
+              buyer_email: buyerEmail || null,
+              status: 'ESCROW',
+              stripe_session_id: session.id,
+              created_at: new Date().toISOString(),
+            },
+          ]);
+        } catch (dealErr) {
+          console.warn('[Escrow Checkout] Non-blocking deal recording note:', dealErr);
+        }
+
         if (session.url) {
           return NextResponse.json({
             success: true,

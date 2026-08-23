@@ -10,7 +10,7 @@ const SUPABASE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_ANON_KEY ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.dummy-fallback-key';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0d3ZlY3VtYm5tenNhZmRrbnZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MDEyODksImV4cCI6MjEwMjI3NzI4OX0.B5Q-T-syOqmb9NyLu8ytJxSWoFtgcQzBTRug_cX_bL8';
 
 let supabaseClientInstance: SupabaseClient | null = null;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import AIEscrowGuard from '@/components/AIEscrowGuard';
 
@@ -36,6 +36,34 @@ export default function ShieldedDealsPage() {
   const [deals, setDeals] = useState<DealItem[]>(INITIAL_DEALS);
   const [selectedStage, setSelectedStage] = useState<string>('ALL');
   const [showPrivateDetails, setShowPrivateDetails] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    async function loadDeals() {
+      try {
+        const res = await fetch('/api/deals');
+        const data = await res.json();
+        if (data.success && Array.isArray(data.deals) && data.deals.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const mapped: DealItem[] = data.deals.map((d: any) => ({
+            id: d.id,
+            title: d.listing?.title || `Escrow Deal: ${d.id.slice(0, 8)}`,
+            stage: (d.status === 'PENDING' ? 'LEAD' : d.status) as DealItem['stage'],
+            value: d.listing?.price || d.tokenAmount || 0,
+            clientAlias: d.buyerClient?.name ? `Buyer #${d.id.slice(0, 4)}` : (d.buyer_name ? `Buyer #${d.id.slice(0, 4)}` : 'Confidential Buyer'),
+            clientPrivateName: d.buyerClient?.name || d.buyer_name || 'Direct Buyer',
+            clientContact: d.buyerClient?.phone || d.buyer_phone || 'Private',
+            privateNotes: d.notes || `Token deposit: PKR ${d.tokenAmount?.toLocaleString() || '0'}. Held in Escrow Vault.`,
+            property: d.listing?.title || d.propertyId || 'NexMove Property',
+            matchScore: 98,
+          }));
+          setDeals(mapped);
+        }
+      } catch (err) {
+        console.warn('Note loading live deals:', err);
+      }
+    }
+    loadDeals();
+  }, []);
 
   // AI Matcher state
   const [aiMatching, setAiMatching] = useState(false);

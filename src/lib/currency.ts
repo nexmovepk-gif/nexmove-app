@@ -12,10 +12,20 @@ export interface CurrencyConfig {
 
 export const CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
   PKR: { code: 'PKR', symbol: 'Rs', name: 'Pakistani Rupee', flag: '🇵🇰', rateInPKR: 1 },
-  USD: { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸', rateInPKR: 278.5 },
-  AED: { code: 'AED', symbol: 'AED', name: 'UAE Dirham', flag: '🇦🇪', rateInPKR: 75.8 },
-  GBP: { code: 'GBP', symbol: '£', name: 'British Pound', flag: '🇬🇧', rateInPKR: 353.2 },
-  EUR: { code: 'EUR', symbol: '€', name: 'Euro', flag: '🇪🇺', rateInPKR: 304.1 },
+  USD: { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸', rateInPKR: 276.3 },
+  AED: { code: 'AED', symbol: 'AED', name: 'UAE Dirham', flag: '🇦🇪', rateInPKR: 75.2 },
+  GBP: { code: 'GBP', symbol: '£', name: 'British Pound', flag: '🇬🇧', rateInPKR: 376.9 },
+  EUR: { code: 'EUR', symbol: '€', name: 'Euro', flag: '🇪🇺', rateInPKR: 322.8 },
+}
+
+/**
+ * Dynamically updates CURRENCIES rates in memory from live API
+ */
+export function updateLiveRates(rates: Partial<Record<CurrencyCode, number>>) {
+  if (rates.USD && rates.USD > 0) CURRENCIES.USD.rateInPKR = rates.USD
+  if (rates.AED && rates.AED > 0) CURRENCIES.AED.rateInPKR = rates.AED
+  if (rates.GBP && rates.GBP > 0) CURRENCIES.GBP.rateInPKR = rates.GBP
+  if (rates.EUR && rates.EUR > 0) CURRENCIES.EUR.rateInPKR = rates.EUR
 }
 
 /**

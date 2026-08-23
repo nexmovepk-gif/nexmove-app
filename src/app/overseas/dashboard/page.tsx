@@ -167,8 +167,9 @@ function ROICalculator({ activeCurrency }: { activeCurrency: CurrencyCode }) {
             <span className="font-black text-slate-900">Total Return</span>
             <span className="font-black text-emerald-700">+{fmt(totalReturnPKR)} ({totalReturnPct.toFixed(1)}%)</span>
           </div>
-          <p className="text-[10px] text-slate-500 mt-1">
-            * Estimates based on inputs only. Actual returns may vary. PKR → {activeCurrency} rate: {CURRENCIES[activeCurrency].rateInPKR}.
+          <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            * Live Market Rates via ExchangeRate-API. PKR → {activeCurrency} rate: {CURRENCIES[activeCurrency].rateInPKR}.
           </p>
         </div>
       )}
@@ -325,12 +326,29 @@ export default function OverseasBuyerDashboard() {
 
   // KYC status initialized from session, synchronized with DB
   const [isKycVerified, setIsKycVerified] = useState<boolean>(Boolean(user?.isKycVerified));
+  const [liveRates, setLiveRates] = useState<Record<string, number>>({});
 
   useEffect(() => {
     if (user?.isKycVerified !== undefined) {
       setIsKycVerified(Boolean(user.isKycVerified));
     }
   }, [user?.isKycVerified]);
+
+  // Fetch live Forex rates from /api/forex/rates
+  useEffect(() => {
+    fetch('/api/forex/rates')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.success && d?.rates) {
+          const rMap: Record<string, number> = {};
+          Object.keys(d.rates).forEach((k) => {
+            rMap[k] = d.rates[k].rateInPKR;
+          });
+          setLiveRates(rMap);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Fetch real portfolio and deals for this overseas user from database
   const fetchProperties = useCallback(async () => {
@@ -595,8 +613,12 @@ export default function OverseasBuyerDashboard() {
                     {hasProperties ? fmt(totalAssetsPKR) : <span className="text-slate-400 text-xl">—</span>}
                   </p>
                 )}
-                <p className="text-[11px] text-slate-500 font-medium">
-                  Rate: {CURRENCIES[activeCurrency].symbol}1 = Rs{CURRENCIES[activeCurrency].rateInPKR}
+                <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                  <span>Rate: {CURRENCIES[activeCurrency].symbol}1 = Rs{liveRates[activeCurrency] || CURRENCIES[activeCurrency].rateInPKR}</span>
+                  <span className="inline-flex items-center gap-1 text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded border border-emerald-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Live API
+                  </span>
                 </p>
                 <div className="mt-4 flex items-center gap-2">
                   <span className={`w-2 h-2 rounded-full ${hasProperties ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />

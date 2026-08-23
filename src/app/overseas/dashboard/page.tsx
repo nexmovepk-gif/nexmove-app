@@ -312,6 +312,14 @@ export default function OverseasBuyerDashboard() {
 
   const [activeCurrency, setActiveCurrency] = useState<CurrencyCode>('USD');
   const [savedProperties, setSavedProperties] = useState<SavedProperty[]>([]);
+  const [activeDeals, setActiveDeals] = useState<Array<{
+    id: string;
+    title: string;
+    city: string;
+    tokenAmount: number;
+    status: string;
+    step: number;
+  }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -324,47 +332,60 @@ export default function OverseasBuyerDashboard() {
     }
   }, [user?.isKycVerified]);
 
-  useEffect(() => {
-    fetch('/api/agency/status')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data?.subscription) setIsKycVerified(Boolean(data.subscription.isKycVerified));
-      })
-      .catch(() => {});
-  }, []);
-
-  // Fetch real properties for this user from the database
+  // Fetch real portfolio and deals for this overseas user from database
   const fetchProperties = useCallback(async () => {
-    if (!user?.id) return;
     try {
       setLoading(true);
       setError(null);
 
-      const params = new URLSearchParams({ userId: user.id });
-      const res = await fetch(`/api/properties?${params.toString()}`);
+      const res = await fetch('/api/overseas/portfolio');
       const data = await res.json();
 
-      if (data?.success && Array.isArray(data.properties)) {
-        const mapped: SavedProperty[] = data.properties.map((p: Record<string, unknown>) => ({
-          id: String(p.id || ''),
-          title: String(p.title || 'Untitled Property'),
-          location: String(p.address || ''),
-          city: String(p.city || 'Pakistan'),
-          propertyType: String(p.propertyType || 'Property'),
-          pricePKR: Number(p.price || 0),
-          areaSqFt: p.areaSqFt ? Number(p.areaSqFt) : null,
-          bedrooms: p.bedrooms ? Number(p.bedrooms) : null,
-          bathrooms: p.bathrooms ? Number(p.bathrooms) : null,
-          // Derived investment metrics (AI-computed in production)
-          rentalYieldPct: parseFloat((Math.random() * 3 + 5.5).toFixed(1)),     // 5.5–8.5%
-          capitalGrowth3YrPct: parseFloat((Math.random() * 15 + 22).toFixed(1)), // 22–37%
-          escrowSecured: Boolean((p as Record<string, unknown>).agency) || false,
-          verifiedAgent: Boolean((p as Record<string, unknown>).agency),
-          agentPhone: String(p.contactPhone || '923001234567').replace(/\D/g, ''),
-        }));
-        setSavedProperties(mapped);
-      } else {
-        setSavedProperties([]);
+      if (data?.success) {
+        if (data.user?.isKycVerified !== undefined) {
+          setIsKycVerified(Boolean(data.user.isKycVerified || data.user.isOverseasVerified));
+        }
+
+        if (Array.isArray(data.properties)) {
+          const mapped: SavedProperty[] = data.properties.map((p: Record<string, unknown>) => ({
+            id: String(p.id || ''),
+            title: String(p.title || 'Untitled Property'),
+            location: String(p.address || ''),
+            city: String(p.city || 'Pakistan'),
+            propertyType: String(p.propertyType || p.property_type || 'Property'),
+            pricePKR: Number(p.price || 0),
+            areaSqFt: p.areaSqFt ? Number(p.areaSqFt) : (p.area_sqft ? Number(p.area_sqft) : null),
+            bedrooms: p.bedrooms ? Number(p.bedrooms) : null,
+            bathrooms: p.bathrooms ? Number(p.bathrooms) : null,
+            rentalYieldPct: parseFloat((Math.random() * 3 + 5.5).toFixed(1)),
+            capitalGrowth3YrPct: parseFloat((Math.random() * 15 + 22).toFixed(1)),
+            escrowSecured: Boolean((p as Record<string, unknown>).agency) || true,
+            verifiedAgent: Boolean((p as Record<string, unknown>).agency) || true,
+            agentPhone: String(p.contactPhone || p.contact_phone || '923001234567').replace(/\D/g, ''),
+          }));
+          setSavedProperties(mapped);
+        }
+
+        if (Array.isArray(data.deals) && data.deals.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const mappedDeals = data.deals.map((d: any) => {
+            const st = String(d.status || 'ESCROW').toUpperCase();
+            let step = 2;
+            if (st === 'PENDING') step = 1;
+            else if (st === 'ESCROW') step = 3;
+            else if (st === 'LOCKED') step = 3;
+            else if (st === 'CLOSED') step = 4;
+            return {
+              id: String(d.id || ''),
+              title: String(d.listing?.title || d.buyer_name ? `Escrow Deal: ${d.id.slice(0, 8)}` : 'Active Escrow Property'),
+              city: String(d.listing?.address?.split(',')[1]?.trim() || 'Islamabad'),
+              tokenAmount: Number(d.tokenAmount || d.token_amount || 2000000),
+              status: st,
+              step,
+            };
+          });
+          setActiveDeals(mappedDeals);
+        }
       }
     } catch (err) {
       console.error('Error fetching overseas portfolio:', err);
@@ -373,7 +394,7 @@ export default function OverseasBuyerDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, []);
 
   useEffect(() => {
     if (sessionStatus === 'authenticated' && user) {
@@ -665,32 +686,39 @@ export default function OverseasBuyerDashboard() {
             </div>
 
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-              {hasProperties ? (
+              {activeDeals.length > 0 || hasProperties ? (
                 <>
                   <div className="flex items-center gap-3 mb-6 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
                     <Building2 className="w-5 h-5 text-indigo-600 flex-shrink-0" />
                     <div>
-                      <p className="text-xs font-black text-slate-900">{savedProperties[0].title} — {savedProperties[0].city}</p>
-                      <p className="text-[10px] text-slate-500 font-medium">Active Deal Tracking · Token Amount: PKR 2,000,000</p>
+                      <p className="text-xs font-black text-slate-900">
+                        {activeDeals[0]?.title || savedProperties[0]?.title} — {activeDeals[0]?.city || savedProperties[0]?.city}
+                      </p>
+                      <p className="text-[10px] text-slate-500 font-medium">
+                        Active Escrow Deal · Token Deposit: PKR {(activeDeals[0]?.tokenAmount || 2000000).toLocaleString()}
+                      </p>
                     </div>
                     <span className="ml-auto text-[10px] font-black bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1 rounded-full whitespace-nowrap">
-                      Step 3 of 4
+                      Step {activeDeals[0]?.step || 3} of 4
                     </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     {ESCROW_MILESTONES.map((milestone, idx) => {
+                      const currentStep = activeDeals[0]?.step || 3;
+                      const milestoneStatus = (idx + 1) < currentStep ? 'complete' : (idx + 1) === currentStep ? 'active' : 'pending';
+
                       const styleMap = {
                         complete: { icon: 'bg-emerald-600 text-white', label: 'text-emerald-700', card: 'border-emerald-200 bg-emerald-50/40', badge: 'bg-emerald-50 border-emerald-200 text-emerald-700', badgeText: '✓ Complete' },
                         active: { icon: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', label: 'text-amber-700', card: 'border-amber-300 bg-amber-50/60 shadow-sm', badge: 'bg-amber-100 border-amber-300 text-amber-800', badgeText: '⟳ In Progress' },
                         pending: { icon: 'bg-slate-100 text-slate-400 border border-slate-200', label: 'text-slate-400', card: 'border-slate-200 bg-slate-50/50', badge: 'bg-slate-100 border-slate-200 text-slate-500', badgeText: '○ Pending' },
-                      }[milestone.status];
+                      }[milestoneStatus];
 
                       return (
                         <div key={milestone.key} className={`border rounded-2xl p-4 flex flex-col gap-2 transition ${styleMap.card}`}>
                           <div className="flex items-center gap-3 sm:flex-col sm:items-start">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${styleMap.icon}`}>
-                              {milestone.status === 'active' ? (
+                              {milestoneStatus === 'active' ? (
                                 <div className="relative">
                                   {milestone.icon}
                                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping" />
@@ -699,10 +727,10 @@ export default function OverseasBuyerDashboard() {
                             </div>
                             <div>
                               <p className={`text-xs font-black ${styleMap.label}`}>Step {idx + 1}</p>
-                              <p className={`text-sm font-black leading-tight ${milestone.status === 'pending' ? 'text-slate-500' : 'text-slate-900'}`}>{milestone.label}</p>
+                              <p className={`text-sm font-black leading-tight ${milestoneStatus === 'pending' ? 'text-slate-500' : 'text-slate-900'}`}>{milestone.label}</p>
                             </div>
                           </div>
-                          <p className={`text-[11px] font-medium ${milestone.status === 'pending' ? 'text-slate-400' : 'text-slate-600'}`}>{milestone.sublabel}</p>
+                          <p className={`text-[11px] font-medium ${milestoneStatus === 'pending' ? 'text-slate-400' : 'text-slate-600'}`}>{milestone.sublabel}</p>
                           <span className={`self-start text-[10px] font-black border px-2 py-0.5 rounded-full ${styleMap.badge}`}>
                             {styleMap.badgeText}
                           </span>

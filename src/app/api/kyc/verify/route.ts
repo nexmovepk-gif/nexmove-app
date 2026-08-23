@@ -30,7 +30,10 @@ export async function POST(req: Request) {
 
     // Persist KYC document identifiers to the database
     try {
-      const updateFields: Record<string, unknown> = {};
+      const updateFields: Record<string, unknown> = {
+        isKycVerified: true,
+        isOverseasVerified: true,
+      };
 
       if (documentType === 'NICOP' && (nicopNumber || documentNumber)) {
         updateFields.nicopNumber = nicopNumber || documentNumber;

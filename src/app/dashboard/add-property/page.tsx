@@ -25,7 +25,7 @@ export default function DashboardAddPropertyPage() {
             </p>
           </div>
           <Link
-            href="/agency/dashboard"
+            href="/dashboard"
             className="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 self-start sm:self-auto"
           >
             ← Back to Dashboard
@@ -33,8 +33,8 @@ export default function DashboardAddPropertyPage() {
         </div>
 
         <PropertyForm
-          onSuccessRedirect="/agency/dashboard"
-          isAgencyPortal={true}
+          onSuccessRedirect="/dashboard"
+          isAgencyPortal={false}
         />
       </div>
     </section>

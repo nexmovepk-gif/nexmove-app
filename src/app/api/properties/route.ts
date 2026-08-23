@@ -1,5 +1,7 @@
 // src/app/api/properties/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { supabase } from '@/lib/supabaseClient';
 import { PropertyPurpose, ListingStatus } from '@/generated/client/enums';
@@ -131,9 +133,13 @@ export async function POST(req: NextRequest) {
       contactPhone,
       contactEmail,
       agencyId,
-      userId,
+      userId: bodyUserId,
       status = 'ACTIVE',
     } = body;
+
+    // Auto-attach userId from the authenticated session if not provided in body
+    const session = await getServerSession(authOptions);
+    const userId = bodyUserId || session?.user?.id || null;
 
     // Validation
     if (!title || price === undefined || price === null || !propertyType || !contactName || !contactPhone) {

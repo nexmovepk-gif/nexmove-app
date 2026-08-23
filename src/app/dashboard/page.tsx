@@ -76,11 +76,13 @@ function UserDashboardContent() {
       .catch(() => {});
   }, []);
 
-  // Fetch real listings directly from the database API
+  // Fetch real listings directly from the database API — scoped to logged-in user only
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/properties');
+      const userId = sessionUser?.id;
+      const url = userId ? `/api/properties?userId=${userId}` : '/api/properties';
+      const res = await fetch(url);
       const data = await res.json();
 
       if (data?.success && Array.isArray(data.properties)) {
@@ -121,8 +123,12 @@ function UserDashboardContent() {
   };
 
   useEffect(() => {
-    fetchListings();
-  }, []);
+    // Re-fetch when session user is available so userId is included in the request
+    if (sessionUser !== undefined) {
+      fetchListings();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionUser?.id]);
 
   const handleStatusChange = async (id: string, newStatus: ListingStatusKey) => {
     setListings((prev) =>

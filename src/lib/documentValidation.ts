@@ -57,24 +57,42 @@ export function countWordMatches(text: string, signatures: string[]): string[] {
 // ─── Signatures Categorization ───────────────────────────────────────────────
 
 export const ID_SIGNATURES = [
+  // Primary CNIC / NICOP Identifiers
   'cnic',
-  'identity card',
-  'national identity',
-  'national identity card',
   'nicop',
   'snic',
-  'smart national',
   'poc',
-  'pakistan origin card',
   'nadra',
+
+  // Full Phrases (high confidence)
+  'national identity card',
+  'national identity',
+  'identity card',
+  'smart national identity',
+  'pakistan origin card',
   'government of pakistan',
   'islamic republic of pakistan',
+  'republic of pakistan',
+
+  // Common single-word CNIC terms (for low-res / blurry OCR scans)
+  'identity',
+  'cardholder',
+  'citizenship',
+  'citizen',
+  'nationality',
+
+  // Fields always present on CNIC front/back
   'father name',
   'husband name',
   'date of birth',
   'date of issue',
   'date of expiry',
   'country of stay',
+
+  // Common OCR fallback words visible on every Pakistani CNIC
+  'pakistan',
+  'nadra nadra',
+  'national database',
 ];
 
 // Tier 1: Primary Core Legal / Ownership / Technical Signatures (Must have at least one to verify)
@@ -392,9 +410,21 @@ export function analyzeDocumentContent(
   }
 
   // Strict Rule 2: Must have at least ONE Primary Legal Signature (e.g. Allotment Letter, Sale Deed, Fard, Blueprint, CNIC, etc.)
-  // OR at least 2 secondary signatures with high confidence.
+  // OR at least 3 secondary signatures with high confidence.
   const hasPrimaryLegal = primaryHits.length >= 1;
-  const hasIdentity = idHits.length >= 1;
+
+  // For Identity: 'pakistan' alone is NOT enough — require at least one corroborating CNIC field
+  const STRONG_ID_TERMS = [
+    'cnic', 'nicop', 'snic', 'poc', 'nadra',
+    'national identity card', 'national identity', 'identity card', 'smart national identity',
+    'pakistan origin card', 'government of pakistan', 'islamic republic of pakistan',
+    'republic of pakistan', 'identity', 'cardholder', 'citizenship', 'citizen',
+    'nationality', 'father name', 'husband name', 'date of birth', 'date of issue',
+    'date of expiry', 'country of stay', 'national database',
+  ];
+  const strongIdHits = idHits.filter((k) => STRONG_ID_TERMS.includes(k));
+  const hasIdentity = strongIdHits.length >= 1; // Must have at least one strong ID term (not just 'pakistan')
+
   const hasStrongSecondary = secondaryHits.length >= 3;
 
   if (!hasPrimaryLegal && !hasIdentity && !hasStrongSecondary) {

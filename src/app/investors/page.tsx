@@ -138,6 +138,7 @@ export default function InvestorPortalPage() {
 
   // Live investment deals from database
   const [investmentDeals, setInvestmentDeals] = useState<InvestmentDeal[]>([])
+  const [selectedContractDeal, setSelectedContractDeal] = useState<InvestmentDeal | null>(null)
 
   // ─── API Loaders ────────────────────────────────────────────────────────────
   const loadDeals = useCallback(async () => {
@@ -722,12 +723,23 @@ Status             : ${item.status}
                         <span className="text-xl font-black text-emerald-700">
                           {formatPrice(deal.pricePKR)}
                         </span>
-                        <button
-                          onClick={() => { setMeetingDeal(deal); setScheduleSuccess(false) }}
-                          className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition shadow whitespace-nowrap"
-                        >
-                          View Deal →
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedContractDeal(deal)
+                              setActiveTab('ESCROW')
+                            }}
+                            className="text-xs bg-slate-900 hover:bg-slate-800 text-amber-300 hover:text-amber-200 border border-slate-700 font-bold px-3 py-2 rounded-xl transition shadow flex items-center gap-1 whitespace-nowrap"
+                          >
+                            <span>📄 Legal Contract</span>
+                          </button>
+                          <button
+                            onClick={() => { setMeetingDeal(deal); setScheduleSuccess(false) }}
+                            className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition shadow whitespace-nowrap"
+                          >
+                            View Deal →
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1024,10 +1036,30 @@ Status             : ${item.status}
             <AIDocumentKYCVerifier />
 
             {/* 2. Smart Escrow Milestone Tracker */}
-            <SmartEscrowMilestoneTracker propertyTitle="" totalPricePKR={0} currency={currency} />
+            <SmartEscrowMilestoneTracker
+              propertyTitle={selectedContractDeal?.title || investmentDeals[0]?.title || ''}
+              totalPricePKR={selectedContractDeal?.pricePKR || investmentDeals[0]?.pricePKR || 0}
+              currency={currency}
+              deals={investmentDeals.map((d) => ({ id: d.id, title: d.title, pricePKR: d.pricePKR }))}
+            />
 
             {/* 3. AI Legal Contract Generator */}
-            <AILegalContractGenerator initialDealTitle="" initialPricePKR={0} initialAgency="" activeCurrency={currency} />
+            <AILegalContractGenerator
+              initialDealTitle={selectedContractDeal?.title || ''}
+              initialPricePKR={selectedContractDeal?.pricePKR || 0}
+              initialAgency={selectedContractDeal?.agencyName || ''}
+              activeCurrency={currency}
+              deals={investmentDeals.map((d) => ({
+                id: d.id,
+                title: d.title,
+                location: d.location,
+                city: d.city,
+                propertyType: d.propertyType,
+                pricePKR: d.pricePKR,
+                agencyName: d.agencyName,
+              }))}
+              defaultInvestorName={session?.user?.name || ''}
+            />
 
             {/* Escrow Balance & Wallet Operations Card */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

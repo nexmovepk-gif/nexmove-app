@@ -19,20 +19,29 @@ interface SmartEscrowMilestoneTrackerProps {
   propertyTitle?: string
   totalPricePKR?: number
   currency?: CurrencyCode
+  deals?: Array<{
+    id: string
+    title: string
+    pricePKR: number
+  }>
 }
 
 export default function SmartEscrowMilestoneTracker({
   propertyTitle = '',
   totalPricePKR = 0,
   currency = 'PKR',
+  deals = [],
 }: SmartEscrowMilestoneTrackerProps) {
+  const activeTitle = propertyTitle || deals[0]?.title || '1 Kanal Modern Designer Villa — Phase 6'
+  const activePricePKR = totalPricePKR > 0 ? totalPricePKR : (deals[0]?.pricePKR || 95000000)
+
   const [milestones, setMilestones] = useState<EscrowMilestone[]>([
     {
       stageNumber: 1,
       title: 'Stage 1: Legal Check & Title Search',
       subtitle: 'Clear title deed verification & land revenue encumbrance check',
       percentage: 20,
-      payoutAmountPKR: totalPricePKR * 0.2,
+      payoutAmountPKR: activePricePKR * 0.2,
       status: 'IN_PROGRESS',
       verificationRequirements: [
         'LDA / DHA Land Revenue NOC verified',
@@ -45,7 +54,7 @@ export default function SmartEscrowMilestoneTracker({
       title: 'Stage 2: Sales Agreement & FBR Tax Clearance',
       subtitle: 'FBR Tax Withholding (15% Filer) voucher & Agreement execution',
       percentage: 30,
-      payoutAmountPKR: totalPricePKR * 0.3,
+      payoutAmountPKR: activePricePKR * 0.3,
       status: 'LOCKED',
       verificationRequirements: [
         'FBR CPR (Computerized Payment Receipt) generated',
@@ -58,7 +67,7 @@ export default function SmartEscrowMilestoneTracker({
       title: 'Stage 3: Handover & Deed Transfer',
       subtitle: 'Physical possession, key handover & Registry transfer deed',
       percentage: 50,
-      payoutAmountPKR: totalPricePKR * 0.5,
+      payoutAmountPKR: activePricePKR * 0.5,
       status: 'LOCKED',
       verificationRequirements: [
         'Physical property key handover certificate',
@@ -129,7 +138,7 @@ export default function SmartEscrowMilestoneTracker({
   }
 
   // Zero-state: no active contract loaded
-  if (totalPricePKR === 0) {
+  if (totalPricePKR === 0 && deals.length === 0) {
     return (
       <div className="bg-white border border-slate-200 rounded-3xl p-10 shadow-sm flex flex-col items-center justify-center gap-4 text-center min-h-[200px]">
         <span className="text-4xl">📈</span>
@@ -161,7 +170,7 @@ export default function SmartEscrowMilestoneTracker({
             <span>📈</span> Smart Escrow Milestone Tracker
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            Stage-wise fund release for <strong className="text-slate-800">{propertyTitle}</strong>.
+            Stage-wise fund release for <strong className="text-slate-800">{activeTitle}</strong> ({formatCurrencyPrice(activePricePKR, currency)}).
           </p>
         </div>
 

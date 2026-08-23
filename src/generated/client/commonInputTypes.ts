@@ -426,6 +426,74 @@ export type EnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumProjectStatusFilter<$PrismaModel>
 }
 
+export type EnumInvestmentDealStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestmentDealStatus | Prisma.EnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestmentDealStatusFilter<$PrismaModel> | $Enums.InvestmentDealStatus
+}
+
+export type EnumInvestmentDealStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestmentDealStatus | Prisma.EnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestmentDealStatusWithAggregatesFilter<$PrismaModel> | $Enums.InvestmentDealStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInvestmentDealStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInvestmentDealStatusFilter<$PrismaModel>
+}
+
+export type EnumInvestorPortfolioStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestorPortfolioStatus | Prisma.EnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestorPortfolioStatusFilter<$PrismaModel> | $Enums.InvestorPortfolioStatus
+}
+
+export type EnumInvestorPortfolioStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestorPortfolioStatus | Prisma.EnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestorPortfolioStatusWithAggregatesFilter<$PrismaModel> | $Enums.InvestorPortfolioStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInvestorPortfolioStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInvestorPortfolioStatusFilter<$PrismaModel>
+}
+
+export type EnumCashflowTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowType | Prisma.EnumCashflowTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowTypeFilter<$PrismaModel> | $Enums.CashflowType
+}
+
+export type EnumCashflowStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowStatus | Prisma.EnumCashflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowStatusFilter<$PrismaModel> | $Enums.CashflowStatus
+}
+
+export type EnumCashflowTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowType | Prisma.EnumCashflowTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowTypeWithAggregatesFilter<$PrismaModel> | $Enums.CashflowType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCashflowTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCashflowTypeFilter<$PrismaModel>
+}
+
+export type EnumCashflowStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowStatus | Prisma.EnumCashflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowStatusWithAggregatesFilter<$PrismaModel> | $Enums.CashflowStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCashflowStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCashflowStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -827,6 +895,74 @@ export type NestedEnumProjectStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumProjectStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumProjectStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumInvestmentDealStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestmentDealStatus | Prisma.EnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestmentDealStatusFilter<$PrismaModel> | $Enums.InvestmentDealStatus
+}
+
+export type NestedEnumInvestmentDealStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestmentDealStatus | Prisma.EnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestmentDealStatus[] | Prisma.ListEnumInvestmentDealStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestmentDealStatusWithAggregatesFilter<$PrismaModel> | $Enums.InvestmentDealStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInvestmentDealStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInvestmentDealStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumInvestorPortfolioStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestorPortfolioStatus | Prisma.EnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestorPortfolioStatusFilter<$PrismaModel> | $Enums.InvestorPortfolioStatus
+}
+
+export type NestedEnumInvestorPortfolioStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InvestorPortfolioStatus | Prisma.EnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InvestorPortfolioStatus[] | Prisma.ListEnumInvestorPortfolioStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInvestorPortfolioStatusWithAggregatesFilter<$PrismaModel> | $Enums.InvestorPortfolioStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInvestorPortfolioStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInvestorPortfolioStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumCashflowTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowType | Prisma.EnumCashflowTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowTypeFilter<$PrismaModel> | $Enums.CashflowType
+}
+
+export type NestedEnumCashflowStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowStatus | Prisma.EnumCashflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowStatusFilter<$PrismaModel> | $Enums.CashflowStatus
+}
+
+export type NestedEnumCashflowTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowType | Prisma.EnumCashflowTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowType[] | Prisma.ListEnumCashflowTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowTypeWithAggregatesFilter<$PrismaModel> | $Enums.CashflowType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCashflowTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCashflowTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumCashflowStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CashflowStatus | Prisma.EnumCashflowStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CashflowStatus[] | Prisma.ListEnumCashflowStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCashflowStatusWithAggregatesFilter<$PrismaModel> | $Enums.CashflowStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCashflowStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCashflowStatusFilter<$PrismaModel>
 }
 
 

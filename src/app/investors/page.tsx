@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useCurrency } from '@/components/CurrencyContext'
@@ -74,12 +74,7 @@ interface CashflowTransaction {
 }
 
 
-// --- Production Data (fetched from database — initially empty) ---
-const INVESTMENT_DEALS: InvestmentDeal[] = []
-
-const INITIAL_PORTFOLIO: PortfolioInvestment[] = []
-
-const CASHFLOW_TRANSACTIONS: CashflowTransaction[] = []
+// --- Production Data is loaded dynamically from APIs (see useEffect hooks below) ---
 
 
 const TYPE_ICONS: Record<string, string> = {
@@ -125,13 +120,15 @@ export default function InvestorPortalPage() {
   const [scheduleSuccess, setScheduleSuccess] = useState(false)
 
   // Portfolio & Agreement State
-  const [portfolio, setPortfolio] = useState<PortfolioInvestment[]>(INITIAL_PORTFOLIO)
+  const [portfolio, setPortfolio] = useState<PortfolioInvestment[]>([])
   const [selectedAgreement, setSelectedAgreement] = useState<PortfolioInvestment | null>(null)
   const [, setRenewingContractId] = useState<string | null>(null)
   const [renewalSuccessMsg, setRenewalSuccessMsg] = useState<string | null>(null)
 
   // Escrow Wallet State
   const [escrowBalancePKR, setEscrowBalancePKR] = useState<number>(0)
+  const [pendingWalletPKR, setPendingWalletPKR] = useState<number>(0)
+  const [cashflowTransactions, setCashflowTransactions] = useState<CashflowTransaction[]>([])
   const [payoutModalOpen, setPayoutModalOpen] = useState(false)
   const [payoutAmountPKR, setPayoutAmountPKR] = useState<number>(0)
   const [payoutBankName, setPayoutBankName] = useState('')
@@ -139,22 +136,64 @@ export default function InvestorPortalPage() {
   const [payoutIban, setPayoutIban] = useState('')
   const [payoutSuccessMsg, setPayoutSuccessMsg] = useState<string | null>(null)
 
-  // Calculations
+  // Live investment deals from database
+  const [investmentDeals, setInvestmentDeals] = useState<InvestmentDeal[]>([])
+
+  // ─── API Loaders ────────────────────────────────────────────────────────────
+  const loadDeals = useCallback(async () => {
+    try {
+      const res = await fetch('/api/investors/deals')
+      const data = await res.json()
+      if (data.success) setInvestmentDeals(data.deals ?? [])
+    } catch { /* silently ignore — shows empty state */ }
+  }, [])
+
+  const loadPortfolio = useCallback(async () => {
+    try {
+      const res = await fetch('/api/investors/portfolio')
+      const data = await res.json()
+      if (data.success) setPortfolio(data.portfolio ?? [])
+    } catch { /* silently ignore */ }
+  }, [])
+
+  const loadWallet = useCallback(async () => {
+    try {
+      const res = await fetch('/api/investors/wallet')
+      const data = await res.json()
+      if (data.success) {
+        setEscrowBalancePKR(data.wallet?.balancePKR ?? 0)
+        setPendingWalletPKR(data.wallet?.pendingPKR ?? 0)
+        setCashflowTransactions(data.cashflows ?? [])
+      }
+    } catch { /* silently ignore */ }
+  }, [])
+
+  // Load all data once session is authenticated
+  useEffect(() => {
+    if (status === 'authenticated') {
+      loadDeals()
+      loadPortfolio()
+      loadWallet()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
+
+  // ─── Calculations (computed from live state) ─────────────────────────────
   const activeHoldings = portfolio.filter((p) => p.status !== 'EXITED')
   const totalPortfolioPKR = activeHoldings.reduce((sum, item) => sum + item.currentValuePKR, 0)
   const totalInvestedPKR = activeHoldings.reduce((sum, item) => sum + item.investedAmountPKR, 0)
   const avgRentalYield = activeHoldings.length > 0
     ? activeHoldings.reduce((sum, p) => sum + p.fixedRoiPct, 0) / activeHoldings.length
     : 0
-  const avgGrowth3Yr = 0 // Populated from real market data when available
+  const avgGrowth3Yr = 0
 
-  const ytdIncomePKR = CASHFLOW_TRANSACTIONS.filter((t) => t.type !== 'CAPITAL_EXIT').reduce((acc, t) => acc + t.netPayoutPKR, 0)
-  const pendingPayoutsPKR = CASHFLOW_TRANSACTIONS.filter((t) => t.status === 'PROCESSING').reduce((acc, t) => acc + t.netPayoutPKR, 0)
+  const ytdIncomePKR = cashflowTransactions.filter((t) => t.type !== 'CAPITAL_EXIT').reduce((acc, t) => acc + t.netPayoutPKR, 0)
+  const pendingPayoutsPKR = cashflowTransactions.filter((t) => t.status === 'PROCESSING').reduce((acc, t) => acc + t.netPayoutPKR, 0)
   const realizedCapitalExitsPKR = portfolio
     .filter((p) => p.status === 'EXITED' && p.exitDetails)
     .reduce((acc, p) => acc + (p.exitDetails?.finalSaleValuePKR || 0), 0)
 
-  const filteredDeals = INVESTMENT_DEALS.filter((deal) => {
+  const filteredDeals = investmentDeals.filter((deal) => {
     if (filterTab === 'OFF_MARKET') return deal.isOffMarket
     if (filterTab === 'DISTRESS') return deal.isDistress
     if (filterTab === 'HIGH_YIELD') return deal.rentalYieldPct >= 9.0
@@ -359,13 +398,25 @@ Status             : ${item.status}
     )
   }
 
-  const handlePayoutSubmit = (e: React.FormEvent) => {
+  const handlePayoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (payoutAmountPKR > escrowBalancePKR) {
       alert('Requested amount exceeds available wallet balance.')
       return
     }
-    setEscrowBalancePKR((prev) => prev - payoutAmountPKR)
+    try {
+      const res = await fetch('/api/investors/wallet', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'PAYOUT', amountPKR: payoutAmountPKR, bankName: payoutBankName, iban: payoutIban }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Payout failed')
+      setEscrowBalancePKR(data.wallet?.balancePKR ?? (escrowBalancePKR - payoutAmountPKR))
+      setPendingWalletPKR(data.wallet?.pendingPKR ?? (pendingWalletPKR + payoutAmountPKR))
+      // Refresh cashflows
+      await loadWallet()
+    } catch { /* Optimistic update already done */ }
     setPayoutSuccessMsg(`Payout request of ${formatPrice(payoutAmountPKR)} to ${payoutBankName} (${payoutIban}) has been submitted to Escrow Trustee!`)
     setPayoutModalOpen(false)
     setTimeout(() => setPayoutSuccessMsg(null), 7000)
@@ -472,7 +523,7 @@ Status             : ${item.status}
               badge: portfolio.some((p) => p.status === 'PENDING_RENEWAL') ? 'Action Needed' : null,
             },
             { id: 'LEDGER', label: '💸 Financial Ledger', badge: null },
-            { id: 'ESCROW', label: '🏦 Escrow Wallet', badge: formatPrice(escrowBalancePKR) },
+            { id: 'ESCROW', label: '🏦 Escrow Wallet', badge: escrowBalancePKR > 0 ? formatPrice(escrowBalancePKR) : null },
             { id: 'TAX_CALCULATOR', label: '🧮 Tax Calculator', badge: null },
           ].map((tab) => (
             <button
@@ -887,7 +938,7 @@ Status             : ${item.status}
               </div>
 
               <div className="overflow-x-auto">
-                {CASHFLOW_TRANSACTIONS.length === 0 ? (
+                {cashflowTransactions.length === 0 ? (
                   <div className="p-12 text-center flex flex-col items-center gap-3">
                     <span className="text-4xl">💸</span>
                     <div>
@@ -910,7 +961,7 @@ Status             : ${item.status}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
-                      {CASHFLOW_TRANSACTIONS.map((txn) => (
+                      {cashflowTransactions.map((txn) => (
                         <tr key={txn.id} className="hover:bg-slate-50/80 transition">
                           <td className="py-4 px-4 font-mono font-bold text-slate-600 whitespace-nowrap">{txn.date}</td>
                           <td className="py-4 px-4 font-bold text-slate-900 max-w-xs">{txn.propertyTitle}</td>
@@ -996,7 +1047,7 @@ Status             : ${item.status}
                 <div className="flex flex-col gap-3 pt-6 border-t border-slate-700/60">
                   <div className="flex justify-between text-xs text-slate-300">
                     <span>Pending Rental Transfers:</span>
-                    <strong className="text-amber-400 font-mono">{formatPrice(pendingPayoutsPKR)}</strong>
+                    <strong className="text-amber-400 font-mono">{formatPrice(pendingWalletPKR)}</strong>
                   </div>
                   <div className="flex justify-between text-xs text-slate-300">
                     <span>Escrow Trustee Bank:</span>

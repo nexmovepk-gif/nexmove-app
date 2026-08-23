@@ -361,6 +361,9 @@ export type UserWhereInput = {
   rentCollections?: Prisma.RentCollectionListRelationFilter
   architectProfile?: Prisma.XOR<Prisma.ArchitectProfileNullableScalarRelationFilter, Prisma.ArchitectProfileWhereInput> | null
   savedListings?: Prisma.SavedListingListRelationFilter
+  investorPortfolios?: Prisma.InvestorPortfolioListRelationFilter
+  investorCashflows?: Prisma.InvestorCashflowListRelationFilter
+  investorWallet?: Prisma.XOR<Prisma.InvestorWalletNullableScalarRelationFilter, Prisma.InvestorWalletWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -401,6 +404,9 @@ export type UserOrderByWithRelationInput = {
   rentCollections?: Prisma.RentCollectionOrderByRelationAggregateInput
   architectProfile?: Prisma.ArchitectProfileOrderByWithRelationInput
   savedListings?: Prisma.SavedListingOrderByRelationAggregateInput
+  investorPortfolios?: Prisma.InvestorPortfolioOrderByRelationAggregateInput
+  investorCashflows?: Prisma.InvestorCashflowOrderByRelationAggregateInput
+  investorWallet?: Prisma.InvestorWalletOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -444,6 +450,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   rentCollections?: Prisma.RentCollectionListRelationFilter
   architectProfile?: Prisma.XOR<Prisma.ArchitectProfileNullableScalarRelationFilter, Prisma.ArchitectProfileWhereInput> | null
   savedListings?: Prisma.SavedListingListRelationFilter
+  investorPortfolios?: Prisma.InvestorPortfolioListRelationFilter
+  investorCashflows?: Prisma.InvestorCashflowListRelationFilter
+  investorWallet?: Prisma.XOR<Prisma.InvestorWalletNullableScalarRelationFilter, Prisma.InvestorWalletWhereInput> | null
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -547,6 +556,9 @@ export type UserCreateInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -586,6 +598,9 @@ export type UserUncheckedCreateInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -625,6 +640,9 @@ export type UserUpdateInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -664,6 +682,9 @@ export type UserUncheckedUpdateInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1075,6 +1096,48 @@ export type UserUpdateOneWithoutArchitectProfileNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutArchitectProfileInput, Prisma.UserUpdateWithoutArchitectProfileInput>, Prisma.UserUncheckedUpdateWithoutArchitectProfileInput>
 }
 
+export type UserCreateNestedOneWithoutInvestorPortfoliosInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvestorPortfoliosInput, Prisma.UserUncheckedCreateWithoutInvestorPortfoliosInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvestorPortfoliosInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInvestorPortfoliosNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvestorPortfoliosInput, Prisma.UserUncheckedCreateWithoutInvestorPortfoliosInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvestorPortfoliosInput
+  upsert?: Prisma.UserUpsertWithoutInvestorPortfoliosInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvestorPortfoliosInput, Prisma.UserUpdateWithoutInvestorPortfoliosInput>, Prisma.UserUncheckedUpdateWithoutInvestorPortfoliosInput>
+}
+
+export type UserCreateNestedOneWithoutInvestorCashflowsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvestorCashflowsInput, Prisma.UserUncheckedCreateWithoutInvestorCashflowsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvestorCashflowsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInvestorCashflowsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvestorCashflowsInput, Prisma.UserUncheckedCreateWithoutInvestorCashflowsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvestorCashflowsInput
+  upsert?: Prisma.UserUpsertWithoutInvestorCashflowsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvestorCashflowsInput, Prisma.UserUpdateWithoutInvestorCashflowsInput>, Prisma.UserUncheckedUpdateWithoutInvestorCashflowsInput>
+}
+
+export type UserCreateNestedOneWithoutInvestorWalletInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvestorWalletInput, Prisma.UserUncheckedCreateWithoutInvestorWalletInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvestorWalletInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInvestorWalletNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInvestorWalletInput, Prisma.UserUncheckedCreateWithoutInvestorWalletInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInvestorWalletInput
+  upsert?: Prisma.UserUpsertWithoutInvestorWalletInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvestorWalletInput, Prisma.UserUpdateWithoutInvestorWalletInput>, Prisma.UserUncheckedUpdateWithoutInvestorWalletInput>
+}
+
 export type UserCreateWithoutAgencyInput = {
   id?: string
   email: string
@@ -1111,6 +1174,9 @@ export type UserCreateWithoutAgencyInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAgencyInput = {
@@ -1149,6 +1215,9 @@ export type UserUncheckedCreateWithoutAgencyInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAgencyInput = {
@@ -1245,6 +1314,9 @@ export type UserCreateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutListingsInput = {
@@ -1283,6 +1355,9 @@ export type UserUncheckedCreateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutListingsInput = {
@@ -1337,6 +1412,9 @@ export type UserUpdateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutListingsInput = {
@@ -1375,6 +1453,9 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPropertiesInput = {
@@ -1413,6 +1494,9 @@ export type UserCreateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPropertiesInput = {
@@ -1451,6 +1535,9 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPropertiesInput = {
@@ -1505,6 +1592,9 @@ export type UserUpdateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPropertiesInput = {
@@ -1543,6 +1633,9 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSavedListingsInput = {
@@ -1581,6 +1674,9 @@ export type UserCreateWithoutSavedListingsInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSavedListingsInput = {
@@ -1619,6 +1715,9 @@ export type UserUncheckedCreateWithoutSavedListingsInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSavedListingsInput = {
@@ -1673,6 +1772,9 @@ export type UserUpdateWithoutSavedListingsInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSavedListingsInput = {
@@ -1711,6 +1813,9 @@ export type UserUncheckedUpdateWithoutSavedListingsInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutClientsInput = {
@@ -1749,6 +1854,9 @@ export type UserCreateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClientsInput = {
@@ -1787,6 +1895,9 @@ export type UserUncheckedCreateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClientsInput = {
@@ -1841,6 +1952,9 @@ export type UserUpdateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientsInput = {
@@ -1879,6 +1993,9 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLedgersInput = {
@@ -1917,6 +2034,9 @@ export type UserCreateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLedgersInput = {
@@ -1955,6 +2075,9 @@ export type UserUncheckedCreateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLedgersInput = {
@@ -2009,6 +2132,9 @@ export type UserUpdateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLedgersInput = {
@@ -2047,6 +2173,9 @@ export type UserUncheckedUpdateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDealsBuyerInput = {
@@ -2085,6 +2214,9 @@ export type UserCreateWithoutDealsBuyerInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDealsBuyerInput = {
@@ -2123,6 +2255,9 @@ export type UserUncheckedCreateWithoutDealsBuyerInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDealsBuyerInput = {
@@ -2166,6 +2301,9 @@ export type UserCreateWithoutDealsSellerInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDealsSellerInput = {
@@ -2204,6 +2342,9 @@ export type UserUncheckedCreateWithoutDealsSellerInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDealsSellerInput = {
@@ -2258,6 +2399,9 @@ export type UserUpdateWithoutDealsBuyerInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDealsBuyerInput = {
@@ -2296,6 +2440,9 @@ export type UserUncheckedUpdateWithoutDealsBuyerInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutDealsSellerInput = {
@@ -2345,6 +2492,9 @@ export type UserUpdateWithoutDealsSellerInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDealsSellerInput = {
@@ -2383,6 +2533,9 @@ export type UserUncheckedUpdateWithoutDealsSellerInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExpensesInput = {
@@ -2421,6 +2574,9 @@ export type UserCreateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExpensesInput = {
@@ -2459,6 +2615,9 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExpensesInput = {
@@ -2513,6 +2672,9 @@ export type UserUpdateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExpensesInput = {
@@ -2551,6 +2713,9 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRentCollectionsInput = {
@@ -2589,6 +2754,9 @@ export type UserCreateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRentCollectionsInput = {
@@ -2627,6 +2795,9 @@ export type UserUncheckedCreateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRentCollectionsInput = {
@@ -2681,6 +2852,9 @@ export type UserUpdateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRentCollectionsInput = {
@@ -2719,6 +2893,9 @@ export type UserUncheckedUpdateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutArchitectProfileInput = {
@@ -2757,6 +2934,9 @@ export type UserCreateWithoutArchitectProfileInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
   savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutArchitectProfileInput = {
@@ -2795,6 +2975,9 @@ export type UserUncheckedCreateWithoutArchitectProfileInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
   savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutArchitectProfileInput = {
@@ -2849,6 +3032,9 @@ export type UserUpdateWithoutArchitectProfileInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutArchitectProfileInput = {
@@ -2887,6 +3073,549 @@ export type UserUncheckedUpdateWithoutArchitectProfileInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutInvestorPortfoliosInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
+  listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutInvestorPortfoliosInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutInvestorPortfoliosInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvestorPortfoliosInput, Prisma.UserUncheckedCreateWithoutInvestorPortfoliosInput>
+}
+
+export type UserUpsertWithoutInvestorPortfoliosInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInvestorPortfoliosInput, Prisma.UserUncheckedUpdateWithoutInvestorPortfoliosInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvestorPortfoliosInput, Prisma.UserUncheckedCreateWithoutInvestorPortfoliosInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInvestorPortfoliosInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInvestorPortfoliosInput, Prisma.UserUncheckedUpdateWithoutInvestorPortfoliosInput>
+}
+
+export type UserUpdateWithoutInvestorPortfoliosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
+  savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInvestorPortfoliosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutInvestorCashflowsInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
+  listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutInvestorCashflowsInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorWallet?: Prisma.InvestorWalletUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutInvestorCashflowsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvestorCashflowsInput, Prisma.UserUncheckedCreateWithoutInvestorCashflowsInput>
+}
+
+export type UserUpsertWithoutInvestorCashflowsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInvestorCashflowsInput, Prisma.UserUncheckedUpdateWithoutInvestorCashflowsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvestorCashflowsInput, Prisma.UserUncheckedCreateWithoutInvestorCashflowsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInvestorCashflowsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInvestorCashflowsInput, Prisma.UserUncheckedUpdateWithoutInvestorCashflowsInput>
+}
+
+export type UserUpdateWithoutInvestorCashflowsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
+  savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInvestorCashflowsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutInvestorWalletInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
+  listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileCreateNestedOneWithoutUserInput
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutInvestorWalletInput = {
+  id?: string
+  email: string
+  password?: string | null
+  name?: string | null
+  role?: $Enums.Role
+  accountRoleType?: string | null
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  nicopNumber?: string | null
+  passportNumber?: string | null
+  overseasCountry?: string | null
+  overseasCity?: string | null
+  overseasPostalCode?: string | null
+  overseasDocPhoto?: string | null
+  isOverseasVerified?: boolean
+  phone?: string | null
+  address?: string | null
+  liveSelfieUrl?: string | null
+  taxIdNumber?: string | null
+  agencyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgentInput
+  ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutCreatedByInput
+  dealsBuyer?: Prisma.DealUncheckedCreateNestedManyWithoutBuyerAgentInput
+  dealsSeller?: Prisma.DealUncheckedCreateNestedManyWithoutSellerAgentInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutCreatedByInput
+  rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutCollectedByInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedCreateNestedOneWithoutUserInput
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutUserInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedCreateNestedManyWithoutUserInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutInvestorWalletInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvestorWalletInput, Prisma.UserUncheckedCreateWithoutInvestorWalletInput>
+}
+
+export type UserUpsertWithoutInvestorWalletInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInvestorWalletInput, Prisma.UserUncheckedUpdateWithoutInvestorWalletInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInvestorWalletInput, Prisma.UserUncheckedCreateWithoutInvestorWalletInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInvestorWalletInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInvestorWalletInput, Prisma.UserUncheckedUpdateWithoutInvestorWalletInput>
+}
+
+export type UserUpdateWithoutInvestorWalletInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
+  savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInvestorWalletInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  accountRoleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nicopNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passportNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  overseasDocPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverseasVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutAgentNestedInput
+  ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutCreatedByNestedInput
+  dealsBuyer?: Prisma.DealUncheckedUpdateManyWithoutBuyerAgentNestedInput
+  dealsSeller?: Prisma.DealUncheckedUpdateManyWithoutSellerAgentNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutCreatedByNestedInput
+  rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
+  architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyAgencyInput = {
@@ -2953,6 +3682,9 @@ export type UserUpdateWithoutAgencyInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAgencyInput = {
@@ -2991,6 +3723,9 @@ export type UserUncheckedUpdateWithoutAgencyInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutCollectedByNestedInput
   architectProfile?: Prisma.ArchitectProfileUncheckedUpdateOneWithoutUserNestedInput
   savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutUserNestedInput
+  investorPortfolios?: Prisma.InvestorPortfolioUncheckedUpdateManyWithoutUserNestedInput
+  investorCashflows?: Prisma.InvestorCashflowUncheckedUpdateManyWithoutUserNestedInput
+  investorWallet?: Prisma.InvestorWalletUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutAgencyInput = {
@@ -3036,6 +3771,8 @@ export type UserCountOutputType = {
   expenses: number
   rentCollections: number
   savedListings: number
+  investorPortfolios: number
+  investorCashflows: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3048,6 +3785,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   expenses?: boolean | UserCountOutputTypeCountExpensesArgs
   rentCollections?: boolean | UserCountOutputTypeCountRentCollectionsArgs
   savedListings?: boolean | UserCountOutputTypeCountSavedListingsArgs
+  investorPortfolios?: boolean | UserCountOutputTypeCountInvestorPortfoliosArgs
+  investorCashflows?: boolean | UserCountOutputTypeCountInvestorCashflowsArgs
 }
 
 /**
@@ -3123,6 +3862,20 @@ export type UserCountOutputTypeCountSavedListingsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.SavedListingWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountInvestorPortfoliosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvestorPortfolioWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountInvestorCashflowsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvestorCashflowWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3162,6 +3915,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   rentCollections?: boolean | Prisma.User$rentCollectionsArgs<ExtArgs>
   architectProfile?: boolean | Prisma.User$architectProfileArgs<ExtArgs>
   savedListings?: boolean | Prisma.User$savedListingsArgs<ExtArgs>
+  investorPortfolios?: boolean | Prisma.User$investorPortfoliosArgs<ExtArgs>
+  investorCashflows?: boolean | Prisma.User$investorCashflowsArgs<ExtArgs>
+  investorWallet?: boolean | Prisma.User$investorWalletArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3267,6 +4023,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   rentCollections?: boolean | Prisma.User$rentCollectionsArgs<ExtArgs>
   architectProfile?: boolean | Prisma.User$architectProfileArgs<ExtArgs>
   savedListings?: boolean | Prisma.User$savedListingsArgs<ExtArgs>
+  investorPortfolios?: boolean | Prisma.User$investorPortfoliosArgs<ExtArgs>
+  investorCashflows?: boolean | Prisma.User$investorCashflowsArgs<ExtArgs>
+  investorWallet?: boolean | Prisma.User$investorWalletArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3290,6 +4049,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     rentCollections: Prisma.$RentCollectionPayload<ExtArgs>[]
     architectProfile: Prisma.$ArchitectProfilePayload<ExtArgs> | null
     savedListings: Prisma.$SavedListingPayload<ExtArgs>[]
+    investorPortfolios: Prisma.$InvestorPortfolioPayload<ExtArgs>[]
+    investorCashflows: Prisma.$InvestorCashflowPayload<ExtArgs>[]
+    investorWallet: Prisma.$InvestorWalletPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3723,6 +4485,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   rentCollections<T extends Prisma.User$rentCollectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rentCollectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RentCollectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   architectProfile<T extends Prisma.User$architectProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$architectProfileArgs<ExtArgs>>): Prisma.Prisma__ArchitectProfileClient<runtime.Types.Result.GetResult<Prisma.$ArchitectProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   savedListings<T extends Prisma.User$savedListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$savedListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SavedListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  investorPortfolios<T extends Prisma.User$investorPortfoliosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$investorPortfoliosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvestorPortfolioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  investorCashflows<T extends Prisma.User$investorCashflowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$investorCashflowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvestorCashflowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  investorWallet<T extends Prisma.User$investorWalletArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$investorWalletArgs<ExtArgs>>): Prisma.Prisma__InvestorWalletClient<runtime.Types.Result.GetResult<Prisma.$InvestorWalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4430,6 +5195,73 @@ export type User$savedListingsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.SavedListingScalarFieldEnum | Prisma.SavedListingScalarFieldEnum[]
+}
+
+/**
+ * User.investorPortfolios
+ */
+export type User$investorPortfoliosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InvestorPortfolio
+   */
+  select?: Prisma.InvestorPortfolioSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InvestorPortfolio
+   */
+  omit?: Prisma.InvestorPortfolioOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvestorPortfolioInclude<ExtArgs> | null
+  where?: Prisma.InvestorPortfolioWhereInput
+  orderBy?: Prisma.InvestorPortfolioOrderByWithRelationInput | Prisma.InvestorPortfolioOrderByWithRelationInput[]
+  cursor?: Prisma.InvestorPortfolioWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvestorPortfolioScalarFieldEnum | Prisma.InvestorPortfolioScalarFieldEnum[]
+}
+
+/**
+ * User.investorCashflows
+ */
+export type User$investorCashflowsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InvestorCashflow
+   */
+  select?: Prisma.InvestorCashflowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InvestorCashflow
+   */
+  omit?: Prisma.InvestorCashflowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvestorCashflowInclude<ExtArgs> | null
+  where?: Prisma.InvestorCashflowWhereInput
+  orderBy?: Prisma.InvestorCashflowOrderByWithRelationInput | Prisma.InvestorCashflowOrderByWithRelationInput[]
+  cursor?: Prisma.InvestorCashflowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvestorCashflowScalarFieldEnum | Prisma.InvestorCashflowScalarFieldEnum[]
+}
+
+/**
+ * User.investorWallet
+ */
+export type User$investorWalletArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InvestorWallet
+   */
+  select?: Prisma.InvestorWalletSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InvestorWallet
+   */
+  omit?: Prisma.InvestorWalletOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvestorWalletInclude<ExtArgs> | null
+  where?: Prisma.InvestorWalletWhereInput
 }
 
 /**

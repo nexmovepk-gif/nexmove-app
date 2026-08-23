@@ -65,7 +65,11 @@ export const ModelName = {
   RentCollection: 'RentCollection',
   ArchitectProfile: 'ArchitectProfile',
   ArchitectReview: 'ArchitectReview',
-  ArchitectProject: 'ArchitectProject'
+  ArchitectProject: 'ArchitectProject',
+  InvestmentDeal: 'InvestmentDeal',
+  InvestorPortfolio: 'InvestorPortfolio',
+  InvestorCashflow: 'InvestorCashflow',
+  InvestorWallet: 'InvestorWallet'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,6 +425,94 @@ export const ArchitectProjectScalarFieldEnum = {
 } as const
 
 export type ArchitectProjectScalarFieldEnum = (typeof ArchitectProjectScalarFieldEnum)[keyof typeof ArchitectProjectScalarFieldEnum]
+
+
+export const InvestmentDealScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  location: 'location',
+  city: 'city',
+  propertyType: 'propertyType',
+  pricePKR: 'pricePKR',
+  marketValuationPKR: 'marketValuationPKR',
+  discountPct: 'discountPct',
+  rentalYieldPct: 'rentalYieldPct',
+  capitalGrowth3YrPct: 'capitalGrowth3YrPct',
+  roiScore: 'roiScore',
+  isDistress: 'isDistress',
+  isOffMarket: 'isOffMarket',
+  escrowSecured: 'escrowSecured',
+  image: 'image',
+  agencyName: 'agencyName',
+  agencyId: 'agencyId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvestmentDealScalarFieldEnum = (typeof InvestmentDealScalarFieldEnum)[keyof typeof InvestmentDealScalarFieldEnum]
+
+
+export const InvestorPortfolioScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  dealId: 'dealId',
+  propertyTitle: 'propertyTitle',
+  location: 'location',
+  city: 'city',
+  propertyType: 'propertyType',
+  image: 'image',
+  status: 'status',
+  startDate: 'startDate',
+  maturityDate: 'maturityDate',
+  investedAmountPKR: 'investedAmountPKR',
+  currentValuePKR: 'currentValuePKR',
+  equitySharePct: 'equitySharePct',
+  fixedRoiPct: 'fixedRoiPct',
+  monthlyYieldPKR: 'monthlyYieldPKR',
+  agencyName: 'agencyName',
+  contractPdfName: 'contractPdfName',
+  exitDate: 'exitDate',
+  finalSaleValuePKR: 'finalSaleValuePKR',
+  netCapitalGainsPKR: 'netCapitalGainsPKR',
+  totalRoiPct: 'totalRoiPct',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvestorPortfolioScalarFieldEnum = (typeof InvestorPortfolioScalarFieldEnum)[keyof typeof InvestorPortfolioScalarFieldEnum]
+
+
+export const InvestorCashflowScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  portfolioId: 'portfolioId',
+  propertyTitle: 'propertyTitle',
+  type: 'type',
+  grossAmountPKR: 'grossAmountPKR',
+  fbrTaxPKR: 'fbrTaxPKR',
+  netPayoutPKR: 'netPayoutPKR',
+  paymentMethod: 'paymentMethod',
+  receiptId: 'receiptId',
+  status: 'status',
+  date: 'date',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvestorCashflowScalarFieldEnum = (typeof InvestorCashflowScalarFieldEnum)[keyof typeof InvestorCashflowScalarFieldEnum]
+
+
+export const InvestorWalletScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  balancePKR: 'balancePKR',
+  pendingPKR: 'pendingPKR',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InvestorWalletScalarFieldEnum = (typeof InvestorWalletScalarFieldEnum)[keyof typeof InvestorWalletScalarFieldEnum]
 
 
 export const SortOrder = {

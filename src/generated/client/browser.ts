@@ -92,3 +92,23 @@ export type ArchitectReview = Prisma.ArchitectReviewModel
  * Project record linked to an architect profile, used for portfolio and stats aggregation.
  */
 export type ArchitectProject = Prisma.ArchitectProjectModel
+/**
+ * Model InvestmentDeal
+ * Off-market / distress property deals listed by verified agencies for investors
+ */
+export type InvestmentDeal = Prisma.InvestmentDealModel
+/**
+ * Model InvestorPortfolio
+ * An investor's confirmed holding in a specific deal
+ */
+export type InvestorPortfolio = Prisma.InvestorPortfolioModel
+/**
+ * Model InvestorCashflow
+ * Financial ledger: rental income, profit distributions, capital exits
+ */
+export type InvestorCashflow = Prisma.InvestorCashflowModel
+/**
+ * Model InvestorWallet
+ * Escrow wallet balance per investor user
+ */
+export type InvestorWallet = Prisma.InvestorWalletModel

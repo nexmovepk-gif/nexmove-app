@@ -120,6 +120,9 @@ model User {
   rentCollections     RentCollection[]
   architectProfile    ArchitectProfile?
   savedListings       SavedListing[]
+  investorPortfolios  InvestorPortfolio[]
+  investorCashflows   InvestorCashflow[]
+  investorWallet      InvestorWallet?
 
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
@@ -498,4 +501,120 @@ model ArchitectProject {
 
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
+}
+
+// ─── Investor Portal Models ───────────────────────────────────────────────────
+
+enum InvestmentDealStatus {
+  ACTIVE
+  RESERVED
+  FUNDED
+}
+
+enum InvestorPortfolioStatus {
+  ACTIVE
+  PENDING_RENEWAL
+  EXITED
+}
+
+enum CashflowType {
+  RENTAL_INCOME
+  PROFIT_DISTRIBUTION
+  CAPITAL_EXIT
+}
+
+enum CashflowStatus {
+  COMPLETED
+  PROCESSING
+}
+
+/// Off-market / distress property deals listed by verified agencies for investors
+model InvestmentDeal {
+  id                  String                @id @default(uuid())
+  title               String
+  location            String
+  city                String
+  propertyType        String
+  pricePKR            Float
+  marketValuationPKR  Float
+  discountPct         Float                 @default(0)
+  rentalYieldPct      Float                 @default(0)
+  capitalGrowth3YrPct Float                 @default(0)
+  roiScore            Int                   @default(0)
+  isDistress          Boolean               @default(false)
+  isOffMarket         Boolean               @default(false)
+  escrowSecured       Boolean               @default(true)
+  image               String?
+  agencyName          String
+  agencyId            String?
+  status              InvestmentDealStatus  @default(ACTIVE)
+  portfolios          InvestorPortfolio[]
+
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+}
+
+/// An investor's confirmed holding in a specific deal
+model InvestorPortfolio {
+  id                  String                   @id @default(uuid())
+  userId              String
+  user                User                     @relation(fields: [userId], references: [id])
+  dealId              String
+  deal                InvestmentDeal           @relation(fields: [dealId], references: [id])
+  propertyTitle       String
+  location            String
+  city                String
+  propertyType        String
+  image               String?
+  status              InvestorPortfolioStatus  @default(ACTIVE)
+  startDate           DateTime                 @default(now())
+  maturityDate        DateTime
+  investedAmountPKR   Float
+  currentValuePKR     Float
+  equitySharePct      Float
+  fixedRoiPct         Float
+  monthlyYieldPKR     Float
+  agencyName          String
+  contractPdfName     String?
+  exitDate            DateTime?
+  finalSaleValuePKR   Float?
+  netCapitalGainsPKR  Float?
+  totalRoiPct         Float?
+  cashflows           InvestorCashflow[]
+
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+}
+
+/// Financial ledger: rental income, profit distributions, capital exits
+model InvestorCashflow {
+  id              String             @id @default(uuid())
+  userId          String
+  user            User               @relation(fields: [userId], references: [id])
+  portfolioId     String?
+  portfolio       InvestorPortfolio? @relation(fields: [portfolioId], references: [id])
+  propertyTitle   String
+  type            CashflowType
+  grossAmountPKR  Float
+  fbrTaxPKR       Float              @default(0)
+  netPayoutPKR    Float
+  paymentMethod   String?
+  receiptId       String?
+  status          CashflowStatus     @default(COMPLETED)
+  date            DateTime           @default(now())
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+/// Escrow wallet balance per investor user
+model InvestorWallet {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  balancePKR  Float    @default(0)
+  pendingPKR  Float    @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

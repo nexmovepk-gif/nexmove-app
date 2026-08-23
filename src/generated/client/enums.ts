@@ -108,3 +108,38 @@ export const ProjectStatus = {
 } as const
 
 export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
+
+
+export const InvestmentDealStatus = {
+  ACTIVE: 'ACTIVE',
+  RESERVED: 'RESERVED',
+  FUNDED: 'FUNDED'
+} as const
+
+export type InvestmentDealStatus = (typeof InvestmentDealStatus)[keyof typeof InvestmentDealStatus]
+
+
+export const InvestorPortfolioStatus = {
+  ACTIVE: 'ACTIVE',
+  PENDING_RENEWAL: 'PENDING_RENEWAL',
+  EXITED: 'EXITED'
+} as const
+
+export type InvestorPortfolioStatus = (typeof InvestorPortfolioStatus)[keyof typeof InvestorPortfolioStatus]
+
+
+export const CashflowType = {
+  RENTAL_INCOME: 'RENTAL_INCOME',
+  PROFIT_DISTRIBUTION: 'PROFIT_DISTRIBUTION',
+  CAPITAL_EXIT: 'CAPITAL_EXIT'
+} as const
+
+export type CashflowType = (typeof CashflowType)[keyof typeof CashflowType]
+
+
+export const CashflowStatus = {
+  COMPLETED: 'COMPLETED',
+  PROCESSING: 'PROCESSING'
+} as const
+
+export type CashflowStatus = (typeof CashflowStatus)[keyof typeof CashflowStatus]

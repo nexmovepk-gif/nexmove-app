@@ -297,9 +297,11 @@ export default function ArchitectPublicProfilePage() {
       .finally(() => setLoading(false))
   }
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     fetchArchitect()
   }, [id])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const toggleLike = async (postId: string) => {
     const isLiked = likedPosts[postId]

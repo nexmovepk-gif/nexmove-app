@@ -181,10 +181,11 @@ function PanoramaViewer({ imageUrl }: { imageUrl: string }) {
 
     render();
 
+    const currentState = stateRef.current;
     return () => {
       isRunning = false;
-      if (stateRef.current.animId) {
-        cancelAnimationFrame(stateRef.current.animId);
+      if (currentState.animId) {
+        cancelAnimationFrame(currentState.animId);
       }
     };
   }, [imageUrl]);

@@ -3,8 +3,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import VerifiedBadge, { VerificationTier } from '@/components/VerifiedBadge';
 import { useCurrency } from '@/components/CurrencyContext';
+import { Heart } from 'lucide-react';
 
 interface Listing {
   id: string;
@@ -52,6 +54,59 @@ export default function MarketplacePage() {
   const [filterCity, setFilterCity] = useState('');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const { formatPrice } = useCurrency();
+  const { data: session } = useSession();
+
+  // Saved listings set (publicListingId values)
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  const [savingId, setSavingId] = useState<string | null>(null);
+
+  // Check if current user is an overseas buyer/investor
+  const isOverseas =
+    session?.user?.accountRoleType === 'OVERSEAS_BUYER' ||
+    session?.user?.accountRoleType === 'OVERSEAS_INVESTOR' ||
+    session?.user?.role === 'OVERSEAS_BUYER' ||
+    session?.user?.role === 'INVESTOR' ||
+    session?.user?.role === 'SUPER_ADMIN' ||
+    session?.user?.email?.toLowerCase() === 'nexmove.pk@gmail.com';
+
+  // Fetch already-saved listings on mount
+  useEffect(() => {
+    if (!isOverseas) return;
+    fetch('/api/saved-listings')
+      .then(r => r.json())
+      .then(d => {
+        if (d.success && Array.isArray(d.saved)) {
+          setSavedIds(new Set(d.saved.map((s: { publicListingId?: string }) => s.publicListingId).filter(Boolean)));
+        }
+      })
+      .catch(() => {});
+  }, [isOverseas]);
+
+  const toggleSave = async (e: React.MouseEvent, listingId: string) => {
+    e.preventDefault(); // stop Link navigation
+    e.stopPropagation();
+    if (!session) return;
+    setSavingId(listingId);
+    try {
+      if (savedIds.has(listingId)) {
+        // Unsave
+        await fetch(`/api/saved-listings?publicListingId=${listingId}`, { method: 'DELETE' });
+        setSavedIds(prev => { const n = new Set(prev); n.delete(listingId); return n; });
+      } else {
+        // Save
+        await fetch('/api/saved-listings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ publicListingId: listingId }),
+        });
+        setSavedIds(prev => new Set(Array.from(prev).concat(listingId)));
+      }
+    } catch {
+      // silent
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   const fetchListings = useCallback(async () => {
     setLoading(true);
@@ -241,9 +296,28 @@ export default function MarketplacePage() {
                     {/* Right Column: Price & Action */}
                     <div className="flex sm:flex-col items-end justify-between sm:justify-center border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0 gap-2 flex-shrink-0">
                       <span className="text-xl font-black text-emerald-700">{formatPrice(lst.price)}</span>
-                      <span className="text-xs bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition shadow">
-                        View Listing →
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {isOverseas && (
+                          <button
+                            id={`save-listing-${lst.id}`}
+                            onClick={(e) => toggleSave(e, lst.id)}
+                            disabled={savingId === lst.id}
+                            title={savedIds.has(lst.id) ? 'Remove from Dashboard' : 'Save to Overseas Dashboard'}
+                            className={`p-2 rounded-xl border transition-all duration-200 flex items-center justify-center ${
+                              savedIds.has(lst.id)
+                                ? 'bg-rose-50 border-rose-300 text-rose-500 hover:bg-rose-100'
+                                : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-rose-50 hover:border-rose-300 hover:text-rose-400'
+                            } ${savingId === lst.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                          >
+                            <Heart
+                              className={`w-4 h-4 transition-all ${savedIds.has(lst.id) ? 'fill-rose-500' : ''}`}
+                            />
+                          </button>
+                        )}
+                        <span className="text-xs bg-emerald-600 group-hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition shadow">
+                          View Listing →
+                        </span>
+                      </div>
                     </div>
                   </Link>
                 );

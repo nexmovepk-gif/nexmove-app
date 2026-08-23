@@ -422,6 +422,7 @@ export type PropertyWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   agency?: Prisma.XOR<Prisma.AgencyNullableScalarRelationFilter, Prisma.AgencyWhereInput> | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  savedListings?: Prisma.SavedListingListRelationFilter
 }
 
 export type PropertyOrderByWithRelationInput = {
@@ -456,6 +457,7 @@ export type PropertyOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   agency?: Prisma.AgencyOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  savedListings?: Prisma.SavedListingOrderByRelationAggregateInput
 }
 
 export type PropertyWhereUniqueInput = Prisma.AtLeast<{
@@ -493,6 +495,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Property"> | Date | string
   agency?: Prisma.XOR<Prisma.AgencyNullableScalarRelationFilter, Prisma.AgencyWhereInput> | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  savedListings?: Prisma.SavedListingListRelationFilter
 }, "id">
 
 export type PropertyOrderByWithAggregationInput = {
@@ -597,6 +600,7 @@ export type PropertyCreateInput = {
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutPropertiesInput
   user?: Prisma.UserCreateNestedOneWithoutPropertiesInput
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateInput = {
@@ -629,6 +633,7 @@ export type PropertyUncheckedCreateInput = {
   status?: $Enums.ListingStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUpdateInput = {
@@ -661,6 +666,7 @@ export type PropertyUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutPropertiesNestedInput
   user?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
+  savedListings?: Prisma.SavedListingUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateInput = {
@@ -693,6 +699,7 @@ export type PropertyUncheckedUpdateInput = {
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyCreateManyInput = {
@@ -917,6 +924,11 @@ export type PropertySumOrderByAggregateInput = {
   bathrooms?: Prisma.SortOrder
 }
 
+export type PropertyNullableScalarRelationFilter = {
+  is?: Prisma.PropertyWhereInput | null
+  isNot?: Prisma.PropertyWhereInput | null
+}
+
 export type PropertyCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutUserInput, Prisma.PropertyUncheckedCreateWithoutUserInput> | Prisma.PropertyCreateWithoutUserInput[] | Prisma.PropertyUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutUserInput | Prisma.PropertyCreateOrConnectWithoutUserInput[]
@@ -1023,6 +1035,22 @@ export type PropertyUpdatefeaturesInput = {
   push?: string | string[]
 }
 
+export type PropertyCreateNestedOneWithoutSavedListingsInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutSavedListingsInput, Prisma.PropertyUncheckedCreateWithoutSavedListingsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutSavedListingsInput
+  connect?: Prisma.PropertyWhereUniqueInput
+}
+
+export type PropertyUpdateOneWithoutSavedListingsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyCreateWithoutSavedListingsInput, Prisma.PropertyUncheckedCreateWithoutSavedListingsInput>
+  connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutSavedListingsInput
+  upsert?: Prisma.PropertyUpsertWithoutSavedListingsInput
+  disconnect?: Prisma.PropertyWhereInput | boolean
+  delete?: Prisma.PropertyWhereInput | boolean
+  connect?: Prisma.PropertyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutSavedListingsInput, Prisma.PropertyUpdateWithoutSavedListingsInput>, Prisma.PropertyUncheckedUpdateWithoutSavedListingsInput>
+}
+
 export type PropertyCreateWithoutUserInput = {
   id?: string
   title: string
@@ -1052,6 +1080,7 @@ export type PropertyCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutPropertiesInput
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutUserInput = {
@@ -1083,6 +1112,7 @@ export type PropertyUncheckedCreateWithoutUserInput = {
   status?: $Enums.ListingStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutUserInput = {
@@ -1175,6 +1205,7 @@ export type PropertyCreateWithoutAgencyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutPropertiesInput
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyUncheckedCreateWithoutAgencyInput = {
@@ -1206,6 +1237,7 @@ export type PropertyUncheckedCreateWithoutAgencyInput = {
   status?: $Enums.ListingStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutPropertyInput
 }
 
 export type PropertyCreateOrConnectWithoutAgencyInput = {
@@ -1232,6 +1264,150 @@ export type PropertyUpdateWithWhereUniqueWithoutAgencyInput = {
 export type PropertyUpdateManyWithWhereWithoutAgencyInput = {
   where: Prisma.PropertyScalarWhereInput
   data: Prisma.XOR<Prisma.PropertyUpdateManyMutationInput, Prisma.PropertyUncheckedUpdateManyWithoutAgencyInput>
+}
+
+export type PropertyCreateWithoutSavedListingsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  purpose?: $Enums.PropertyPurpose
+  propertyType: string
+  category?: string | null
+  price: number
+  address: string
+  city?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  areaSqFt?: number | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PropertyCreatefeaturesInput | string[]
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  status?: $Enums.ListingStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agency?: Prisma.AgencyCreateNestedOneWithoutPropertiesInput
+  user?: Prisma.UserCreateNestedOneWithoutPropertiesInput
+}
+
+export type PropertyUncheckedCreateWithoutSavedListingsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  purpose?: $Enums.PropertyPurpose
+  propertyType: string
+  category?: string | null
+  price: number
+  address: string
+  city?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  areaSqFt?: number | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
+  images?: Prisma.PropertyCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PropertyCreatefeaturesInput | string[]
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  agencyId?: string | null
+  userId?: string | null
+  status?: $Enums.ListingStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PropertyCreateOrConnectWithoutSavedListingsInput = {
+  where: Prisma.PropertyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutSavedListingsInput, Prisma.PropertyUncheckedCreateWithoutSavedListingsInput>
+}
+
+export type PropertyUpsertWithoutSavedListingsInput = {
+  update: Prisma.XOR<Prisma.PropertyUpdateWithoutSavedListingsInput, Prisma.PropertyUncheckedUpdateWithoutSavedListingsInput>
+  create: Prisma.XOR<Prisma.PropertyCreateWithoutSavedListingsInput, Prisma.PropertyUncheckedCreateWithoutSavedListingsInput>
+  where?: Prisma.PropertyWhereInput
+}
+
+export type PropertyUpdateToOneWithWhereWithoutSavedListingsInput = {
+  where?: Prisma.PropertyWhereInput
+  data: Prisma.XOR<Prisma.PropertyUpdateWithoutSavedListingsInput, Prisma.PropertyUncheckedUpdateWithoutSavedListingsInput>
+}
+
+export type PropertyUpdateWithoutSavedListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
+  propertyType?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PropertyUpdatefeaturesInput | string[]
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agency?: Prisma.AgencyUpdateOneWithoutPropertiesNestedInput
+  user?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
+}
+
+export type PropertyUncheckedUpdateWithoutSavedListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
+  propertyType?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.PropertyUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PropertyUpdatefeaturesInput | string[]
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PropertyCreateManyUserInput = {
@@ -1294,6 +1470,7 @@ export type PropertyUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutPropertiesNestedInput
+  savedListings?: Prisma.SavedListingUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutUserInput = {
@@ -1325,6 +1502,7 @@ export type PropertyUncheckedUpdateWithoutUserInput = {
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutUserInput = {
@@ -1418,6 +1596,7 @@ export type PropertyUpdateWithoutAgencyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutPropertiesNestedInput
+  savedListings?: Prisma.SavedListingUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateWithoutAgencyInput = {
@@ -1449,6 +1628,7 @@ export type PropertyUncheckedUpdateWithoutAgencyInput = {
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutPropertyNestedInput
 }
 
 export type PropertyUncheckedUpdateManyWithoutAgencyInput = {
@@ -1483,6 +1663,35 @@ export type PropertyUncheckedUpdateManyWithoutAgencyInput = {
 }
 
 
+/**
+ * Count Type PropertyCountOutputType
+ */
+
+export type PropertyCountOutputType = {
+  savedListings: number
+}
+
+export type PropertyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  savedListings?: boolean | PropertyCountOutputTypeCountSavedListingsArgs
+}
+
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyCountOutputType
+   */
+  select?: Prisma.PropertyCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PropertyCountOutputType without action
+ */
+export type PropertyCountOutputTypeCountSavedListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SavedListingWhereInput
+}
+
 
 export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1516,6 +1725,8 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   updatedAt?: boolean
   agency?: boolean | Prisma.Property$agencyArgs<ExtArgs>
   user?: boolean | Prisma.Property$userArgs<ExtArgs>
+  savedListings?: boolean | Prisma.Property$savedListingsArgs<ExtArgs>
+  _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["property"]>
 
 export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1622,6 +1833,8 @@ export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.Property$agencyArgs<ExtArgs>
   user?: boolean | Prisma.Property$userArgs<ExtArgs>
+  savedListings?: boolean | Prisma.Property$savedListingsArgs<ExtArgs>
+  _count?: boolean | Prisma.PropertyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.Property$agencyArgs<ExtArgs>
@@ -1637,6 +1850,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     agency: Prisma.$AgencyPayload<ExtArgs> | null
     user: Prisma.$UserPayload<ExtArgs> | null
+    savedListings: Prisma.$SavedListingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2064,6 +2278,7 @@ export interface Prisma__PropertyClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   agency<T extends Prisma.Property$agencyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$agencyArgs<ExtArgs>>): Prisma.Prisma__AgencyClient<runtime.Types.Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.Property$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  savedListings<T extends Prisma.Property$savedListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Property$savedListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SavedListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2558,6 +2773,30 @@ export type Property$userArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Property.savedListings
+ */
+export type Property$savedListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SavedListing
+   */
+  select?: Prisma.SavedListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SavedListing
+   */
+  omit?: Prisma.SavedListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SavedListingInclude<ExtArgs> | null
+  where?: Prisma.SavedListingWhereInput
+  orderBy?: Prisma.SavedListingOrderByWithRelationInput | Prisma.SavedListingOrderByWithRelationInput[]
+  cursor?: Prisma.SavedListingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SavedListingScalarFieldEnum | Prisma.SavedListingScalarFieldEnum[]
 }
 
 /**

@@ -56,6 +56,7 @@ export const ModelName = {
   Listing: 'Listing',
   Property: 'Property',
   PublicListing: 'PublicListing',
+  SavedListing: 'SavedListing',
   AgencyReview: 'AgencyReview',
   Client: 'Client',
   FinancialLedger: 'FinancialLedger',
@@ -236,6 +237,18 @@ export const PublicListingScalarFieldEnum = {
 } as const
 
 export type PublicListingScalarFieldEnum = (typeof PublicListingScalarFieldEnum)[keyof typeof PublicListingScalarFieldEnum]
+
+
+export const SavedListingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  propertyId: 'propertyId',
+  publicListingId: 'publicListingId',
+  note: 'note',
+  savedAt: 'savedAt'
+} as const
+
+export type SavedListingScalarFieldEnum = (typeof SavedListingScalarFieldEnum)[keyof typeof SavedListingScalarFieldEnum]
 
 
 export const AgencyReviewScalarFieldEnum = {

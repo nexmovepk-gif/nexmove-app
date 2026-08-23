@@ -67,6 +67,11 @@ export type Property = Prisma.PropertyModel
  */
 export type PublicListing = Prisma.PublicListingModel
 /**
+ * Model SavedListing
+ * Overseas Buyer saved / bookmarked listings for their dashboard
+ */
+export type SavedListing = Prisma.SavedListingModel
+/**
  * Model AgencyReview
  * Public reviews left by users on agencies.
  */

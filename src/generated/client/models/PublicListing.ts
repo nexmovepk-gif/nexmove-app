@@ -449,6 +449,7 @@ export type PublicListingWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"PublicListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PublicListing"> | Date | string
   agency?: Prisma.XOR<Prisma.AgencyNullableScalarRelationFilter, Prisma.AgencyWhereInput> | null
+  savedListings?: Prisma.SavedListingListRelationFilter
 }
 
 export type PublicListingOrderByWithRelationInput = {
@@ -485,6 +486,7 @@ export type PublicListingOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   agency?: Prisma.AgencyOrderByWithRelationInput
+  savedListings?: Prisma.SavedListingOrderByRelationAggregateInput
 }
 
 export type PublicListingWhereUniqueInput = Prisma.AtLeast<{
@@ -524,6 +526,7 @@ export type PublicListingWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"PublicListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PublicListing"> | Date | string
   agency?: Prisma.XOR<Prisma.AgencyNullableScalarRelationFilter, Prisma.AgencyWhereInput> | null
+  savedListings?: Prisma.SavedListingListRelationFilter
 }, "id">
 
 export type PublicListingOrderByWithAggregationInput = {
@@ -637,6 +640,7 @@ export type PublicListingCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutPublicListingsInput
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutPublicListingInput
 }
 
 export type PublicListingUncheckedCreateInput = {
@@ -672,6 +676,7 @@ export type PublicListingUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutPublicListingInput
 }
 
 export type PublicListingUpdateInput = {
@@ -707,6 +712,7 @@ export type PublicListingUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutPublicListingsNestedInput
+  savedListings?: Prisma.SavedListingUpdateManyWithoutPublicListingNestedInput
 }
 
 export type PublicListingUncheckedUpdateInput = {
@@ -742,6 +748,7 @@ export type PublicListingUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutPublicListingNestedInput
 }
 
 export type PublicListingCreateManyInput = {
@@ -979,6 +986,11 @@ export type PublicListingSumOrderByAggregateInput = {
   aiConfidence?: Prisma.SortOrder
 }
 
+export type PublicListingNullableScalarRelationFilter = {
+  is?: Prisma.PublicListingWhereInput | null
+  isNot?: Prisma.PublicListingWhereInput | null
+}
+
 export type PublicListingCreateNestedManyWithoutAgencyInput = {
   create?: Prisma.XOR<Prisma.PublicListingCreateWithoutAgencyInput, Prisma.PublicListingUncheckedCreateWithoutAgencyInput> | Prisma.PublicListingCreateWithoutAgencyInput[] | Prisma.PublicListingUncheckedCreateWithoutAgencyInput[]
   connectOrCreate?: Prisma.PublicListingCreateOrConnectWithoutAgencyInput | Prisma.PublicListingCreateOrConnectWithoutAgencyInput[]
@@ -1047,6 +1059,22 @@ export type PublicListingUpdatefeaturesInput = {
   push?: string | string[]
 }
 
+export type PublicListingCreateNestedOneWithoutSavedListingsInput = {
+  create?: Prisma.XOR<Prisma.PublicListingCreateWithoutSavedListingsInput, Prisma.PublicListingUncheckedCreateWithoutSavedListingsInput>
+  connectOrCreate?: Prisma.PublicListingCreateOrConnectWithoutSavedListingsInput
+  connect?: Prisma.PublicListingWhereUniqueInput
+}
+
+export type PublicListingUpdateOneWithoutSavedListingsNestedInput = {
+  create?: Prisma.XOR<Prisma.PublicListingCreateWithoutSavedListingsInput, Prisma.PublicListingUncheckedCreateWithoutSavedListingsInput>
+  connectOrCreate?: Prisma.PublicListingCreateOrConnectWithoutSavedListingsInput
+  upsert?: Prisma.PublicListingUpsertWithoutSavedListingsInput
+  disconnect?: Prisma.PublicListingWhereInput | boolean
+  delete?: Prisma.PublicListingWhereInput | boolean
+  connect?: Prisma.PublicListingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PublicListingUpdateToOneWithWhereWithoutSavedListingsInput, Prisma.PublicListingUpdateWithoutSavedListingsInput>, Prisma.PublicListingUncheckedUpdateWithoutSavedListingsInput>
+}
+
 export type PublicListingCreateWithoutAgencyInput = {
   id?: string
   title: string
@@ -1079,6 +1107,7 @@ export type PublicListingCreateWithoutAgencyInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  savedListings?: Prisma.SavedListingCreateNestedManyWithoutPublicListingInput
 }
 
 export type PublicListingUncheckedCreateWithoutAgencyInput = {
@@ -1113,6 +1142,7 @@ export type PublicListingUncheckedCreateWithoutAgencyInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  savedListings?: Prisma.SavedListingUncheckedCreateNestedManyWithoutPublicListingInput
 }
 
 export type PublicListingCreateOrConnectWithoutAgencyInput = {
@@ -1177,6 +1207,162 @@ export type PublicListingScalarWhereInput = {
   isActive?: Prisma.BoolFilter<"PublicListing"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PublicListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PublicListing"> | Date | string
+}
+
+export type PublicListingCreateWithoutSavedListingsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  purpose?: $Enums.PropertyPurpose
+  propertyType?: $Enums.PropertyType
+  source?: $Enums.ListingSource
+  price: number
+  address: string
+  city?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  areaSqFt?: number | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
+  images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  verifiedProperty?: boolean
+  aiExtracted?: boolean
+  aiConfidence?: number | null
+  aiRawData?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  agency?: Prisma.AgencyCreateNestedOneWithoutPublicListingsInput
+}
+
+export type PublicListingUncheckedCreateWithoutSavedListingsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  purpose?: $Enums.PropertyPurpose
+  propertyType?: $Enums.PropertyType
+  source?: $Enums.ListingSource
+  price: number
+  address: string
+  city?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  areaSqFt?: number | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  isAvailable?: boolean
+  availableDate?: Date | string | null
+  images?: Prisma.PublicListingCreateimagesInput | string[]
+  videoUrl?: string | null
+  panoramaUrl?: string | null
+  virtualTourUrl?: string | null
+  features?: Prisma.PublicListingCreatefeaturesInput | string[]
+  contactName: string
+  contactPhone: string
+  contactEmail?: string | null
+  verifiedProperty?: boolean
+  aiExtracted?: boolean
+  aiConfidence?: number | null
+  aiRawData?: string | null
+  agencyId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PublicListingCreateOrConnectWithoutSavedListingsInput = {
+  where: Prisma.PublicListingWhereUniqueInput
+  create: Prisma.XOR<Prisma.PublicListingCreateWithoutSavedListingsInput, Prisma.PublicListingUncheckedCreateWithoutSavedListingsInput>
+}
+
+export type PublicListingUpsertWithoutSavedListingsInput = {
+  update: Prisma.XOR<Prisma.PublicListingUpdateWithoutSavedListingsInput, Prisma.PublicListingUncheckedUpdateWithoutSavedListingsInput>
+  create: Prisma.XOR<Prisma.PublicListingCreateWithoutSavedListingsInput, Prisma.PublicListingUncheckedCreateWithoutSavedListingsInput>
+  where?: Prisma.PublicListingWhereInput
+}
+
+export type PublicListingUpdateToOneWithWhereWithoutSavedListingsInput = {
+  where?: Prisma.PublicListingWhereInput
+  data: Prisma.XOR<Prisma.PublicListingUpdateWithoutSavedListingsInput, Prisma.PublicListingUncheckedUpdateWithoutSavedListingsInput>
+}
+
+export type PublicListingUpdateWithoutSavedListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
+  propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+  source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedProperty?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiExtracted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  aiRawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  agency?: Prisma.AgencyUpdateOneWithoutPublicListingsNestedInput
+}
+
+export type PublicListingUncheckedUpdateWithoutSavedListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumPropertyPurposeFieldUpdateOperationsInput | $Enums.PropertyPurpose
+  propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+  source?: Prisma.EnumListingSourceFieldUpdateOperationsInput | $Enums.ListingSource
+  price?: Prisma.FloatFieldUpdateOperationsInput | number
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  areaSqFt?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  bedrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathrooms?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isAvailable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  availableDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  images?: Prisma.PublicListingUpdateimagesInput | string[]
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panoramaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  virtualTourUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  features?: Prisma.PublicListingUpdatefeaturesInput | string[]
+  contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactPhone?: Prisma.StringFieldUpdateOperationsInput | string
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedProperty?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiExtracted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  aiConfidence?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  aiRawData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type PublicListingCreateManyAgencyInput = {
@@ -1245,6 +1431,7 @@ export type PublicListingUpdateWithoutAgencyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  savedListings?: Prisma.SavedListingUpdateManyWithoutPublicListingNestedInput
 }
 
 export type PublicListingUncheckedUpdateWithoutAgencyInput = {
@@ -1279,6 +1466,7 @@ export type PublicListingUncheckedUpdateWithoutAgencyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  savedListings?: Prisma.SavedListingUncheckedUpdateManyWithoutPublicListingNestedInput
 }
 
 export type PublicListingUncheckedUpdateManyWithoutAgencyInput = {
@@ -1316,6 +1504,35 @@ export type PublicListingUncheckedUpdateManyWithoutAgencyInput = {
 }
 
 
+/**
+ * Count Type PublicListingCountOutputType
+ */
+
+export type PublicListingCountOutputType = {
+  savedListings: number
+}
+
+export type PublicListingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  savedListings?: boolean | PublicListingCountOutputTypeCountSavedListingsArgs
+}
+
+/**
+ * PublicListingCountOutputType without action
+ */
+export type PublicListingCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PublicListingCountOutputType
+   */
+  select?: Prisma.PublicListingCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * PublicListingCountOutputType without action
+ */
+export type PublicListingCountOutputTypeCountSavedListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SavedListingWhereInput
+}
+
 
 export type PublicListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1351,6 +1568,8 @@ export type PublicListingSelect<ExtArgs extends runtime.Types.Extensions.Interna
   createdAt?: boolean
   updatedAt?: boolean
   agency?: boolean | Prisma.PublicListing$agencyArgs<ExtArgs>
+  savedListings?: boolean | Prisma.PublicListing$savedListingsArgs<ExtArgs>
+  _count?: boolean | Prisma.PublicListingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["publicListing"]>
 
 export type PublicListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1463,6 +1682,8 @@ export type PublicListingSelectScalar = {
 export type PublicListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "purpose" | "propertyType" | "source" | "price" | "address" | "city" | "latitude" | "longitude" | "areaSqFt" | "bedrooms" | "bathrooms" | "isAvailable" | "availableDate" | "images" | "videoUrl" | "panoramaUrl" | "virtualTourUrl" | "features" | "contactName" | "contactPhone" | "contactEmail" | "verifiedProperty" | "aiExtracted" | "aiConfidence" | "aiRawData" | "agencyId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["publicListing"]>
 export type PublicListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.PublicListing$agencyArgs<ExtArgs>
+  savedListings?: boolean | Prisma.PublicListing$savedListingsArgs<ExtArgs>
+  _count?: boolean | Prisma.PublicListingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PublicListingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.PublicListing$agencyArgs<ExtArgs>
@@ -1475,6 +1696,7 @@ export type $PublicListingPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "PublicListing"
   objects: {
     agency: Prisma.$AgencyPayload<ExtArgs> | null
+    savedListings: Prisma.$SavedListingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1904,6 +2126,7 @@ readonly fields: PublicListingFieldRefs;
 export interface Prisma__PublicListingClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   agency<T extends Prisma.PublicListing$agencyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PublicListing$agencyArgs<ExtArgs>>): Prisma.Prisma__AgencyClient<runtime.Types.Result.GetResult<Prisma.$AgencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  savedListings<T extends Prisma.PublicListing$savedListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PublicListing$savedListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SavedListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2382,6 +2605,30 @@ export type PublicListing$agencyArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   include?: Prisma.AgencyInclude<ExtArgs> | null
   where?: Prisma.AgencyWhereInput
+}
+
+/**
+ * PublicListing.savedListings
+ */
+export type PublicListing$savedListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SavedListing
+   */
+  select?: Prisma.SavedListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SavedListing
+   */
+  omit?: Prisma.SavedListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SavedListingInclude<ExtArgs> | null
+  where?: Prisma.SavedListingWhereInput
+  orderBy?: Prisma.SavedListingOrderByWithRelationInput | Prisma.SavedListingOrderByWithRelationInput[]
+  cursor?: Prisma.SavedListingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SavedListingScalarFieldEnum | Prisma.SavedListingScalarFieldEnum[]
 }
 
 /**

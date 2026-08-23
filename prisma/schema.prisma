@@ -7,7 +7,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider     = "postgresql"
+  relationMode = "prisma"
 }
 
 
@@ -118,6 +119,7 @@ model User {
   expenses            Expense[]
   rentCollections     RentCollection[]
   architectProfile    ArchitectProfile?
+  savedListings       SavedListing[]
 
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
@@ -221,6 +223,7 @@ model Property {
   user                User?             @relation(fields: [userId], references: [id])
 
   status              ListingStatus     @default(ACTIVE)
+  savedListings       SavedListing[]
 
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
@@ -266,8 +269,29 @@ model PublicListing {
   agency              Agency?           @relation(fields: [agencyId], references: [id])
 
   isActive            Boolean           @default(true)
+  savedListings       SavedListing[]
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
+}
+
+/// Overseas Buyer saved / bookmarked listings for their dashboard
+model SavedListing {
+  id                String        @id @default(uuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Link to either agency Property OR public self-listing
+  propertyId        String?
+  property          Property?     @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  publicListingId   String?
+  publicListing     PublicListing? @relation(fields: [publicListingId], references: [id], onDelete: Cascade)
+
+  note              String?       // Optional buyer note
+  savedAt           DateTime      @default(now())
+
+  @@unique([userId, propertyId])
+  @@unique([userId, publicListingId])
 }
 
 /// Public reviews left by users on agencies.

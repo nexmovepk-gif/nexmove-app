@@ -41,57 +41,57 @@ export async function GET() {
       }).catch(() => null);
     }
 
-    // 2. Fetch User's Properties from Prisma / Supabase
+    // 2. Fetch User's Saved Listings (bookmarked from marketplace)
     let properties: Record<string, unknown>[] = [];
     if (userId) {
-      properties = await prisma.property.findMany({
+      // First: get properties saved to dashboard via SavedListing table
+      const saved = await prisma.savedListing.findMany({
         where: { userId },
         include: {
-          agency: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
-              logo: true,
-              verified: true,
+          property: {
+            include: {
+              agency: { select: { id: true, name: true, phone: true, logo: true, verified: true } },
+            },
+          },
+          publicListing: {
+            include: {
+              agency: { select: { id: true, name: true, phone: true, logo: true, verified: true } },
             },
           },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { savedAt: 'desc' },
       }).catch(() => []);
-    }
 
-    // If user has no self-posted properties, fetch top verified properties for overseas portfolio preview
-    if (properties.length === 0) {
-      const topVerified = await prisma.property.findMany({
-        where: {
-          isAvailable: true,
-          status: 'ACTIVE',
-        },
-        include: {
-          agency: {
-            select: {
-              id: true,
-              name: true,
-              phone: true,
-              logo: true,
-              verified: true,
-            },
+      // Normalize saved listings to a unified property shape
+      properties = saved.map((s) => {
+        const src = s.property || s.publicListing;
+        return {
+          savedListingId: s.id,
+          id: src?.id || '',
+          title: (src as Record<string, unknown>)?.title || 'Saved Property',
+          address: (src as Record<string, unknown>)?.address || '',
+          city: (src as Record<string, unknown>)?.city || '',
+          propertyType: (src as Record<string, unknown>)?.propertyType || 'Property',
+          price: (src as Record<string, unknown>)?.price || 0,
+          areaSqFt: (src as Record<string, unknown>)?.areaSqFt || null,
+          bedrooms: (src as Record<string, unknown>)?.bedrooms || null,
+          bathrooms: (src as Record<string, unknown>)?.bathrooms || null,
+          contactPhone: (src as Record<string, unknown>)?.contactPhone || '',
+          agency: (src as Record<string, unknown>)?.agency || null,
+          savedAt: s.savedAt,
+          isFromSavedListing: true,
+        };
+      });
+
+      // Also include self-posted properties (user is lister/seller)
+      if (properties.length === 0) {
+        properties = await prisma.property.findMany({
+          where: { userId },
+          include: {
+            agency: { select: { id: true, name: true, phone: true, logo: true, verified: true } },
           },
-        },
-        orderBy: { createdAt: 'desc' },
-        take: 6,
-      }).catch(() => []);
-
-      if (topVerified.length > 0) {
-        properties = topVerified;
-      } else {
-        // Fallback to Supabase direct query
-        const { data: sbProps } = await supabase
-          .from('properties')
-          .select('*')
-          .limit(6);
-        properties = (sbProps as Record<string, unknown>[]) || [];
+          orderBy: { createdAt: 'desc' },
+        }).catch(() => []);
       }
     }
 

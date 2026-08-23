@@ -402,6 +402,7 @@ export const ModelName = {
   Listing: 'Listing',
   Property: 'Property',
   PublicListing: 'PublicListing',
+  SavedListing: 'SavedListing',
   AgencyReview: 'AgencyReview',
   Client: 'Client',
   FinancialLedger: 'FinancialLedger',
@@ -426,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agency" | "listing" | "property" | "publicListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection" | "architectProfile" | "architectReview" | "architectProject"
+    modelProps: "user" | "agency" | "listing" | "property" | "publicListing" | "savedListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection" | "architectProfile" | "architectReview" | "architectProject"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -797,6 +798,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PublicListingCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PublicListingCountAggregateOutputType> | number
+        }
+      }
+    }
+    SavedListing: {
+      payload: Prisma.$SavedListingPayload<ExtArgs>
+      fields: Prisma.SavedListingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SavedListingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SavedListingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>
+        }
+        findFirst: {
+          args: Prisma.SavedListingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SavedListingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>
+        }
+        findMany: {
+          args: Prisma.SavedListingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>[]
+        }
+        create: {
+          args: Prisma.SavedListingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>
+        }
+        createMany: {
+          args: Prisma.SavedListingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SavedListingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>[]
+        }
+        delete: {
+          args: Prisma.SavedListingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>
+        }
+        update: {
+          args: Prisma.SavedListingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>
+        }
+        deleteMany: {
+          args: Prisma.SavedListingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SavedListingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SavedListingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>[]
+        }
+        upsert: {
+          args: Prisma.SavedListingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SavedListingPayload>
+        }
+        aggregate: {
+          args: Prisma.SavedListingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSavedListing>
+        }
+        groupBy: {
+          args: Prisma.SavedListingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SavedListingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SavedListingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SavedListingCountAggregateOutputType> | number
         }
       }
     }
@@ -1660,6 +1735,18 @@ export const PublicListingScalarFieldEnum = {
 export type PublicListingScalarFieldEnum = (typeof PublicListingScalarFieldEnum)[keyof typeof PublicListingScalarFieldEnum]
 
 
+export const SavedListingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  propertyId: 'propertyId',
+  publicListingId: 'publicListingId',
+  note: 'note',
+  savedAt: 'savedAt'
+} as const
+
+export type SavedListingScalarFieldEnum = (typeof SavedListingScalarFieldEnum)[keyof typeof SavedListingScalarFieldEnum]
+
+
 export const AgencyReviewScalarFieldEnum = {
   id: 'id',
   agencyId: 'agencyId',
@@ -2220,6 +2307,7 @@ export type GlobalOmitConfig = {
   listing?: Prisma.ListingOmit
   property?: Prisma.PropertyOmit
   publicListing?: Prisma.PublicListingOmit
+  savedListing?: Prisma.SavedListingOmit
   agencyReview?: Prisma.AgencyReviewOmit
   client?: Prisma.ClientOmit
   financialLedger?: Prisma.FinancialLedgerOmit

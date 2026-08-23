@@ -570,7 +570,7 @@ export default function PropertyForm({
       const isValid = res.ok && (data.valid === true || data.isValid === true) && (data.score > 0 || data.verifiedScore > 0);
 
       if (!isValid) {
-        const errorMsg = 'Invalid Document Structure Uploaded';
+        const errorMsg = data.error || data.errorMessage || 'Invalid Document Structure Uploaded';
         setOwnershipScore(0);
         setAiConfidence(0);
         setAiExtracted(false);

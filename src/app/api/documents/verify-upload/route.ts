@@ -91,13 +91,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Buffer String Extraction
-    const fastBufferText = extractBufferStrings(buffer);
-
-    // 3. Combine with Client-side OCR if available
-    let ocrText = `${fastBufferText} ${clientExtractedText}`.trim();
+    // 2. Determine if file is an image
     const isImage =
       fileType.startsWith('image/') || /\.(png|jpe?g|webp|bmp|tiff)$/i.test(fileName);
+
+    // Buffer string extraction ONLY for non-image documents (like text PDFs or docx).
+    // NEVER extract raw binary buffer strings from images as JPEG/PNG binary noise causes false matches.
+    const fastBufferText = isImage ? '' : extractBufferStrings(buffer);
+
+    // 3. Combine with Client-side OCR if available
+    let ocrText = `${clientExtractedText} ${fastBufferText}`.trim();
 
     // If client didn't extract text or was empty, attempt server OCR
     if (isImage && clientExtractedText.trim().length < 15) {

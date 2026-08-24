@@ -335,6 +335,12 @@ export async function PATCH(req: NextRequest) {
     const updated = await prisma.deal.update({
       where: { id },
       data,
+      include: {
+        listing: { select: { title: true, price: true } },
+        agency: { select: { name: true } },
+        sellerAgent: { select: { email: true, name: true } },
+        buyerClient: { select: { email: true, name: true } },
+      },
     }).catch(async () => {
       const { data: sbUpdated } = await supabase
         .from('deals')
@@ -344,6 +350,29 @@ export async function PATCH(req: NextRequest) {
         .maybeSingle();
       return sbUpdated;
     });
+
+    // If deal transitioned to CLOSED, dispatch automated completion email notifications
+    if (data.status === 'CLOSED' && updated) {
+      try {
+        const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'https://nexmove.pk';
+        const dealTitle = (updated as { listing?: { title?: string } })?.listing?.title || `Deal #${id.slice(0, 8)}`;
+        
+        // Notify agency / agent
+        const recipientEmail = (updated as { sellerAgent?: { email?: string } })?.sellerAgent?.email || 'nexmove.pk@gmail.com';
+        
+        await fetch(`${origin}/api/send-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: recipientEmail,
+            subject: `🎉 Deal Successfully Closed: ${dealTitle}`,
+            body: `Congratulations! Deal Ref #${id} for "${dealTitle}" has been marked as CLOSED. Ownership transfer is ratified, and commission payout settlements are finalized under NexMove AIEscrowGuard.`,
+          }),
+        }).catch((emailErr) => console.warn('[Deals API] Email notification note:', emailErr));
+      } catch (notifyErr) {
+        console.warn('[Deals API] Notification dispatch error:', notifyErr);
+      }
+    }
 
     return NextResponse.json({
       success: true,

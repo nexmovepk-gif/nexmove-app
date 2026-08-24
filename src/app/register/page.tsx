@@ -83,7 +83,6 @@ export default function RegisterPage() {
   const [accountNumber, setAccountNumber] = useState('')
   const [iban, setIban] = useState('')
   const [swiftCode, setSwiftCode] = useState('')
-  const [profileImage, setProfileImage] = useState('')
 
   // UI & Validation State
   const [error, setError] = useState<string | null>(null)
@@ -319,7 +318,7 @@ export default function RegisterPage() {
           accountNumber: accountNumber || undefined,
           iban: iban || undefined,
           swiftCode: isAgencyRole ? (swiftCode || undefined) : undefined,
-          profileImage: profileImage || logo || liveSelfiePhoto || undefined,
+          profileImage: logo || liveSelfiePhoto || undefined,
         }),
       })
 

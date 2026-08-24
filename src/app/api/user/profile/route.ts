@@ -188,7 +188,7 @@ export async function PATCH(req: Request) {
       userUpdateData.bankDetailsUpdatedAt = updateBankTimestamp
     }
 
-    const updatedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: user.id },
       data: userUpdateData,
       include: { agency: true },

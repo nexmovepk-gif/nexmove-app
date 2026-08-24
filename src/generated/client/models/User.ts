@@ -47,7 +47,13 @@ export type UserMinAggregateOutputType = {
   phone: string | null
   address: string | null
   liveSelfieUrl: string | null
+  profileImage: string | null
   taxIdNumber: string | null
+  bankName: string | null
+  accountTitle: string | null
+  accountNumber: string | null
+  iban: string | null
+  bankDetailsUpdatedAt: Date | null
   agencyId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -76,7 +82,13 @@ export type UserMaxAggregateOutputType = {
   phone: string | null
   address: string | null
   liveSelfieUrl: string | null
+  profileImage: string | null
   taxIdNumber: string | null
+  bankName: string | null
+  accountTitle: string | null
+  accountNumber: string | null
+  iban: string | null
+  bankDetailsUpdatedAt: Date | null
   agencyId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -105,7 +117,13 @@ export type UserCountAggregateOutputType = {
   phone: number
   address: number
   liveSelfieUrl: number
+  profileImage: number
   taxIdNumber: number
+  bankName: number
+  accountTitle: number
+  accountNumber: number
+  iban: number
+  bankDetailsUpdatedAt: number
   agencyId: number
   createdAt: number
   updatedAt: number
@@ -136,7 +154,13 @@ export type UserMinAggregateInputType = {
   phone?: true
   address?: true
   liveSelfieUrl?: true
+  profileImage?: true
   taxIdNumber?: true
+  bankName?: true
+  accountTitle?: true
+  accountNumber?: true
+  iban?: true
+  bankDetailsUpdatedAt?: true
   agencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -165,7 +189,13 @@ export type UserMaxAggregateInputType = {
   phone?: true
   address?: true
   liveSelfieUrl?: true
+  profileImage?: true
   taxIdNumber?: true
+  bankName?: true
+  accountTitle?: true
+  accountNumber?: true
+  iban?: true
+  bankDetailsUpdatedAt?: true
   agencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -194,7 +224,13 @@ export type UserCountAggregateInputType = {
   phone?: true
   address?: true
   liveSelfieUrl?: true
+  profileImage?: true
   taxIdNumber?: true
+  bankName?: true
+  accountTitle?: true
+  accountNumber?: true
+  iban?: true
+  bankDetailsUpdatedAt?: true
   agencyId?: true
   createdAt?: true
   updatedAt?: true
@@ -296,7 +332,13 @@ export type UserGroupByOutputType = {
   phone: string | null
   address: string | null
   liveSelfieUrl: string | null
+  profileImage: string | null
   taxIdNumber: string | null
+  bankName: string | null
+  accountTitle: string | null
+  accountNumber: string | null
+  iban: string | null
+  bankDetailsUpdatedAt: Date | null
   agencyId: string | null
   createdAt: Date
   updatedAt: Date
@@ -346,7 +388,13 @@ export type UserWhereInput = {
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
   liveSelfieUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   taxIdNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  bankName?: Prisma.StringNullableFilter<"User"> | string | null
+  accountTitle?: Prisma.StringNullableFilter<"User"> | string | null
+  accountNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  iban?: Prisma.StringNullableFilter<"User"> | string | null
+  bankDetailsUpdatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -389,7 +437,13 @@ export type UserOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   liveSelfieUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   taxIdNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankName?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  iban?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   agencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -435,7 +489,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
   liveSelfieUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   taxIdNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  bankName?: Prisma.StringNullableFilter<"User"> | string | null
+  accountTitle?: Prisma.StringNullableFilter<"User"> | string | null
+  accountNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  iban?: Prisma.StringNullableFilter<"User"> | string | null
+  bankDetailsUpdatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -478,7 +538,13 @@ export type UserOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   liveSelfieUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   taxIdNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankName?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  iban?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   agencyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -513,7 +579,13 @@ export type UserScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   liveSelfieUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   taxIdNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  bankName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  accountTitle?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  accountNumber?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  iban?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  bankDetailsUpdatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   agencyId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -542,7 +614,13 @@ export type UserCreateInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -584,7 +662,13 @@ export type UserUncheckedCreateInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -626,7 +710,13 @@ export type UserUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -668,7 +758,13 @@ export type UserUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -710,7 +806,13 @@ export type UserCreateManyInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -739,7 +841,13 @@ export type UserUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -767,7 +875,13 @@ export type UserUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -796,7 +910,13 @@ export type UserCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   liveSelfieUrl?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
   taxIdNumber?: Prisma.SortOrder
+  bankName?: Prisma.SortOrder
+  accountTitle?: Prisma.SortOrder
+  accountNumber?: Prisma.SortOrder
+  iban?: Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -825,7 +945,13 @@ export type UserMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   liveSelfieUrl?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
   taxIdNumber?: Prisma.SortOrder
+  bankName?: Prisma.SortOrder
+  accountTitle?: Prisma.SortOrder
+  accountNumber?: Prisma.SortOrder
+  iban?: Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -854,7 +980,13 @@ export type UserMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   liveSelfieUrl?: Prisma.SortOrder
+  profileImage?: Prisma.SortOrder
   taxIdNumber?: Prisma.SortOrder
+  bankName?: Prisma.SortOrder
+  accountTitle?: Prisma.SortOrder
+  accountNumber?: Prisma.SortOrder
+  iban?: Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrder
   agencyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1161,7 +1293,13 @@ export type UserCreateWithoutAgencyInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingCreateNestedManyWithoutAgentInput
@@ -1202,7 +1340,13 @@ export type UserUncheckedCreateWithoutAgencyInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgentInput
@@ -1272,7 +1416,13 @@ export type UserScalarWhereInput = {
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
   liveSelfieUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   taxIdNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  bankName?: Prisma.StringNullableFilter<"User"> | string | null
+  accountTitle?: Prisma.StringNullableFilter<"User"> | string | null
+  accountNumber?: Prisma.StringNullableFilter<"User"> | string | null
+  iban?: Prisma.StringNullableFilter<"User"> | string | null
+  bankDetailsUpdatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   agencyId?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -1301,7 +1451,13 @@ export type UserCreateWithoutListingsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1342,7 +1498,13 @@ export type UserUncheckedCreateWithoutListingsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1399,7 +1561,13 @@ export type UserUpdateWithoutListingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1440,7 +1608,13 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1481,7 +1655,13 @@ export type UserCreateWithoutPropertiesInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1522,7 +1702,13 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1579,7 +1765,13 @@ export type UserUpdateWithoutPropertiesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1620,7 +1812,13 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1661,7 +1859,13 @@ export type UserCreateWithoutSavedListingsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1702,7 +1906,13 @@ export type UserUncheckedCreateWithoutSavedListingsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1759,7 +1969,13 @@ export type UserUpdateWithoutSavedListingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1800,7 +2016,13 @@ export type UserUncheckedUpdateWithoutSavedListingsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1841,7 +2063,13 @@ export type UserCreateWithoutClientsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -1882,7 +2110,13 @@ export type UserUncheckedCreateWithoutClientsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1939,7 +2173,13 @@ export type UserUpdateWithoutClientsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -1980,7 +2220,13 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2021,7 +2267,13 @@ export type UserCreateWithoutLedgersInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -2062,7 +2314,13 @@ export type UserUncheckedCreateWithoutLedgersInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2119,7 +2377,13 @@ export type UserUpdateWithoutLedgersInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -2160,7 +2424,13 @@ export type UserUncheckedUpdateWithoutLedgersInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2201,7 +2471,13 @@ export type UserCreateWithoutDealsBuyerInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -2242,7 +2518,13 @@ export type UserUncheckedCreateWithoutDealsBuyerInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2288,7 +2570,13 @@ export type UserCreateWithoutDealsSellerInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -2329,7 +2617,13 @@ export type UserUncheckedCreateWithoutDealsSellerInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2386,7 +2680,13 @@ export type UserUpdateWithoutDealsBuyerInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -2427,7 +2727,13 @@ export type UserUncheckedUpdateWithoutDealsBuyerInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2479,7 +2785,13 @@ export type UserUpdateWithoutDealsSellerInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -2520,7 +2832,13 @@ export type UserUncheckedUpdateWithoutDealsSellerInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2561,7 +2879,13 @@ export type UserCreateWithoutExpensesInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -2602,7 +2926,13 @@ export type UserUncheckedCreateWithoutExpensesInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2659,7 +2989,13 @@ export type UserUpdateWithoutExpensesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -2700,7 +3036,13 @@ export type UserUncheckedUpdateWithoutExpensesInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2741,7 +3083,13 @@ export type UserCreateWithoutRentCollectionsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -2782,7 +3130,13 @@ export type UserUncheckedCreateWithoutRentCollectionsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2839,7 +3193,13 @@ export type UserUpdateWithoutRentCollectionsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -2880,7 +3240,13 @@ export type UserUncheckedUpdateWithoutRentCollectionsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2921,7 +3287,13 @@ export type UserCreateWithoutArchitectProfileInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -2962,7 +3334,13 @@ export type UserUncheckedCreateWithoutArchitectProfileInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3019,7 +3397,13 @@ export type UserUpdateWithoutArchitectProfileInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -3060,7 +3444,13 @@ export type UserUncheckedUpdateWithoutArchitectProfileInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3101,7 +3491,13 @@ export type UserCreateWithoutInvestorPortfoliosInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -3142,7 +3538,13 @@ export type UserUncheckedCreateWithoutInvestorPortfoliosInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3199,7 +3601,13 @@ export type UserUpdateWithoutInvestorPortfoliosInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -3240,7 +3648,13 @@ export type UserUncheckedUpdateWithoutInvestorPortfoliosInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3281,7 +3695,13 @@ export type UserCreateWithoutInvestorCashflowsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -3322,7 +3742,13 @@ export type UserUncheckedCreateWithoutInvestorCashflowsInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3379,7 +3805,13 @@ export type UserUpdateWithoutInvestorCashflowsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -3420,7 +3852,13 @@ export type UserUncheckedUpdateWithoutInvestorCashflowsInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3461,7 +3899,13 @@ export type UserCreateWithoutInvestorWalletInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   agency?: Prisma.AgencyCreateNestedOneWithoutUsersInput
@@ -3502,7 +3946,13 @@ export type UserUncheckedCreateWithoutInvestorWalletInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   agencyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3559,7 +4009,13 @@ export type UserUpdateWithoutInvestorWalletInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   agency?: Prisma.AgencyUpdateOneWithoutUsersNestedInput
@@ -3600,7 +4056,13 @@ export type UserUncheckedUpdateWithoutInvestorWalletInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   agencyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3641,7 +4103,13 @@ export type UserCreateManyAgencyInput = {
   phone?: string | null
   address?: string | null
   liveSelfieUrl?: string | null
+  profileImage?: string | null
   taxIdNumber?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -3669,7 +4137,13 @@ export type UserUpdateWithoutAgencyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUpdateManyWithoutAgentNestedInput
@@ -3710,7 +4184,13 @@ export type UserUncheckedUpdateWithoutAgencyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgentNestedInput
@@ -3751,7 +4231,13 @@ export type UserUncheckedUpdateManyWithoutAgencyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   liveSelfieUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taxIdNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -3900,7 +4386,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   phone?: boolean
   address?: boolean
   liveSelfieUrl?: boolean
+  profileImage?: boolean
   taxIdNumber?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  bankDetailsUpdatedAt?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3944,7 +4436,13 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   address?: boolean
   liveSelfieUrl?: boolean
+  profileImage?: boolean
   taxIdNumber?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  bankDetailsUpdatedAt?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3974,7 +4472,13 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phone?: boolean
   address?: boolean
   liveSelfieUrl?: boolean
+  profileImage?: boolean
   taxIdNumber?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  bankDetailsUpdatedAt?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -4004,13 +4508,19 @@ export type UserSelectScalar = {
   phone?: boolean
   address?: boolean
   liveSelfieUrl?: boolean
+  profileImage?: boolean
   taxIdNumber?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  bankDetailsUpdatedAt?: boolean
   agencyId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "accountRoleType" | "subscriptionStatus" | "subscriptionEndDate" | "isKycVerified" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "nicopNumber" | "passportNumber" | "overseasCountry" | "overseasCity" | "overseasPostalCode" | "overseasDocPhoto" | "isOverseasVerified" | "phone" | "address" | "liveSelfieUrl" | "taxIdNumber" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "accountRoleType" | "subscriptionStatus" | "subscriptionEndDate" | "isKycVerified" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "nicopNumber" | "passportNumber" | "overseasCountry" | "overseasCity" | "overseasPostalCode" | "overseasDocPhoto" | "isOverseasVerified" | "phone" | "address" | "liveSelfieUrl" | "profileImage" | "taxIdNumber" | "bankName" | "accountTitle" | "accountNumber" | "iban" | "bankDetailsUpdatedAt" | "agencyId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agency?: boolean | Prisma.User$agencyArgs<ExtArgs>
   listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
@@ -4076,7 +4586,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     phone: string | null
     address: string | null
     liveSelfieUrl: string | null
+    profileImage: string | null
     taxIdNumber: string | null
+    bankName: string | null
+    accountTitle: string | null
+    accountNumber: string | null
+    iban: string | null
+    bankDetailsUpdatedAt: Date | null
     agencyId: string | null
     createdAt: Date
     updatedAt: Date
@@ -4539,7 +5055,13 @@ export interface UserFieldRefs {
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly address: Prisma.FieldRef<"User", 'String'>
   readonly liveSelfieUrl: Prisma.FieldRef<"User", 'String'>
+  readonly profileImage: Prisma.FieldRef<"User", 'String'>
   readonly taxIdNumber: Prisma.FieldRef<"User", 'String'>
+  readonly bankName: Prisma.FieldRef<"User", 'String'>
+  readonly accountTitle: Prisma.FieldRef<"User", 'String'>
+  readonly accountNumber: Prisma.FieldRef<"User", 'String'>
+  readonly iban: Prisma.FieldRef<"User", 'String'>
+  readonly bankDetailsUpdatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly agencyId: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>

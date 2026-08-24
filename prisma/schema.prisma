@@ -104,7 +104,15 @@ model User {
   phone               String?
   address             String?
   liveSelfieUrl       String?             // Live Photo Capture / Selfie Verification URL
+  profileImage        String?             // Profile Picture / Avatar URL
   taxIdNumber         String?             // FBR / Local Tax Identification Number (Optional/Overseas Investor)
+
+  // Banking & Escrow Payout Information (with 6-month security cooldown)
+  bankName            String?             // e.g. Meezan Bank, HBL, Roshan Digital Bank, Barclays
+  accountTitle        String?             // Bank Account Title
+  accountNumber       String?             // Bank Account Number / Card Number
+  iban                String?             // IBAN Number (e.g. PK... or International IBAN)
+  bankDetailsUpdatedAt DateTime?          // Cooldown tracking timestamp (180-day lock)
 
   agencyId            String?
   agency              Agency?             @relation(fields: [agencyId], references: [id])
@@ -150,6 +158,14 @@ model Agency {
   storefrontPhoto     String?             // Agency Storefront photo URL
   ownerPhoto          String?             // Agency Owner Passport/Identity photo URL
   commercialLicenseDoc String?            // Overseas Agency Tax Reg / Commercial License Document URL
+
+  // Agency Official Escrow Payout Banking Information (with 6-month cooldown)
+  bankName            String?             // Official Agency Payout Bank
+  accountTitle        String?             // Official Agency Account Title
+  accountNumber       String?             // Account Number
+  iban                String?             // IBAN Number
+  swiftCode           String?             // SWIFT / BIC Code (for foreign remittances)
+  bankDetailsUpdatedAt DateTime?          // Cooldown tracking timestamp (180-day lock)
 
   users               User[]
   listings            Listing[]

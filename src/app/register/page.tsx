@@ -77,6 +77,14 @@ export default function RegisterPage() {
   const [storefrontPhoto, setStorefrontPhoto] = useState('')
   const [ownerPhoto, setOwnerPhoto] = useState('')
 
+  // Banking & Escrow Payout Information State
+  const [bankName, setBankName] = useState('')
+  const [accountTitle, setAccountTitle] = useState('')
+  const [accountNumber, setAccountNumber] = useState('')
+  const [iban, setIban] = useState('')
+  const [swiftCode, setSwiftCode] = useState('')
+  const [profileImage, setProfileImage] = useState('')
+
   // UI & Validation State
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -306,6 +314,12 @@ export default function RegisterPage() {
           logo: isAgencyRole ? logo : undefined,
           storefrontPhoto: isAgencyRole ? storefrontPhoto : undefined,
           ownerPhoto: isAgencyRole ? ownerPhoto : undefined,
+          bankName: bankName || undefined,
+          accountTitle: accountTitle || undefined,
+          accountNumber: accountNumber || undefined,
+          iban: iban || undefined,
+          swiftCode: isAgencyRole ? (swiftCode || undefined) : undefined,
+          profileImage: profileImage || logo || liveSelfiePhoto || undefined,
         }),
       })
 
@@ -1091,6 +1105,117 @@ Log in to your admin panel to review and verify this user.`,
               </div>
             </div>
           )}
+
+          {/* ═══════════════════════════════════════════════════════════ */}
+          {/* 5. BANKING & ESCROW PAYOUT SETUP (Role-Tailored)             */}
+          {/* ═══════════════════════════════════════════════════════════ */}
+          <div className="bg-slate-900 border border-emerald-500/40 rounded-2xl p-5 shadow-xl text-white">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🏦</span>
+                <div>
+                  <h3 className="text-sm font-bold text-emerald-400">
+                    {isAgencyRole
+                      ? 'Official Escrow Payout Bank Details (Agency)'
+                      : isOverseasRole
+                      ? 'Roshan Digital Account (RDA) / Overseas Bank Account'
+                      : 'Bank Account & Escrow Refund Details'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    {isAgencyRole
+                      ? 'Funds from verified Escrow Milestones and rent collections will be released directly to this account.'
+                      : isOverseasRole
+                      ? 'Link your Roshan Digital Account (RDA) or international bank for secure capital transfers and payouts.'
+                      : 'Used for secure transaction refunds, token escrow returns, and rental payouts.'}
+                  </p>
+                </div>
+              </div>
+              <span className="text-[10px] bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                State Bank Protocol
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Bank Name */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-slate-200" htmlFor="bank-name-input">
+                  {isOverseasRole ? 'Bank / RDA Provider Name' : 'Bank Name'}
+                </label>
+                <input
+                  id="bank-name-input"
+                  type="text"
+                  value={bankName}
+                  onChange={(e) => setBankName(e.target.value)}
+                  placeholder={
+                    isOverseasRole
+                      ? 'e.g. Meezan RDA / HBL RDA / Emirates NBD'
+                      : isAgencyRole
+                      ? 'e.g. Meezan Bank, Bank Alfalah, HBL'
+                      : 'e.g. Standard Chartered, Meezan Bank'
+                  }
+                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none transition"
+                />
+              </div>
+
+              {/* Account Title */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-slate-200" htmlFor="account-title-input">
+                  Account Title (Holder Name)
+                </label>
+                <input
+                  id="account-title-input"
+                  type="text"
+                  value={accountTitle}
+                  onChange={(e) => setAccountTitle(e.target.value)}
+                  placeholder={isAgencyRole ? 'Must match Agency / Owner Name' : 'Full Name on Bank Account'}
+                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none transition"
+                />
+              </div>
+
+              {/* IBAN / Account Number */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-slate-200" htmlFor="iban-input">
+                  IBAN Number (Recommended)
+                </label>
+                <input
+                  id="iban-input"
+                  type="text"
+                  value={iban}
+                  onChange={(e) => setIban(e.target.value.toUpperCase())}
+                  placeholder="PK36MEZN0001234567890101"
+                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none transition"
+                />
+              </div>
+
+              {/* Account Number / SWIFT */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-slate-200" htmlFor="account-num-input">
+                  {isAgencyRole ? 'SWIFT / BIC Code (Optional for Remittances)' : 'Local Account Number'}
+                </label>
+                <input
+                  id="account-num-input"
+                  type="text"
+                  value={isAgencyRole ? swiftCode : accountNumber}
+                  onChange={(e) => {
+                    if (isAgencyRole) {
+                      setSwiftCode(e.target.value.toUpperCase())
+                    } else {
+                      setAccountNumber(e.target.value)
+                    }
+                  }}
+                  placeholder={isAgencyRole ? 'e.g. MEZNPKKAXXX' : 'e.g. 010100998822'}
+                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none transition"
+                />
+              </div>
+            </div>
+
+            <div className="mt-3.5 flex items-center gap-2 text-[11px] text-slate-400 bg-slate-800/50 p-2.5 rounded-xl border border-slate-800">
+              <span className="text-emerald-400 font-bold">🔒 6-Month Security Cooldown:</span>
+              <span>
+                To protect against fraud and unauthorized fund diversion, registered banking credentials can only be edited once every 6 months via your Profile Security Vault.
+              </span>
+            </div>
+          </div>
 
           {!isFormValid && (
             <div className="bg-amber-50 border border-amber-300 text-amber-800 text-[10px] p-3 rounded-xl font-semibold text-center leading-relaxed">

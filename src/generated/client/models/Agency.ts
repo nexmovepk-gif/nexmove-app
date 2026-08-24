@@ -58,6 +58,12 @@ export type AgencyMinAggregateOutputType = {
   storefrontPhoto: string | null
   ownerPhoto: string | null
   commercialLicenseDoc: string | null
+  bankName: string | null
+  accountTitle: string | null
+  accountNumber: string | null
+  iban: string | null
+  swiftCode: string | null
+  bankDetailsUpdatedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -84,6 +90,12 @@ export type AgencyMaxAggregateOutputType = {
   storefrontPhoto: string | null
   ownerPhoto: string | null
   commercialLicenseDoc: string | null
+  bankName: string | null
+  accountTitle: string | null
+  accountNumber: string | null
+  iban: string | null
+  swiftCode: string | null
+  bankDetailsUpdatedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -110,6 +122,12 @@ export type AgencyCountAggregateOutputType = {
   storefrontPhoto: number
   ownerPhoto: number
   commercialLicenseDoc: number
+  bankName: number
+  accountTitle: number
+  accountNumber: number
+  iban: number
+  swiftCode: number
+  bankDetailsUpdatedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -148,6 +166,12 @@ export type AgencyMinAggregateInputType = {
   storefrontPhoto?: true
   ownerPhoto?: true
   commercialLicenseDoc?: true
+  bankName?: true
+  accountTitle?: true
+  accountNumber?: true
+  iban?: true
+  swiftCode?: true
+  bankDetailsUpdatedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -174,6 +198,12 @@ export type AgencyMaxAggregateInputType = {
   storefrontPhoto?: true
   ownerPhoto?: true
   commercialLicenseDoc?: true
+  bankName?: true
+  accountTitle?: true
+  accountNumber?: true
+  iban?: true
+  swiftCode?: true
+  bankDetailsUpdatedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -200,6 +230,12 @@ export type AgencyCountAggregateInputType = {
   storefrontPhoto?: true
   ownerPhoto?: true
   commercialLicenseDoc?: true
+  bankName?: true
+  accountTitle?: true
+  accountNumber?: true
+  iban?: true
+  swiftCode?: true
+  bankDetailsUpdatedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -313,6 +349,12 @@ export type AgencyGroupByOutputType = {
   storefrontPhoto: string | null
   ownerPhoto: string | null
   commercialLicenseDoc: string | null
+  bankName: string | null
+  accountTitle: string | null
+  accountNumber: string | null
+  iban: string | null
+  swiftCode: string | null
+  bankDetailsUpdatedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: AgencyCountAggregateOutputType | null
@@ -362,6 +404,12 @@ export type AgencyWhereInput = {
   storefrontPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
   ownerPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
   commercialLicenseDoc?: Prisma.StringNullableFilter<"Agency"> | string | null
+  bankName?: Prisma.StringNullableFilter<"Agency"> | string | null
+  accountTitle?: Prisma.StringNullableFilter<"Agency"> | string | null
+  accountNumber?: Prisma.StringNullableFilter<"Agency"> | string | null
+  iban?: Prisma.StringNullableFilter<"Agency"> | string | null
+  swiftCode?: Prisma.StringNullableFilter<"Agency"> | string | null
+  bankDetailsUpdatedAt?: Prisma.DateTimeNullableFilter<"Agency"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   users?: Prisma.UserListRelationFilter
@@ -398,6 +446,12 @@ export type AgencyOrderByWithRelationInput = {
   storefrontPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   commercialLicenseDoc?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankName?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  iban?: Prisma.SortOrderInput | Prisma.SortOrder
+  swiftCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
@@ -437,6 +491,12 @@ export type AgencyWhereUniqueInput = Prisma.AtLeast<{
   storefrontPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
   ownerPhoto?: Prisma.StringNullableFilter<"Agency"> | string | null
   commercialLicenseDoc?: Prisma.StringNullableFilter<"Agency"> | string | null
+  bankName?: Prisma.StringNullableFilter<"Agency"> | string | null
+  accountTitle?: Prisma.StringNullableFilter<"Agency"> | string | null
+  accountNumber?: Prisma.StringNullableFilter<"Agency"> | string | null
+  iban?: Prisma.StringNullableFilter<"Agency"> | string | null
+  swiftCode?: Prisma.StringNullableFilter<"Agency"> | string | null
+  bankDetailsUpdatedAt?: Prisma.DateTimeNullableFilter<"Agency"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Agency"> | Date | string
   users?: Prisma.UserListRelationFilter
@@ -473,6 +533,12 @@ export type AgencyOrderByWithAggregationInput = {
   storefrontPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrderInput | Prisma.SortOrder
   commercialLicenseDoc?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankName?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  iban?: Prisma.SortOrderInput | Prisma.SortOrder
+  swiftCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AgencyCountOrderByAggregateInput
@@ -507,6 +573,12 @@ export type AgencyScalarWhereWithAggregatesInput = {
   storefrontPhoto?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   ownerPhoto?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
   commercialLicenseDoc?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  bankName?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  accountTitle?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  accountNumber?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  iban?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  swiftCode?: Prisma.StringNullableWithAggregatesFilter<"Agency"> | string | null
+  bankDetailsUpdatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Agency"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Agency"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Agency"> | Date | string
 }
@@ -533,6 +605,12 @@ export type AgencyCreateInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -569,6 +647,12 @@ export type AgencyUncheckedCreateInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -605,6 +689,12 @@ export type AgencyUpdateInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -641,6 +731,12 @@ export type AgencyUncheckedUpdateInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -677,6 +773,12 @@ export type AgencyCreateManyInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -703,6 +805,12 @@ export type AgencyUpdateManyMutationInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -729,6 +837,12 @@ export type AgencyUncheckedUpdateManyInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -760,6 +874,12 @@ export type AgencyCountOrderByAggregateInput = {
   storefrontPhoto?: Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrder
   commercialLicenseDoc?: Prisma.SortOrder
+  bankName?: Prisma.SortOrder
+  accountTitle?: Prisma.SortOrder
+  accountNumber?: Prisma.SortOrder
+  iban?: Prisma.SortOrder
+  swiftCode?: Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -791,6 +911,12 @@ export type AgencyMaxOrderByAggregateInput = {
   storefrontPhoto?: Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrder
   commercialLicenseDoc?: Prisma.SortOrder
+  bankName?: Prisma.SortOrder
+  accountTitle?: Prisma.SortOrder
+  accountNumber?: Prisma.SortOrder
+  iban?: Prisma.SortOrder
+  swiftCode?: Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -817,6 +943,12 @@ export type AgencyMinOrderByAggregateInput = {
   storefrontPhoto?: Prisma.SortOrder
   ownerPhoto?: Prisma.SortOrder
   commercialLicenseDoc?: Prisma.SortOrder
+  bankName?: Prisma.SortOrder
+  accountTitle?: Prisma.SortOrder
+  accountNumber?: Prisma.SortOrder
+  iban?: Prisma.SortOrder
+  swiftCode?: Prisma.SortOrder
+  bankDetailsUpdatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1007,6 +1139,12 @@ export type AgencyCreateWithoutUsersInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
@@ -1042,6 +1180,12 @@ export type AgencyUncheckedCreateWithoutUsersInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
@@ -1093,6 +1237,12 @@ export type AgencyUpdateWithoutUsersInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
@@ -1128,6 +1278,12 @@ export type AgencyUncheckedUpdateWithoutUsersInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1163,6 +1319,12 @@ export type AgencyCreateWithoutListingsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1198,6 +1360,12 @@ export type AgencyUncheckedCreateWithoutListingsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1249,6 +1417,12 @@ export type AgencyUpdateWithoutListingsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1284,6 +1458,12 @@ export type AgencyUncheckedUpdateWithoutListingsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1319,6 +1499,12 @@ export type AgencyCreateWithoutPropertiesInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1354,6 +1540,12 @@ export type AgencyUncheckedCreateWithoutPropertiesInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1405,6 +1597,12 @@ export type AgencyUpdateWithoutPropertiesInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1440,6 +1638,12 @@ export type AgencyUncheckedUpdateWithoutPropertiesInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1475,6 +1679,12 @@ export type AgencyCreateWithoutPublicListingsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1510,6 +1720,12 @@ export type AgencyUncheckedCreateWithoutPublicListingsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1561,6 +1777,12 @@ export type AgencyUpdateWithoutPublicListingsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1596,6 +1818,12 @@ export type AgencyUncheckedUpdateWithoutPublicListingsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1631,6 +1859,12 @@ export type AgencyCreateWithoutAgencyReviewsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1666,6 +1900,12 @@ export type AgencyUncheckedCreateWithoutAgencyReviewsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1717,6 +1957,12 @@ export type AgencyUpdateWithoutAgencyReviewsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1752,6 +1998,12 @@ export type AgencyUncheckedUpdateWithoutAgencyReviewsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1787,6 +2039,12 @@ export type AgencyCreateWithoutClientsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1822,6 +2080,12 @@ export type AgencyUncheckedCreateWithoutClientsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -1873,6 +2137,12 @@ export type AgencyUpdateWithoutClientsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -1908,6 +2178,12 @@ export type AgencyUncheckedUpdateWithoutClientsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -1943,6 +2219,12 @@ export type AgencyCreateWithoutLedgersInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -1978,6 +2260,12 @@ export type AgencyUncheckedCreateWithoutLedgersInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -2029,6 +2317,12 @@ export type AgencyUpdateWithoutLedgersInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -2064,6 +2358,12 @@ export type AgencyUncheckedUpdateWithoutLedgersInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -2099,6 +2399,12 @@ export type AgencyCreateWithoutDealsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -2134,6 +2440,12 @@ export type AgencyUncheckedCreateWithoutDealsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -2185,6 +2497,12 @@ export type AgencyUpdateWithoutDealsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -2220,6 +2538,12 @@ export type AgencyUncheckedUpdateWithoutDealsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -2255,6 +2579,12 @@ export type AgencyCreateWithoutExpensesInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -2290,6 +2620,12 @@ export type AgencyUncheckedCreateWithoutExpensesInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -2341,6 +2677,12 @@ export type AgencyUpdateWithoutExpensesInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -2376,6 +2718,12 @@ export type AgencyUncheckedUpdateWithoutExpensesInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -2411,6 +2759,12 @@ export type AgencyCreateWithoutRentCollectionsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutAgencyInput
@@ -2446,6 +2800,12 @@ export type AgencyUncheckedCreateWithoutRentCollectionsInput = {
   storefrontPhoto?: string | null
   ownerPhoto?: string | null
   commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
@@ -2497,6 +2857,12 @@ export type AgencyUpdateWithoutRentCollectionsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
@@ -2532,6 +2898,12 @@ export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
   storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
@@ -2679,6 +3051,12 @@ export type AgencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
   commercialLicenseDoc?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  swiftCode?: boolean
+  bankDetailsUpdatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
@@ -2716,6 +3094,12 @@ export type AgencySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
   commercialLicenseDoc?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  swiftCode?: boolean
+  bankDetailsUpdatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["agency"]>
@@ -2742,6 +3126,12 @@ export type AgencySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
   commercialLicenseDoc?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  swiftCode?: boolean
+  bankDetailsUpdatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["agency"]>
@@ -2768,11 +3158,17 @@ export type AgencySelectScalar = {
   storefrontPhoto?: boolean
   ownerPhoto?: boolean
   commercialLicenseDoc?: boolean
+  bankName?: boolean
+  accountTitle?: boolean
+  accountNumber?: boolean
+  iban?: boolean
+  swiftCode?: boolean
+  bankDetailsUpdatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "subscriptionStatus" | "subscriptionEndDate" | "isKycVerified" | "logo" | "phone" | "address" | "description" | "ntn" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "commercialLicenseDoc" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
+export type AgencyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "licenseNumber" | "verified" | "verifiedLicense" | "subscriptionStatus" | "subscriptionEndDate" | "isKycVerified" | "logo" | "phone" | "address" | "description" | "ntn" | "cnicNumber" | "cnicFrontUrl" | "cnicBackUrl" | "latitude" | "longitude" | "storefrontPhoto" | "ownerPhoto" | "commercialLicenseDoc" | "bankName" | "accountTitle" | "accountNumber" | "iban" | "swiftCode" | "bankDetailsUpdatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["agency"]>
 export type AgencyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Agency$usersArgs<ExtArgs>
   listings?: boolean | Prisma.Agency$listingsArgs<ExtArgs>
@@ -2825,6 +3221,12 @@ export type $AgencyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     storefrontPhoto: string | null
     ownerPhoto: string | null
     commercialLicenseDoc: string | null
+    bankName: string | null
+    accountTitle: string | null
+    accountNumber: string | null
+    iban: string | null
+    swiftCode: string | null
+    bankDetailsUpdatedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["agency"]>
@@ -3281,6 +3683,12 @@ export interface AgencyFieldRefs {
   readonly storefrontPhoto: Prisma.FieldRef<"Agency", 'String'>
   readonly ownerPhoto: Prisma.FieldRef<"Agency", 'String'>
   readonly commercialLicenseDoc: Prisma.FieldRef<"Agency", 'String'>
+  readonly bankName: Prisma.FieldRef<"Agency", 'String'>
+  readonly accountTitle: Prisma.FieldRef<"Agency", 'String'>
+  readonly accountNumber: Prisma.FieldRef<"Agency", 'String'>
+  readonly iban: Prisma.FieldRef<"Agency", 'String'>
+  readonly swiftCode: Prisma.FieldRef<"Agency", 'String'>
+  readonly bankDetailsUpdatedAt: Prisma.FieldRef<"Agency", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Agency", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Agency", 'DateTime'>
 }

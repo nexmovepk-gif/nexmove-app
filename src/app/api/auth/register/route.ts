@@ -34,6 +34,13 @@ export async function POST(req: Request) {
       overseasDocNumber,
       overseasDocPhoto,
       taxIdNumber,
+      // Banking fields
+      bankName,
+      accountTitle,
+      accountNumber,
+      iban,
+      swiftCode,
+      profileImage,
     } = body
 
     const isAgencyRole = ['AGENCY_ADMIN', 'AGENCY_AGENT', 'AGENCY_MANAGER', 'OVERSEAS_AGENCY'].includes(role)
@@ -41,6 +48,9 @@ export async function POST(req: Request) {
     const isOverseasRole = ['OVERSEAS_BUYER', 'OVERSEAS_INVESTOR', 'OVERSEAS_AGENCY', 'OVERSEAS_LOCAL_PUBLIC'].includes(role)
 
     const finalLiveSelfie = liveSelfiePhoto || liveSelfieUrl || null
+    const finalProfileImage = profileImage || logo || finalLiveSelfie || null
+    const hasBankingDetails = Boolean(bankName || accountNumber || iban)
+    const bankUpdateTimestamp = hasBankingDetails ? new Date() : null
 
     // Mandatory base fields for ALL roles
     const missingFields: string[] = []
@@ -142,6 +152,12 @@ export async function POST(req: Request) {
           storefrontPhoto: storefrontPhoto || null,
           ownerPhoto: ownerPhoto || null,
           commercialLicenseDoc: commercialLicenseDoc || null,
+          bankName: bankName || null,
+          accountTitle: accountTitle || null,
+          accountNumber: accountNumber || null,
+          iban: iban || null,
+          swiftCode: swiftCode || null,
+          bankDetailsUpdatedAt: bankUpdateTimestamp,
         },
       })
       createdAgencyId = createdAgency.id
@@ -163,6 +179,7 @@ export async function POST(req: Request) {
         phone: phone || null,
         role: assignedRole,
         accountRoleType: role,
+        profileImage: finalProfileImage,
         cnicNumber: cnicNumber || null,
         cnicFrontUrl: cnicFrontPhoto || null,
         cnicBackUrl: cnicBackPhoto || null,
@@ -176,6 +193,11 @@ export async function POST(req: Request) {
         taxIdNumber: taxIdNumber || null,
         isOverseasVerified: isOverseasRole ? true : false,
         address: address || null,
+        bankName: bankName || null,
+        accountTitle: accountTitle || null,
+        accountNumber: accountNumber || null,
+        iban: iban || null,
+        bankDetailsUpdatedAt: bankUpdateTimestamp,
         agencyId: createdAgencyId,
       },
       include: {
@@ -192,10 +214,11 @@ export async function POST(req: Request) {
           email: createdUser.email,
           role: createdUser.role,
           accountRoleType: createdUser.accountRoleType,
+          profileImage: createdUser.profileImage,
           agencyId: createdUser.agencyId,
           agencyName: createdUser.agency?.name || createdAgencyName || null,
-          cnicFrontUrl: createdUser.cnicFrontUrl,
-          cnicBackUrl: createdUser.cnicBackUrl,
+          bankName: createdUser.bankName,
+          iban: createdUser.iban,
         },
       },
       { status: 201 }

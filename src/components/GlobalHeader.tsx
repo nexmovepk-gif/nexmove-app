@@ -206,6 +206,18 @@ export default function GlobalHeader() {
           Pricing
         </Link>
 
+        {/* 👤 Logged In User Profile & Bank Settings */}
+        {!isGuest && (
+          <Link
+            href="/profile"
+            className="text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700/80 hover:border-emerald-500/50 text-slate-200 hover:text-emerald-400 font-semibold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-sm"
+            title="Profile & Banking Security Vault"
+          >
+            <span>👤</span>
+            <span className="hidden sm:inline">Profile & Bank</span>
+          </Link>
+        )}
+
         {/* 👑 SUPER_ADMIN / ADMIN: Show Admin Portal & Cross-Navigation */}
         {isSuperAdmin && (
           <>

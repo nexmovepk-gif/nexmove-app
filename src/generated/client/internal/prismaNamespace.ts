@@ -1903,7 +1903,13 @@ export const UserScalarFieldEnum = {
   phone: 'phone',
   address: 'address',
   liveSelfieUrl: 'liveSelfieUrl',
+  profileImage: 'profileImage',
   taxIdNumber: 'taxIdNumber',
+  bankName: 'bankName',
+  accountTitle: 'accountTitle',
+  accountNumber: 'accountNumber',
+  iban: 'iban',
+  bankDetailsUpdatedAt: 'bankDetailsUpdatedAt',
   agencyId: 'agencyId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1934,6 +1940,12 @@ export const AgencyScalarFieldEnum = {
   storefrontPhoto: 'storefrontPhoto',
   ownerPhoto: 'ownerPhoto',
   commercialLicenseDoc: 'commercialLicenseDoc',
+  bankName: 'bankName',
+  accountTitle: 'accountTitle',
+  accountNumber: 'accountNumber',
+  iban: 'iban',
+  swiftCode: 'swiftCode',
+  bankDetailsUpdatedAt: 'bankDetailsUpdatedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

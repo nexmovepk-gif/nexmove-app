@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import crypto from 'crypto'
 
 export const dynamic = 'force-dynamic'
@@ -48,18 +49,10 @@ export async function POST(request: Request) {
     })
 
     // Build reset URL
-    const baseUrl = process.env.NEXTAUTH_URL || 'https://nexmove.vercel.app'
+    const baseUrl = process.env.NEXTAUTH_URL || 'https://nexmove-app.vercel.app'
     const resetUrl = `${baseUrl}/reset-password?token=${token}`
 
-    // Send email via Resend
-    const resendApiKey = process.env.RESEND_API_KEY
-    if (resendApiKey) {
-      const resend = new Resend(resendApiKey)
-      await resend.emails.send({
-        from: 'NexMove PropTech <onboarding@resend.dev>',
-        to: [user.email],
-        subject: '🔐 NexMove — Password Reset Request',
-        html: `
+    const emailHtml = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -136,10 +129,39 @@ export async function POST(request: Request) {
   </table>
 </body>
 </html>
-        `,
+    `
+
+    const smtpUser = process.env.SMTP_USER
+    const smtpPass = process.env.SMTP_PASS
+
+    if (smtpUser && smtpPass) {
+      // 1. Send via Gmail SMTP (Nodemailer) — works for ALL recipient domains
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: smtpUser,
+          pass: smtpPass,
+        },
+      })
+
+      await transporter.sendMail({
+        from: `"NexMove PropTech" <${smtpUser}>`,
+        to: user.email,
+        subject: '🔐 NexMove — Password Reset Request',
+        html: emailHtml,
+      })
+      console.log(`[forgot-password] Reset email successfully dispatched via Gmail SMTP to: ${user.email}`)
+    } else if (process.env.RESEND_API_KEY) {
+      // 2. Fallback to Resend
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      await resend.emails.send({
+        from: 'NexMove PropTech <onboarding@resend.dev>',
+        to: [user.email],
+        subject: '🔐 NexMove — Password Reset Request',
+        html: emailHtml,
       })
     } else {
-      console.warn('[forgot-password] RESEND_API_KEY not set — email skipped (dev mode)')
+      console.warn('[forgot-password] Neither SMTP nor Resend configured — skipping email dispatch.')
     }
 
     return NextResponse.json({

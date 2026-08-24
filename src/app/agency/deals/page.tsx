@@ -14,7 +14,9 @@ interface DealItem {
   clientContact: string;
   privateNotes: string;
   property: string;
+  propertyId?: string;
   matchScore?: number;
+  tokenAmount?: number;
 }
 
 interface CoBrokerListing {
@@ -193,18 +195,34 @@ export default function ShieldedDealsPage() {
     ? deals
     : deals.filter((d) => d.stage === selectedStage);
 
+  const handleUpdateDealStage = async (dealId: string, newStage: DealItem['stage']) => {
+    setDeals((prev) =>
+      prev.map((d) => (d.id === dealId ? { ...d, stage: newStage } : d))
+    );
+
+    try {
+      await fetch('/api/deals', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: dealId, status: newStage }),
+      });
+    } catch (err) {
+      console.error('Error updating deal stage:', err);
+    }
+  };
+
   const getStageBadge = (stage: DealItem['stage']) => {
     switch (stage) {
       case 'LEAD':
-        return <span className="px-3 py-1 bg-gray-100 text-gray-800 text-xs font-bold rounded-full">Lead</span>;
+        return <span className="px-3 py-1 bg-gray-100 text-gray-800 text-xs font-bold rounded-full">1. Lead</span>;
       case 'NEGOTIATION':
-        return <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">In Negotiation</span>;
+        return <span className="px-3 py-1 bg-amber-100 text-amber-900 text-xs font-bold rounded-full">2. In Negotiation</span>;
       case 'ESCROW':
-        return <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-bold rounded-full">Escrow Deposited</span>;
+        return <span className="px-3 py-1 bg-purple-100 text-purple-900 text-xs font-bold rounded-full">3. Escrow Deposited</span>;
       case 'AGREEMENT_SIGNED':
-        return <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">SPA Signed</span>;
+        return <span className="px-3 py-1 bg-blue-100 text-blue-900 text-xs font-bold rounded-full">4. SPA Signed</span>;
       case 'CLOSED':
-        return <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">Closed & Shielded</span>;
+        return <span className="px-3 py-1 bg-emerald-100 text-emerald-900 text-xs font-bold rounded-full">5. Closed & Payout Ready</span>;
       default:
         return null;
     }
@@ -240,7 +258,7 @@ export default function ShieldedDealsPage() {
                 </tr>
                 <tr className="border-b border-gray-300">
                   <td className="p-2.5 font-bold border-r border-gray-300">Agreed Consideration Value</td>
-                  <td className="p-2.5 font-black text-emerald-800">${contractDeal.value.toLocaleString(undefined, { minimumFractionDigits: 2 })} USD</td>
+                  <td className="p-2.5 font-black text-emerald-800">PKR {contractDeal.value.toLocaleString()}</td>
                 </tr>
                 <tr className="border-b border-gray-300 bg-gray-50">
                   <td className="p-2.5 font-bold border-r border-gray-300">Current Pipeline Status</td>
@@ -248,7 +266,7 @@ export default function ShieldedDealsPage() {
                 </tr>
                 <tr>
                   <td className="p-2.5 font-bold border-r border-gray-300">Escrow Security Deposit</td>
-                  <td className="p-2.5 font-semibold">5% Token Payment (${(contractDeal.value * 0.05).toLocaleString()}) — Held in NexMove Vault (Non-Refundable)</td>
+                  <td className="p-2.5 font-semibold">5% Bayana Deposit (PKR {(contractDeal.value * 0.05).toLocaleString()}) — Held in NexMove Vault (Secured Escrow)</td>
                 </tr>
               </tbody>
             </table>
@@ -354,7 +372,7 @@ export default function ShieldedDealsPage() {
           <form onSubmit={handleCoBrokerSearch} className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-6">
             <input
               type="text"
-              placeholder="City (e.g. Dubai, Lahore)"
+              placeholder="City (e.g. Lahore, Karachi, Islamabad)"
               value={searchCity}
               onChange={(e) => setSearchCity(e.target.value)}
               className="bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2 text-xs text-gray-900 focus:outline-none focus:border-purple-500"
@@ -365,31 +383,33 @@ export default function ShieldedDealsPage() {
               className="bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2 text-xs text-gray-900 focus:outline-none focus:border-purple-500"
             >
               <option value="">All Property Types</option>
-              <option value="VILLA">Villa</option>
+              <option value="HOUSE">House</option>
+              <option value="FLAT">Flat / Apartment</option>
               <option value="APARTMENT">Apartment</option>
+              <option value="VILLA">Villa</option>
               <option value="PLOT">Plot</option>
               <option value="COMMERCIAL">Commercial</option>
             </select>
             <input
               type="number"
-              placeholder="Max Budget ($ USD)"
+              placeholder="Max Budget (PKR)"
               value={searchMaxBudget}
               onChange={(e) => setSearchMaxBudget(e.target.value)}
               className="bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2 text-xs text-gray-900 focus:outline-none focus:border-purple-500"
             />
             <button
               type="submit"
-              className="bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs py-2 px-4 rounded-xl transition shadow"
+              className="bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs py-2 px-4 rounded-xl transition shadow flex items-center justify-center gap-1.5"
             >
-              🔍 Search Network Listings
+              <span>🔍</span> Search Listings ({coBrokerResults.length})
             </button>
           </form>
 
           {coBrokerResults.length === 0 ? (
             <div className="p-8 text-center bg-purple-50/50 rounded-2xl border border-dashed border-purple-200">
               <span className="text-3xl">🤝</span>
-              <p className="font-bold text-gray-800 text-sm mt-2">No co-broker listings currently active</p>
-              <p className="text-xs text-gray-500 mt-0.5">Partner agencies have not broadcasted co-brokering inventory in this territory yet.</p>
+              <p className="font-bold text-gray-800 text-sm mt-2">No co-broker listings found for these filters</p>
+              <p className="text-xs text-gray-500 mt-0.5">Clear the search filters above to view all broadcasted partner inventory across Pakistan.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -421,9 +441,9 @@ export default function ShieldedDealsPage() {
 
                     <div className="pt-2 border-t border-purple-200/60 flex items-center justify-between">
                       <div>
-                        <span className="text-lg font-black text-gray-900">${item.price.toLocaleString()}</span>
+                        <span className="text-lg font-black text-gray-900">PKR {item.price.toLocaleString()}</span>
                         <p className="text-[10px] text-purple-900 font-bold">
-                          50% Split Share: <span className="text-emerald-700 font-black">${splitShare.toLocaleString()}</span>
+                          50% Split Share: <span className="text-emerald-700 font-black">PKR {splitShare.toLocaleString()}</span>
                         </p>
                       </div>
                       <button
@@ -460,7 +480,7 @@ export default function ShieldedDealsPage() {
           </div>
 
           <span className="text-sm font-bold text-gray-900">
-            Total Pipeline Value: ${deals.reduce((sum, d) => sum + d.value, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            Total Pipeline Value: PKR {deals.reduce((sum, d) => sum + d.value, 0).toLocaleString()}
           </span>
         </div>
 
@@ -486,37 +506,136 @@ export default function ShieldedDealsPage() {
               return (
                 <div
                   key={deal.id}
-                  className="bg-white rounded-2xl p-6 shadow border border-gray-200 hover:shadow-md transition flex flex-col gap-4"
+                  className="bg-white rounded-2xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col gap-5"
                 >
+                  {/* Top Header */}
                   <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-gray-100 gap-3">
                     <div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md">
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        <span className="text-xs font-mono font-bold bg-slate-100 text-slate-800 px-2.5 py-1 rounded-md">
                           {deal.id}
                         </span>
-                        <h3 className="text-xl font-bold text-gray-900">{deal.title}</h3>
+                        <h3 className="text-xl font-black text-slate-900">{deal.title}</h3>
                         {getStageBadge(deal.stage)}
                       </div>
-                      <p className="text-sm text-gray-700 font-medium mt-1">Property: {deal.property}</p>
-                    </div>
-                    <div className="text-right flex flex-col items-end gap-1">
-                      <span className="text-2xl font-black text-gray-900">
-                        ${deal.value.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                      </span>
-                      {(deal.stage === 'AGREEMENT_SIGNED' || deal.stage === 'CLOSED') ? (
-                        <button
-                          onClick={() => setContractDeal(deal)}
-                          className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-1.5 rounded-lg transition shadow flex items-center gap-1 mt-1"
+                      <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                        <p className="text-sm text-slate-700 font-semibold">
+                          🏡 Property: <span className="text-slate-900 font-bold">{deal.property}</span>
+                        </p>
+                        <Link
+                          href="/marketplace"
+                          target="_blank"
+                          className="text-xs font-bold text-emerald-700 hover:text-emerald-800 underline flex items-center gap-1"
                         >
-                          <span>📄</span> Generate AI Legal Contract
-                        </button>
-                      ) : (
-                        <span className="text-[11px] bg-amber-100 border border-amber-300 text-amber-800 font-bold px-2.5 py-1 rounded-lg mt-1">
-                          Contract available at SPA Signed / Closed stage
-                        </span>
-                      )}
+                          View Marketplace Listing ↗
+                        </Link>
+                      </div>
+                    </div>
+
+                    <div className="text-left md:text-right flex flex-col items-start md:items-end gap-1.5">
+                      <span className="text-2xl font-black text-slate-900">
+                        PKR {deal.value.toLocaleString()}
+                      </span>
+
+                      {/* Stage Advancement Action Button */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {deal.stage === 'LEAD' && (
+                          <button
+                            onClick={() => handleUpdateDealStage(deal.id, 'NEGOTIATION')}
+                            className="text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold px-3.5 py-2 rounded-xl transition shadow"
+                          >
+                            👉 Advance to Negotiation
+                          </button>
+                        )}
+
+                        {deal.stage === 'NEGOTIATION' && (
+                          <button
+                            onClick={() => handleUpdateDealStage(deal.id, 'ESCROW')}
+                            className="text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold px-3.5 py-2 rounded-xl transition shadow flex items-center gap-1.5"
+                          >
+                            <span>🔒</span> Lock Bayana in Escrow
+                          </button>
+                        )}
+
+                        {deal.stage === 'ESCROW' && (
+                          <button
+                            onClick={() => {
+                              handleUpdateDealStage(deal.id, 'AGREEMENT_SIGNED');
+                              setContractDeal(deal);
+                            }}
+                            className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-3.5 py-2 rounded-xl transition shadow flex items-center gap-1.5"
+                          >
+                            <span>📄</span> Generate & Sign SPA Agreement
+                          </button>
+                        )}
+
+                        {deal.stage === 'AGREEMENT_SIGNED' && (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setContractDeal(deal)}
+                              className="text-xs bg-blue-50 border border-blue-300 hover:bg-blue-100 text-blue-800 font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"
+                            >
+                              <span>📄</span> View / Print SPA
+                            </button>
+                            <button
+                              onClick={() => handleUpdateDealStage(deal.id, 'CLOSED')}
+                              className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl transition shadow"
+                            >
+                              ✅ Complete Registry & Close Deal
+                            </button>
+                          </div>
+                        )}
+
+                        {deal.stage === 'CLOSED' && (
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => setContractDeal(deal)}
+                              className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-2 rounded-xl transition flex items-center gap-1"
+                            >
+                              <span>📄</span> Print Archived Contract
+                            </button>
+                            <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-xl border border-emerald-300">
+                              ✓ Deal Closed
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Direct Stage Selector Dropdown */}
+                        <select
+                          value={deal.stage}
+                          onChange={(e) => handleUpdateDealStage(deal.id, e.target.value as DealItem['stage'])}
+                          className="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl px-2.5 py-2 text-xs font-bold text-gray-800 focus:outline-none"
+                          title="Change Stage"
+                        >
+                          <option value="LEAD">Stage: 1. Lead</option>
+                          <option value="NEGOTIATION">Stage: 2. Negotiation</option>
+                          <option value="ESCROW">Stage: 3. Escrow</option>
+                          <option value="AGREEMENT_SIGNED">Stage: 4. SPA Signed</option>
+                          <option value="CLOSED">Stage: 5. Closed</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Escrow Vault Status Banner */}
+                  {(deal.stage === 'ESCROW' || deal.stage === 'AGREEMENT_SIGNED' || deal.stage === 'CLOSED') && (
+                    <div className="bg-gradient-to-r from-purple-900/10 via-purple-800/5 to-transparent border border-purple-300/80 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl">🛡️</span>
+                        <div>
+                          <p className="text-xs font-black text-purple-950">
+                            Escrow Vault Active: Bayana / Token Deposit Secured
+                          </p>
+                          <p className="text-[11px] text-purple-800 font-medium">
+                            Funds protected under AIEscrowGuard until document transfer is fully ratified.
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-black bg-purple-700 text-white px-3 py-1 rounded-full shadow-sm">
+                        Vault Protected ✓
+                      </span>
+                    </div>
+                  )}
 
                   {/* Privacy & Shield Details */}
                   <div className="pt-1 grid grid-cols-1 md:grid-cols-2 gap-4">

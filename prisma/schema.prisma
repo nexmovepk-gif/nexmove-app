@@ -634,3 +634,14 @@ model InvestorWallet {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// ─── Password Reset ───────────────────────────────────────────────────────────
+
+/// Secure time-limited token for forgot-password / account recovery flow
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

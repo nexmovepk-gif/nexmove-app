@@ -136,3 +136,8 @@ export type InvestorCashflow = Prisma.InvestorCashflowModel
  * Escrow wallet balance per investor user
  */
 export type InvestorWallet = Prisma.InvestorWalletModel
+/**
+ * Model PasswordResetToken
+ * Secure time-limited token for forgot-password / account recovery flow
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel

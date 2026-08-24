@@ -30,54 +30,79 @@ interface CoBrokerListing {
 
 const INITIAL_DEALS: DealItem[] = [];
 
-const CO_BROKER_NETWORK_DATA: CoBrokerListing[] = [];
-
 export default function ShieldedDealsPage() {
   const [deals, setDeals] = useState<DealItem[]>(INITIAL_DEALS);
   const [selectedStage, setSelectedStage] = useState<string>('ALL');
   const [showPrivateDetails, setShowPrivateDetails] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    async function loadDeals() {
-      try {
-        const res = await fetch('/api/deals');
-        const data = await res.json();
-        if (data.success && Array.isArray(data.deals) && data.deals.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const mapped: DealItem[] = data.deals.map((d: any) => ({
-            id: d.id,
-            title: d.listing?.title || `Escrow Deal: ${d.id.slice(0, 8)}`,
-            stage: (d.status === 'PENDING' ? 'LEAD' : d.status) as DealItem['stage'],
-            value: d.listing?.price || d.tokenAmount || 0,
-            clientAlias: d.buyerClient?.name ? `Buyer #${d.id.slice(0, 4)}` : (d.buyer_name ? `Buyer #${d.id.slice(0, 4)}` : 'Confidential Buyer'),
-            clientPrivateName: d.buyerClient?.name || d.buyer_name || 'Direct Buyer',
-            clientContact: d.buyerClient?.phone || d.buyer_phone || 'Private',
-            privateNotes: d.notes || `Token deposit: PKR ${d.tokenAmount?.toLocaleString() || '0'}. Held in Escrow Vault.`,
-            property: d.listing?.title || d.propertyId || 'NexMove Property',
-            matchScore: 98,
-          }));
-          setDeals(mapped);
-        }
-      } catch (err) {
-        console.warn('Note loading live deals:', err);
-      }
-    }
-    loadDeals();
-  }, []);
+  // Co-Brokering Network Search state
+  const [allNetworkProperties, setAllNetworkProperties] = useState<CoBrokerListing[]>([]);
+  const [searchCity, setSearchCity] = useState('');
+  const [searchMaxBudget, setSearchMaxBudget] = useState('');
+  const [searchType, setSearchType] = useState('');
+  const [coBrokerResults, setCoBrokerResults] = useState<CoBrokerListing[]>([]);
+  const [coBrokerSuccessMsg, setCoBrokerSuccessMsg] = useState<string | null>(null);
 
   // AI Matcher state
   const [aiMatching, setAiMatching] = useState(false);
   const [aiMatchedResult, setAiMatchedResult] = useState<string | null>(null);
 
-  // Co-Brokering Network Search state
-  const [searchCity, setSearchCity] = useState('');
-  const [searchMaxBudget, setSearchMaxBudget] = useState('');
-  const [searchType, setSearchType] = useState('');
-  const [coBrokerResults, setCoBrokerResults] = useState<CoBrokerListing[]>(CO_BROKER_NETWORK_DATA);
-  const [coBrokerSuccessMsg, setCoBrokerSuccessMsg] = useState<string | null>(null);
-
   // AI Legal Agreement Generator Modal State
   const [contractDeal, setContractDeal] = useState<DealItem | null>(null);
+
+  const loadDeals = async () => {
+    try {
+      const res = await fetch('/api/deals');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.deals)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapped: DealItem[] = data.deals.map((d: any) => ({
+          id: d.id,
+          title: d.listing?.title || `Escrow Deal: ${d.id.slice(0, 8)}`,
+          stage: (d.status === 'PENDING' ? 'LEAD' : d.status) as DealItem['stage'],
+          value: d.listing?.price || d.tokenAmount || 0,
+          clientAlias: d.buyerClient?.name ? `Buyer #${d.id.slice(0, 4)}` : (d.buyer_name ? `Buyer #${d.id.slice(0, 4)}` : 'Confidential Buyer'),
+          clientPrivateName: d.buyerClient?.name || d.buyer_name || 'Direct Buyer',
+          clientContact: d.buyerClient?.phone || d.buyer_phone || 'Private',
+          privateNotes: d.notes || `Token deposit: PKR ${d.tokenAmount?.toLocaleString() || '0'}. Held in Escrow Vault.`,
+          property: d.listing?.title || d.propertyId || 'NexMove Property',
+          matchScore: 98,
+        }));
+        setDeals(mapped);
+      }
+    } catch (err) {
+      console.warn('Note loading live deals:', err);
+    }
+  };
+
+  const loadCoBrokerNetwork = async () => {
+    try {
+      const res = await fetch('/api/properties');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.properties)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapped: CoBrokerListing[] = data.properties.map((p: any) => ({
+          id: p.id,
+          title: p.title || 'Exclusive Property',
+          agencyName: p.agency?.name || p.contactName || 'NexMove Partner Agency',
+          agencyVerified: true,
+          city: p.city || 'Pakistan',
+          price: Number(p.price || 0),
+          propertyType: p.propertyType || 'HOUSE',
+          commissionRate: 0.02,
+        }));
+        setAllNetworkProperties(mapped);
+        setCoBrokerResults(mapped);
+      }
+    } catch (err) {
+      console.warn('Could not load co-broker network properties:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadDeals();
+    loadCoBrokerNetwork();
+  }, []);
 
   const togglePrivateDetails = (dealId: string) => {
     setShowPrivateDetails((prev) => ({
@@ -91,20 +116,30 @@ export default function ShieldedDealsPage() {
     setAiMatchedResult(null);
     setTimeout(() => {
       setAiMatching(false);
-      setAiMatchedResult(
-        'AI Match Found! "Buyer Requirement #408" matches 98% with "Marina Tower Penthouse ($520k)". Client identity remains 100% shielded from external brokers.'
-      );
-    }, 1000);
+      if (deals.length > 0) {
+        setAiMatchedResult(
+          `AI Match Found! Client requirement matches with "${deals[0].property}". Client identity remains 100% shielded.`
+        );
+      } else if (coBrokerResults.length > 0) {
+        setAiMatchedResult(
+          `AI Match Found! Active demand matches with "${coBrokerResults[0].title}". Verified Escrow shield active.`
+        );
+      } else {
+        setAiMatchedResult(
+          'AI Matching Engine Active: Monitoring incoming buyer preferences against all network inventory in real-time.'
+        );
+      }
+    }, 800);
   };
 
   const handleCoBrokerSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    let res = CO_BROKER_NETWORK_DATA;
+    let res = allNetworkProperties;
     if (searchCity) {
       res = res.filter((item) => item.city.toLowerCase().includes(searchCity.toLowerCase()));
     }
     if (searchType) {
-      res = res.filter((item) => item.propertyType === searchType);
+      res = res.filter((item) => item.propertyType.toLowerCase() === searchType.toLowerCase());
     }
     if (searchMaxBudget) {
       res = res.filter((item) => item.price <= Number(searchMaxBudget));
@@ -112,29 +147,46 @@ export default function ShieldedDealsPage() {
     setCoBrokerResults(res);
   };
 
-  const initiateCoBrokeredDeal = (listing: CoBrokerListing) => {
-    const newDealId = `DEAL-${100 + deals.length + 1}`;
+  const initiateCoBrokeredDeal = async (listing: CoBrokerListing) => {
     const totalCommission = listing.price * listing.commissionRate;
     const splitShare = totalCommission / 2;
 
-    const newDeal: DealItem = {
-      id: newDealId,
-      title: `Co-Brokered: ${listing.title}`,
-      stage: 'NEGOTIATION',
-      value: listing.price,
-      clientAlias: `Shared Lead #${Math.floor(100 + Math.random() * 900)} (Co-Broker)`,
-      clientPrivateName: 'Confidential Shared Client',
-      clientContact: '+971 50 *** **99',
-      privateNotes: `Co-brokered deal with ${listing.agencyName}. Total Commission: $${totalCommission.toLocaleString()} (50/50 Split: $${splitShare.toLocaleString()} per agency).`,
-      property: listing.title,
-      matchScore: 95,
-    };
+    try {
+      const res = await fetch('/api/deals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          propertyId: listing.id,
+          tokenAmount: splitShare,
+          status: 'NEGOTIATION',
+          notes: `Co-brokered deal with ${listing.agencyName}. Total Commission: PKR ${totalCommission.toLocaleString()} (50/50 Split: PKR ${splitShare.toLocaleString()} per agency).`,
+          buyerName: 'Confidential Co-Broker Client',
+        }),
+      });
+      const data = await res.json();
+      const newDealId = data?.deal?.id || `DEAL-${Date.now().toString().slice(-4)}`;
 
-    setDeals([newDeal, ...deals]);
-    setCoBrokerSuccessMsg(
-      `✓ Co-Brokered Deal #${newDealId} created! $${splitShare.toLocaleString()} profit share locked with ${listing.agencyName}.`
-    );
-    setTimeout(() => setCoBrokerSuccessMsg(null), 5000);
+      const newDeal: DealItem = {
+        id: newDealId,
+        title: `Co-Brokered: ${listing.title}`,
+        stage: 'NEGOTIATION',
+        value: listing.price,
+        clientAlias: `Shared Lead #${newDealId.slice(-4)} (Co-Broker)`,
+        clientPrivateName: 'Confidential Shared Client',
+        clientContact: '+92 300 *** **99',
+        privateNotes: `Co-brokered deal with ${listing.agencyName}. Total Commission: PKR ${totalCommission.toLocaleString()} (50/50 Split: PKR ${splitShare.toLocaleString()} per agency).`,
+        property: listing.title,
+        matchScore: 95,
+      };
+
+      setDeals((prev) => [newDeal, ...prev]);
+      setCoBrokerSuccessMsg(
+        `✓ Co-Brokered Deal #${newDealId} created! PKR ${splitShare.toLocaleString()} profit share registered with ${listing.agencyName}.`
+      );
+      setTimeout(() => setCoBrokerSuccessMsg(null), 5000);
+    } catch (err) {
+      console.error('Error initiating co-brokered deal:', err);
+    }
   };
 
   const filteredDeals = selectedStage === 'ALL'

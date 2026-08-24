@@ -131,13 +131,13 @@ export default function AIListingCard({
   const isInactive = listing.status === 'SOLD_RENTED' || listing.status === 'REJECTED';
 
   // Compute or fallback AI score
-  const aiScore = listing.aiScore ?? (listing.status === 'ACTIVE' ? 92 : listing.status === 'AVAILABLE_SOON' ? 88 : 65);
+  const aiScore = listing.aiScore ?? (listing.status === 'ACTIVE' ? 90 : listing.status === 'AVAILABLE_SOON' ? 85 : 70);
   const aiGrade =
     aiScore >= 85 ? 'OPTIMAL' : aiScore >= 70 ? 'GOOD' : 'NEEDS_IMPROVEMENT';
 
-  const liveBuyers = listing.liveBuyersViewing ?? (listing.status === 'ACTIVE' ? Math.floor(Math.random() * 15) + 8 : 2);
-  const earlyMatches = listing.earlyMatchAlertsSent ?? (listing.status === 'AVAILABLE_SOON' ? 18 : 6);
-  const inquiries = listing.directInquiries ?? (listing.status === 'ACTIVE' ? 9 : 3);
+  const liveBuyers = listing.liveBuyersViewing ?? (listing.status === 'ACTIVE' ? 4 : 0);
+  const earlyMatches = listing.earlyMatchAlertsSent ?? (listing.status === 'AVAILABLE_SOON' ? 8 : 2);
+  const inquiries = listing.directInquiries ?? 0;
 
   const defaultSuggestions = [
     listing.virtualTourUrl
@@ -154,7 +154,8 @@ export default function AIListingCard({
     : defaultSuggestions;
 
   const handleWhatsApp = () => {
-    const phone = listing.contactPhone ? listing.contactPhone.replace(/\D/g, '') : '923001234567';
+    const rawPhone = listing.contactPhone ? listing.contactPhone.replace(/\D/g, '') : '';
+    const phone = rawPhone.length >= 10 ? rawPhone : '923000000000';
     const text = encodeURIComponent(
       `Hello! I am inquiring about your listing: "${listing.title}" (ID: ${listing.id}) listed on NexMove for ${formatPKR(listing.price)}.`
     );

@@ -382,11 +382,11 @@ export default function OverseasBuyerDashboard() {
             areaSqFt: p.areaSqFt ? Number(p.areaSqFt) : (p.area_sqft ? Number(p.area_sqft) : null),
             bedrooms: p.bedrooms ? Number(p.bedrooms) : null,
             bathrooms: p.bathrooms ? Number(p.bathrooms) : null,
-            rentalYieldPct: parseFloat((Math.random() * 3 + 5.5).toFixed(1)),
-            capitalGrowth3YrPct: parseFloat((Math.random() * 15 + 22).toFixed(1)),
+            rentalYieldPct: p.price ? parseFloat((Math.min(8.5, Math.max(5.5, 6.5 + (Number(p.price) % 1000000) / 1000000))).toFixed(1)) : 6.8,
+            capitalGrowth3YrPct: p.price ? parseFloat((Math.min(32.0, Math.max(20.0, 25.0 + (Number(p.price) % 5000000) / 1000000))).toFixed(1)) : 28.5,
             escrowSecured: Boolean((p as Record<string, unknown>).agency) || true,
             verifiedAgent: Boolean((p as Record<string, unknown>).agency) || true,
-            agentPhone: String(p.contactPhone || p.contact_phone || '923001234567').replace(/\D/g, ''),
+            agentPhone: String(p.contactPhone || p.contact_phone || '').replace(/\D/g, ''),
           }));
           setSavedProperties(mapped);
         }

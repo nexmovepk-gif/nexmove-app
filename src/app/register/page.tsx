@@ -379,8 +379,8 @@ Log in to your admin panel to review and verify this user.`,
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-center items-center px-4 py-12">
-      <div className="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col gap-6">
+    <main className="min-h-screen bg-[#faf9f7] text-slate-900 flex flex-col justify-center items-center px-4 py-12">
+      <div className="w-full max-w-2xl bg-[#faf9f7] border border-slate-200 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col gap-6">
         {/* Header */}
         <div className="flex flex-col items-center text-center gap-1.5">
           <span className="text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-3 py-1 rounded-full uppercase tracking-wider">
@@ -1108,19 +1108,19 @@ Log in to your admin panel to review and verify this user.`,
           {/* ═══════════════════════════════════════════════════════════ */}
           {/* 5. BANKING & ESCROW PAYOUT SETUP (Role-Tailored)             */}
           {/* ═══════════════════════════════════════════════════════════ */}
-          <div className="bg-slate-900 border border-emerald-500/40 rounded-2xl p-5 shadow-xl text-white">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div className="bg-[#faf9f7] border border-emerald-300 rounded-2xl p-5 shadow-sm text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
               <div className="flex items-center gap-2.5">
                 <span className="text-xl">🏦</span>
                 <div>
-                  <h3 className="text-sm font-bold text-emerald-400">
+                  <h3 className="text-sm font-bold text-slate-900">
                     {isAgencyRole
                       ? 'Official Escrow Payout Bank Details (Agency)'
                       : isOverseasRole
                       ? 'Roshan Digital Account (RDA) / Overseas Bank Account'
                       : 'Bank Account & Escrow Refund Details'}
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-600">
                     {isAgencyRole
                       ? 'Funds from verified Escrow Milestones and rent collections will be released directly to this account.'
                       : isOverseasRole
@@ -1129,7 +1129,7 @@ Log in to your admin panel to review and verify this user.`,
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+              <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
                 State Bank Protocol
               </span>
             </div>
@@ -1137,7 +1137,7 @@ Log in to your admin panel to review and verify this user.`,
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Bank Name */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-200" htmlFor="bank-name-input">
+                <label className="text-xs font-bold text-slate-800" htmlFor="bank-name-input">
                   {isOverseasRole ? 'Bank / RDA Provider Name' : 'Bank Name'}
                 </label>
                 <input
@@ -1152,13 +1152,13 @@ Log in to your admin panel to review and verify this user.`,
                       ? 'e.g. Meezan Bank, Bank Alfalah, HBL'
                       : 'e.g. Standard Chartered, Meezan Bank'
                   }
-                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
 
               {/* Account Title */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-200" htmlFor="account-title-input">
+                <label className="text-xs font-bold text-slate-800" htmlFor="account-title-input">
                   Account Title (Holder Name)
                 </label>
                 <input
@@ -1167,13 +1167,13 @@ Log in to your admin panel to review and verify this user.`,
                   value={accountTitle}
                   onChange={(e) => setAccountTitle(e.target.value)}
                   placeholder={isAgencyRole ? 'Must match Agency / Owner Name' : 'Full Name on Bank Account'}
-                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
 
               {/* IBAN / Account Number */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-200" htmlFor="iban-input">
+                <label className="text-xs font-bold text-slate-800" htmlFor="iban-input">
                   IBAN Number (Recommended)
                 </label>
                 <input
@@ -1182,13 +1182,13 @@ Log in to your admin panel to review and verify this user.`,
                   value={iban}
                   onChange={(e) => setIban(e.target.value.toUpperCase())}
                   placeholder="PK36MEZN0001234567890101"
-                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono placeholder:text-slate-400 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
 
               {/* Account Number / SWIFT */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-200" htmlFor="account-num-input">
+                <label className="text-xs font-bold text-slate-800" htmlFor="account-num-input">
                   {isAgencyRole ? 'SWIFT / BIC Code (Optional for Remittances)' : 'Local Account Number'}
                 </label>
                 <input
@@ -1203,13 +1203,13 @@ Log in to your admin panel to review and verify this user.`,
                     }
                   }}
                   placeholder={isAgencyRole ? 'e.g. MEZNPKKAXXX' : 'e.g. 010100998822'}
-                  className="bg-slate-800/90 border border-slate-700 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white font-mono placeholder:text-slate-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono placeholder:text-slate-400 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
             </div>
 
-            <div className="mt-3.5 flex items-center gap-2 text-[11px] text-slate-400 bg-slate-800/50 p-2.5 rounded-xl border border-slate-800">
-              <span className="text-emerald-400 font-bold">🔒 6-Month Security Cooldown:</span>
+            <div className="mt-3.5 flex items-center gap-2 text-[11px] text-slate-700 bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-200">
+              <span className="text-emerald-700 font-bold">🔒 6-Month Security Cooldown:</span>
               <span>
                 To protect against fraud and unauthorized fund diversion, registered banking credentials can only be edited once every 6 months via your Profile Security Vault.
               </span>

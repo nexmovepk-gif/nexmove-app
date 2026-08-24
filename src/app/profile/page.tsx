@@ -186,9 +186,9 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center gap-3">
-        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-xs text-slate-400 font-semibold tracking-wide">Loading Profile & Security Vault...</p>
+      <div className="min-h-screen bg-[#faf9f7] text-slate-800 flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-slate-500 font-semibold tracking-wide">Loading Profile & Security Vault...</p>
       </div>
     )
   }
@@ -197,19 +197,19 @@ export default function ProfilePage() {
   const isAgency = Boolean(agencyMeta || roleBadge.includes('AGENCY'))
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#faf9f7] text-slate-800 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
 
         {/* Top Breadcrumb & Actions */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Link href="/" className="hover:text-emerald-400 transition">Home</Link>
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <Link href="/" className="hover:text-emerald-700 font-medium transition">Home</Link>
             <span>/</span>
-            <span className="text-white font-semibold">Profile & Banking Security</span>
+            <span className="text-slate-900 font-bold">Profile & Banking Security</span>
           </div>
           <Link
             href={isAgency ? '/agency/dashboard' : '/investors'}
-            className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-emerald-400 font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5"
+            className="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-800 font-bold px-3 py-1.5 rounded-xl transition shadow-sm flex items-center gap-1.5"
           >
             ← Back to Portal
           </Link>
@@ -218,10 +218,10 @@ export default function ProfilePage() {
         {/* Alert Notifications */}
         {message && (
           <div
-            className={`p-4 rounded-2xl border text-xs font-semibold flex items-center justify-between ${
+            className={`p-4 rounded-2xl border text-xs font-semibold flex items-center justify-between shadow-sm ${
               message.type === 'success'
-                ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
-                : 'bg-red-950/80 border-red-500/50 text-red-300'
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                : 'bg-red-50 border-red-300 text-red-900'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -233,17 +233,17 @@ export default function ProfilePage() {
         )}
 
         {/* Profile Card Header */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl backdrop-blur-xl flex flex-col sm:flex-row items-center sm:items-start gap-6">
+        <div className="bg-[#faf9f7] border border-slate-200/90 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6">
           {/* Avatar / Logo Upload */}
           <div className="relative group">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-emerald-500/50 bg-slate-800 shadow-inner flex items-center justify-center">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-emerald-500 bg-slate-50 shadow-inner flex items-center justify-center">
               {profileImage ? (
                 <Image src={profileImage} alt="Profile Photo" fill className="object-cover" unoptimized />
               ) : (
-                <span className="text-4xl text-slate-500">{isAgency ? '🏢' : '👤'}</span>
+                <span className="text-4xl text-slate-400">{isAgency ? '🏢' : '👤'}</span>
               )}
             </div>
-            <label className="absolute inset-0 bg-black/60 rounded-2xl flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition text-white">
+            <label className="absolute inset-0 bg-slate-900/60 rounded-2xl flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition text-white">
               <span className="text-lg">📷</span>
               <span className="text-[10px] font-bold mt-1">Change Photo</span>
               <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -253,18 +253,18 @@ export default function ProfilePage() {
           {/* User Info & Identity Badges */}
           <div className="flex-1 text-center sm:text-left space-y-2">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-              <h1 className="text-xl sm:text-2xl font-black text-white">{name || 'NexMove User'}</h1>
-              <span className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900">{name || 'NexMove User'}</h1>
+              <span className="bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                 {roleBadge}
               </span>
               {profileMeta?.isKycVerified && (
-                <span className="bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <span className="bg-blue-50 border border-blue-300 text-blue-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                   ✓ Verified Identity
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-400 font-mono">{profileMeta?.email}</p>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-slate-500 font-mono">{profileMeta?.email}</p>
+            <p className="text-xs text-slate-600 font-medium">
               {agencyMeta?.name ? `Agency: ${agencyMeta.name}` : profileMeta?.overseasCountry ? `Overseas Resident (${profileMeta.overseasCountry})` : 'NexMove Member'}
             </p>
           </div>
@@ -274,69 +274,69 @@ export default function ProfilePage() {
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* 1. Personal / Brand Information */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-            <div className="border-b border-slate-800 pb-3">
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
+          <div className="bg-[#faf9f7] border border-slate-200/90 rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="border-b border-slate-100 pb-3">
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <span>👤</span> Account & Contact Details
               </h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">Full Name / Account Representative</label>
+                <label className="text-xs font-bold text-slate-800">Full Name / Account Representative</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                   required
                 />
               </div>
 
               {isAgency && (
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-300">Agency Brand Name</label>
+                  <label className="text-xs font-bold text-slate-800">Agency Brand Name</label>
                   <input
                     type="text"
                     value={agencyName}
                     onChange={(e) => setAgencyName(e.target.value)}
-                    className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none transition"
+                    className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                   />
                 </div>
               )}
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">Contact Phone Number</label>
+                <label className="text-xs font-bold text-slate-800">Contact Phone Number</label>
                 <input
                   type="text"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+92 300 1234567"
-                  className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">Physical Address / City</label>
+                <label className="text-xs font-bold text-slate-800">Physical Address / City</label>
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="DHA Phase 6, Lahore, Pakistan"
-                  className="bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
             </div>
           </div>
 
           {/* 2. Banking & Escrow Payout Security Vault */}
-          <div className="bg-slate-900/90 border border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
+          <div className="bg-[#faf9f7] border border-emerald-300 rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
               <div>
-                <h2 className="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                   <span>🏦</span> Escrow Banking & Payout Security Vault
                 </h2>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-slate-500">
                   {isAgency
                     ? 'Account where Stage 1/2/3 Escrow payouts and rent settlements are wired.'
                     : 'Account used for Escrow token returns, investment distributions, and payouts.'}
@@ -346,11 +346,11 @@ export default function ProfilePage() {
               {/* 6-Month Cooldown Status Badge */}
               <div>
                 {profileMeta?.canEditBank ? (
-                  <span className="bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
+                  <span className="bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
                     🔓 Unlocked for Edit (6-Mo Cooldown Ready)
                   </span>
                 ) : (
-                  <span className="bg-amber-500/10 border border-amber-500/40 text-amber-400 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
+                  <span className="bg-amber-100 border border-amber-300 text-amber-900 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
                     🔒 Cooldown Locked ({profileMeta?.daysRemaining} days left)
                   </span>
                 )}
@@ -359,12 +359,12 @@ export default function ProfilePage() {
 
             {/* Cooldown Explanation Banner */}
             {!profileMeta?.canEditBank && (
-              <div className="bg-amber-950/40 border border-amber-500/30 rounded-2xl p-4 text-xs text-amber-200 leading-relaxed flex items-start gap-3">
+              <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 text-xs text-amber-900 leading-relaxed flex items-start gap-3">
                 <span className="text-xl">🛡️</span>
                 <div>
-                  <p className="font-bold text-amber-300">Fraud Protection Lock Active</p>
-                  <p className="text-[11px] text-amber-200/80 mt-0.5">
-                    For your financial safety and to prevent unauthorized bank diversion, bank details can only be changed once every 6 months. Your next allowed modification date is <strong className="text-amber-100">{profileMeta?.unlocksAt}</strong>.
+                  <p className="font-bold text-amber-950">Fraud Protection Lock Active</p>
+                  <p className="text-[11px] text-amber-800 mt-0.5">
+                    For your financial safety and to prevent unauthorized bank diversion, bank details can only be changed once every 6 months. Your next allowed modification date is <strong className="text-amber-950 underline">{profileMeta?.unlocksAt}</strong>.
                   </p>
                 </div>
               </div>
@@ -373,33 +373,33 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Bank Name */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">Official Bank / RDA Name</label>
+                <label className="text-xs font-bold text-slate-800">Official Bank / RDA Name</label>
                 <input
                   type="text"
                   value={bankName}
                   disabled={!profileMeta?.canEditBank}
                   onChange={(e) => setBankName(e.target.value)}
                   placeholder="e.g. Meezan Bank / HBL RDA / Emirates NBD"
-                  className="bg-slate-800/80 border border-slate-700 disabled:bg-slate-900/60 disabled:text-slate-400 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
 
               {/* Account Title */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">Account Title (Holder Name)</label>
+                <label className="text-xs font-bold text-slate-800">Account Title (Holder Name)</label>
                 <input
                   type="text"
                   value={accountTitle}
                   disabled={!profileMeta?.canEditBank}
                   onChange={(e) => setAccountTitle(e.target.value)}
                   placeholder="e.g. Tariq Al-Mansoor"
-                  className="bg-slate-800/80 border border-slate-700 disabled:bg-slate-900/60 disabled:text-slate-400 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
 
               {/* IBAN */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">
+                <label className="text-xs font-bold text-slate-800">
                   IBAN Number {profileMeta?.canEditBank ? '' : '(Masked for Privacy)'}
                 </label>
                 <input
@@ -408,13 +408,13 @@ export default function ProfilePage() {
                   disabled={!profileMeta?.canEditBank}
                   onChange={(e) => setIban(e.target.value.toUpperCase())}
                   placeholder="PK36MEZN0001234567890101"
-                  className="bg-slate-800/80 border border-slate-700 disabled:bg-slate-900/60 disabled:text-slate-400 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
 
               {/* Account Number or SWIFT */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-300">
+                <label className="text-xs font-bold text-slate-800">
                   {isAgency ? 'SWIFT / BIC Code (Optional)' : 'Account Number'}
                 </label>
                 <input
@@ -426,7 +426,7 @@ export default function ProfilePage() {
                     else setAccountNumber(e.target.value)
                   }}
                   placeholder={isAgency ? 'e.g. MEZNPKKAXXX' : 'e.g. 010100998822'}
-                  className="bg-slate-800/80 border border-slate-700 disabled:bg-slate-900/60 disabled:text-slate-400 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none transition"
+                  className="bg-white border border-slate-300 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed rounded-xl px-4 py-2.5 text-xs text-slate-900 font-mono focus:border-emerald-500 focus:outline-none transition shadow-sm font-medium"
                 />
               </div>
             </div>
@@ -436,7 +436,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-700 text-white font-bold text-xs py-3.5 rounded-2xl transition shadow-lg flex items-center justify-center gap-2"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-400 text-white font-bold text-xs py-3.5 rounded-2xl transition shadow-md flex items-center justify-center gap-2"
           >
             {saving ? (
               <>

@@ -1333,11 +1333,8 @@ export default function ArchitectDashboardPage() {
       <LinkedInStylePostModal
         isOpen={showPostModal}
         onClose={() => setShowPostModal(false)}
-        onCreated={loadDashboardData}
-        architectName={profile?.name || session?.user?.name || 'Architect'}
-        architectSpecialization={profile?.specialization || 'Architectural Designer'}
-        architectAvatar={profile?.avatarUrl}
-        architectInitials={profile?.avatarInitials || 'AR'}
+        onSuccess={loadDashboardData}
+        architectId={profile?.id}
       />
     </main>
   )

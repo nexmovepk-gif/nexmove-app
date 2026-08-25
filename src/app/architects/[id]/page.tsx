@@ -1,6 +1,6 @@
 'use client'
 // src/app/architects/[id]/page.tsx
-// LinkedIn-Style Architect Public Profile View — Social Actions, Star Rating, Multi-Image Gallery
+// LinkedIn-Style Architect Public Profile View — Social Actions, Star Rating, Multi-Image Gallery & In-Portal Direct Inbox Messaging
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
@@ -35,6 +35,7 @@ interface ArchitectDetail {
   avatarGradient: string
   avatarUrl?: string | null
   coverImage?: string | null
+  coverBannerUrl?: string | null
   councilLicenseNo: string
   pcatpNo?: string | null
   verified: boolean
@@ -136,7 +137,7 @@ function ProjectImageGallery({ urls, title }: { urls: string[]; title: string })
 
   return (
     <>
-      <div className={`grid gap-0.5 ${urls.length === 2 ? 'grid-cols-2' : 'grid-cols-2'} h-56 overflow-hidden`}>
+      <div className="grid gap-0.5 grid-cols-2 h-56 overflow-hidden">
         {visible.map((url, idx) => (
           <div
             key={idx}
@@ -163,8 +164,176 @@ function ProjectImageGallery({ urls, title }: { urls: string[]; title: string })
   )
 }
 
+// ── In-Portal Direct Message Modal (LinkedIn-Style Direct Messaging) ───────
+function DirectMessageModal({
+  architectId,
+  architectName,
+  initialSubject,
+  onClose,
+}: {
+  architectId: string
+  architectName: string
+  initialSubject?: string
+  onClose: () => void
+}) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [subject, setSubject] = useState(initialSubject || `Project Inquiry for ${architectName}`)
+  const [message, setMessage] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/architects/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          architectId,
+          senderName: name,
+          senderEmail: email,
+          senderPhone: phone,
+          subject,
+          message,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to send message')
+      setSuccess(true)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error sending message')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
+      <div
+        className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 flex flex-col gap-4 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between border-b border-slate-100 pb-3">
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-base">✉️</span>
+              <h3 className="text-base font-bold text-slate-900">Direct In-Portal Message</h3>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Message will be sent to <span className="font-bold text-teal-700">{architectName}</span>&apos;s NexMove Inbox
+            </p>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+        </div>
+
+        {success ? (
+          <div className="py-6 text-center flex flex-col items-center gap-2">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 text-2xl flex items-center justify-center font-bold">✓</div>
+            <p className="text-sm font-bold text-emerald-700">Message Delivered!</p>
+            <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+              Your inquiry has been placed directly into {architectName}&apos;s dashboard inbox. They will reply directly to your email.
+            </p>
+            <button onClick={onClose} className="mt-3 text-xs bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-slate-800 transition">
+              Done
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            {error && <div className="bg-red-50 text-red-700 text-xs p-2.5 rounded-xl">{error}</div>}
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold text-slate-700">Your Name *</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  placeholder="e.g. Tariq Mehmood"
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500 transition"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-bold text-slate-700">Email Address *</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="name@company.com"
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500 transition"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-700">Phone / WhatsApp (Optional)</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+92 300 1234567"
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500 transition"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-700">Subject</label>
+              <input
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                required
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500 transition"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-slate-700">Message / Requirements *</label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+                rows={3}
+                placeholder="Describe your design needs (Plot size, 3D Elevation, Floor Plan, Interior, BIM model)..."
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 resize-none focus:outline-none focus:border-teal-500 transition"
+              />
+            </div>
+
+            <div className="bg-teal-50/70 border border-teal-100 rounded-xl p-2.5 flex items-start gap-2">
+              <span className="text-xs">🔒</span>
+              <p className="text-[11px] text-teal-800 leading-tight">
+                <strong>Privacy Guaranteed:</strong> Direct communication happens securely through NexMove without disclosing private mobile numbers.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs py-2.5 rounded-xl transition shadow disabled:opacity-50 flex items-center justify-center gap-1.5"
+            >
+              {submitting ? 'Sending to Inbox...' : '✉️ Send Message to Architect'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── Review Submit Modal ────────────────────────────────────────────────────
-function ReviewModal({ architectId, architectName, onClose, onReviewSubmitted }: {
+function ReviewModal({
+  architectId,
+  architectName,
+  onClose,
+  onReviewSubmitted,
+}: {
   architectId: string
   architectName: string
   onClose: () => void
@@ -272,6 +441,8 @@ export default function ArchitectPublicProfilePage() {
   const [commentOpen, setCommentOpen] = useState<Record<string, boolean>>({})
   const [ratingMap, setRatingMap] = useState<Record<string, number>>({})
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
+  const [messageModalOpen, setMessageModalOpen] = useState(false)
+  const [messageSubject, setMessageSubject] = useState('')
 
   const fetchArchitect = () => {
     if (!id) return
@@ -318,6 +489,11 @@ export default function ArchitectPublicProfilePage() {
     }
   }
 
+  const openMessageModal = (customSubject?: string) => {
+    setMessageSubject(customSubject || `Project Inquiry for ${architect?.name || 'Architect'}`)
+    setMessageModalOpen(true)
+  }
+
   if (loading) {
     return (
       <main className="min-h-screen bg-[#f3f4f6] text-slate-900 flex items-center justify-center p-6">
@@ -344,6 +520,9 @@ export default function ArchitectPublicProfilePage() {
     )
   }
 
+  const resolvedCover = architect.coverBannerUrl || architect.coverImage
+  const resolvedAvatar = architect.avatarUrl
+
   return (
     <main className="min-h-screen bg-[#f3f4f6] text-slate-900 pb-16 font-sans">
 
@@ -367,17 +546,14 @@ export default function ArchitectPublicProfilePage() {
               <span className="hidden sm:inline">Leave a Review</span>
             </button>
 
-            {architect.phone && (
-              <a
-                href={`https://wa.me/${architect.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(architect.name)},%20I%20saw%20your%20profile%20on%20NexMove.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl transition shadow flex items-center gap-1.5"
-              >
-                <span>💬</span>
-                <span>Direct WhatsApp</span>
-              </a>
-            )}
+            {/* Direct In-Portal Messaging Button */}
+            <button
+              onClick={() => openMessageModal()}
+              className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-4 py-2 rounded-xl transition shadow flex items-center gap-1.5"
+            >
+              <span>✉️</span>
+              <span>Send Message</span>
+            </button>
           </div>
         </div>
       </div>
@@ -388,9 +564,16 @@ export default function ArchitectPublicProfilePage() {
         <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm">
           {/* Cover Banner */}
           <div className="relative h-52 bg-gradient-to-r from-teal-800 via-emerald-900 to-slate-900">
-            {architect.coverImage ? (
+            {resolvedCover ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={architect.coverImage} alt="Cover" className="w-full h-full object-cover" />
+              <img
+                src={resolvedCover}
+                alt="Cover Banner"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none'
+                }}
+              />
             ) : null}
             {architect.availableForProjects && (
               <span className="absolute top-4 right-4 text-xs font-bold bg-white border border-emerald-200 text-emerald-700 px-3 py-1 rounded-full shadow flex items-center gap-1.5">
@@ -404,9 +587,16 @@ export default function ArchitectPublicProfilePage() {
           <div className="px-6 pb-5 pt-0 relative flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 bg-white">
             <div className="flex flex-col sm:flex-row sm:items-end gap-4">
               <div className="relative w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white font-black text-3xl flex-shrink-0">
-                {architect.avatarUrl ? (
+                {resolvedAvatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={architect.avatarUrl} alt={architect.name} className="w-full h-full object-cover" />
+                  <img
+                    src={resolvedAvatar}
+                    alt={architect.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none'
+                    }}
+                  />
                 ) : (
                   architect.avatarInitials
                 )}
@@ -427,24 +617,22 @@ export default function ArchitectPublicProfilePage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => setReviewModalOpen(true)}
                 className="text-xs bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 font-bold px-3 py-2 rounded-xl transition"
               >
                 ★ Review
               </button>
-              {architect.phone && (
-                <a
-                  href={`https://wa.me/${architect.phone.replace(/[^0-9]/g, '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5"
-                >
-                  <span>💬</span>
-                  <span>WhatsApp</span>
-                </a>
-              )}
+
+              {/* LinkedIn-Style Direct Inbox Messaging Button */}
+              <button
+                onClick={() => openMessageModal()}
+                className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5"
+              >
+                <span>✉️</span>
+                <span>Message Architect</span>
+              </button>
             </div>
           </div>
 
@@ -475,6 +663,27 @@ export default function ArchitectPublicProfilePage() {
               <span>{architect.reviewCount > 0 ? architect.reviewCount : '0 (New)'}</span>
             </div>
           </div>
+        </div>
+
+        {/* ── Security & Direct Connect Banner ── */}
+        <div className="bg-gradient-to-r from-teal-50 via-emerald-50 to-slate-50 border border-teal-200/70 rounded-2xl p-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center text-lg flex-shrink-0 shadow-sm">
+              🛡️
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-slate-900">Secure Direct In-Portal Messaging</h3>
+              <p className="text-[11px] text-slate-600 mt-0.5">
+                Send your design inquiry directly to {architect.name}&apos;s verified inbox. Your contact details remain confidential.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => openMessageModal()}
+            className="text-xs font-bold bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-xl transition flex-shrink-0 shadow-sm"
+          >
+            ✉️ Contact Now
+          </button>
         </div>
 
         {/* ── About Section ───────────────────────────────────────── */}
@@ -513,9 +722,9 @@ export default function ArchitectPublicProfilePage() {
                   {/* Project Header: mini architect attribution */}
                   <div className="p-3 flex items-center gap-2.5 border-b border-slate-100">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-600 to-emerald-700 flex items-center justify-center text-white text-[10px] font-black overflow-hidden flex-shrink-0">
-                      {architect.avatarUrl ? (
+                      {resolvedAvatar ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={architect.avatarUrl} alt={architect.name} className="w-full h-full object-cover" />
+                        <img src={resolvedAvatar} alt={architect.name} className="w-full h-full object-cover" />
                       ) : (
                         architect.avatarInitials
                       )}
@@ -627,18 +836,14 @@ export default function ArchitectPublicProfilePage() {
                         </div>
                       </div>
 
-                      {/* WhatsApp Direct */}
-                      {architect.phone && (
-                        <a
-                          href={`https://wa.me/${architect.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(architect.name)},%20I%20saw%20your%20project%20%22${encodeURIComponent(proj.title)}%22%20on%20NexMove.`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-sm"
-                        >
-                          <span>💬</span>
-                          <span>WhatsApp</span>
-                        </a>
-                      )}
+                      {/* Direct Message for this specific project design */}
+                      <button
+                        onClick={() => openMessageModal(`Inquiry regarding project: "${proj.title}"`)}
+                        className="text-xs bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1 shadow-sm"
+                      >
+                        <span>✉️</span>
+                        <span>Inquire</span>
+                      </button>
                     </div>
 
                     {/* Inline Comment Box */}
@@ -672,6 +877,16 @@ export default function ArchitectPublicProfilePage() {
           architectName={architect.name}
           onClose={() => setReviewModalOpen(false)}
           onReviewSubmitted={fetchArchitect}
+        />
+      )}
+
+      {/* ── Direct In-Portal Message Modal ──────────────────────── */}
+      {messageModalOpen && (
+        <DirectMessageModal
+          architectId={architect.id}
+          architectName={architect.name}
+          initialSubject={messageSubject}
+          onClose={() => setMessageModalOpen(false)}
         />
       )}
     </main>

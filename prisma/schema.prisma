@@ -478,6 +478,7 @@ model ArchitectProfile {
   reviews              ArchitectReview[]
   projects             ArchitectProject[]
   proposals            ArchitectProposal[]
+  messages             ArchitectMessage[]
 
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
@@ -540,6 +541,23 @@ model ArchitectProposal {
 
   createdAt          DateTime         @default(now())
   updatedAt          DateTime         @updatedAt
+}
+
+/// Direct message sent to an architect's private in-portal inbox (LinkedIn-style messaging).
+model ArchitectMessage {
+  id           String           @id @default(uuid())
+  architectId  String
+  architect    ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  senderName   String
+  senderEmail  String
+  senderPhone  String?
+  subject      String?
+  message      String
+  isRead       Boolean          @default(false)
+  repliedAt    DateTime?
+
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }
 
 // ─── Investor Portal Models ───────────────────────────────────────────────────

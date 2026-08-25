@@ -532,17 +532,13 @@ export default function ArchitectsPage() {
                         View Profile
                       </Link>
 
-                      {arch.phone && (
-                        <a
-                          href={`https://wa.me/${arch.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(arch.name)},%20I%20found%20your%20profile%20on%20NexMove.`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 shadow-sm"
-                        >
-                          <span>💬</span>
-                          <span>WhatsApp</span>
-                        </a>
-                      )}
+                      <button
+                        onClick={() => setProposalTarget(arch)}
+                        className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-3 py-2 rounded-xl transition flex items-center gap-1 shadow-sm"
+                      >
+                        <span>✉️</span>
+                        <span>Message</span>
+                      </button>
                     </div>
                   </div>
                 </div>

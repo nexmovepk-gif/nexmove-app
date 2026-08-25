@@ -91,6 +91,8 @@ export default function ProfileEditModal({
   // Start in edit mode if the caller requested it (e.g., "Edit Profile" button)
   const [isEditing, setIsEditing] = useState(openInEditMode)
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [uploadingCover, setUploadingCover] = useState(false)
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
 
   // Form states
@@ -105,7 +107,7 @@ export default function ProfileEditModal({
   const [country, setCountry] = useState(profile.country || 'Pakistan')
   const [city, setCity] = useState(profile.city || '')
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl || '')
-  const [coverImage, setCoverImage] = useState(profile.coverImage || '')
+  const [coverImage, setCoverImage] = useState(profile.coverBannerUrl || profile.coverImage || '')
   const [softwareInput, setSoftwareInput] = useState(profile.software?.join(', ') || 'Revit, AutoCAD, 3ds Max')
 
   // Synchronize state whenever modal opens or profile changes
@@ -122,10 +124,12 @@ export default function ProfileEditModal({
       setCountry(profile.country || 'Pakistan')
       setCity(profile.city || '')
       setAvatarUrl(profile.avatarUrl || '')
-      setCoverImage(profile.coverImage || '')
+      setCoverImage(profile.coverBannerUrl || profile.coverImage || '')
       setSoftwareInput(profile.software?.join(', ') || 'Revit, AutoCAD, 3ds Max')
       setIsEditing(openInEditMode)
       setMessage(null)
+      setUploadingAvatar(false)
+      setUploadingCover(false)
     }
   }, [isOpen, profile, openInEditMode])
 
@@ -134,8 +138,8 @@ export default function ProfileEditModal({
   const handleAvatarFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const tempUrl = URL.createObjectURL(file)
-    setAvatarUrl(tempUrl)
+    setUploadingAvatar(true)
+    setMessage(null)
 
     try {
       const formData = new FormData()
@@ -144,20 +148,28 @@ export default function ProfileEditModal({
         method: 'POST',
         body: formData,
       })
-      if (res.ok) {
-        const data = await res.json()
-        if (data.url) setAvatarUrl(data.url)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to upload avatar')
+      if (data.url) {
+        setAvatarUrl(data.url)
+        setMessage({ text: '✓ Avatar uploaded to CDN!', type: 'success' })
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Avatar upload error:', err)
+      setMessage({
+        text: err instanceof Error ? err.message : 'Error uploading avatar',
+        type: 'error',
+      })
+    } finally {
+      setUploadingAvatar(false)
     }
   }
 
   const handleCoverFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const tempUrl = URL.createObjectURL(file)
-    setCoverImage(tempUrl)
+    setUploadingCover(true)
+    setMessage(null)
 
     try {
       const formData = new FormData()
@@ -166,17 +178,29 @@ export default function ProfileEditModal({
         method: 'POST',
         body: formData,
       })
-      if (res.ok) {
-        const data = await res.json()
-        if (data.url) setCoverImage(data.url)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to upload cover banner')
+      if (data.url) {
+        setCoverImage(data.url)
+        setMessage({ text: '✓ Cover banner uploaded to CDN!', type: 'success' })
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Cover upload error:', err)
+      setMessage({
+        text: err instanceof Error ? err.message : 'Error uploading cover banner',
+        type: 'error',
+      })
+    } finally {
+      setUploadingCover(false)
     }
   }
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (uploadingAvatar || uploadingCover) {
+      setMessage({ text: 'Please wait for image upload to complete...', type: 'error' })
+      return
+    }
     setSaving(true)
     setMessage(null)
 
@@ -201,8 +225,9 @@ export default function ProfileEditModal({
           isOverseas,
           country,
           city,
-          avatarUrl,
-          coverImage,
+          avatarUrl: avatarUrl || null,
+          coverImage: coverImage || null,
+          coverBannerUrl: coverImage || null,
           software: swList,
         }),
       })

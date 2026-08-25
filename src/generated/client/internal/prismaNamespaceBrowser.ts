@@ -67,6 +67,7 @@ export const ModelName = {
   ArchitectReview: 'ArchitectReview',
   ArchitectProject: 'ArchitectProject',
   ArchitectProposal: 'ArchitectProposal',
+  ArchitectMessage: 'ArchitectMessage',
   InvestmentDeal: 'InvestmentDeal',
   InvestorPortfolio: 'InvestorPortfolio',
   InvestorCashflow: 'InvestorCashflow',
@@ -461,6 +462,23 @@ export const ArchitectProposalScalarFieldEnum = {
 } as const
 
 export type ArchitectProposalScalarFieldEnum = (typeof ArchitectProposalScalarFieldEnum)[keyof typeof ArchitectProposalScalarFieldEnum]
+
+
+export const ArchitectMessageScalarFieldEnum = {
+  id: 'id',
+  architectId: 'architectId',
+  senderName: 'senderName',
+  senderEmail: 'senderEmail',
+  senderPhone: 'senderPhone',
+  subject: 'subject',
+  message: 'message',
+  isRead: 'isRead',
+  repliedAt: 'repliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectMessageScalarFieldEnum = (typeof ArchitectMessageScalarFieldEnum)[keyof typeof ArchitectMessageScalarFieldEnum]
 
 
 export const InvestmentDealScalarFieldEnum = {

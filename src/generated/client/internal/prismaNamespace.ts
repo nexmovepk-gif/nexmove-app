@@ -413,6 +413,7 @@ export const ModelName = {
   ArchitectReview: 'ArchitectReview',
   ArchitectProject: 'ArchitectProject',
   ArchitectProposal: 'ArchitectProposal',
+  ArchitectMessage: 'ArchitectMessage',
   InvestmentDeal: 'InvestmentDeal',
   InvestorPortfolio: 'InvestorPortfolio',
   InvestorCashflow: 'InvestorCashflow',
@@ -433,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "agency" | "listing" | "property" | "publicListing" | "savedListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection" | "architectProfile" | "architectReview" | "architectProject" | "architectProposal" | "investmentDeal" | "investorPortfolio" | "investorCashflow" | "investorWallet" | "passwordResetToken"
+    modelProps: "user" | "agency" | "listing" | "property" | "publicListing" | "savedListing" | "agencyReview" | "client" | "financialLedger" | "deal" | "expense" | "rentCollection" | "architectProfile" | "architectReview" | "architectProject" | "architectProposal" | "architectMessage" | "investmentDeal" | "investorPortfolio" | "investorCashflow" | "investorWallet" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1621,6 +1622,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ArchitectMessage: {
+      payload: Prisma.$ArchitectMessagePayload<ExtArgs>
+      fields: Prisma.ArchitectMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ArchitectMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ArchitectMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.ArchitectMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ArchitectMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>
+        }
+        findMany: {
+          args: Prisma.ArchitectMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>[]
+        }
+        create: {
+          args: Prisma.ArchitectMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>
+        }
+        createMany: {
+          args: Prisma.ArchitectMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ArchitectMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.ArchitectMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>
+        }
+        update: {
+          args: Prisma.ArchitectMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ArchitectMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ArchitectMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ArchitectMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ArchitectMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ArchitectMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.ArchitectMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateArchitectMessage>
+        }
+        groupBy: {
+          args: Prisma.ArchitectMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ArchitectMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ArchitectMessageCountAggregateOutputType> | number
+        }
+      }
+    }
     InvestmentDeal: {
       payload: Prisma.$InvestmentDealPayload<ExtArgs>
       fields: Prisma.InvestmentDealFieldRefs
@@ -2403,6 +2478,23 @@ export const ArchitectProposalScalarFieldEnum = {
 export type ArchitectProposalScalarFieldEnum = (typeof ArchitectProposalScalarFieldEnum)[keyof typeof ArchitectProposalScalarFieldEnum]
 
 
+export const ArchitectMessageScalarFieldEnum = {
+  id: 'id',
+  architectId: 'architectId',
+  senderName: 'senderName',
+  senderEmail: 'senderEmail',
+  senderPhone: 'senderPhone',
+  subject: 'subject',
+  message: 'message',
+  isRead: 'isRead',
+  repliedAt: 'repliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ArchitectMessageScalarFieldEnum = (typeof ArchitectMessageScalarFieldEnum)[keyof typeof ArchitectMessageScalarFieldEnum]
+
+
 export const InvestmentDealScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -2957,6 +3049,7 @@ export type GlobalOmitConfig = {
   architectReview?: Prisma.ArchitectReviewOmit
   architectProject?: Prisma.ArchitectProjectOmit
   architectProposal?: Prisma.ArchitectProposalOmit
+  architectMessage?: Prisma.ArchitectMessageOmit
   investmentDeal?: Prisma.InvestmentDealOmit
   investorPortfolio?: Prisma.InvestorPortfolioOmit
   investorCashflow?: Prisma.InvestorCashflowOmit

@@ -98,6 +98,11 @@ export type ArchitectProject = Prisma.ArchitectProjectModel
  */
 export type ArchitectProposal = Prisma.ArchitectProposalModel
 /**
+ * Model ArchitectMessage
+ * Direct message sent to an architect's private in-portal inbox (LinkedIn-style messaging).
+ */
+export type ArchitectMessage = Prisma.ArchitectMessageModel
+/**
  * Model InvestmentDeal
  * Off-market / distress property deals listed by verified agencies for investors
  */

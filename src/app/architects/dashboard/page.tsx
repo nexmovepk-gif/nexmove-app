@@ -1,6 +1,6 @@
 'use client'
 // src/app/architects/dashboard/page.tsx
-// LinkedIn-Style Off-White Architect Portal & Dashboard — Full Refactor
+// LinkedIn-Style Off-White Architect Portal & Dashboard — Feed, Proposals, Direct Inbox Messages & Onboarding Guide
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSession } from 'next-auth/react'
@@ -22,6 +22,34 @@ interface Project {
   tags?: string[]
   likesCount?: number
   completedYear?: number | null
+  createdAt: string
+}
+
+interface Proposal {
+  id: string
+  architectId: string
+  architectName?: string | null
+  agencyName: string
+  contactEmail?: string | null
+  contactPhone?: string | null
+  projectType?: string | null
+  plotArea?: string | null
+  budgetPKR?: number | null
+  location?: string | null
+  message: string
+  status: string
+  createdAt: string
+}
+
+interface DirectMessage {
+  id: string
+  senderName: string
+  senderEmail: string
+  senderPhone?: string | null
+  subject?: string | null
+  message: string
+  isRead: boolean
+  repliedAt?: string | null
   createdAt: string
 }
 
@@ -99,20 +127,18 @@ function ImageGallery({ urls, title }: { urls: string[]; title: string }) {
         {visible.map((url, idx) => (
           <div
             key={idx}
-            className={`relative overflow-hidden bg-slate-900 cursor-zoom-in ${
-              urls.length === 3 && idx === 0 ? 'row-span-2 col-span-1' : ''
-            } ${urls.length >= 4 && idx === 0 ? 'row-span-2' : ''}`}
+            className="relative overflow-hidden bg-slate-900 cursor-zoom-in"
             onClick={() => setLightbox(url)}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={url}
-              alt={`${title} ${idx + 1}`}
+              alt={`${title} - image ${idx + 1}`}
               className="w-full h-full object-cover hover:scale-105 transition duration-300"
             />
             {idx === 3 && overflow > 0 && (
               <div className="absolute inset-0 bg-slate-900/70 flex items-center justify-center">
-                <span className="text-white text-xl font-black">+{overflow}</span>
+                <span className="text-white text-2xl font-black">+{overflow}</span>
               </div>
             )}
           </div>
@@ -131,23 +157,6 @@ function ImageGallery({ urls, title }: { urls: string[]; title: string }) {
   )
 }
 
-interface Proposal {
-  id: string
-  architectId: string
-  architectName?: string | null
-  agencyName: string
-  agencyId?: string | null
-  contactEmail?: string | null
-  contactPhone?: string | null
-  projectType?: string | null
-  plotArea?: string | null
-  budgetPKR?: number | null
-  location?: string | null
-  message: string
-  status: string
-  createdAt: string
-}
-
 export default function ArchitectDashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -155,8 +164,10 @@ export default function ArchitectDashboardPage() {
   const [profile, setProfile] = useState<ArchitectProfileData | null>(null)
   const [projects, setProjects] = useState<Project[]>([])
   const [proposals, setProposals] = useState<Proposal[]>([])
-  const [activeTab, setActiveTab] = useState<'feed' | 'leads'>('feed')
+  const [messages, setMessages] = useState<DirectMessage[]>([])
+  const [activeTab, setActiveTab] = useState<'feed' | 'leads' | 'messages'>('feed')
   const [loading, setLoading] = useState(true)
+  const [showGuide, setShowGuide] = useState(true)
 
   // ── Modals & Dialogs State ────────────────────────────────────────────────
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
@@ -180,21 +191,23 @@ export default function ArchitectDashboardPage() {
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [updatingProposalId, setUpdatingProposalId] = useState<string | null>(null)
+  const [updatingMessageId, setUpdatingMessageId] = useState<string | null>(null)
 
   const loadDashboardData = useCallback(async () => {
     setLoading(true)
     try {
-      const [profRes, projRes, propRes] = await Promise.all([
+      const [profRes, projRes, propRes, msgRes] = await Promise.all([
         fetch('/api/architects/profile', { cache: 'no-store' }),
         fetch('/api/architects/projects', { cache: 'no-store' }),
         fetch('/api/architects/proposal', { cache: 'no-store' }),
+        fetch('/api/architects/message', { cache: 'no-store' }),
       ])
 
       if (profRes.ok) {
         const profData = await profRes.json()
         if (profData.profile) {
           setProfile(profData.profile)
-          setCoverUrlInput(profData.profile.coverImage || '')
+          setCoverUrlInput(profData.profile.coverBannerUrl || profData.profile.coverImage || '')
         }
       }
 
@@ -213,6 +226,11 @@ export default function ArchitectDashboardPage() {
       if (propRes.ok) {
         const propData = await propRes.json()
         setProposals(propData.proposals || [])
+      }
+
+      if (msgRes.ok) {
+        const msgData = await msgRes.json()
+        setMessages(msgData.messages || [])
       }
     } catch (err) {
       console.error('Failed to load dashboard data:', err)
@@ -273,7 +291,7 @@ export default function ArchitectDashboardPage() {
     const file = e.target.files?.[0]
     if (!file || !profile) return
     const tempUrl = URL.createObjectURL(file)
-    setProfile((prev) => (prev ? { ...prev, coverImage: tempUrl } : null))
+    setProfile((prev) => (prev ? { ...prev, coverImage: tempUrl, coverBannerUrl: tempUrl } : null))
     setCoverUrlInput(tempUrl)
     setUploadingCover(true)
 
@@ -331,6 +349,25 @@ export default function ArchitectDashboardPage() {
     }
   }
 
+  const markMessageAsRead = async (id: string, isRead: boolean) => {
+    setUpdatingMessageId(id)
+    try {
+      const res = await fetch(`/api/architects/message?id=${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isRead }),
+      })
+      if (!res.ok) throw new Error('Failed to update message status')
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, isRead } : m))
+      )
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setUpdatingMessageId(null)
+    }
+  }
+
   // ── Save Cover Photo from URL Input Modal ─────────────────────────────────
   const handleSaveCoverUrl = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -355,6 +392,7 @@ export default function ArchitectDashboardPage() {
           software: profile.software,
           avatarUrl: profile.avatarUrl,
           coverImage: coverUrlInput.trim(),
+          coverBannerUrl: coverUrlInput.trim(),
         }),
       })
       if (!res.ok) throw new Error('Failed to update cover photo URL')
@@ -371,12 +409,12 @@ export default function ArchitectDashboardPage() {
 
   const toggleLike = async (id: string) => {
     const isLiked = likedProjects[id]
-    // Optimistic update
     setLikedProjects((prev) => ({ ...prev, [id]: !isLiked }))
     setLikesMap((prev) => ({
       ...prev,
       [id]: (prev[id] || 0) + (isLiked ? -1 : 1),
     }))
+
     // Persist to DB
     try {
       await fetch(`/api/architects/projects?id=${id}&action=${isLiked ? 'unlike' : 'like'}`, {
@@ -419,6 +457,10 @@ export default function ArchitectDashboardPage() {
     )
   }
 
+  const unreadMessages = messages.filter((m) => !m.isRead).length
+  const pendingProposals = proposals.filter((p) => p.status === 'PENDING').length
+  const resolvedCover = profile?.coverBannerUrl || profile?.coverImage
+
   return (
     <main className="min-h-screen bg-[#f3f4f6] text-slate-900 pb-12 font-sans">
 
@@ -454,10 +496,11 @@ export default function ArchitectDashboardPage() {
               <Link
                 href={`/architects/${profile.id}`}
                 target="_blank"
-                className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5"
+                className="text-xs bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5"
               >
                 <span>👁️</span>
-                <span className="hidden sm:inline">Public Profile ↗</span>
+                <span className="hidden sm:inline">Public Profile</span>
+                <span>↗</span>
               </Link>
             )}
 
@@ -465,22 +508,69 @@ export default function ArchitectDashboardPage() {
               onClick={() => setShowPostModal(true)}
               className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-4 py-2 rounded-xl transition shadow flex items-center gap-1.5"
             >
-              <span className="text-base leading-none">+</span>
+              <span>+</span>
               <span>Create Post</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* ── Main: LinkedIn-style 2-col grid ─────────────────────────────── */}
-      <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* ── Main Layout Grid ──────────────────────────────────────────────── */}
+      <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col gap-6">
 
-        {/* ── LEFT COLUMN: Profile Card (4 cols) ──────────────────────── */}
-        <div className="lg:col-span-4 flex flex-col gap-5">
-          {/* Profile card */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+        {/* ── Onboarding & Portal Guide Banner ── */}
+        {showGuide && (
+          <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 text-white rounded-2xl p-5 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-hidden">
+            <div className="flex flex-col gap-1 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold bg-teal-500/20 border border-teal-400/40 text-teal-300 px-2.5 py-0.5 rounded-full">
+                  ⚡ NexMove Architect Network
+                </span>
+                <span className="text-xs text-slate-400">How your portal works</span>
+              </div>
+              <h2 className="text-base font-bold text-white mt-1">
+                Welcome to your Professional Architectural Hub
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 text-xs text-slate-300">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-2.5">
+                  <strong className="text-teal-300 block mb-0.5">1. Complete Profile</strong>
+                  Upload your avatar, banner & PCATP license for verified status.
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-2.5">
+                  <strong className="text-teal-300 block mb-0.5">2. Share 3D Renders</strong>
+                  Post your AutoCAD, Revit & 3ds Max designs to the feed.
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-2.5">
+                  <strong className="text-teal-300 block mb-0.5">3. Direct Client Leads</strong>
+                  Clients message your in-portal inbox without exposing personal phone.
+                </div>
+              </div>
+            </div>
 
-            {/* ── Hidden File Inputs for Fast Direct Upload ── */}
+            <div className="flex items-center gap-2 flex-shrink-0 self-end md:self-center">
+              <button
+                onClick={() => setIsProfileModalOpen(true)}
+                className="text-xs bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold px-4 py-2 rounded-xl transition shadow"
+              >
+                Edit Profile
+              </button>
+              <button
+                onClick={() => setShowGuide(false)}
+                className="text-xs text-slate-400 hover:text-white px-2 py-2"
+                title="Dismiss Guide"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        {/* ── LEFT COLUMN: Profile Summary Card (4 cols) ───────────────── */}
+        <div className="lg:col-span-4 flex flex-col gap-4">
+          <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-sm">
+            {/* Hidden File Inputs */}
             <input
               type="file"
               ref={profileInputRef}
@@ -507,12 +597,15 @@ export default function ArchitectDashboardPage() {
                   <div className="w-6 h-6 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                 </div>
               )}
-              {profile?.coverImage ? (
+              {resolvedCover ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={profile.coverImage}
+                  src={resolvedCover}
                   alt="Cover Banner"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = 'none'
+                  }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-white/10 text-xs font-bold uppercase tracking-widest">
@@ -536,7 +629,7 @@ export default function ArchitectDashboardPage() {
 
             {/* ── Avatar & Info ── */}
             <div className="px-5 pb-5 pt-0 relative flex flex-col items-center text-center -mt-12">
-              {/* Avatar circle — click opens Profile Editor Modal */}
+              {/* Avatar circle */}
               <button
                 type="button"
                 onClick={() => setIsProfileModalOpen(true)}
@@ -551,6 +644,9 @@ export default function ArchitectDashboardPage() {
                     src={profile.avatarUrl}
                     alt={profile.name || 'Avatar'}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none'
+                    }}
                   />
                 ) : (
                   profile?.avatarInitials || session?.user?.name?.substring(0, 2).toUpperCase() || 'AR'
@@ -562,56 +658,44 @@ export default function ArchitectDashboardPage() {
                 </div>
               </button>
 
-              <div className="mt-3 flex flex-col items-center gap-1">
-                <div className="flex items-center gap-1.5">
-                  <h2 className="text-lg font-bold text-slate-900">
-                    {profile?.name || session?.user?.name || 'Architect Name'}
-                  </h2>
-                  <VerifiedBadge
-                    type="ARCHITECT"
-                    verified={Boolean(profile?.isVerified)}
-                  />
-                </div>
-                <p className="text-xs font-semibold text-slate-600">
-                  {profile?.specialization || 'Professional Architect'}
-                </p>
-                <p className="text-[11px] text-slate-400">
-                  {profile?.companyName ? `${profile.companyName} · ` : ''}
-                  {profile?.location || profile?.city || 'Pakistan'}
-                </p>
+              <div className="mt-3 flex items-center gap-1.5 justify-center flex-wrap">
+                <h2 className="text-base font-bold text-slate-900">{profile?.name || session?.user?.name || 'Architect'}</h2>
+                <VerifiedBadge
+                  type="ARCHITECT"
+                  verified={profile?.isVerified || profile?.verificationStatus === 'VERIFIED'}
+                />
               </div>
+              <p className="text-xs font-semibold text-slate-500 mt-0.5">{profile?.specialization || 'Architectural Designer'}</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                {profile?.companyName ? `${profile.companyName} · ` : ''}
+                {profile?.location || profile?.city || 'Pakistan'}
+              </p>
 
-              {/* PCATP Badge */}
-              <div className="mt-3 bg-[#f8fafc] border border-slate-200/80 px-3 py-2 rounded-xl text-center w-full">
-                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">
-                  PCATP Council Reg No.
-                </span>
+              {/* PCATP License Status */}
+              <div className="mt-3 w-full bg-[#f8fafc] border border-slate-100 rounded-xl p-2.5 text-left">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">PCATP Council Reg No.</span>
                 <span className="text-xs font-mono font-bold text-teal-700">
                   {profile?.pcatpNo || 'VERIFIED-PCATP'}
                 </span>
               </div>
 
-              {/* Stats row */}
-              <div className="mt-3 w-full grid grid-cols-2 gap-2">
-                <div className="bg-[#f8fafc] border border-slate-200/80 rounded-xl px-3 py-2 text-center">
-                  <span className="text-lg font-black text-teal-700">{projects.length}</span>
-                  <p className="text-[10px] text-slate-400 font-medium">Posts</p>
+              {/* Stats Bar */}
+              <div className="grid grid-cols-2 gap-2 mt-3 w-full">
+                <div className="bg-[#f8fafc] border border-slate-100 rounded-xl p-2.5 text-center">
+                  <span className="text-sm font-black text-slate-800">{projects.length}</span>
+                  <span className="text-[10px] text-slate-400 block font-medium">Posts</span>
                 </div>
-                <div className="bg-[#f8fafc] border border-slate-200/80 rounded-xl px-3 py-2 text-center">
-                  <span className="text-lg font-black text-amber-500">
-                    {profile?.avgRating && profile.avgRating > 0 ? `${profile.avgRating.toFixed(1)}★` : '0.0★'}
+                <div className="bg-[#f8fafc] border border-slate-100 rounded-xl p-2.5 text-center">
+                  <span className="text-sm font-black text-amber-500">
+                    {profile?.avgRating ? `${profile.avgRating.toFixed(1)}★` : '0.0★'}
                   </span>
-                  <p className="text-[10px] text-slate-400 font-medium">
-                    {profile?.reviewCount && profile.reviewCount > 0 ? `${profile.reviewCount} Review${profile.reviewCount > 1 ? 's' : ''}` : 'Rating'}
-                  </p>
+                  <span className="text-[10px] text-slate-400 block font-medium">Rating</span>
                 </div>
               </div>
 
-              {/* ── View / Edit Profile Button ── */}
               <button
-                type="button"
                 onClick={() => setIsProfileModalOpen(true)}
-                className="mt-4 w-full bg-slate-900 hover:bg-slate-700 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
+                className="w-full mt-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-1.5"
               >
                 <span>⚙️</span>
                 <span>View / Edit Profile</span>
@@ -619,11 +703,9 @@ export default function ArchitectDashboardPage() {
             </div>
           </div>
 
-          {/* Software Stack Card */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col gap-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Software Stack & Skills
-            </h3>
+          {/* Software Skills */}
+          <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm flex flex-col gap-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Software Stack</h3>
             <div className="flex flex-wrap gap-1.5">
               {(profile?.software && profile.software.length > 0
                 ? profile.software
@@ -645,20 +727,15 @@ export default function ArchitectDashboardPage() {
             <Link href="/architects" className="text-xs text-teal-700 hover:underline font-medium flex items-center gap-1.5">
               <span>🏛️</span> Public Architect Directory
             </Link>
-            {profile?.phone && (
-              <a
-                href={`https://wa.me/${profile.phone.replace(/[^0-9]/g, '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-emerald-700 hover:underline font-medium flex items-center gap-1.5"
-              >
-                <span>💬</span> Your WhatsApp Business Link
-              </a>
+            {profile?.id && (
+              <Link href={`/architects/${profile.id}`} target="_blank" className="text-xs text-teal-700 hover:underline font-medium flex items-center gap-1.5">
+                <span>🌐</span> View Your Live Public Page ↗
+              </Link>
             )}
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: Feed & Leads (8 cols) ─────────────────────── */}
+        {/* ── RIGHT COLUMN: Feed, Leads & Inbox (8 cols) ─────────────────────── */}
         <div className="lg:col-span-8 flex flex-col gap-5">
           {message && (
             <div
@@ -673,18 +750,19 @@ export default function ArchitectDashboardPage() {
             </div>
           )}
 
-          {/* ── Dashboard Tab Selector ── */}
+          {/* ── Dashboard Tab Selector (3 Tabs) ── */}
           <div className="flex items-center gap-2 bg-white border border-slate-200/90 p-1.5 rounded-2xl shadow-sm">
+            {/* Feed Tab */}
             <button
               onClick={() => setActiveTab('feed')}
-              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                 activeTab === 'feed'
                   ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
               <span>📐</span>
-              <span>Portfolio Feed</span>
+              <span className="hidden sm:inline">Portfolio</span> Feed
               <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                 activeTab === 'feed' ? 'bg-teal-800 text-teal-100' : 'bg-slate-100 text-slate-600'
               }`}>
@@ -692,19 +770,44 @@ export default function ArchitectDashboardPage() {
               </span>
             </button>
 
+            {/* Direct Inbox Messages Tab */}
+            <button
+              onClick={() => setActiveTab('messages')}
+              className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                activeTab === 'messages'
+                  ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              <span>✉️</span>
+              <span>Messages</span>
+              {unreadMessages > 0 ? (
+                <span className="bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse">
+                  {unreadMessages} New
+                </span>
+              ) : (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                  activeTab === 'messages' ? 'bg-teal-800 text-teal-100' : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {messages.length}
+                </span>
+              )}
+            </button>
+
+            {/* Proposals Tab */}
             <button
               onClick={() => setActiveTab('leads')}
-              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                 activeTab === 'leads'
                   ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              <span>📬</span>
-              <span>Client Proposals & Leads</span>
-              {proposals.filter((p) => p.status === 'PENDING').length > 0 ? (
-                <span className="bg-amber-400 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse">
-                  {proposals.filter((p) => p.status === 'PENDING').length} New
+              <span>📑</span>
+              <span className="hidden sm:inline">Proposals</span> & Leads
+              {pendingProposals > 0 ? (
+                <span className="bg-amber-400 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-full">
+                  {pendingProposals}
                 </span>
               ) : (
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
@@ -716,116 +819,206 @@ export default function ArchitectDashboardPage() {
             </button>
           </div>
 
-          {activeTab === 'leads' ? (
-            /* ── PROPOSALS & LEADS INBOX ── */
+          {/* ── TAB 1: INBOX DIRECT MESSAGES ── */}
+          {activeTab === 'messages' ? (
             <div className="flex flex-col gap-4">
-              <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">Direct Client Inquiries</h3>
-                  <p className="text-xs text-slate-500">
-                    Proposals and project requests submitted by agencies and developers via your public profile.
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Direct In-Portal Client Inquiries ({messages.length})
+                </h3>
+                <span className="text-[11px] text-slate-400">
+                  {unreadMessages} unread message{unreadMessages !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              {messages.length === 0 ? (
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-12 text-center flex flex-col items-center gap-3 shadow-sm">
+                  <span className="text-5xl">✉️</span>
+                  <h3 className="text-sm font-bold text-slate-800">Your Direct Inbox is Empty</h3>
+                  <p className="text-xs text-slate-500 max-w-sm leading-relaxed">
+                    When clients or developers view your public profile and click &ldquo;Message Architect&rdquo;, their inquiries will appear here safely without exposing your private phone.
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1 rounded-xl">
-                    Total: {proposals.length}
-                  </span>
-                </div>
+              ) : (
+                messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`bg-white border rounded-2xl p-5 shadow-sm flex flex-col gap-3 transition ${
+                      !msg.isRead ? 'border-teal-400 bg-teal-50/10' : 'border-slate-200/90'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-full bg-teal-700 text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
+                          {msg.senderName.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm font-bold text-slate-900">{msg.senderName}</h4>
+                            {!msg.isRead && (
+                              <span className="text-[10px] font-bold bg-teal-600 text-white px-2 py-0.5 rounded-full">
+                                UNREAD
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500">
+                            {msg.senderEmail} {msg.senderPhone ? `· ${msg.senderPhone}` : ''}
+                          </p>
+                        </div>
+                      </div>
+
+                      <span className="text-[11px] text-slate-400 font-mono">
+                        {new Date(msg.createdAt).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
+
+                    {msg.subject && (
+                      <div className="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-xl">
+                        Subject: {msg.subject}
+                      </div>
+                    )}
+
+                    <p className="text-xs text-slate-700 leading-relaxed bg-[#f8fafc] border border-slate-100 rounded-xl p-3 whitespace-pre-wrap">
+                      {msg.message}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                      <a
+                        href={`mailto:${msg.senderEmail}?subject=Re:%20${encodeURIComponent(msg.subject || 'NexMove Project Inquiry')}`}
+                        className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-sm"
+                      >
+                        <span>✉️</span>
+                        <span>Reply via Email</span>
+                      </a>
+
+                      <button
+                        onClick={() => markMessageAsRead(msg.id, !msg.isRead)}
+                        disabled={updatingMessageId === msg.id}
+                        className="text-xs text-slate-600 hover:text-slate-900 font-medium px-2.5 py-1 rounded-lg border border-slate-200 transition"
+                      >
+                        {msg.isRead ? 'Mark as Unread' : '✓ Mark as Read'}
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : activeTab === 'leads' ? (
+            /* ── TAB 2: PROPOSALS & LEADS INBOX ── */
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Client Proposal Inquiries ({proposals.length})
+                </h3>
               </div>
 
               {proposals.length === 0 ? (
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-12 text-center flex flex-col items-center gap-3 shadow-sm">
-                  <span className="text-4xl">📭</span>
-                  <h3 className="text-sm font-bold text-slate-800">No Proposals Received Yet</h3>
-                  <p className="text-xs text-slate-500 max-w-md">
-                    When property developers or agencies request design proposals or 3D architectural services through your public profile, they will appear here in real-time.
+                  <span className="text-5xl">📬</span>
+                  <h3 className="text-sm font-bold text-slate-800">No Proposals or Leads Yet</h3>
+                  <p className="text-xs text-slate-500 max-w-sm leading-relaxed">
+                    When agencies or clients request an architectural proposal or project estimate through your profile, they will appear here.
                   </p>
                 </div>
               ) : (
                 proposals.map((prop) => (
                   <div
                     key={prop.id}
-                    className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col gap-4 hover:border-teal-500/40 transition"
+                    className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col gap-3"
                   >
-                    <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-black text-slate-900">{prop.agencyName}</span>
-                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
-                            prop.status === 'PENDING'
-                              ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                              : prop.status === 'CONTACTED'
-                              ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                              : prop.status === 'ACCEPTED'
-                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                              : 'bg-slate-100 text-slate-600 border border-slate-200'
-                          }`}>
+                          <h4 className="text-sm font-bold text-slate-900">{prop.agencyName}</h4>
+                          <span
+                            className={`text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+                              prop.status === 'ACCEPTED'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : prop.status === 'DECLINED'
+                                ? 'bg-red-50 text-red-700 border border-red-200'
+                                : prop.status === 'CONTACTED'
+                                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                                : 'bg-amber-50 text-amber-700 border border-amber-200'
+                            }`}
+                          >
                             {prop.status}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-0.5">
-                          Received {new Date(prop.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {prop.contactEmail} {prop.contactPhone ? `· ${prop.contactPhone}` : ''}
                         </p>
                       </div>
 
-                      {/* Status Dropdown / Action */}
-                      <div className="flex items-center gap-1.5">
-                        <select
-                          value={prop.status}
-                          disabled={updatingProposalId === prop.id}
-                          onChange={(e) => updateProposalStatus(prop.id, e.target.value)}
-                          className="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-700 font-bold focus:outline-none focus:border-teal-600 transition cursor-pointer"
-                        >
-                          <option value="PENDING">Pending</option>
-                          <option value="CONTACTED">Contacted</option>
-                          <option value="ACCEPTED">Accepted</option>
-                          <option value="DECLINED">Declined</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Requirements Message */}
-                    <div className="bg-[#f8fafc] border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                        Client Requirements:
+                      <span className="text-[11px] text-slate-400 font-mono">
+                        {new Date(prop.createdAt).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
                       </span>
-                      {prop.message}
                     </div>
 
-                    {/* Contact details */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-                      <div className="flex flex-wrap items-center gap-3">
-                        {prop.contactEmail && (
-                          <a
-                            href={`mailto:${prop.contactEmail}?subject=Re:%20Architectural%20Design%20Proposal`}
-                            className="text-xs text-teal-700 hover:text-teal-600 font-semibold flex items-center gap-1 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-xl transition"
-                          >
-                            <span>✉️</span>
-                            <span>{prop.contactEmail}</span>
-                          </a>
-                        )}
-                        {prop.contactPhone && (
-                          <a
-                            href={`https://wa.me/${prop.contactPhone.replace(/[^0-9]/g, '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-emerald-700 hover:text-emerald-600 font-semibold flex items-center gap-1 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl transition"
-                          >
-                            <span>💬</span>
-                            <span>{prop.contactPhone}</span>
-                          </a>
-                        )}
-                      </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 py-2 border-y border-slate-100 text-xs">
+                      {prop.projectType && (
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Type</span>
+                          <span className="font-bold text-slate-700">{prop.projectType}</span>
+                        </div>
+                      )}
+                      {prop.plotArea && (
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Area</span>
+                          <span className="font-bold text-slate-700">{prop.plotArea}</span>
+                        </div>
+                      )}
+                      {prop.budgetPKR && (
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Budget</span>
+                          <span className="font-bold text-teal-700">PKR {prop.budgetPKR.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {prop.location && (
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Location</span>
+                          <span className="font-bold text-slate-700">{prop.location}</span>
+                        </div>
+                      )}
+                    </div>
 
-                      <div className="flex items-center gap-2">
-                        {prop.status === 'PENDING' && (
+                    <p className="text-xs text-slate-600 leading-relaxed bg-[#f8fafc] border border-slate-100 rounded-xl p-3">
+                      {prop.message}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-1">
+                      {prop.contactEmail && (
+                        <a
+                          href={`mailto:${prop.contactEmail}?subject=Regarding%20your%20design%20proposal%20on%20NexMove`}
+                          className="text-xs bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 font-bold px-3 py-1.5 rounded-xl transition"
+                        >
+                          ✉️ Contact Client
+                        </a>
+                      )}
+
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase mr-1">Status:</span>
+                        {['PENDING', 'CONTACTED', 'ACCEPTED', 'DECLINED'].map((st) => (
                           <button
-                            onClick={() => updateProposalStatus(prop.id, 'CONTACTED')}
-                            className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-3.5 py-1.5 rounded-xl transition shadow-sm"
+                            key={st}
+                            disabled={updatingProposalId === prop.id || prop.status === st}
+                            onClick={() => updateProposalStatus(prop.id, st)}
+                            className={`text-[10px] font-bold px-2 py-1 rounded-lg border transition ${
+                              prop.status === st
+                                ? 'bg-slate-900 text-white border-slate-900'
+                                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                            }`}
                           >
-                            Mark as Contacted ✓
+                            {st}
                           </button>
-                        )}
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -833,7 +1026,7 @@ export default function ArchitectDashboardPage() {
               )}
             </div>
           ) : (
-            /* ── PORTFOLIO FEED VIEW ── */
+            /* ── TAB 3: PORTFOLIO FEED VIEW ── */
             <>
               {/* Post Creator Box */}
               <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
@@ -952,21 +1145,27 @@ export default function ArchitectDashboardPage() {
                   </div>
 
                   {proj.description && (
-                    <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">
+                    <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
                       {proj.description}
                     </p>
                   )}
 
-                  {/* Software + Tags */}
-                  {((proj.software && proj.software.length > 0) || (proj.tags && proj.tags.length > 0)) && (
+                  {/* Software Tags */}
+                  {(proj.software?.length > 0 || proj.tags?.length) && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {proj.software?.map((sw) => (
-                        <span key={sw} className="text-[10px] bg-slate-100 border border-slate-200 text-slate-700 px-2 py-0.5 rounded font-medium">
+                        <span
+                          key={sw}
+                          className="text-[10px] bg-slate-100 border border-slate-200 text-slate-600 px-2 py-0.5 rounded font-medium"
+                        >
                           #{sw}
                         </span>
                       ))}
                       {proj.tags?.map((tag) => (
-                        <span key={tag} className="text-[10px] bg-teal-50 border border-teal-200 text-teal-700 px-2 py-0.5 rounded font-medium">
+                        <span
+                          key={tag}
+                          className="text-[10px] bg-teal-50 border border-teal-200 text-teal-700 px-2 py-0.5 rounded font-medium"
+                        >
                           #{tag}
                         </span>
                       ))}
@@ -974,9 +1173,9 @@ export default function ArchitectDashboardPage() {
                   )}
                 </div>
 
-                {/* Media: Video > Multi-Image Gallery > Single Image */}
+                {/* Media */}
                 {proj.videoUrl ? (
-                  <div className="bg-slate-950 aspect-video w-full overflow-hidden">
+                  <div className="bg-slate-950 aspect-video overflow-hidden">
                     <video src={proj.videoUrl} controls className="w-full h-full object-cover" />
                   </div>
                 ) : proj.imageUrls && proj.imageUrls.length > 0 ? (
@@ -988,89 +1187,67 @@ export default function ArchitectDashboardPage() {
                   </div>
                 ) : null}
 
-                {/* Social Actions Footer */}
+                {/* ── Social Actions Bar ── */}
                 <div className="px-4 py-3 bg-[#f8fafc] border-t border-slate-100 flex flex-col gap-2">
-                  {/* Action bar */}
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div className="flex items-center gap-3">
-                      {/* Like */}
+                    <div className="flex items-center gap-2">
                       <button
                         onClick={() => toggleLike(proj.id)}
-                        className={`text-xs font-bold flex items-center gap-1.5 transition px-2 py-1 rounded-lg ${
+                        className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
                           likedProjects[proj.id]
-                            ? 'text-teal-700 bg-teal-50'
-                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                            ? 'text-teal-700 bg-teal-50 border border-teal-200'
+                            : 'text-slate-600 hover:bg-slate-100'
                         }`}
                       >
-                        <span className="text-sm">{likedProjects[proj.id] ? '👍' : '👍'}</span>
+                        <span className="text-sm">👍</span>
                         <span>{likedProjects[proj.id] ? 'Liked' : 'Like'}</span>
-                        <span className="text-[10px] bg-white border border-slate-200 px-1.5 py-0.5 rounded-full font-mono ml-0.5">
+                        <span className="text-[10px] bg-white border border-slate-200 px-1.5 py-0.2 rounded-full font-mono ml-0.5">
                           {likesMap[proj.id] || 0}
                         </span>
                       </button>
 
-                      {/* Comment toggle */}
                       <button
-                        onClick={() =>
-                          setCommentOpen((prev) => ({ ...prev, [proj.id]: !prev[proj.id] }))
-                        }
-                        className={`text-xs font-bold flex items-center gap-1.5 px-2 py-1 rounded-lg transition ${
+                        onClick={() => setCommentOpen((prev) => ({ ...prev, [proj.id]: !prev[proj.id] }))}
+                        className={`text-xs font-bold flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition ${
                           commentOpen[proj.id]
                             ? 'text-teal-700 bg-teal-50'
-                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                            : 'text-slate-600 hover:bg-slate-100'
                         }`}
                       >
                         <span>💬</span>
                         <span>Comment</span>
                       </button>
 
-                      {/* Star Rating */}
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0.5 ml-1">
                         <StarRater
                           value={ratingMap[proj.id] || 0}
-                          onChange={(v) => setRatingMap((prev) => ({ ...prev, [proj.id]: v }))}
+                          onChange={(val) => setRatingMap((prev) => ({ ...prev, [proj.id]: val }))}
                         />
-                        {ratingMap[proj.id] > 0 && (
-                          <span className="text-[10px] text-amber-600 font-bold">{ratingMap[proj.id]}/5</span>
-                        )}
                       </div>
                     </div>
-
-                    {/* WhatsApp Direct */}
-                    {profile?.phone && (
-                      <a
-                        href={`https://wa.me/${profile.phone.replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(profile.name || '')},%20I%20saw%20your%20project%20%22${encodeURIComponent(proj.title)}%22%20on%20NexMove.`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 shadow-sm"
-                      >
-                        <span>💬</span>
-                        <span>WhatsApp</span>
-                      </a>
-                    )}
                   </div>
 
                   {/* Inline Comment Box */}
                   {commentOpen[proj.id] && (
                     <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
-                      <div className="w-7 h-7 rounded-full bg-teal-600 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 overflow-hidden">
-                        {profile?.avatarUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={profile.avatarUrl} alt="me" className="w-full h-full object-cover" />
-                        ) : (
-                          profile?.avatarInitials?.charAt(0) || 'A'
-                        )}
+                      <div className="w-7 h-7 rounded-full bg-teal-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                        {profile?.name?.substring(0, 2).toUpperCase() || 'AR'}
                       </div>
                       <input
                         type="text"
-                        placeholder="Write a comment..."
                         value={commentText[proj.id] || ''}
-                        onChange={(e) =>
-                          setCommentText((prev) => ({ ...prev, [proj.id]: e.target.value }))
-                        }
-                        className="flex-1 bg-white border border-slate-200 rounded-full px-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-teal-400 transition"
+                        onChange={(e) => setCommentText((prev) => ({ ...prev, [proj.id]: e.target.value }))}
+                        placeholder="Add a comment on this design..."
+                        className="flex-1 bg-white border border-slate-200 rounded-full px-3.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-teal-500 transition"
                       />
-                      <button className="text-xs bg-teal-600 text-white font-bold px-3 py-1.5 rounded-full hover:bg-teal-500 transition">
+                      <button
+                        onClick={() => {
+                          if (!commentText[proj.id]?.trim()) return
+                          setMessage({ text: '✓ Comment posted!', type: 'success' })
+                          setCommentText((prev) => ({ ...prev, [proj.id]: '' }))
+                        }}
+                        className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-4 py-1.5 rounded-full transition"
+                      >
                         Post
                       </button>
                     </div>
@@ -1083,118 +1260,84 @@ export default function ArchitectDashboardPage() {
           )}
         </div>
       </div>
+      </div>
 
-      {/* ── Modals ─────────────────────────────────────────────────────── */}
+      {/* ── Modals ── */}
       {profile && (
         <ProfileEditModal
           profile={profile}
           isOpen={isProfileModalOpen}
           onClose={() => setIsProfileModalOpen(false)}
           onSaved={loadDashboardData}
-          openInEditMode={true}
         />
       )}
 
-      {/* ── High Z-Index Cover Banner Modal ─────────────────────────────── */}
+      {/* ── Cover Photo Upload & URL Modal ── */}
       {isCoverModalOpen && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
           onClick={() => setIsCoverModalOpen(false)}
         >
-          <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 shadow-2xl flex flex-col gap-4 text-slate-800"
+            className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 flex flex-col gap-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">📷</span>
-                <h3 className="text-sm font-bold text-slate-900">Update Cover Banner</h3>
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Update Cover Photo</h3>
+                <p className="text-xs text-slate-500">Upload a high-res architectural banner for your portal.</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsCoverModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 text-lg leading-none transition"
-              >
-                ✕
-              </button>
+              <button onClick={() => setIsCoverModalOpen(false)} className="text-slate-400 hover:text-slate-600">✕</button>
             </div>
 
-            {/* Live Preview */}
-            <div className="relative h-28 bg-gradient-to-r from-teal-700 to-slate-800 rounded-xl overflow-hidden border border-slate-200">
-              {coverUrlInput ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={coverUrlInput}
-                  alt="Cover preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-white/30 text-xs font-bold uppercase tracking-widest">
-                  Preview
-                </div>
-              )}
+            <button
+              onClick={() => coverInputRef.current?.click()}
+              disabled={uploadingCover}
+              className="w-full border-2 border-dashed border-teal-300 hover:border-teal-500 bg-teal-50/50 rounded-2xl p-6 flex flex-col items-center gap-2 transition cursor-pointer"
+            >
+              <span className="text-3xl">📷</span>
+              <span className="text-xs font-bold text-teal-800">
+                {uploadingCover ? 'Uploading to CDN...' : 'Choose File from Computer'}
+              </span>
+              <span className="text-[10px] text-slate-400">JPG, PNG or WEBP (Recommended 1200×400)</span>
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-slate-200" />
+              <span className="text-[10px] text-slate-400 font-bold uppercase">or image URL</span>
+              <div className="flex-1 h-px bg-slate-200" />
             </div>
 
-            {/* File Upload Option */}
-            <div className="flex flex-col gap-1.5 bg-slate-50 border border-slate-200 rounded-xl p-3">
-              <span className="text-xs font-bold text-slate-700">Option 1: Upload from Computer</span>
-              <button
-                type="button"
-                onClick={() => coverInputRef.current?.click()}
-                disabled={uploadingCover}
-                className="w-full bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
-              >
-                {uploadingCover ? (
-                  <span>Uploading...</span>
-                ) : (
-                  <>
-                    <span>📁</span>
-                    <span>Choose Image File (JPG, PNG, WEBP)</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* URL Input Form */}
             <form onSubmit={handleSaveCoverUrl} className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <span className="text-xs font-bold text-slate-700">Option 2: Paste Direct Image URL</span>
-                <input
-                  type="text"
-                  value={coverUrlInput}
-                  onChange={(e) => setCoverUrlInput(e.target.value)}
-                  placeholder="https://images.unsplash.com/photo-..."
-                  className="bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-600 transition"
-                />
-              </div>
-
-              <div className="flex gap-2 pt-2 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setIsCoverModalOpen(false)}
-                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2.5 rounded-xl transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={uploadingCover}
-                  className="flex-1 bg-teal-700 hover:bg-teal-600 text-white font-bold text-xs py-2.5 rounded-xl transition shadow disabled:opacity-50"
-                >
-                  Save URL
-                </button>
-              </div>
+              <input
+                type="url"
+                value={coverUrlInput}
+                onChange={(e) => setCoverUrlInput(e.target.value)}
+                placeholder="https://images.unsplash.com/photo-..."
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-teal-500 transition"
+              />
+              <button
+                type="submit"
+                disabled={uploadingCover}
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 rounded-xl transition"
+              >
+                {uploadingCover ? 'Saving...' : 'Save Cover URL'}
+              </button>
             </form>
           </div>
         </div>
       )}
 
+      {/* ── LinkedIn-Style Post Creator Modal ── */}
       <LinkedInStylePostModal
-        architectId={profile?.id}
         isOpen={showPostModal}
         onClose={() => setShowPostModal(false)}
-        onSuccess={loadDashboardData}
+        onCreated={loadDashboardData}
+        architectName={profile?.name || session?.user?.name || 'Architect'}
+        architectSpecialization={profile?.specialization || 'Architectural Designer'}
+        architectAvatar={profile?.avatarUrl}
+        architectInitials={profile?.avatarInitials || 'AR'}
       />
     </main>
   )

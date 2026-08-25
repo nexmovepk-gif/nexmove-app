@@ -477,6 +477,7 @@ model ArchitectProfile {
 
   reviews              ArchitectReview[]
   projects             ArchitectProject[]
+  proposals            ArchitectProposal[]
 
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
@@ -517,6 +518,28 @@ model ArchitectProject {
 
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
+}
+
+/// Direct project proposal or inquiry sent to an architect by an agency or property developer.
+model ArchitectProposal {
+  id                 String           @id @default(uuid())
+  architectId        String
+  architect          ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  architectName      String?
+  agencyName         String
+  agencyId           String?
+  contactEmail       String?
+  contactPhone       String?
+  projectType        String?
+  plotArea           String?
+  budgetPKR          Float?
+  location           String?
+  message            String
+  status             String           @default("PENDING") // PENDING, CONTACTED, ACCEPTED, DECLINED
+  propertyListingId  String?
+
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 }
 
 // ─── Investor Portal Models ───────────────────────────────────────────────────

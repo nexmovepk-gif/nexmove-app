@@ -68,17 +68,9 @@ export async function POST(req: Request) {
       targetArchitectId = user?.architectProfile?.id || null;
     }
 
-    // Fallback: If no session or direct link, check if profile exists
-    if (!targetArchitectId) {
-      const firstProfile = await prisma.architectProfile.findFirst({
-        orderBy: { createdAt: "desc" },
-      });
-      targetArchitectId = firstProfile?.id || null;
-    }
-
     if (!targetArchitectId) {
       return NextResponse.json(
-        { error: "No architect profile found to associate this project with." },
+        { error: "No architect profile found for your account. Please set up your profile first." },
         { status: 400 }
       );
     }

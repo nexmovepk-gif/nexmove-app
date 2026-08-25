@@ -131,36 +131,48 @@ export default function ProfileEditModal({
 
   if (!isOpen) return null
 
-  const handleAvatarFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    // Instant preview via object URL
     const tempUrl = URL.createObjectURL(file)
     setAvatarUrl(tempUrl)
 
-    const reader = new FileReader()
-    reader.onload = () => {
-      if (reader.result) {
-        setAvatarUrl(reader.result as string)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/architects/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      if (res.ok) {
+        const data = await res.json()
+        if (data.url) setAvatarUrl(data.url)
       }
+    } catch (err) {
+      console.error('Avatar upload error:', err)
     }
-    reader.readAsDataURL(file)
   }
 
-  const handleCoverFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    // Instant preview via object URL
     const tempUrl = URL.createObjectURL(file)
     setCoverImage(tempUrl)
 
-    const reader = new FileReader()
-    reader.onload = () => {
-      if (reader.result) {
-        setCoverImage(reader.result as string)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/architects/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      if (res.ok) {
+        const data = await res.json()
+        if (data.url) setCoverImage(data.url)
       }
+    } catch (err) {
+      console.error('Cover upload error:', err)
     }
-    reader.readAsDataURL(file)
   }
 
   const handleSave = async (e: React.FormEvent) => {

@@ -1,9 +1,10 @@
 // src/app/api/architects/upload/route.ts
-// Handles media upload (images/videos) for Architect posts & profiles
+// Handles media upload (images/videos) for Architect posts & profiles to Supabase Storage CDN
 
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { uploadPropertyDocument } from '@/lib/supabaseStorage'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,11 +30,21 @@ export async function POST(req: Request) {
 
       mediaType = file.type.startsWith('video/') ? 'video' : 'image'
 
-      // Convert file buffer to DataURL / Base64 for instant client rendering
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
-      const base64 = buffer.toString('base64')
-      mediaUrl = `data:${file.type};base64,${base64}`
+
+      // Upload to Supabase Storage CDN
+      const uploadResult = await uploadPropertyDocument(
+        buffer,
+        `arch_${Date.now()}_${file.name}`,
+        file.type || 'image/jpeg'
+      )
+
+      if (uploadResult && uploadResult.fileUrl) {
+        mediaUrl = uploadResult.fileUrl
+      } else {
+        throw new Error(uploadResult?.error || 'Failed to upload to cloud storage')
+      }
     } else {
       const body = await req.json()
       const { dataUrl, fileType, url } = body
@@ -41,9 +52,21 @@ export async function POST(req: Request) {
       if (url) {
         mediaUrl = url
         mediaType = url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image'
-      } else if (dataUrl) {
-        mediaUrl = dataUrl
-        mediaType = fileType?.startsWith('video/') ? 'video' : 'image'
+      } else if (dataUrl && dataUrl.startsWith('data:')) {
+        // Convert Base64 dataUrl to buffer and upload to Supabase Storage
+        const commaIdx = dataUrl.indexOf(',')
+        const mimeMatch = dataUrl.match(/^data:([^;]+);base64,/)
+        const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg'
+        const base64Data = commaIdx > -1 ? dataUrl.slice(commaIdx + 1) : dataUrl
+        const buffer = Buffer.from(base64Data, 'base64')
+        mediaType = mime.startsWith('video/') ? 'video' : 'image'
+
+        const uploadResult = await uploadPropertyDocument(
+          buffer,
+          `arch_${Date.now()}.${mime.split('/')[1] || 'jpg'}`,
+          mime
+        )
+        mediaUrl = uploadResult.fileUrl
       } else {
         return NextResponse.json({ error: 'Missing file payload' }, { status: 400 })
       }

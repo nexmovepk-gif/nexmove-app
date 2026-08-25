@@ -117,6 +117,11 @@ export type ArchitectReview = Prisma.ArchitectReviewModel
  */
 export type ArchitectProject = Prisma.ArchitectProjectModel
 /**
+ * Model ArchitectProposal
+ * Direct project proposal or inquiry sent to an architect by an agency or property developer.
+ */
+export type ArchitectProposal = Prisma.ArchitectProposalModel
+/**
  * Model InvestmentDeal
  * Off-market / distress property deals listed by verified agencies for investors
  */

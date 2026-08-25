@@ -131,12 +131,31 @@ function ImageGallery({ urls, title }: { urls: string[]; title: string }) {
   )
 }
 
+interface Proposal {
+  id: string
+  architectId: string
+  architectName?: string | null
+  agencyName: string
+  agencyId?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  projectType?: string | null
+  plotArea?: string | null
+  budgetPKR?: number | null
+  location?: string | null
+  message: string
+  status: string
+  createdAt: string
+}
+
 export default function ArchitectDashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
   const [profile, setProfile] = useState<ArchitectProfileData | null>(null)
   const [projects, setProjects] = useState<Project[]>([])
+  const [proposals, setProposals] = useState<Proposal[]>([])
+  const [activeTab, setActiveTab] = useState<'feed' | 'leads'>('feed')
   const [loading, setLoading] = useState(true)
 
   // ── Modals & Dialogs State ────────────────────────────────────────────────
@@ -160,11 +179,17 @@ export default function ArchitectDashboardPage() {
 
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [updatingProposalId, setUpdatingProposalId] = useState<string | null>(null)
 
   const loadDashboardData = useCallback(async () => {
     setLoading(true)
     try {
-      const profRes = await fetch('/api/architects/profile', { cache: 'no-store' })
+      const [profRes, projRes, propRes] = await Promise.all([
+        fetch('/api/architects/profile', { cache: 'no-store' }),
+        fetch('/api/architects/projects', { cache: 'no-store' }),
+        fetch('/api/architects/proposal', { cache: 'no-store' }),
+      ])
+
       if (profRes.ok) {
         const profData = await profRes.json()
         if (profData.profile) {
@@ -173,7 +198,6 @@ export default function ArchitectDashboardPage() {
         }
       }
 
-      const projRes = await fetch('/api/architects/projects', { cache: 'no-store' })
       if (projRes.ok) {
         const projData = await projRes.json()
         const fetchedProjects: Project[] = projData.projects || []
@@ -184,6 +208,11 @@ export default function ArchitectDashboardPage() {
           initialLikes[p.id] = p.likesCount || 0
         })
         setLikesMap(initialLikes)
+      }
+
+      if (propRes.ok) {
+        const propData = await propRes.json()
+        setProposals(propData.proposals || [])
       }
     } catch (err) {
       console.error('Failed to load dashboard data:', err)
@@ -200,45 +229,36 @@ export default function ArchitectDashboardPage() {
     }
   }, [status, router, loadDashboardData])
 
-  // ── Fast Direct Profile Picture Upload ────────────────────────────────────
+  // ── Fast Direct Cloud Profile Picture Upload ──────────────────────────────
   const handleProfilePicUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !profile) return
-    // Instant local preview
     const tempUrl = URL.createObjectURL(file)
     setProfile((prev) => (prev ? { ...prev, avatarUrl: tempUrl } : null))
     setUploadingAvatar(true)
 
     try {
-      const reader = new FileReader()
-      reader.onload = async () => {
-        const avatarUrl = reader.result as string
-        const res = await fetch('/api/architects/profile', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: profile.id,
-            name: profile.name,
-            phone: profile.phone,
-            companyName: profile.companyName,
-            specialization: profile.specialization,
-            experienceYears: profile.experienceYears,
-            pcatpNo: profile.pcatpNo,
-            bio: profile.bio,
-            isOverseas: profile.isOverseas,
-            country: profile.country,
-            city: profile.city,
-            software: profile.software,
-            avatarUrl,
-            coverImage: profile.coverImage,
-            coverBannerUrl: profile.coverImage,
-          }),
-        })
-        if (!res.ok) throw new Error('Failed to update avatar')
-        setMessage({ text: '✓ Profile picture updated successfully!', type: 'success' })
-        loadDashboardData()
-      }
-      reader.readAsDataURL(file)
+      const formData = new FormData()
+      formData.append('file', file)
+      const uploadRes = await fetch('/api/architects/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      if (!uploadRes.ok) throw new Error('Failed to upload image')
+      const uploadData = await uploadRes.json()
+      const avatarUrl = uploadData.url
+
+      const res = await fetch('/api/architects/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: profile.id,
+          avatarUrl,
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to update avatar')
+      setMessage({ text: '✓ Profile picture updated successfully!', type: 'success' })
+      loadDashboardData()
     } catch (err) {
       console.error(err)
       setMessage({ text: 'Failed to upload profile picture', type: 'error' })
@@ -248,53 +268,66 @@ export default function ArchitectDashboardPage() {
     }
   }
 
-  // ── Fast Direct Cover Photo Upload ────────────────────────────────────────
+  // ── Fast Direct Cloud Cover Photo Upload ──────────────────────────────────
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || !profile) return
-    // Instant local preview
     const tempUrl = URL.createObjectURL(file)
     setProfile((prev) => (prev ? { ...prev, coverImage: tempUrl } : null))
     setCoverUrlInput(tempUrl)
     setUploadingCover(true)
 
     try {
-      const reader = new FileReader()
-      reader.onload = async () => {
-        const coverImage = reader.result as string
-        const res = await fetch('/api/architects/profile', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: profile.id,
-            name: profile.name,
-            phone: profile.phone,
-            companyName: profile.companyName,
-            specialization: profile.specialization,
-            experienceYears: profile.experienceYears,
-            pcatpNo: profile.pcatpNo,
-            bio: profile.bio,
-            isOverseas: profile.isOverseas,
-            country: profile.country,
-            city: profile.city,
-            software: profile.software,
-            avatarUrl: profile.avatarUrl,
-            coverImage,
-            coverBannerUrl: coverImage,
-          }),
-        })
-        if (!res.ok) throw new Error('Failed to update cover photo')
-        setMessage({ text: '✓ Cover photo updated successfully!', type: 'success' })
-        setIsCoverModalOpen(false)
-        loadDashboardData()
-      }
-      reader.readAsDataURL(file)
+      const formData = new FormData()
+      formData.append('file', file)
+      const uploadRes = await fetch('/api/architects/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      if (!uploadRes.ok) throw new Error('Failed to upload cover photo')
+      const uploadData = await uploadRes.json()
+      const coverImage = uploadData.url
+
+      const res = await fetch('/api/architects/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: profile.id,
+          coverImage,
+          coverBannerUrl: coverImage,
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to update cover photo')
+      setMessage({ text: '✓ Cover photo updated successfully!', type: 'success' })
+      setIsCoverModalOpen(false)
+      loadDashboardData()
     } catch (err) {
       console.error(err)
       setMessage({ text: 'Failed to upload cover photo', type: 'error' })
     } finally {
       setUploadingCover(false)
       if (coverInputRef.current) coverInputRef.current.value = ''
+    }
+  }
+
+  const updateProposalStatus = async (id: string, newStatus: string) => {
+    setUpdatingProposalId(id)
+    try {
+      const res = await fetch(`/api/architects/proposal?id=${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      if (!res.ok) throw new Error('Failed to update status')
+      setProposals((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
+      )
+      setMessage({ text: `✓ Proposal marked as ${newStatus}`, type: 'success' })
+    } catch (err) {
+      console.error(err)
+      setMessage({ text: 'Failed to update proposal status', type: 'error' })
+    } finally {
+      setUpdatingProposalId(null)
     }
   }
 
@@ -625,7 +658,7 @@ export default function ArchitectDashboardPage() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: Feed (8 cols) ─────────────────────────────── */}
+        {/* ── RIGHT COLUMN: Feed & Leads (8 cols) ─────────────────────── */}
         <div className="lg:col-span-8 flex flex-col gap-5">
           {message && (
             <div
@@ -640,50 +673,212 @@ export default function ArchitectDashboardPage() {
             </div>
           )}
 
-          {/* Post Creator Box */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-teal-700 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 overflow-hidden">
-                {profile?.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={profile.avatarUrl}
-                    alt={profile.name}
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                ) : (
-                  profile?.avatarInitials || 'AR'
-                )}
-              </div>
-              <button
-                onClick={() => setShowPostModal(true)}
-                className="flex-1 bg-[#f3f4f6] hover:bg-slate-200/80 border border-slate-200 rounded-full px-4 py-2.5 text-xs text-slate-500 text-left font-medium transition"
-              >
-                Share 3D renders, BIM models or design projects...
-              </button>
-            </div>
+          {/* ── Dashboard Tab Selector ── */}
+          <div className="flex items-center gap-2 bg-white border border-slate-200/90 p-1.5 rounded-2xl shadow-sm">
+            <button
+              onClick={() => setActiveTab('feed')}
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                activeTab === 'feed'
+                  ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              <span>📐</span>
+              <span>Portfolio Feed</span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                activeTab === 'feed' ? 'bg-teal-800 text-teal-100' : 'bg-slate-100 text-slate-600'
+              }`}>
+                {projects.length}
+              </span>
+            </button>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
-              <button
-                onClick={() => setShowPostModal(true)}
-                className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-teal-700 font-bold py-1 px-3 rounded-lg hover:bg-slate-50 transition"
-              >
-                <span>🖼️</span><span>Photos</span>
-              </button>
-              <button
-                onClick={() => setShowPostModal(true)}
-                className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-teal-700 font-bold py-1 px-3 rounded-lg hover:bg-slate-50 transition"
-              >
-                <span>🎥</span><span>Video</span>
-              </button>
-              <button
-                onClick={() => setShowPostModal(true)}
-                className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-teal-700 font-bold py-1 px-3 rounded-lg hover:bg-slate-50 transition"
-              >
-                <span>🏷️</span><span>Tags</span>
-              </button>
-            </div>
+            <button
+              onClick={() => setActiveTab('leads')}
+              className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 ${
+                activeTab === 'leads'
+                  ? 'bg-teal-700 text-white shadow-md shadow-teal-700/20'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+              }`}
+            >
+              <span>📬</span>
+              <span>Client Proposals & Leads</span>
+              {proposals.filter((p) => p.status === 'PENDING').length > 0 ? (
+                <span className="bg-amber-400 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse">
+                  {proposals.filter((p) => p.status === 'PENDING').length} New
+                </span>
+              ) : (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                  activeTab === 'leads' ? 'bg-teal-800 text-teal-100' : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {proposals.length}
+                </span>
+              )}
+            </button>
           </div>
+
+          {activeTab === 'leads' ? (
+            /* ── PROPOSALS & LEADS INBOX ── */
+            <div className="flex flex-col gap-4">
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Direct Client Inquiries</h3>
+                  <p className="text-xs text-slate-500">
+                    Proposals and project requests submitted by agencies and developers via your public profile.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-3 py-1 rounded-xl">
+                    Total: {proposals.length}
+                  </span>
+                </div>
+              </div>
+
+              {proposals.length === 0 ? (
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-12 text-center flex flex-col items-center gap-3 shadow-sm">
+                  <span className="text-4xl">📭</span>
+                  <h3 className="text-sm font-bold text-slate-800">No Proposals Received Yet</h3>
+                  <p className="text-xs text-slate-500 max-w-md">
+                    When property developers or agencies request design proposals or 3D architectural services through your public profile, they will appear here in real-time.
+                  </p>
+                </div>
+              ) : (
+                proposals.map((prop) => (
+                  <div
+                    key={prop.id}
+                    className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col gap-4 hover:border-teal-500/40 transition"
+                  >
+                    <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-black text-slate-900">{prop.agencyName}</span>
+                          <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+                            prop.status === 'PENDING'
+                              ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                              : prop.status === 'CONTACTED'
+                              ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                              : prop.status === 'ACCEPTED'
+                              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                              : 'bg-slate-100 text-slate-600 border border-slate-200'
+                          }`}>
+                            {prop.status}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          Received {new Date(prop.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                        </p>
+                      </div>
+
+                      {/* Status Dropdown / Action */}
+                      <div className="flex items-center gap-1.5">
+                        <select
+                          value={prop.status}
+                          disabled={updatingProposalId === prop.id}
+                          onChange={(e) => updateProposalStatus(prop.id, e.target.value)}
+                          className="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-700 font-bold focus:outline-none focus:border-teal-600 transition cursor-pointer"
+                        >
+                          <option value="PENDING">Pending</option>
+                          <option value="CONTACTED">Contacted</option>
+                          <option value="ACCEPTED">Accepted</option>
+                          <option value="DECLINED">Declined</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Requirements Message */}
+                    <div className="bg-[#f8fafc] border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                        Client Requirements:
+                      </span>
+                      {prop.message}
+                    </div>
+
+                    {/* Contact details */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div className="flex flex-wrap items-center gap-3">
+                        {prop.contactEmail && (
+                          <a
+                            href={`mailto:${prop.contactEmail}?subject=Re:%20Architectural%20Design%20Proposal`}
+                            className="text-xs text-teal-700 hover:text-teal-600 font-semibold flex items-center gap-1 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-xl transition"
+                          >
+                            <span>✉️</span>
+                            <span>{prop.contactEmail}</span>
+                          </a>
+                        )}
+                        {prop.contactPhone && (
+                          <a
+                            href={`https://wa.me/${prop.contactPhone.replace(/[^0-9]/g, '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-emerald-700 hover:text-emerald-600 font-semibold flex items-center gap-1 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl transition"
+                          >
+                            <span>💬</span>
+                            <span>{prop.contactPhone}</span>
+                          </a>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {prop.status === 'PENDING' && (
+                          <button
+                            onClick={() => updateProposalStatus(prop.id, 'CONTACTED')}
+                            className="text-xs bg-teal-700 hover:bg-teal-600 text-white font-bold px-3.5 py-1.5 rounded-xl transition shadow-sm"
+                          >
+                            Mark as Contacted ✓
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : (
+            /* ── PORTFOLIO FEED VIEW ── */
+            <>
+              {/* Post Creator Box */}
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-teal-700 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {profile?.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={profile.avatarUrl}
+                        alt={profile.name}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      profile?.avatarInitials || 'AR'
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setShowPostModal(true)}
+                    className="flex-1 bg-[#f3f4f6] hover:bg-slate-200/80 border border-slate-200 rounded-full px-4 py-2.5 text-xs text-slate-500 text-left font-medium transition"
+                  >
+                    Share 3D renders, BIM models or design projects...
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                  <button
+                    onClick={() => setShowPostModal(true)}
+                    className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-teal-700 font-bold py-1 px-3 rounded-lg hover:bg-slate-50 transition"
+                  >
+                    <span>🖼️</span><span>Photos</span>
+                  </button>
+                  <button
+                    onClick={() => setShowPostModal(true)}
+                    className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-teal-700 font-bold py-1 px-3 rounded-lg hover:bg-slate-50 transition"
+                  >
+                    <span>🎥</span><span>Video</span>
+                  </button>
+                  <button
+                    onClick={() => setShowPostModal(true)}
+                    className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-teal-700 font-bold py-1 px-3 rounded-lg hover:bg-slate-50 transition"
+                  >
+                    <span>🏷️</span><span>Tags</span>
+                  </button>
+                </div>
+              </div>
 
           {/* Feed */}
           {projects.length === 0 ? (
@@ -883,6 +1078,8 @@ export default function ArchitectDashboardPage() {
                 </div>
               </div>
             ))
+          )}
+            </>
           )}
         </div>
       </div>

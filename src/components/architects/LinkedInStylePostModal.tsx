@@ -71,34 +71,50 @@ export default function LinkedInStylePostModal({
     )
   }
 
-  // Native File Picker Handler with loading state
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Native File Picker Handler with cloud upload state
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
 
     setProcessingFiles(true)
-    let processed = 0
+    setError(null)
 
-    files.forEach((file) => {
-      const isVideo = file.type.startsWith('video/')
-      const reader = new FileReader()
-      reader.onload = () => {
-        setMediaFiles((prev) => {
-          const newFile: MediaFile = {
-            url: reader.result as string,
-            type: isVideo ? 'video' : 'image',
-            name: file.name,
-            isPrimary: prev.length === 0 && !isVideo, // First image is primary
-          }
-          return [...prev, newFile]
+    try {
+      for (const file of files) {
+        const isVideo = file.type.startsWith('video/')
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const res = await fetch('/api/architects/upload', {
+          method: 'POST',
+          body: formData,
         })
-        processed++
-        if (processed === files.length) setProcessingFiles(false)
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}))
+          throw new Error(errData.error || `Failed to upload ${file.name}`)
+        }
+
+        const data = await res.json()
+        if (data.url) {
+          setMediaFiles((prev) => {
+            const newFile: MediaFile = {
+              url: data.url,
+              type: isVideo ? 'video' : 'image',
+              name: file.name,
+              isPrimary: prev.length === 0 && !isVideo,
+            }
+            return [...prev, newFile]
+          })
+        }
       }
-      reader.readAsDataURL(file)
-    })
-    // Reset the input so same file can be re-selected
-    if (fileInputRef.current) fileInputRef.current.value = ''
+    } catch (err: unknown) {
+      console.error('File upload error:', err)
+      setError(err instanceof Error ? err.message : 'Error uploading file')
+    } finally {
+      setProcessingFiles(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
   }
 
   const removeMedia = (index: number) => {

@@ -100,7 +100,6 @@ export async function PUT(req: Request) {
 
     const body = await req.json();
     const {
-      id,
       name,
       phone,
       bio,

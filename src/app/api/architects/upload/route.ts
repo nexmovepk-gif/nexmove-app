@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       }
     } else {
       const body = await req.json()
-      const { dataUrl, fileType: _fileType, url } = body
+      const { dataUrl, url } = body
 
       if (url) {
         mediaUrl = url

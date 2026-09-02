@@ -6,7 +6,7 @@ interface SendWhatsAppTemplateParams {
   to: string;
   templateName: string;
   languageCode?: string;
-  components?: any[];
+  components?: Record<string, unknown>[];
 }
 
 interface SendWhatsAppTextParams {
@@ -72,9 +72,10 @@ export async function sendWhatsAppTemplate({
     }
 
     return { success: true, data };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMessage = error instanceof Error ? error.message : 'Network error';
     console.error('❌ WhatsApp Network Error:', error);
-    return { success: false, error: error.message || 'Network error' };
+    return { success: false, error: errMessage };
   }
 }
 
@@ -118,9 +119,10 @@ export async function sendWhatsAppTextMessage({ to, text }: SendWhatsAppTextPara
     }
 
     return { success: true, data };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMessage = error instanceof Error ? error.message : 'Network error';
     console.error('❌ WhatsApp Network Error:', error);
-    return { success: false, error: error.message || 'Network error' };
+    return { success: false, error: errMessage };
   }
 }
 

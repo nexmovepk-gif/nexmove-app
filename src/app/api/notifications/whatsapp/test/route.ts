@@ -29,9 +29,10 @@ export async function POST(req: NextRequest) {
       message: 'WhatsApp notification sent successfully!',
       result: result.data,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMessage = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errMessage },
       { status: 500 }
     );
   }

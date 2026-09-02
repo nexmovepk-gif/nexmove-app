@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { supabase } from '@/lib/supabaseClient';
 import { DealStatus } from '@/generated/client/enums';
-import { sendTestHelloWorldWhatsApp, sendWhatsAppTextMessage } from '@/lib/whatsapp';
+import { sendTestHelloWorldWhatsApp } from '@/lib/whatsapp';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;

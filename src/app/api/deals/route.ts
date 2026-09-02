@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { supabase } from '@/lib/supabaseClient';
 import { DealStatus } from '@/generated/client/enums';
+import { sendTestHelloWorldWhatsApp, sendWhatsAppTextMessage } from '@/lib/whatsapp';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -331,6 +332,17 @@ export async function POST(req: NextRequest) {
       }).catch((emailErr) => console.warn('[Deals API] Initiation email dispatch note:', emailErr));
     } catch (notifyErr) {
       console.warn('[Deals API] Initiation notification error:', notifyErr);
+    }
+
+    // 4. Dispatch automated WhatsApp notification to recipient
+    try {
+      const recipientPhone = buyerPhone || '03225673641';
+      console.log(`📱 Sending WhatsApp Deal Initiation alert to ${recipientPhone}...`);
+      await sendTestHelloWorldWhatsApp(recipientPhone).catch((waErr) =>
+        console.warn('[Deals API] WhatsApp initiation error:', waErr)
+      );
+    } catch (waNotifyErr) {
+      console.warn('[Deals API] WhatsApp notification error:', waNotifyErr);
     }
 
     return NextResponse.json({

@@ -289,6 +289,50 @@ export async function POST(req: NextRequest) {
       console.warn('[Deals API] Supabase client insert note:', sbInsertErr);
     }
 
+    // 3. Dispatch automated email notification to seller / listing agency upon deal initiation
+    try {
+      const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'https://nexmove.pk';
+
+      let listingTitle = 'Your Listed Property';
+      let sellerEmail = 'nexmove.pk@gmail.com';
+
+      const listingInfo = await prisma.listing.findUnique({
+        where: { id: targetListingId },
+        select: {
+          title: true,
+          agent: { select: { email: true, name: true } },
+          agency: { select: { name: true } },
+        },
+      }).catch(() => null);
+
+      if (listingInfo) {
+        listingTitle = listingInfo.title || listingTitle;
+        if (listingInfo.agent?.email) {
+          sellerEmail = listingInfo.agent.email;
+        }
+      }
+
+      const dealIdStr = deal?.id || `DEAL-${Date.now().toString().slice(-6)}`;
+      const tokenFormatted = numericTokenAmount ? `PKR ${numericTokenAmount.toLocaleString()}` : 'Negotiation Stage';
+
+      await fetch(`${origin}/api/send-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: sellerEmail,
+          subject: `🤝 New Co-Brokered Deal Initiated: ${listingTitle}`,
+          body: `Great news! A partner agency has initiated a Co-Brokered Deal (Ref #${dealIdStr}) for your property listing "${listingTitle}".<br/><br/>
+          <strong>Key Deal Details:</strong><br/>
+          • <strong>Commission Split:</strong> 50/50 Profit Split Standard<br/>
+          • <strong>Estimated Share / Token:</strong> ${tokenFormatted}<br/>
+          • <strong>Status:</strong> In Negotiation<br/><br/>
+          Please log in to your <strong>NexMove Agency Dashboard</strong> to review the deal pipeline and proceed with contract agreement.`,
+        }),
+      }).catch((emailErr) => console.warn('[Deals API] Initiation email dispatch note:', emailErr));
+    } catch (notifyErr) {
+      console.warn('[Deals API] Initiation notification error:', notifyErr);
+    }
+
     return NextResponse.json({
       success: true,
       deal: deal || {

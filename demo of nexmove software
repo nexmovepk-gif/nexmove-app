@@ -1,0 +1,158 @@
+# 📊 NexMove PropTech: University Final Presentation & Demo Guide (Roman Urdu)
+
+Yeh complete guide aapki university presentation aur professors ke samnay live demo ke liye **Roman Urdu** mein tayar ki gayi hai. Aap ise download karke apni slides (PowerPoint / Canva) mein use kar sakte hain.
+
+---
+
+## 📑 Slide-by-Slide Complete Presentation Plan
+
+---
+
+### 🟢 Slide 1: Introduction (Title Slide)
+* **Slide Heading:** **NexMove: Next-Gen AI-Powered PropTech Ecosystem**
+* **Subtitle:** *Real Estate Transactions, Architectural Networking & Investor Trust ka Digital Solution*
+* **Presenter Info:** Aapka Naam / Department ka Naam
+* **📸 Screenshot to Add:** 
+  - NexMove Homepage ka Hero Section screenshot (jahan main search bar aur modern branding dikhe).
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Respected Professors aur fellow students, Assalam-o-Alaikum. Pakistan mein traditional real estate market mein sab se bara masla fake listings, fraud ka risk aur bikhra hua system hai. Aaj mein aapke samnay **NexMove** introduce kar raha hoon — jo sirf ek listing website nahi hai balke Real Estate Agencies, Architects, Buyers aur Overseas Investors ko ek secure platform par connect karne wala complete operating system hai."*
+
+---
+
+### 🔴 Slide 2: Market ke Masail (Market Pain Points)
+* **Slide Heading:** **Real Estate Market ke 4 Baray Masail (Pain Points)**
+* **Slide Content (Bullet Points):**
+  - ❌ **Fake Listings & Fraud:** 60%+ listings baghair verification ke hoti hain, jiss se local aur overseas investors ka paisa doobne ka darr rehta hai.
+  - ❌ **Architects ke liye Platform ki Kami:** 3D Visualizers aur Architects ke pas apna professional portfolio dikhane ke liye koi dedicated portal nahi hai.
+  - ❌ **Privacy & Spam Issues:** Sites par phone numbers public hone se spam calls aur privacy issues aate hain.
+  - ❌ **Agencies ka Purana Khata:** Agenciyan aaj bhi Excel sheets aur registers par agent commissions aur rent manage karti hain.
+* **📸 Screenshot to Add:** 
+  - Traditional real estate issues ka koi graphic ya collage.
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Sir, purani websites sirf classified ad boards hain. Wo na to architect ko identity deti hain, na agency ka digital khata sambhalti hain, aur na hi overseas investor ko legal security deti hain. Humne in tamam problems ko solve karne ke liye NexMove design kiya hai."*
+
+---
+
+### 📐 Slide 3: Architecture & Design Hub (Social PropTech)
+* **Slide Heading:** **Architecture Hub: Architects ke liye LinkedIn-Style Platform**
+* **Slide Content (Bullet Points):**
+  - 🏛️ **PCATP Verified Badges:** Council license aur KYC verification ke sath verified status.
+  - 🎨 **3D Renders & BIM Portfolios:** AutoCAD, Revit, 3ds Max aur Lumion designs ki live feed.
+  - ⚡ **Supabase Cloud CDN Storage:** Heavy 3D images aur render videos milliseconds mein load hoti hain.
+* **📸 Screenshot to Add:** 
+  - **[`/architects`](https://nexmove-app.vercel.app/architects)** page ka screenshot (jahan architect directory cards, verified badges `#Revit #AutoCAD` software tags nazar aa rahe hon).
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Hamara pehla unique breakthrough Architecture Hub hai. Humne real estate ko social bana diya hai. Ab koi bhi certified architect apne 3D model, map elevation ya animation post kar sakta hai aur direct buyers aur developers se connect ho sakta hai."*
+
+---
+
+### 🛡️ Slide 4: Privacy & Direct In-Portal Messaging
+* **Slide Heading:** **Privacy Protection: WhatsApp Leaks ka Khatma & Direct Inbox**
+* **Slide Content (Bullet Points):**
+  - 🔒 **Mobile Number Shielded:** Architect ka private phone number public scraper ya spammer se 100% mehfooz hai.
+  - ✉️ **In-Portal Direct Message Modal:** Client public profile se 1-click par project requirement bhejta hai.
+  - 📬 **Database-Backed Inbox (`ArchitectMessage`):** Tamam inquiries architect ke private dashboard inbox mein jati hain.
+* **📸 Screenshot to Add:** 
+  - **[`/architects/[id]`](https://nexmove-app.vercel.app/architects)** par Public Profile aur uske sath khula hua **"✉️ Send Message" modal** ka screenshot.
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Sir, privacy ko protect karne ke liye humne public WhatsApp links hata kar LinkedIn ki tarah in-portal messaging system diya hai. Client direct message karega jo architect ke dashboard mein aayega, aur architect wahan se 1-click par email ke zariye reply karega."*
+
+---
+
+### 💻 Slide 5: Architect Dashboard & Onboarding Engine
+* **Slide Heading:** **Architect Command Center & Step-by-Step Guide**
+* **Slide Content (Bullet Points):**
+  - 💡 **Interactive Onboarding Banner:** Naye architect ko system samjhane ke liye 3-step built-in guide.
+  - 📊 **3 Unified Tabs:**
+    1. **Portfolio Feed:** Rich media posts aur video upload.
+    2. **Messages Inbox:** Unread badges aur direct email replies.
+    3. **Client Proposals:** Full plot size aur budget inquiries.
+* **📸 Screenshot to Add:** 
+  - **[`/architects/dashboard`](https://nexmove-app.vercel.app/architects/dashboard)** ka screenshot (top onboarding banner aur **Messages** tab ko highlight karein).
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Yeh architect ka main dashboard hai. Naye user ki aasani ke liye humne top par onboarding guide lagaya hai. Architect yahan se nayi post publish karta hai, clients ke live messages check karta hai aur apni star ratings monitor karta hai."*
+
+---
+
+### 🏢 Slide 6: Agency CRM & Digital Ledger (Khata)
+* **Slide Heading:** **Agency Management & Financial Ledger**
+* **Slide Content (Bullet Points):**
+  - 👥 **Agents & Team Management:** Agency manager apne agents aur staff ki deals monitor kar sakta hai.
+  - 📈 **Digital Financial Ledger:** Rent collection, agent commission splits, aur expenses ka automatic record.
+  - 📑 **Deal Pipeline:** Property deal ko Draft se lekar Closed/Sold tak real-time track karna.
+* **📸 Screenshot to Add:** 
+  - Agency Dashboard / Financial Ledger page ka screenshot.
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Agencies ke liye humne register khata khatam karke pura cloud ERP aur financial ledger banaya hai. Agency owner live dekh sakta hai ke kis agent ne kitni deals close keen aur kitna commission generate hua."*
+
+---
+
+### 💰 Slide 7: Overseas Investors & Escrow Security
+* **Slide Heading:** **Investor Portal & Escrow Protection**
+* **Slide Content (Bullet Points):**
+  - 🌍 **Overseas Portal:** UAE, UK, aur USA mein baithe overseas Pakistanis ke liye verified deals.
+  - 📊 **Automated ROI & Yield Calculator:** 3-year capital growth aur monthly rental return metrics.
+  - 🛡️ **Escrow Protection:** Payment tab tak secure rehti hai jab tak legal documents verify na hon.
+* **📸 Screenshot to Add:** 
+  - Investor Deals ya Overseas Portal page ka screenshot.
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Overseas Pakistanis ka sab se bara masla trust ka hai. NexMove ke zariye wo bahar mulk beth kar verified deals dekh sakte hain, automatic ROI check kar sakte hain aur escrow security ke sath invest kar sakte hain."*
+
+---
+
+### ⚙️ Slide 8: Technical Architecture & Modern Stack
+* **Slide Heading:** **Modern & Scalable Technology Stack**
+* **Slide Content (Bullet Points):**
+  - **Frontend:** Next.js 14 (App Router), React, TailwindCSS
+  - **Backend & APIs:** Server Components, Edge API Routes, NextAuth
+  - **Database & ORM:** PostgreSQL (Supabase Cloud) + Prisma ORM 7
+  - **Media & CDN:** Supabase Storage CDN (High-speed 3D Renders)
+  - **Deployment:** Vercel Global Edge Network with CI/CD
+* **📸 Screenshot to Add:** 
+  - Database schema relation diagram ya tech logos ka grid.
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Technical architecture mein humne industry ke modern standard tools use kiye hain. Next.js 14 aur Supabase cloud storage ki waja se platform ultra-fast hai aur database secure aur scalable hai."*
+
+---
+
+### 🚀 Slide 9: Future Scope & AI Innovations
+* **Slide Heading:** **Future Roadmap (Aagay NexMove Kahan Ja Raha Hai?)**
+* **Slide Content (Bullet Points):**
+  1. 🤖 **AI Automated Valuation Engine (AVM):** Machine Learning ke zariye property ki fair market price aur future price prediction.
+  2. 🥽 **3D WebGL / VR Virtual Tours:** Ghar banne se pehle client VR glasses ya mobile se 3D walk-through karega.
+  3. 📱 **Mobile Apps:** Android aur iOS native apps real-time push alerts ke sath.
+* **📸 Screenshot to Add:** 
+  - AI Property Valuation ya 3D VR Tour ka mockup graphic.
+* **🎤 Roman Urdu Bolne Ka Script:**
+  > *"Aane walay waqt mein hum isme AI valuation engine aur VR 3D virtual walkthroughs add kar rahe hain, jiss se Pakistan ki real estate industry mein ek naya digital inqilab aayega."*
+
+---
+
+### 🏁 Slide 10: Conclusion & Live Demonstration
+* **Slide Heading:** **Questions & Live Interactive Demonstration**
+* **Slide Content (Bullet Points):**
+  - 🌐 **Live Website URL:** `https://nexmove-app.vercel.app/architects`
+  - 👥 **Professors & Audience Q&A Session**
+* **🎤 Roman Urdu Closing Dialogue:**
+  > *"Bohat shukriya! Ab mein aapko apne laptop par is system ka live demo dikhata hoon ke yeh real-time mein kaisy kaam karta hai. Aapke tamam sawalat ka khair-makhdam hai."*
+
+---
+
+## 🎯 Live Demo ka 4-Minute Action Plan (Stage par Kya Karna Hai):
+
+1. **Browser mein 2 Tabs pehle se open rakhein:**
+   - **Tab 1:** [`https://nexmove-app.vercel.app/architects`](https://nexmove-app.vercel.app/architects) (Public Directory & Profile)
+   - **Tab 2:** [`https://nexmove-app.vercel.app/architects/dashboard`](https://nexmove-app.vercel.app/architects/dashboard) (Log-in Architect Dashboard)
+
+2. **Pehle Tab 1 dikhayein:** 
+   - Professors ko batayein ke yeh dekhein verified architects ki directory hai, software tags `#Revit #AutoCAD` hain, aur personal WhatsApp number hide hai.
+
+3. **Live Message Send karein:**
+   - Tab 1 mein architect ki profile par ja kar **"✉️ Send Message"** button par click karein aur ek sample project inquiry submit karein.
+
+4. **Tab 2 mein Live Result dikhayein:**
+   - Tab 2 (Dashboard) par switch karein aur **"✉️ Messages"** tab par click karein.
+   - Professors ko dikhayein ke saniye ke hisab se message live inbox mein aa chuka hai aur wahan se 1-click par email reply ka option mojood hai.
+
+5. **Onboarding Guide & Post Creation:**
+   - Dashboard ke top par Onboarding Guide aur media post creation dikha kar demo finish karein!

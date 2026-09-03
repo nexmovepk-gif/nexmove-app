@@ -257,8 +257,8 @@ export default function ArchitectsPage() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-2xl">🏛️</span>
-                  <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                    Architects & Designers
+                  <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+                    Architects &amp; Designers
                   </h1>
                 </div>
                 <p className="text-sm text-slate-500 leading-relaxed">

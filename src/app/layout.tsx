@@ -47,9 +47,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} ${inter.variable}`}>
+    <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
       <body
-        className={`${plusJakarta.className} antialiased bg-slate-50 text-slate-900 min-h-screen font-sans`}
+        className={`${inter.className} antialiased bg-slate-50 text-slate-900 min-h-screen font-sans`}
       >
         {/* Hidden Container & Initialization for Platform-Wide Google Translation */}
         <div id="google_translate_element" className="hidden absolute" />

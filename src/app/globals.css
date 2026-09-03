@@ -10,13 +10,22 @@
 body {
   color: var(--foreground);
   background-color: var(--background);
-  font-family: var(--font-jakarta), var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-inter), var(--font-jakarta), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  letter-spacing: -0.011em;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "calt";
+  letter-spacing: -0.014em;
   margin: 0;
   padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.022em;
+}
+
+.font-black {
+  font-weight: 700 !important;
 }
 
 @layer utilities {

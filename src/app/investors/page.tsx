@@ -140,6 +140,10 @@ export default function InvestorPortalPage() {
   const [investmentDeals, setInvestmentDeals] = useState<InvestmentDeal[]>([])
   const [selectedContractDeal, setSelectedContractDeal] = useState<InvestmentDeal | null>(null)
 
+  const [searchCity, setSearchCity] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [showMeetingForm, setShowMeetingForm] = useState(false)
+
   // ─── API Loaders ────────────────────────────────────────────────────────────
   const loadDeals = useCallback(async () => {
     try {
@@ -147,6 +151,46 @@ export default function InvestorPortalPage() {
       const data = await res.json()
       if (data.success) setInvestmentDeals(data.deals ?? [])
     } catch { /* silently ignore — shows empty state */ }
+  }, [])
+
+  const loadSavedListings = useCallback(async () => {
+    try {
+      const res = await fetch('/api/saved-listings')
+      const data = await res.json()
+      if (data.success && Array.isArray(data.saved)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mappedSavedDeals: InvestmentDeal[] = data.saved.map((item: any) => {
+          const p = item.publicListing || item.property
+          if (!p) return null
+          const pricePKR = p.price || 0
+          const marketValuationPKR = pricePKR * 1.15
+          return {
+            id: p.id,
+            title: p.title,
+            location: p.address || 'Lahore',
+            city: p.city || 'Lahore',
+            propertyType: String(p.propertyType || 'HOUSE'),
+            pricePKR,
+            marketValuationPKR,
+            discountPct: 13.0,
+            rentalYieldPct: 8.4,
+            capitalGrowth3YrPct: 31,
+            roiScore: 89,
+            isDistress: false,
+            isOffMarket: Boolean(p.isOffMarket),
+            escrowSecured: true,
+            image: (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+            agencyName: p.agency?.name || p.contactName || 'Verified Marketplace Owner',
+          }
+        }).filter((d: InvestmentDeal | null): d is InvestmentDeal => d !== null)
+
+        setInvestmentDeals((prev) => {
+          const existingIds = new Set(prev.map((d) => d.id))
+          const newDeals = mappedSavedDeals.filter((d) => !existingIds.has(d.id))
+          return [...prev, ...newDeals]
+        })
+      }
+    } catch { /* silently ignore */ }
   }, [])
 
   const loadPortfolio = useCallback(async () => {
@@ -173,6 +217,7 @@ export default function InvestorPortalPage() {
   useEffect(() => {
     if (status === 'authenticated') {
       loadDeals()
+      loadSavedListings()
       loadPortfolio()
       loadWallet()
     }
@@ -195,9 +240,11 @@ export default function InvestorPortalPage() {
     .reduce((acc, p) => acc + (p.exitDetails?.finalSaleValuePKR || 0), 0)
 
   const filteredDeals = investmentDeals.filter((deal) => {
-    if (filterTab === 'OFF_MARKET') return deal.isOffMarket
-    if (filterTab === 'DISTRESS') return deal.isDistress
-    if (filterTab === 'HIGH_YIELD') return deal.rentalYieldPct >= 9.0
+    if (filterTab === 'OFF_MARKET' && !deal.isOffMarket) return false
+    if (filterTab === 'DISTRESS' && !deal.isDistress) return false
+    if (filterTab === 'HIGH_YIELD' && deal.rentalYieldPct < 9.0) return false
+    if (searchCity && !deal.city.toLowerCase().includes(searchCity.toLowerCase())) return false
+    if (searchTerm && !deal.title.toLowerCase().includes(searchTerm.toLowerCase()) && !deal.location.toLowerCase().includes(searchTerm.toLowerCase())) return false
     return true
   })
 
@@ -1301,100 +1348,175 @@ Status             : ${item.status}
         </div>
       )}
 
-      {/* Modal 3: Deal Room Schedule Meeting Modal */}
+      {/* Modal 3: Property Details & Deal Room Schedule Meeting Modal */}
       {meetingDeal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={() => setMeetingDeal(null)}>
-          <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 overflow-y-auto py-8" onClick={() => { setMeetingDeal(null); setShowMeetingForm(false) }}>
+          <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-xl bg-white border border-slate-200 rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl"
+            className="relative w-full max-w-2xl bg-white border border-slate-200 rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl my-auto max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-[10px] bg-amber-100 border border-amber-300 text-amber-800 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest">
-                  Cross-Border Private Deal Room
-                </span>
-                <h2 className="text-lg font-black text-slate-900 mt-1.5">Schedule Private Meeting</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Property: <span className="text-emerald-700 font-bold">{meetingDeal.title}</span>{' '}
-                  ({formatPrice(meetingDeal.pricePKR)})
+                <div className="flex items-center flex-wrap gap-2 mb-1.5">
+                  <span className="text-[10px] bg-amber-100 border border-amber-300 text-amber-800 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest">
+                    Cross-Border Private Deal Room
+                  </span>
+                  {meetingDeal.isOffMarket && (
+                    <span className="text-[10px] bg-purple-100 border border-purple-300 text-purple-800 font-bold px-2 py-0.5 rounded-full">
+                      🔒 Off-Market
+                    </span>
+                  )}
+                  <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                    ✓ Escrow Secured
+                  </span>
+                </div>
+                <h2 className="text-xl font-black text-slate-900 leading-snug">{meetingDeal.title}</h2>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">
+                  📍 {meetingDeal.location}, {meetingDeal.city} &bull; via <span className="text-slate-800 font-bold">{meetingDeal.agencyName}</span>
                 </p>
               </div>
-              <button onClick={() => setMeetingDeal(null)} className="text-slate-400 hover:text-slate-700 text-lg leading-none">✕</button>
+              <button onClick={() => { setMeetingDeal(null); setShowMeetingForm(false) }} className="text-slate-400 hover:text-slate-700 text-lg leading-none p-1">✕</button>
             </div>
 
-            {scheduleSuccess ? (
-              <div className="flex flex-col items-center gap-4 py-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-3xl text-emerald-700">✓</div>
-                <div>
-                  <h3 className="text-base font-bold text-emerald-700">Deal Room Meeting Reserved!</h3>
-                  <p className="text-xs text-slate-600 max-w-md mt-1 leading-relaxed">
-                    Your request has been logged. An encrypted video link will be sent to{' '}
-                    <span className="text-slate-900 font-bold">{investorEmail || 'your email'}</span>.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setMeetingDeal(null)}
-                  className="mt-2 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl transition font-medium border border-slate-200"
-                >
-                  Close Window
-                </button>
+            {/* Property Image & Key Specs */}
+            <div className="relative h-56 w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+              <Image
+                src={meetingDeal.image}
+                alt={meetingDeal.title}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+              <div className="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-700">
+                {meetingDeal.propertyType}
               </div>
-            ) : (
-              <form onSubmit={handleScheduleMeeting} className="flex flex-col gap-4">
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-3">
-                  <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Foreign Buyer Overseas KYC Verification</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-600">Investor Full Name *</label>
-                      <input type="text" value={investorName} onChange={(e) => setInvestorName(e.target.value)} placeholder="e.g. Tariq Al-Mansoor" required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-600">Email Address *</label>
-                      <input type="email" value={investorEmail} onChange={(e) => setInvestorEmail(e.target.value)} placeholder="investor@domain.com" required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-600">NICOP / Passport Number *</label>
-                      <input type="text" value={nicopOrPassport} onChange={(e) => setNicopOrPassport(e.target.value)} placeholder="NICOP-42101-9988771-3 / A9823412" required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition" />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-600">Country of Residence</label>
-                      <input type="text" value={countryResidence} onChange={(e) => setCountryResidence(e.target.value)} placeholder="United Arab Emirates / UK" className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
-                    </div>
-                  </div>
-                </div>
+            </div>
 
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-3">
-                  <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Multi-Timezone Meeting Time</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="flex flex-col gap-1 sm:col-span-3">
-                      <label className="text-[11px] font-bold text-slate-600">Investor Preferred Timezone</label>
-                      <select value={selectedTimezone} onChange={(e) => setSelectedTimezone(e.target.value)} className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition">
-                        {TIMEZONES.map((tz) => (
-                          <option key={tz.label} value={tz.label}>{tz.label}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="flex flex-col gap-1 sm:col-span-2">
-                      <label className="text-[11px] font-bold text-slate-600">Preferred Date *</label>
-                      <input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <label className="text-[11px] font-bold text-slate-600">Local Time *</label>
-                      <input type="time" value={meetingTime} onChange={(e) => setMeetingTime(e.target.value)} required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
-                    </div>
-                  </div>
-                </div>
+            {/* Price & ROI Financial Breakdown Grid */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Investment Price</span>
+                <span className="text-lg font-black text-emerald-700">{formatPrice(meetingDeal.pricePKR)}</span>
+                <span className="text-[10px] text-slate-400 line-through">Valued: {formatPrice(meetingDeal.marketValuationPKR)}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ROI Score</span>
+                <span className="text-lg font-black text-teal-700">{meetingDeal.roiScore}/100</span>
+                <span className="text-[10px] text-emerald-600 font-bold">Top 5% Grade</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Rental Yield</span>
+                <span className="text-lg font-black text-emerald-700">{meetingDeal.rentalYieldPct}% p.a.</span>
+                <span className="text-[10px] text-slate-500">Monthly Cashflow</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">3-Yr Forecast</span>
+                <span className="text-lg font-black text-purple-700">+{meetingDeal.capitalGrowth3YrPct}%</span>
+                <span className="text-[10px] text-slate-500">Capital Growth</span>
+              </div>
+            </div>
 
-                <div className="flex gap-3 pt-1">
-                  <button type="button" onClick={() => setMeetingDeal(null)} className="flex-1 text-xs bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 py-3 rounded-xl transition font-medium">
-                    Cancel
-                  </button>
-                  <button type="submit" className="flex-1 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow">
-                    Confirm Private Deal Room ✓
-                  </button>
-                </div>
-              </form>
+            {/* Quick Actions Row */}
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedContractDeal(meetingDeal)
+                  setActiveTab('ESCROW')
+                  setMeetingDeal(null)
+                  setShowMeetingForm(false)
+                }}
+                className="flex-1 bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold text-xs py-3 px-4 rounded-xl border border-slate-700 transition shadow flex items-center justify-center gap-1.5"
+              >
+                <span>📜 Preview Legal Contract &amp; Escrow</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowMeetingForm((prev) => !prev)}
+                className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 px-4 rounded-xl transition shadow flex items-center justify-center gap-1.5"
+              >
+                <span>📅 {showMeetingForm ? 'Hide Meeting Form' : 'Schedule Private Deal Meeting'}</span>
+              </button>
+            </div>
+
+            {/* Schedule Meeting Form (Shown when toggled or active) */}
+            {(showMeetingForm || scheduleSuccess) && (
+              <div className="pt-2 border-t border-slate-100">
+                {scheduleSuccess ? (
+                  <div className="flex flex-col items-center gap-4 py-6 text-center bg-emerald-50 border border-emerald-200 rounded-2xl p-6">
+                    <div className="w-14 h-14 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-2xl text-emerald-700">✓</div>
+                    <div>
+                      <h3 className="text-base font-bold text-emerald-800">Deal Room Meeting Reserved!</h3>
+                      <p className="text-xs text-slate-600 max-w-md mt-1 leading-relaxed">
+                        Your meeting request for <strong className="text-slate-900">{meetingDeal.title}</strong> has been logged. An encrypted video link will be sent to{' '}
+                        <span className="text-slate-900 font-bold">{investorEmail || 'your email'}</span>.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => { setMeetingDeal(null); setShowMeetingForm(false) }}
+                      className="mt-1 text-xs bg-white hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl transition font-medium border border-slate-300 shadow-sm"
+                    >
+                      Close Window
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleScheduleMeeting} className="flex flex-col gap-4">
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-3">
+                      <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Investor KYC Verification</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-bold text-slate-600">Investor Full Name *</label>
+                          <input type="text" value={investorName} onChange={(e) => setInvestorName(e.target.value)} placeholder="e.g. Tariq Al-Mansoor" required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-bold text-slate-600">Email Address *</label>
+                          <input type="email" value={investorEmail} onChange={(e) => setInvestorEmail(e.target.value)} placeholder="investor@domain.com" required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-bold text-slate-600">CNIC / NICOP / Passport Number *</label>
+                          <input type="text" value={nicopOrPassport} onChange={(e) => setNicopOrPassport(e.target.value)} placeholder="42101-9988771-3 / A9823412" required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-mono focus:outline-none focus:border-emerald-500 transition" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-bold text-slate-600">Country of Residence</label>
+                          <input type="text" value={countryResidence} onChange={(e) => setCountryResidence(e.target.value)} placeholder="Pakistan / UAE / UK" className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-3">
+                      <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Preferred Meeting Schedule</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="flex flex-col gap-1 sm:col-span-3">
+                          <label className="text-[11px] font-bold text-slate-600">Investor Preferred Timezone</label>
+                          <select value={selectedTimezone} onChange={(e) => setSelectedTimezone(e.target.value)} className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500 transition">
+                            {TIMEZONES.map((tz) => (
+                              <option key={tz.label} value={tz.label}>{tz.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex flex-col gap-1 sm:col-span-2">
+                          <label className="text-[11px] font-bold text-slate-600">Preferred Date *</label>
+                          <input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <label className="text-[11px] font-bold text-slate-600">Local Time *</label>
+                          <input type="time" value={meetingTime} onChange={(e) => setMeetingTime(e.target.value)} required className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-1">
+                      <button type="button" onClick={() => setShowMeetingForm(false)} className="flex-1 text-xs bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 py-3 rounded-xl transition font-medium">
+                        Cancel
+                      </button>
+                      <button type="submit" className="flex-1 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow">
+                        Confirm Private Deal Room ✓
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
             )}
           </div>
         </div>

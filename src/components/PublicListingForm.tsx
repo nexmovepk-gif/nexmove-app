@@ -17,6 +17,7 @@ interface FormData {
   contactName: string
   contactPhone: string
   contactEmail: string
+  isOffMarket: boolean
 }
 
 interface AIPreview {
@@ -33,6 +34,7 @@ const INITIAL_FORM: FormData = {
   title: '', description: '', propertyType: 'HOUSE',
   price: '', address: '', city: '', areaSqFt: '',
   bedrooms: '', bathrooms: '', contactName: '', contactPhone: '', contactEmail: '',
+  isOffMarket: false,
 }
 
 const PROPERTY_TYPES = ['HOUSE', 'APARTMENT', 'PLOT', 'COMMERCIAL', 'VILLA']
@@ -316,6 +318,32 @@ export default function PublicListingForm() {
               <option value="">Select city...</option>
               {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
+          </div>
+
+          <div className="flex flex-col gap-1.5 bg-slate-950/80 border border-emerald-500/30 p-3.5 rounded-2xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 cursor-pointer">
+                  🔒 Mark as Private B2B / Investor Deal
+                </label>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  Exclusive deal for verified investors with AI ROI &amp; Escrow protection features.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setForm((prev) => ({ ...prev, isOffMarket: !prev.isOffMarket }))}
+                className={`w-11 h-6 rounded-full relative transition-colors duration-200 focus:outline-none flex-shrink-0 ${
+                  form.isOffMarket ? 'bg-emerald-500' : 'bg-slate-800'
+                }`}
+              >
+                <span
+                  className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all duration-200 ${
+                    form.isOffMarket ? 'left-6' : 'left-1'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5">

@@ -60,18 +60,12 @@ export default function MarketplacePage() {
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [savingId, setSavingId] = useState<string | null>(null);
 
-  // Check if current user is an overseas buyer/investor
-  const isOverseas =
-    session?.user?.accountRoleType === 'OVERSEAS_BUYER' ||
-    session?.user?.accountRoleType === 'OVERSEAS_INVESTOR' ||
-    session?.user?.role === 'OVERSEAS_BUYER' ||
-    session?.user?.role === 'INVESTOR' ||
-    session?.user?.role === 'SUPER_ADMIN' ||
-    session?.user?.email?.toLowerCase() === 'nexmove.pk@gmail.com';
+  // Check if current user can save listings (any logged-in user or investor)
+  const canSave = Boolean(session?.user);
 
   // Fetch already-saved listings on mount
   useEffect(() => {
-    if (!isOverseas) return;
+    if (!canSave) return;
     fetch('/api/saved-listings')
       .then(r => r.json())
       .then(d => {
@@ -80,7 +74,7 @@ export default function MarketplacePage() {
         }
       })
       .catch(() => {});
-  }, [isOverseas]);
+  }, [canSave]);
 
   const toggleSave = async (e: React.MouseEvent, listingId: string) => {
     e.preventDefault(); // stop Link navigation
@@ -297,12 +291,12 @@ export default function MarketplacePage() {
                     <div className="flex sm:flex-col items-end justify-between sm:justify-center border-t sm:border-t-0 border-slate-100 pt-3 sm:pt-0 gap-2 flex-shrink-0">
                       <span className="text-xl font-black text-emerald-700">{formatPrice(lst.price)}</span>
                       <div className="flex items-center gap-2">
-                        {isOverseas && (
+                        {canSave && (
                           <button
                             id={`save-listing-${lst.id}`}
                             onClick={(e) => toggleSave(e, lst.id)}
                             disabled={savingId === lst.id}
-                            title={savedIds.has(lst.id) ? 'Remove from Dashboard' : 'Save to Overseas Dashboard'}
+                            title={savedIds.has(lst.id) ? 'Remove from Investor Dashboard' : 'Save to Investor Dashboard'}
                             className={`p-2 rounded-xl border transition-all duration-200 flex items-center justify-center ${
                               savedIds.has(lst.id)
                                 ? 'bg-rose-50 border-rose-300 text-rose-500 hover:bg-rose-100'

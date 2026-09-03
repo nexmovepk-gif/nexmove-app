@@ -1383,14 +1383,16 @@ export default function AdminDashboard() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {adminPromotions.map((promo) => {
-                  const isActive = promo.status === "ACTIVE";
-                  const isPending = promo.status === "PENDING";
-                  const isPaused = promo.status === "PAUSED";
-                  const isActionLoading = actionLoading?.includes(promo.id);
+                  const promoId = String(promo.id ?? '');
+                  const promoStatus = String(promo.status ?? '');
+                  const isActive = promoStatus === "ACTIVE";
+                  const isPending = promoStatus === "PENDING";
+                  const isPaused = promoStatus === "PAUSED";
+                  const isActionLoading = actionLoading?.includes(promoId);
 
                   return (
                     <div
-                      key={promo.id}
+                      key={promoId}
                       className={`bg-slate-900/60 border rounded-3xl p-5 flex flex-col justify-between gap-4 transition shadow-lg ${
                         isActive
                           ? "border-emerald-500/40"

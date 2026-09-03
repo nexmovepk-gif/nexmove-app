@@ -9,18 +9,21 @@ import AIEscrowGuard from '@/components/AIEscrowGuard';
 import BankTransferCheckoutModal from '@/components/BankTransferCheckoutModal';
 import SubscriptionGuard from '@/components/SubscriptionGuard';
 import AIListingCard, { AIListingItem, ListingStatusKey } from '@/components/AIListingCard';
+import AdsManagerPanel from '@/components/AdsManagerPanel';
+import PromoteListingModal, { PromoteTargetItem } from '@/components/PromoteListingModal';
 import { formatSubscriptionDate, SubscriptionStatus } from '@/types/subscription';
 import {
   Search, SlidersHorizontal, Plus, LogOut,
   Sparkles, Flame, CheckCircle2, Clock, CalendarClock,
   BadgeCheck, XCircle, LayoutList, ChevronDown, RefreshCw,
-  TrendingUp, Loader2
+  TrendingUp, Loader2, Rocket
 } from 'lucide-react';
 
-type TabKey = 'ALL' | ListingStatusKey;
+type TabKey = 'ALL' | ListingStatusKey | 'ADS_MANAGER';
 
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
   { key: 'ALL',            label: 'All Listings',              icon: <LayoutList className="w-3.5 h-3.5" /> },
+  { key: 'ADS_MANAGER',    label: '📢 Ads & Boost Manager',    icon: <Rocket className="w-3.5 h-3.5 text-emerald-600" /> },
   { key: 'ACTIVE',         label: 'Active',                     icon: <CheckCircle2 className="w-3.5 h-3.5" /> },
   { key: 'PENDING',        label: 'Pending AI Check',           icon: <Clock className="w-3.5 h-3.5" /> },
   { key: 'AVAILABLE_SOON', label: 'Available Soon (Pre-Match)', icon: <CalendarClock className="w-3.5 h-3.5" /> },
@@ -30,6 +33,7 @@ const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
 
 const TAB_ACTIVE_STYLES: Record<TabKey, string> = {
   ALL:            'border-slate-800 text-slate-900 bg-white shadow-sm',
+  ADS_MANAGER:    'border-emerald-600 text-emerald-900 bg-emerald-100/90 shadow-sm font-black',
   ACTIVE:         'border-emerald-600 text-emerald-700 bg-emerald-50/70',
   PENDING:        'border-amber-500 text-amber-700 bg-amber-50/70',
   AVAILABLE_SOON: 'border-indigo-600 text-indigo-700 bg-indigo-50/70',
@@ -54,6 +58,7 @@ export default function AgencyDashboardPage() {
   const [showBankCheckout, setShowBankCheckout] = useState(false);
   const [checkoutPlanTitle, setCheckoutPlanTitle] = useState('Professional Plan');
   const [checkoutPlanPrice, setCheckoutPlanPrice] = useState(15000);
+  const [promoteItem, setPromoteItem] = useState<PromoteTargetItem | null>(null);
 
   // Subscription status for 5-day advance renewal notification
   const [subscriptionData, setSubscriptionData] = useState<{
@@ -436,6 +441,7 @@ export default function AgencyDashboardPage() {
           <nav className="flex flex-wrap items-center gap-2.5 mb-8">
             {[
               { href: '/agency/submit-listing',  label: '+ Add Listing',       cls: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+              { href: '/agency/promotions',      label: '📢 Ads & Campaigns', cls: 'bg-emerald-600 text-white border-emerald-600 font-black shadow-sm' },
               { href: '/agency/properties',      label: 'Inventory Grid',      cls: 'bg-white text-slate-700 border-slate-200' },
               { href: '/agency/deals',           label: '🛡️ Deal Pipeline',   cls: 'bg-purple-50 text-purple-800 border-purple-200' },
               { href: '/agency/rent-collection', label: 'Rent Collection',     cls: 'bg-white text-slate-700 border-slate-200' },
@@ -591,8 +597,21 @@ export default function AgencyDashboardPage() {
               </div>
             )}
 
-            {/* ── Cards Grid / Empty State ───────────────────────────────── */}
-            {loading ? (
+            {/* ── If Ads Manager Tab is Selected ──────────────────────── */}
+            {activeTab === 'ADS_MANAGER' ? (
+              <div className="mb-12">
+                <AdsManagerPanel
+                  availableListings={listings.map((l) => ({
+                    id: l.id,
+                    title: l.title,
+                    image: Array.isArray(l.images) && l.images.length > 0 ? l.images[0] : null,
+                    city: l.city,
+                    price: l.price,
+                  }))}
+                  isAgency={true}
+                />
+              </div>
+            ) : loading ? (
               <div className="bg-white border border-slate-200 rounded-3xl p-16 text-center shadow-sm flex flex-col items-center justify-center">
                 <Loader2 className="w-8 h-8 text-emerald-600 animate-spin mb-3" />
                 <p className="text-sm font-bold text-slate-700">Connecting to Agency Database...</p>
@@ -626,12 +645,29 @@ export default function AgencyDashboardPage() {
                     listing={listing}
                     onStatusChange={handleStatusChange}
                     onDelete={handleDelete}
+                    onPromote={(item) =>
+                      setPromoteItem({
+                        id: item.id,
+                        title: item.title,
+                        image: Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null,
+                        city: item.city,
+                        price: item.price,
+                      })
+                    }
                     editHref="/agency/add-property"
                   />
                 ))}
               </div>
             )}
           </div>
+
+          {/* ── Boost Modal ────────────────────────────────────────────── */}
+          <PromoteListingModal
+            item={promoteItem}
+            isOpen={Boolean(promoteItem)}
+            onClose={() => setPromoteItem(null)}
+            onSuccess={() => fetchAgencyListings()}
+          />
 
           {/* ── Notifications & Activity Center ──────────────────────────── */}
           {notifications.length > 0 && <ActivityCenter notifications={notifications} />}

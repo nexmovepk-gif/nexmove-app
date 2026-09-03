@@ -127,3 +127,8 @@ export type InvestorWallet = Prisma.InvestorWalletModel
  * Secure time-limited token for forgot-password / account recovery flow
  */
 export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
+ * Model Promotion
+ * Self-serve Property & Agency promotions (Ads Manager)
+ */
+export type Promotion = Prisma.PromotionModel

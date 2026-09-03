@@ -422,6 +422,7 @@ export type AgencyWhereInput = {
   rentCollections?: Prisma.RentCollectionListRelationFilter
   agencyReviews?: Prisma.AgencyReviewListRelationFilter
   deals?: Prisma.DealListRelationFilter
+  promotions?: Prisma.PromotionListRelationFilter
 }
 
 export type AgencyOrderByWithRelationInput = {
@@ -464,6 +465,7 @@ export type AgencyOrderByWithRelationInput = {
   rentCollections?: Prisma.RentCollectionOrderByRelationAggregateInput
   agencyReviews?: Prisma.AgencyReviewOrderByRelationAggregateInput
   deals?: Prisma.DealOrderByRelationAggregateInput
+  promotions?: Prisma.PromotionOrderByRelationAggregateInput
 }
 
 export type AgencyWhereUniqueInput = Prisma.AtLeast<{
@@ -509,6 +511,7 @@ export type AgencyWhereUniqueInput = Prisma.AtLeast<{
   rentCollections?: Prisma.RentCollectionListRelationFilter
   agencyReviews?: Prisma.AgencyReviewListRelationFilter
   deals?: Prisma.DealListRelationFilter
+  promotions?: Prisma.PromotionListRelationFilter
 }, "id" | "licenseNumber">
 
 export type AgencyOrderByWithAggregationInput = {
@@ -623,6 +626,7 @@ export type AgencyCreateInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateInput = {
@@ -665,6 +669,7 @@ export type AgencyUncheckedCreateInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUpdateInput = {
@@ -707,6 +712,7 @@ export type AgencyUpdateInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateInput = {
@@ -749,6 +755,7 @@ export type AgencyUncheckedUpdateInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateManyInput = {
@@ -1117,6 +1124,22 @@ export type AgencyUpdateOneRequiredWithoutRentCollectionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AgencyUpdateToOneWithWhereWithoutRentCollectionsInput, Prisma.AgencyUpdateWithoutRentCollectionsInput>, Prisma.AgencyUncheckedUpdateWithoutRentCollectionsInput>
 }
 
+export type AgencyCreateNestedOneWithoutPromotionsInput = {
+  create?: Prisma.XOR<Prisma.AgencyCreateWithoutPromotionsInput, Prisma.AgencyUncheckedCreateWithoutPromotionsInput>
+  connectOrCreate?: Prisma.AgencyCreateOrConnectWithoutPromotionsInput
+  connect?: Prisma.AgencyWhereUniqueInput
+}
+
+export type AgencyUpdateOneWithoutPromotionsNestedInput = {
+  create?: Prisma.XOR<Prisma.AgencyCreateWithoutPromotionsInput, Prisma.AgencyUncheckedCreateWithoutPromotionsInput>
+  connectOrCreate?: Prisma.AgencyCreateOrConnectWithoutPromotionsInput
+  upsert?: Prisma.AgencyUpsertWithoutPromotionsInput
+  disconnect?: Prisma.AgencyWhereInput | boolean
+  delete?: Prisma.AgencyWhereInput | boolean
+  connect?: Prisma.AgencyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AgencyUpdateToOneWithWhereWithoutPromotionsInput, Prisma.AgencyUpdateWithoutPromotionsInput>, Prisma.AgencyUncheckedUpdateWithoutPromotionsInput>
+}
+
 export type AgencyCreateWithoutUsersInput = {
   id?: string
   name: string
@@ -1156,6 +1179,7 @@ export type AgencyCreateWithoutUsersInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutUsersInput = {
@@ -1197,6 +1221,7 @@ export type AgencyUncheckedCreateWithoutUsersInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutUsersInput = {
@@ -1254,6 +1279,7 @@ export type AgencyUpdateWithoutUsersInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutUsersInput = {
@@ -1295,6 +1321,7 @@ export type AgencyUncheckedUpdateWithoutUsersInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutListingsInput = {
@@ -1336,6 +1363,7 @@ export type AgencyCreateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutListingsInput = {
@@ -1377,6 +1405,7 @@ export type AgencyUncheckedCreateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutListingsInput = {
@@ -1434,6 +1463,7 @@ export type AgencyUpdateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutListingsInput = {
@@ -1475,6 +1505,7 @@ export type AgencyUncheckedUpdateWithoutListingsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutPropertiesInput = {
@@ -1516,6 +1547,7 @@ export type AgencyCreateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutPropertiesInput = {
@@ -1557,6 +1589,7 @@ export type AgencyUncheckedCreateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutPropertiesInput = {
@@ -1614,6 +1647,7 @@ export type AgencyUpdateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutPropertiesInput = {
@@ -1655,6 +1689,7 @@ export type AgencyUncheckedUpdateWithoutPropertiesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutPublicListingsInput = {
@@ -1696,6 +1731,7 @@ export type AgencyCreateWithoutPublicListingsInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutPublicListingsInput = {
@@ -1737,6 +1773,7 @@ export type AgencyUncheckedCreateWithoutPublicListingsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutPublicListingsInput = {
@@ -1794,6 +1831,7 @@ export type AgencyUpdateWithoutPublicListingsInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutPublicListingsInput = {
@@ -1835,6 +1873,7 @@ export type AgencyUncheckedUpdateWithoutPublicListingsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutAgencyReviewsInput = {
@@ -1876,6 +1915,7 @@ export type AgencyCreateWithoutAgencyReviewsInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutAgencyReviewsInput = {
@@ -1917,6 +1957,7 @@ export type AgencyUncheckedCreateWithoutAgencyReviewsInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutAgencyReviewsInput = {
@@ -1974,6 +2015,7 @@ export type AgencyUpdateWithoutAgencyReviewsInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutAgencyReviewsInput = {
@@ -2015,6 +2057,7 @@ export type AgencyUncheckedUpdateWithoutAgencyReviewsInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutClientsInput = {
@@ -2056,6 +2099,7 @@ export type AgencyCreateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutClientsInput = {
@@ -2097,6 +2141,7 @@ export type AgencyUncheckedCreateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutClientsInput = {
@@ -2154,6 +2199,7 @@ export type AgencyUpdateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutClientsInput = {
@@ -2195,6 +2241,7 @@ export type AgencyUncheckedUpdateWithoutClientsInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutLedgersInput = {
@@ -2236,6 +2283,7 @@ export type AgencyCreateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutLedgersInput = {
@@ -2277,6 +2325,7 @@ export type AgencyUncheckedCreateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutLedgersInput = {
@@ -2334,6 +2383,7 @@ export type AgencyUpdateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutLedgersInput = {
@@ -2375,6 +2425,7 @@ export type AgencyUncheckedUpdateWithoutLedgersInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutDealsInput = {
@@ -2416,6 +2467,7 @@ export type AgencyCreateWithoutDealsInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutDealsInput = {
@@ -2457,6 +2509,7 @@ export type AgencyUncheckedCreateWithoutDealsInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutDealsInput = {
@@ -2514,6 +2567,7 @@ export type AgencyUpdateWithoutDealsInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutDealsInput = {
@@ -2555,6 +2609,7 @@ export type AgencyUncheckedUpdateWithoutDealsInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutExpensesInput = {
@@ -2596,6 +2651,7 @@ export type AgencyCreateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutExpensesInput = {
@@ -2637,6 +2693,7 @@ export type AgencyUncheckedCreateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutExpensesInput = {
@@ -2694,6 +2751,7 @@ export type AgencyUpdateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutExpensesInput = {
@@ -2735,6 +2793,7 @@ export type AgencyUncheckedUpdateWithoutExpensesInput = {
   rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyCreateWithoutRentCollectionsInput = {
@@ -2776,6 +2835,7 @@ export type AgencyCreateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyUncheckedCreateWithoutRentCollectionsInput = {
@@ -2817,6 +2877,7 @@ export type AgencyUncheckedCreateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
   agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
   deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+  promotions?: Prisma.PromotionUncheckedCreateNestedManyWithoutAgencyInput
 }
 
 export type AgencyCreateOrConnectWithoutRentCollectionsInput = {
@@ -2874,6 +2935,7 @@ export type AgencyUpdateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUpdateManyWithoutAgencyNestedInput
 }
 
 export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
@@ -2915,6 +2977,191 @@ export type AgencyUncheckedUpdateWithoutRentCollectionsInput = {
   expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
   agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
   deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
+  promotions?: Prisma.PromotionUncheckedUpdateManyWithoutAgencyNestedInput
+}
+
+export type AgencyCreateWithoutPromotionsInput = {
+  id?: string
+  name: string
+  licenseNumber?: string | null
+  verified?: boolean
+  verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  logo?: string | null
+  phone?: string | null
+  address?: string | null
+  description?: string | null
+  ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  storefrontPhoto?: string | null
+  ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutAgencyInput
+  listings?: Prisma.ListingCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutAgencyInput
+  publicListings?: Prisma.PublicListingCreateNestedManyWithoutAgencyInput
+  clients?: Prisma.ClientCreateNestedManyWithoutAgencyInput
+  ledgers?: Prisma.FinancialLedgerCreateNestedManyWithoutAgencyInput
+  expenses?: Prisma.ExpenseCreateNestedManyWithoutAgencyInput
+  rentCollections?: Prisma.RentCollectionCreateNestedManyWithoutAgencyInput
+  agencyReviews?: Prisma.AgencyReviewCreateNestedManyWithoutAgencyInput
+  deals?: Prisma.DealCreateNestedManyWithoutAgencyInput
+}
+
+export type AgencyUncheckedCreateWithoutPromotionsInput = {
+  id?: string
+  name: string
+  licenseNumber?: string | null
+  verified?: boolean
+  verifiedLicense?: boolean
+  subscriptionStatus?: $Enums.SubscriptionStatus
+  subscriptionEndDate?: Date | string | null
+  isKycVerified?: boolean
+  logo?: string | null
+  phone?: string | null
+  address?: string | null
+  description?: string | null
+  ntn?: string | null
+  cnicNumber?: string | null
+  cnicFrontUrl?: string | null
+  cnicBackUrl?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  storefrontPhoto?: string | null
+  ownerPhoto?: string | null
+  commercialLicenseDoc?: string | null
+  bankName?: string | null
+  accountTitle?: string | null
+  accountNumber?: string | null
+  iban?: string | null
+  swiftCode?: string | null
+  bankDetailsUpdatedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutAgencyInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutAgencyInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutAgencyInput
+  publicListings?: Prisma.PublicListingUncheckedCreateNestedManyWithoutAgencyInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutAgencyInput
+  ledgers?: Prisma.FinancialLedgerUncheckedCreateNestedManyWithoutAgencyInput
+  expenses?: Prisma.ExpenseUncheckedCreateNestedManyWithoutAgencyInput
+  rentCollections?: Prisma.RentCollectionUncheckedCreateNestedManyWithoutAgencyInput
+  agencyReviews?: Prisma.AgencyReviewUncheckedCreateNestedManyWithoutAgencyInput
+  deals?: Prisma.DealUncheckedCreateNestedManyWithoutAgencyInput
+}
+
+export type AgencyCreateOrConnectWithoutPromotionsInput = {
+  where: Prisma.AgencyWhereUniqueInput
+  create: Prisma.XOR<Prisma.AgencyCreateWithoutPromotionsInput, Prisma.AgencyUncheckedCreateWithoutPromotionsInput>
+}
+
+export type AgencyUpsertWithoutPromotionsInput = {
+  update: Prisma.XOR<Prisma.AgencyUpdateWithoutPromotionsInput, Prisma.AgencyUncheckedUpdateWithoutPromotionsInput>
+  create: Prisma.XOR<Prisma.AgencyCreateWithoutPromotionsInput, Prisma.AgencyUncheckedCreateWithoutPromotionsInput>
+  where?: Prisma.AgencyWhereInput
+}
+
+export type AgencyUpdateToOneWithWhereWithoutPromotionsInput = {
+  where?: Prisma.AgencyWhereInput
+  data: Prisma.XOR<Prisma.AgencyUpdateWithoutPromotionsInput, Prisma.AgencyUncheckedUpdateWithoutPromotionsInput>
+}
+
+export type AgencyUpdateWithoutPromotionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutAgencyNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutAgencyNestedInput
+  publicListings?: Prisma.PublicListingUpdateManyWithoutAgencyNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutAgencyNestedInput
+  ledgers?: Prisma.FinancialLedgerUpdateManyWithoutAgencyNestedInput
+  expenses?: Prisma.ExpenseUpdateManyWithoutAgencyNestedInput
+  rentCollections?: Prisma.RentCollectionUpdateManyWithoutAgencyNestedInput
+  agencyReviews?: Prisma.AgencyReviewUpdateManyWithoutAgencyNestedInput
+  deals?: Prisma.DealUpdateManyWithoutAgencyNestedInput
+}
+
+export type AgencyUncheckedUpdateWithoutPromotionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  licenseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedLicense?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  subscriptionStatus?: Prisma.EnumSubscriptionStatusFieldUpdateOperationsInput | $Enums.SubscriptionStatus
+  subscriptionEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isKycVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ntn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicFrontUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cnicBackUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  storefrontPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerPhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commercialLicenseDoc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  iban?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  swiftCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankDetailsUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutAgencyNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutAgencyNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutAgencyNestedInput
+  publicListings?: Prisma.PublicListingUncheckedUpdateManyWithoutAgencyNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutAgencyNestedInput
+  ledgers?: Prisma.FinancialLedgerUncheckedUpdateManyWithoutAgencyNestedInput
+  expenses?: Prisma.ExpenseUncheckedUpdateManyWithoutAgencyNestedInput
+  rentCollections?: Prisma.RentCollectionUncheckedUpdateManyWithoutAgencyNestedInput
+  agencyReviews?: Prisma.AgencyReviewUncheckedUpdateManyWithoutAgencyNestedInput
+  deals?: Prisma.DealUncheckedUpdateManyWithoutAgencyNestedInput
 }
 
 
@@ -2933,6 +3180,7 @@ export type AgencyCountOutputType = {
   rentCollections: number
   agencyReviews: number
   deals: number
+  promotions: number
 }
 
 export type AgencyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2946,6 +3194,7 @@ export type AgencyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   rentCollections?: boolean | AgencyCountOutputTypeCountRentCollectionsArgs
   agencyReviews?: boolean | AgencyCountOutputTypeCountAgencyReviewsArgs
   deals?: boolean | AgencyCountOutputTypeCountDealsArgs
+  promotions?: boolean | AgencyCountOutputTypeCountPromotionsArgs
 }
 
 /**
@@ -3028,6 +3277,13 @@ export type AgencyCountOutputTypeCountDealsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.DealWhereInput
 }
 
+/**
+ * AgencyCountOutputType without action
+ */
+export type AgencyCountOutputTypeCountPromotionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PromotionWhereInput
+}
+
 
 export type AgencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3069,6 +3325,7 @@ export type AgencySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   rentCollections?: boolean | Prisma.Agency$rentCollectionsArgs<ExtArgs>
   agencyReviews?: boolean | Prisma.Agency$agencyReviewsArgs<ExtArgs>
   deals?: boolean | Prisma.Agency$dealsArgs<ExtArgs>
+  promotions?: boolean | Prisma.Agency$promotionsArgs<ExtArgs>
   _count?: boolean | Prisma.AgencyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agency"]>
 
@@ -3180,6 +3437,7 @@ export type AgencyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   rentCollections?: boolean | Prisma.Agency$rentCollectionsArgs<ExtArgs>
   agencyReviews?: boolean | Prisma.Agency$agencyReviewsArgs<ExtArgs>
   deals?: boolean | Prisma.Agency$dealsArgs<ExtArgs>
+  promotions?: boolean | Prisma.Agency$promotionsArgs<ExtArgs>
   _count?: boolean | Prisma.AgencyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AgencyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3198,6 +3456,7 @@ export type $AgencyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     rentCollections: Prisma.$RentCollectionPayload<ExtArgs>[]
     agencyReviews: Prisma.$AgencyReviewPayload<ExtArgs>[]
     deals: Prisma.$DealPayload<ExtArgs>[]
+    promotions: Prisma.$PromotionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3633,6 +3892,7 @@ export interface Prisma__AgencyClient<T, Null = never, ExtArgs extends runtime.T
   rentCollections<T extends Prisma.Agency$rentCollectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$rentCollectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RentCollectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   agencyReviews<T extends Prisma.Agency$agencyReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$agencyReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgencyReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   deals<T extends Prisma.Agency$dealsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$dealsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  promotions<T extends Prisma.Agency$promotionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Agency$promotionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4321,6 +4581,30 @@ export type Agency$dealsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.DealScalarFieldEnum | Prisma.DealScalarFieldEnum[]
+}
+
+/**
+ * Agency.promotions
+ */
+export type Agency$promotionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Promotion
+   */
+  select?: Prisma.PromotionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Promotion
+   */
+  omit?: Prisma.PromotionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PromotionInclude<ExtArgs> | null
+  where?: Prisma.PromotionWhereInput
+  orderBy?: Prisma.PromotionOrderByWithRelationInput | Prisma.PromotionOrderByWithRelationInput[]
+  cursor?: Prisma.PromotionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PromotionScalarFieldEnum | Prisma.PromotionScalarFieldEnum[]
 }
 
 /**

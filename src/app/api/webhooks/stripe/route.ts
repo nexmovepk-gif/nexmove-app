@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   const rawKey = process.env.STRIPE_SECRET_KEY || '';
   const cleanKey = rawKey.replace(/[^a-zA-Z0-9_]/g, '').trim();
 
-  if (!cleanKey || !cleanKey.startsWith('sk_test_')) {
+  if (!cleanKey || !cleanKey.startsWith('sk_')) {
     return NextResponse.json({ error: 'Invalid Stripe Secret Key configuration.' }, { status: 500 });
   }
 
@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
 
+      const promotionId = session.metadata?.promotionId || '';
+      const durationDays = Number(session.metadata?.durationDays) || 7;
       const propertyId = session.metadata?.propertyId || '';
       const buyerName = session.metadata?.buyerName || session.customer_details?.name || 'Anonymous Buyer';
       const buyerPhone = session.metadata?.buyerPhone || session.customer_details?.phone || '';
@@ -51,6 +53,35 @@ export async function POST(req: NextRequest) {
           : session.payment_intent?.id || session.id;
 
       const amountTotal = (session.amount_total ?? 0) / 100;
+
+      // ── Handle Promotion Ad Activation ──────────────────────────────────────
+      if (promotionId) {
+        console.log(`[Stripe Webhook] Activating Promotion Ad ${promotionId} for ${durationDays} days`);
+        try {
+          const startDate = new Date();
+          const endDate = new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000);
+
+          await prisma.promotion.update({
+            where: { id: promotionId },
+            data: {
+              status: 'ACTIVE',
+              startDate,
+              endDate,
+              stripePaymentIntentId: paymentIntentId,
+            },
+          });
+          console.log(`[Stripe Webhook] Successfully activated Promotion Ad ${promotionId}!`);
+
+          return NextResponse.json({
+            received: true,
+            status: 'PROMOTION_ACTIVATED',
+            promotionId,
+          });
+        } catch (promoErr) {
+          console.error('[Stripe Webhook] Error activating promotion:', promoErr);
+        }
+      }
+
       const escrowRef = `ESC-${paymentIntentId.slice(-8).toUpperCase()}`;
 
       console.log(`[Stripe Webhook] Processing checkout.session.completed:`, {

@@ -131,6 +131,7 @@ model User {
   investorPortfolios  InvestorPortfolio[]
   investorCashflows   InvestorCashflow[]
   investorWallet      InvestorWallet?
+  promotions          Promotion[]
 
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
@@ -177,6 +178,7 @@ model Agency {
   rentCollections   RentCollection[]
   agencyReviews       AgencyReview[]
   deals               Deal[]
+  promotions          Promotion[]
 
 
   createdAt           DateTime            @default(now())
@@ -685,4 +687,69 @@ model PasswordResetToken {
   userId    String
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+// ─── Ads & Promotions Manager ────────────────────────────────────────────────
+
+enum PromotionType {
+  PROPERTY
+  AGENCY_PROFILE
+}
+
+enum PromotionPackage {
+  BASIC
+  STANDARD
+  PREMIUM
+}
+
+enum PromotionStatus {
+  PENDING
+  ACTIVE
+  PAUSED
+  EXPIRED
+  REJECTED
+}
+
+/// Self-serve Property & Agency promotions (Ads Manager)
+model Promotion {
+  id                    String           @id @default(uuid())
+  type                  PromotionType    @default(PROPERTY)
+  entityId              String           // Property ID or Agency ID
+  entityTitle           String           // e.g. "Luxury 1 Kanal Villa in DHA" or "Skyline Real Estate"
+  entityImage           String?          // Thumbnail / Hero image URL
+  entityCity            String?          // e.g. Lahore, Islamabad
+  entityPrice           Float?           // Price if property
+
+  ownerId               String           // User ID or Agency ID
+  ownerType             String           // "USER" | "AGENCY"
+  ownerName             String?          // User name or Agency name
+  ownerEmail            String?
+
+  user                  User?            @relation(fields: [userId], references: [id])
+  userId                String?
+
+  agency                Agency?          @relation(fields: [agencyId], references: [id])
+  agencyId              String?
+
+  package               PromotionPackage @default(BASIC)
+  durationDays          Int              @default(7)
+  budgetPKR             Float            @default(1000)
+  placements            String[]         @default(["HOMEPAGE", "SEARCH_TOP"]) // HOMEPAGE, SEARCH_TOP, SIDEBAR
+
+  status                PromotionStatus  @default(PENDING)
+  startDate             DateTime?
+  endDate               DateTime?
+
+  // Real-time Analytics
+  viewsCount            Int              @default(0) // Total impressions
+  clicksCount           Int              @default(0) // Link clicks
+  searchImpressions     Int              @default(0) // Search results appearances
+
+  // Stripe Payment info
+  stripeSessionId       String?          @unique
+  stripePaymentIntentId String?
+
+  adminNote             String?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
 }

@@ -72,7 +72,8 @@ export const ModelName = {
   InvestorPortfolio: 'InvestorPortfolio',
   InvestorCashflow: 'InvestorCashflow',
   InvestorWallet: 'InvestorWallet',
-  PasswordResetToken: 'PasswordResetToken'
+  PasswordResetToken: 'PasswordResetToken',
+  Promotion: 'Promotion'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -578,6 +579,40 @@ export const PasswordResetTokenScalarFieldEnum = {
 } as const
 
 export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const PromotionScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  entityId: 'entityId',
+  entityTitle: 'entityTitle',
+  entityImage: 'entityImage',
+  entityCity: 'entityCity',
+  entityPrice: 'entityPrice',
+  ownerId: 'ownerId',
+  ownerType: 'ownerType',
+  ownerName: 'ownerName',
+  ownerEmail: 'ownerEmail',
+  userId: 'userId',
+  agencyId: 'agencyId',
+  package: 'package',
+  durationDays: 'durationDays',
+  budgetPKR: 'budgetPKR',
+  placements: 'placements',
+  status: 'status',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  viewsCount: 'viewsCount',
+  clicksCount: 'clicksCount',
+  searchImpressions: 'searchImpressions',
+  stripeSessionId: 'stripeSessionId',
+  stripePaymentIntentId: 'stripePaymentIntentId',
+  adminNote: 'adminNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PromotionScalarFieldEnum = (typeof PromotionScalarFieldEnum)[keyof typeof PromotionScalarFieldEnum]
 
 
 export const SortOrder = {

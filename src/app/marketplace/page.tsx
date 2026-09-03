@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import VerifiedBadge, { VerificationTier } from '@/components/VerifiedBadge';
 import { useCurrency } from '@/components/CurrencyContext';
+import FeaturedSponsoredSection from '@/components/FeaturedSponsoredSection';
 import { Heart } from 'lucide-react';
 
 interface Listing {
@@ -193,6 +194,9 @@ export default function MarketplacePage() {
             <span className="text-xs text-slate-700 font-medium">Verified properties only</span>
           </div>
         </div>
+
+        {/* ── Sponsored & Featured Top Results ──────────────────────── */}
+        <FeaturedSponsoredSection placement="SEARCH_TOP" city={filterCity || undefined} limit={3} />
 
         {/* Results */}
         {loading ? (

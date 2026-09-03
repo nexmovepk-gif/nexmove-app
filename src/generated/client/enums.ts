@@ -143,3 +143,31 @@ export const CashflowStatus = {
 } as const
 
 export type CashflowStatus = (typeof CashflowStatus)[keyof typeof CashflowStatus]
+
+
+export const PromotionType = {
+  PROPERTY: 'PROPERTY',
+  AGENCY_PROFILE: 'AGENCY_PROFILE'
+} as const
+
+export type PromotionType = (typeof PromotionType)[keyof typeof PromotionType]
+
+
+export const PromotionPackage = {
+  BASIC: 'BASIC',
+  STANDARD: 'STANDARD',
+  PREMIUM: 'PREMIUM'
+} as const
+
+export type PromotionPackage = (typeof PromotionPackage)[keyof typeof PromotionPackage]
+
+
+export const PromotionStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  EXPIRED: 'EXPIRED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type PromotionStatus = (typeof PromotionStatus)[keyof typeof PromotionStatus]

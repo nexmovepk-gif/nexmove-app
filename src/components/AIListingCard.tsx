@@ -6,7 +6,7 @@ import {
   Home, Building2, MapPin, BedDouble, Bath,
   CheckCircle2, Clock, CalendarClock, BadgeCheck, XCircle,
   MoreVertical, Eye, Pencil, Trash2, RotateCcw,
-  Sparkles, Send, MessageSquare,
+  Sparkles, Send, MessageSquare, Rocket,
   ChevronDown, ChevronUp, Share2, Check
 } from 'lucide-react';
 
@@ -116,11 +116,13 @@ export default function AIListingCard({
   listing,
   onStatusChange,
   onDelete,
+  onPromote,
   editHref = '/agency/add-property',
 }: {
   listing: AIListingItem;
-  onStatusChange: (id: string, newStatus: ListingStatusKey) => void;
+  onStatusChange?: (id: string, newStatus: ListingStatusKey) => void;
   onDelete?: (id: string) => void;
+  onPromote?: (item: AIListingItem) => void;
   editHref?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -280,7 +282,7 @@ export default function AIListingCard({
                   {listing.status === 'ACTIVE' ? (
                     <button
                       onClick={() => {
-                        onStatusChange(listing.id, 'SOLD_RENTED');
+                        onStatusChange?.(listing.id, 'SOLD_RENTED');
                         setMenuOpen(false);
                       }}
                       className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 text-slate-600 text-left transition"
@@ -290,7 +292,7 @@ export default function AIListingCard({
                   ) : (
                     <button
                       onClick={() => {
-                        onStatusChange(listing.id, 'ACTIVE');
+                        onStatusChange?.(listing.id, 'ACTIVE');
                         setMenuOpen(false);
                       }}
                       className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-emerald-50 text-emerald-700 text-left transition"
@@ -467,6 +469,17 @@ export default function AIListingCard({
 
           {/* Quick Action Buttons */}
           <div className="flex items-center gap-1.5">
+            {onPromote && (
+              <button
+                onClick={() => onPromote(listing)}
+                title="Boost Listing & Run Paid Ad Campaign"
+                className="text-xs bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black px-2.5 py-1.5 rounded-xl shadow-sm transition flex items-center gap-1"
+              >
+                <Rocket className="w-3 h-3" />
+                <span>Boost</span>
+              </button>
+            )}
+
             <button
               onClick={handleWhatsApp}
               title="Launch Instant WhatsApp Inquiry Chat"

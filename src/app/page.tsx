@@ -1,6 +1,7 @@
 // src/app/page.tsx
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import FeaturedSponsoredSection from '@/components/FeaturedSponsoredSection';
 
 export const metadata: Metadata = {
   title: 'NexMove PropTech — Next-Gen Global Real Estate Ecosystem',
@@ -81,6 +82,9 @@ export default function Home() {
             </span>
           ))}
         </div>
+
+        {/* ⭐ Featured & Sponsored Platform Ads */}
+        <FeaturedSponsoredSection placement="HOMEPAGE" limit={6} />
 
         {/* Phase 2 Features Card */}
         <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">

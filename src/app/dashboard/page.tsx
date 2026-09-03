@@ -7,17 +7,20 @@ import { useSession } from 'next-auth/react';
 import AIListingCard, { AIListingItem, ListingStatusKey } from '@/components/AIListingCard';
 import ActivityCenter, { ActivityNotification } from '@/components/ActivityCenter';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import AdsManagerPanel from '@/components/AdsManagerPanel';
+import PromoteListingModal, { PromoteTargetItem } from '@/components/PromoteListingModal';
 import {
   Search, SlidersHorizontal, Plus, LogOut,
   Sparkles, Flame, CheckCircle2, Clock, CalendarClock,
   BadgeCheck, XCircle, LayoutList, ChevronDown, RefreshCw,
-  ShieldCheck, Loader2
+  ShieldCheck, Loader2, Rocket
 } from 'lucide-react';
 
-type TabKey = 'ALL' | ListingStatusKey;
+type TabKey = 'ALL' | ListingStatusKey | 'ADS_MANAGER';
 
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
   { key: 'ALL',            label: 'All Listings',              icon: <LayoutList className="w-3.5 h-3.5" /> },
+  { key: 'ADS_MANAGER',    label: '📢 Ads & Boost Manager',    icon: <Rocket className="w-3.5 h-3.5 text-emerald-600" /> },
   { key: 'ACTIVE',         label: 'Active',                     icon: <CheckCircle2 className="w-3.5 h-3.5" /> },
   { key: 'PENDING',        label: 'Pending AI Check',           icon: <Clock className="w-3.5 h-3.5" /> },
   { key: 'AVAILABLE_SOON', label: 'Available Soon (Pre-Match)', icon: <CalendarClock className="w-3.5 h-3.5" /> },
@@ -27,6 +30,7 @@ const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
 
 const TAB_ACTIVE_STYLES: Record<TabKey, string> = {
   ALL:            'border-slate-800 text-slate-900 bg-white shadow-sm',
+  ADS_MANAGER:    'border-emerald-600 text-emerald-900 bg-emerald-100/90 shadow-sm font-black',
   ACTIVE:         'border-emerald-600 text-emerald-700 bg-emerald-50/70',
   PENDING:        'border-amber-500 text-amber-700 bg-amber-50/70',
   AVAILABLE_SOON: 'border-indigo-600 text-indigo-700 bg-indigo-50/70',
@@ -63,6 +67,7 @@ function UserDashboardContent() {
   const [filterPurpose, setFilterPurpose] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [notifications, setNotifications] = useState<ActivityNotification[]>([]);
+  const [promoteItem, setPromoteItem] = useState<PromoteTargetItem | null>(null);
 
   // Fetch KYC & subscription status from DB
   useEffect(() => {
@@ -493,8 +498,21 @@ function UserDashboardContent() {
           </div>
         )}
 
-        {/* ── Loading Spinner or Listings Grid / Empty State ─────────────── */}
-        {loading ? (
+        {/* ── If Ads Manager Tab is Selected ──────────────────────── */}
+        {activeTab === 'ADS_MANAGER' ? (
+          <div className="mb-12">
+            <AdsManagerPanel
+              availableListings={listings.map((l) => ({
+                id: l.id,
+                title: l.title,
+                image: Array.isArray(l.images) && l.images.length > 0 ? l.images[0] : null,
+                city: l.city,
+                price: l.price,
+              }))}
+              isAgency={false}
+            />
+          </div>
+        ) : loading ? (
           <div className="bg-white border border-slate-200 rounded-3xl p-16 text-center shadow-sm flex flex-col items-center justify-center">
             <Loader2 className="w-8 h-8 text-emerald-600 animate-spin mb-3" />
             <p className="text-sm font-bold text-slate-700">Connecting to Real Database...</p>
@@ -528,11 +546,28 @@ function UserDashboardContent() {
                 listing={listing}
                 onStatusChange={handleStatusChange}
                 onDelete={handleDelete}
+                onPromote={(item) =>
+                  setPromoteItem({
+                    id: item.id,
+                    title: item.title,
+                    image: Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null,
+                    city: item.city,
+                    price: item.price,
+                  })
+                }
                 editHref="/dashboard/add-property"
               />
             ))}
           </div>
         )}
+
+        {/* ── Boost Modal ────────────────────────────────────────────── */}
+        <PromoteListingModal
+          item={promoteItem}
+          isOpen={Boolean(promoteItem)}
+          onClose={() => setPromoteItem(null)}
+          onSuccess={() => fetchListings()}
+        />
 
         {/* ── Activity Center / Notifications ────────────────────────────── */}
         {notifications.length > 0 && <ActivityCenter notifications={notifications} />}

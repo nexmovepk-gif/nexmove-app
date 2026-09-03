@@ -161,7 +161,7 @@ export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<"management" | "properties" | "architects" | "agencies" | "kyc" | "system">("management");
+  const [activeTab, setActiveTab] = useState<"management" | "ads" | "properties" | "architects" | "agencies" | "kyc" | "system">("management");
   const [data, setData] = useState<ApprovalsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -190,12 +190,25 @@ export default function AdminDashboard() {
 
   // ─── Permanent Delete Modal State ──────────────────────────────────────────
   interface DeleteModalTarget {
-    type: "property" | "agency" | "user" | "architect";
+    type: "property" | "agency" | "user" | "architect" | "ad";
     id: string;
     title: string;
   }
   const [deleteModalTarget, setDeleteModalTarget] = useState<DeleteModalTarget | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // ─── Admin Ads & Promotions Manager State ─────────────────────────────────
+  const [adminPromotions, setAdminPromotions] = useState<Record<string, unknown>[]>([]);
+  const [promoStats, setPromoStats] = useState<{
+    totalAds: number;
+    activeAds: number;
+    pendingAds: number;
+    totalAdRevenuePKR: number;
+    totalViews: number;
+    totalClicks: number;
+  } | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoStatusFilter, setPromoStatusFilter] = useState("ALL");
 
   // ─── Profile Details Modal State ───────────────────────────────────────────
   const [selectedDetail, setSelectedDetail] = useState<{
@@ -216,6 +229,60 @@ export default function AdminDashboard() {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 4000);
+  };
+
+  const fetchAdminPromotions = useCallback(async () => {
+    setPromoLoading(true);
+    try {
+      const res = await fetch(`/api/admin/promotions?status=${promoStatusFilter}`, { cache: "no-store" });
+      const json = await res.json();
+      if (json.success) {
+        setAdminPromotions(json.promotions || []);
+        if (json.stats) setPromoStats(json.stats);
+      }
+    } catch {
+      /* ignore */
+    } finally {
+      setPromoLoading(false);
+    }
+  }, [promoStatusFilter]);
+
+  const handleAdminPromoAction = async (promotionId: string, action: string, extra?: { days?: number }) => {
+    try {
+      setActionLoading(`promo-${promotionId}-${action}`);
+      if (action === "DELETE") {
+        const res = await fetch(`/api/admin/promotions?id=${promotionId}`, { method: "DELETE" });
+        if (res.ok) {
+          addToast("Promotion permanently removed.", "success");
+          await fetchAdminPromotions();
+        }
+      } else {
+        const res = await fetch(`/api/admin/promotions`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            promotionId,
+            status:
+              action === "ACTIVATE"
+                ? "ACTIVE"
+                : action === "PAUSE"
+                ? "PAUSED"
+                : action === "REJECT"
+                ? "REJECTED"
+                : undefined,
+            extendDays: action === "EXTEND" ? (extra?.days || 7) : undefined,
+          }),
+        });
+        if (res.ok) {
+          addToast(`Promotion updated (${action}).`, "success");
+          await fetchAdminPromotions();
+        }
+      }
+    } catch {
+      addToast("Failed to update promotion", "error");
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const fetchProperties = useCallback(async () => {
@@ -259,6 +326,8 @@ export default function AdminDashboard() {
                 }
               : null
           );
+        } else if (deleteModalTarget.type === "ad") {
+          setAdminPromotions((prev) => prev.filter((p) => p.id !== deleteModalTarget.id));
         }
         setDeleteModalTarget(null);
         setSelectedDetail(null);
@@ -596,6 +665,12 @@ export default function AdminDashboard() {
       label: "User & Agency Management",
       emoji: "👥",
       count: managedAgencies.length + managedUsers.length,
+    },
+    {
+      key: "ads" as const,
+      label: "Ads & Revenue",
+      emoji: "📢",
+      count: promoStats?.activeAds ?? 0,
     },
     {
       key: "properties" as const,
@@ -1216,6 +1291,256 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* ── Tab: Ads & Revenue Management ──────────────────────────────────── */}
+        {activeTab === "ads" && (
+          <section className="flex flex-col gap-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-extrabold text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                  <span>📢 Platform Ads & Paid Promotions Manager</span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Review real-time advertiser campaigns, approve sponsored listings, and monitor ad revenue.
+                </p>
+              </div>
+
+              <button
+                onClick={fetchAdminPromotions}
+                disabled={promoLoading}
+                className="self-start sm:self-auto text-xs font-bold px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition flex items-center gap-1.5"
+              >
+                {promoLoading ? (
+                  <span className="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  "↻"
+                )}
+                <span>Refresh Ads</span>
+              </button>
+            </div>
+
+            {/* Ads Revenue & Analytics KPI Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-4">
+                <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Total Ad Revenue</span>
+                <p className="text-xl font-black text-white mt-1">
+                  Rs. {promoStats?.totalAdRevenuePKR.toLocaleString() ?? 0}
+                </p>
+                <span className="text-[10px] text-slate-400">All-time paid ads</span>
+              </div>
+
+              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Active Campaigns</span>
+                <p className="text-xl font-black text-emerald-400 mt-1">
+                  {promoStats?.activeAds ?? 0}
+                </p>
+                <span className="text-[10px] text-slate-500">Live on platform</span>
+              </div>
+
+              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Impressions</span>
+                <p className="text-xl font-black text-teal-400 mt-1">
+                  {promoStats?.totalViews.toLocaleString() ?? 0}
+                </p>
+                <span className="text-[10px] text-slate-500">Public ad views</span>
+              </div>
+
+              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Buyer Clicks</span>
+                <p className="text-xl font-black text-indigo-400 mt-1">
+                  {promoStats?.totalClicks.toLocaleString() ?? 0}
+                </p>
+                <span className="text-[10px] text-slate-500">Click-throughs</span>
+              </div>
+            </div>
+
+            {/* Status Filters */}
+            <div className="flex items-center gap-1.5 overflow-x-auto bg-slate-950/60 p-1 rounded-2xl border border-slate-800/80">
+              {["ALL", "ACTIVE", "PENDING", "PAUSED", "EXPIRED", "REJECTED"].map((st) => (
+                <button
+                  key={st}
+                  onClick={() => setPromoStatusFilter(st)}
+                  className={`text-xs font-bold px-3 py-1.5 rounded-xl transition ${
+                    promoStatusFilter === st
+                      ? "bg-purple-600 text-white shadow"
+                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
+                  }`}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+
+            {/* Promotions List */}
+            {promoLoading ? (
+              <SkeletonRows count={4} />
+            ) : adminPromotions.length === 0 ? (
+              <EmptyState emoji="📢" text="No ad campaigns found in this filter." />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {adminPromotions.map((promo) => {
+                  const isActive = promo.status === "ACTIVE";
+                  const isPending = promo.status === "PENDING";
+                  const isPaused = promo.status === "PAUSED";
+                  const isActionLoading = actionLoading?.includes(promo.id);
+
+                  return (
+                    <div
+                      key={promo.id}
+                      className={`bg-slate-900/60 border rounded-3xl p-5 flex flex-col justify-between gap-4 transition shadow-lg ${
+                        isActive
+                          ? "border-emerald-500/40"
+                          : isPending
+                          ? "border-amber-500/40"
+                          : "border-slate-800"
+                      }`}
+                    >
+                      <div>
+                        {/* Header Badge */}
+                        <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 ${
+                                isActive
+                                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                                  : isPending
+                                  ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                                  : isPaused
+                                  ? "bg-blue-500/20 text-blue-300 border-blue-500/40"
+                                  : "bg-slate-800 text-slate-400 border-slate-700"
+                              }`}
+                            >
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  isActive ? "bg-emerald-400 animate-pulse" : "bg-slate-400"
+                                }`}
+                              />
+                              {promo.status}
+                            </span>
+                            <span className="text-[10px] font-bold text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">
+                              {promo.package} ({promo.durationDays}D)
+                            </span>
+                          </div>
+
+                          <span className="text-xs font-black text-emerald-400">
+                            Rs. {promo.budgetPKR?.toLocaleString()} PKR
+                          </span>
+                        </div>
+
+                        {/* Target Info */}
+                        <div className="flex items-start gap-3 mt-3.5">
+                          {promo.entityImage ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={promo.entityImage as string}
+                              alt={String(promo.entityTitle || "Promo")}
+                              className="w-16 h-16 object-cover rounded-2xl border border-slate-700 flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl border border-slate-700 flex-shrink-0">
+                              🏢
+                            </div>
+                          )}
+
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-sm font-black text-slate-100 truncate">{promo.entityTitle}</h4>
+                            <p className="text-xs text-slate-400 mt-0.5">
+                              Owner: <strong className="text-slate-200">{promo.ownerName || promo.ownerEmail || "Advertiser"}</strong> ({promo.ownerType})
+                            </p>
+                            {promo.ownerEmail && (
+                              <p className="text-[11px] text-slate-500">{promo.ownerEmail}</p>
+                            )}
+
+                            {/* Placements */}
+                            <div className="flex items-center gap-1 mt-2 flex-wrap">
+                              {Array.isArray(promo.placements) &&
+                                promo.placements.map((pl: string) => (
+                                  <span
+                                    key={pl}
+                                    className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-teal-300 border border-teal-500/20"
+                                  >
+                                    {pl}
+                                  </span>
+                                ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Performance Numbers */}
+                        <div className="grid grid-cols-3 gap-2 bg-slate-950/60 border border-slate-800 rounded-2xl p-2.5 mt-3.5 text-center">
+                          <div>
+                            <span className="text-[9px] text-slate-500 uppercase font-bold">Views</span>
+                            <p className="text-xs font-black text-white">{promo.viewsCount?.toLocaleString() ?? 0}</p>
+                          </div>
+                          <div className="border-x border-slate-800">
+                            <span className="text-[9px] text-slate-500 uppercase font-bold">Searches</span>
+                            <p className="text-xs font-black text-indigo-400">{promo.searchImpressions?.toLocaleString() ?? 0}</p>
+                          </div>
+                          <div>
+                            <span className="text-[9px] text-slate-500 uppercase font-bold">Clicks</span>
+                            <p className="text-xs font-black text-emerald-400">{promo.clicksCount?.toLocaleString() ?? 0}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="border-t border-slate-800 pt-3 flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5">
+                          {isPending && (
+                            <button
+                              disabled={Boolean(isActionLoading)}
+                              onClick={() => handleAdminPromoAction(promo.id, "ACTIVATE")}
+                              className="text-xs font-black bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-xl transition shadow flex items-center gap-1"
+                            >
+                              ⚡ Approve & Activate
+                            </button>
+                          )}
+
+                          {isActive && (
+                            <button
+                              disabled={Boolean(isActionLoading)}
+                              onClick={() => handleAdminPromoAction(promo.id, "PAUSE")}
+                              className="text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl transition"
+                            >
+                              ⏸️ Pause
+                            </button>
+                          )}
+
+                          {isPaused && (
+                            <button
+                              disabled={Boolean(isActionLoading)}
+                              onClick={() => handleAdminPromoAction(promo.id, "ACTIVATE")}
+                              className="text-xs font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition"
+                            >
+                              ▶️ Resume
+                            </button>
+                          )}
+
+                          <button
+                            disabled={Boolean(isActionLoading)}
+                            onClick={() => handleAdminPromoAction(promo.id, "EXTEND", { days: 7 })}
+                            className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-xl transition"
+                          >
+                            +7 Days
+                          </button>
+                        </div>
+
+                        <button
+                          disabled={Boolean(isActionLoading)}
+                          onClick={() => setDeleteModalTarget({ type: "ad", id: promo.id, title: promo.entityTitle })}
+                          className="p-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 rounded-xl transition"
+                          title="Permanently Delete Ad"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </section>

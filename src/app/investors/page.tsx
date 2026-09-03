@@ -32,6 +32,7 @@ interface InvestmentDeal {
   escrowSecured: boolean
   image: string
   agencyName: string
+  isSaved?: boolean
 }
 
 interface PortfolioInvestment {
@@ -177,36 +178,37 @@ export default function InvestorPortalPage() {
           property?: RawListingSpec | null;
         }
 
-        savedDeals = (savedRes.value.saved as RawSavedItem[])
-          .map((item: RawSavedItem) => {
-            const p = item.publicListing || item.property;
-            if (!p) return null;
-            const pricePKR = p.price || 0;
-            const marketValuationPKR = pricePKR * 1.15;
-            const isOff = Boolean(
-              p.isOffMarket ||
-              (Array.isArray(p.features) && p.features.includes('OFF_MARKET'))
-            );
-            return {
-              id: p.id,
-              title: p.title,
-              location: p.address || 'Pakistan',
-              city: p.city || 'Lahore',
-              propertyType: String(p.propertyType || 'HOUSE'),
-              pricePKR,
-              marketValuationPKR,
-              discountPct: 13.0,
-              rentalYieldPct: 8.4,
-              capitalGrowth3YrPct: 31,
-              roiScore: 89,
-              isDistress: false,
-              isOffMarket: isOff,
-              escrowSecured: true,
-              image: (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
-              agencyName: p.agency?.name || p.contactName || 'Verified Marketplace Owner',
-            };
-          })
-          .filter((d: InvestmentDeal | null): d is InvestmentDeal => d !== null);
+        const validMapped: InvestmentDeal[] = [];
+        for (const item of (savedRes.value.saved as RawSavedItem[])) {
+          const p = item.publicListing || item.property;
+          if (!p) continue;
+          const pricePKR = p.price || 0;
+          const marketValuationPKR = pricePKR * 1.15;
+          const isOff = Boolean(
+            p.isOffMarket ||
+            (Array.isArray(p.features) && p.features.includes('OFF_MARKET'))
+          );
+          validMapped.push({
+            id: p.id,
+            title: p.title,
+            location: p.address || 'Pakistan',
+            city: p.city || 'Lahore',
+            propertyType: String(p.propertyType || 'HOUSE'),
+            pricePKR,
+            marketValuationPKR,
+            discountPct: 13.0,
+            rentalYieldPct: 8.4,
+            capitalGrowth3YrPct: 31,
+            roiScore: 89,
+            isDistress: false,
+            isOffMarket: isOff,
+            escrowSecured: true,
+            image: (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+            agencyName: p.agency?.name || p.contactName || 'Verified Marketplace Owner',
+            isSaved: true,
+          });
+        }
+        savedDeals = validMapped;
       }
 
       // Merge: bookmarked listings first, then pre-vetted deals (prevent duplicate IDs)
@@ -222,7 +224,7 @@ export default function InvestorPortalPage() {
       for (const d of baseDeals) {
         if (!seenIds.has(d.id)) {
           seenIds.add(d.id);
-          merged.push(d);
+          merged.push({ ...d, isSaved: false });
         }
       }
 
@@ -286,7 +288,44 @@ export default function InvestorPortalPage() {
     return true
   })
 
+  const [savingDealId, setSavingDealId] = useState<string | null>(null)
+
   // Handlers
+  const handleToggleSaveDeal = async (deal: InvestmentDeal) => {
+    setSavingDealId(deal.id)
+    try {
+      if (deal.isSaved) {
+        // Unsave from database
+        const res = await fetch(`/api/saved-listings?listingId=${encodeURIComponent(deal.id)}`, {
+          method: 'DELETE',
+        })
+        if (res.ok) {
+          // Instantly remove unsaved property from dashboard list
+          setInvestmentDeals((prev) => prev.filter((d) => d.id !== deal.id))
+          if (meetingDeal?.id === deal.id) {
+            setMeetingDeal(null)
+          }
+        }
+      } else {
+        // Save to database
+        const res = await fetch('/api/saved-listings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ listingId: deal.id }),
+        })
+        if (res.ok) {
+          setInvestmentDeals((prev) =>
+            prev.map((d) => (d.id === deal.id ? { ...d, isSaved: true } : d))
+          )
+        }
+      }
+    } catch (err) {
+      console.error('Toggle save deal error:', err)
+    } finally {
+      setSavingDealId(null)
+    }
+  }
+
   const handleScheduleMeeting = (e: React.FormEvent) => {
     e.preventDefault()
     setScheduleSuccess(true)
@@ -841,6 +880,31 @@ Status             : ${item.status}
                             className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl transition shadow whitespace-nowrap"
                           >
                             View Deal →
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleToggleSaveDeal(deal)
+                            }}
+                            disabled={savingDealId === deal.id}
+                            title={deal.isSaved ? 'Remove from Investor Dashboard (Unsave)' : 'Save to Investor Dashboard'}
+                            className={`p-2 rounded-xl border transition-all duration-200 flex items-center justify-center ${
+                              deal.isSaved
+                                ? 'bg-rose-50 border-rose-300 text-rose-500 hover:bg-rose-100 hover:border-rose-400 shadow-sm'
+                                : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-rose-50 hover:border-rose-300 hover:text-rose-500'
+                            } ${savingDealId === deal.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                          >
+                            <svg
+                              className={`w-4 h-4 transition-all ${deal.isSaved ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`}
+                              viewBox="0 0 24 24"
+                              fill={deal.isSaved ? 'currentColor' : 'none'}
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                            </svg>
                           </button>
                         </div>
                       </div>
@@ -1432,7 +1496,36 @@ Status             : ${item.status}
                   📍 {meetingDeal.location}, {meetingDeal.city} &bull; via <span className="text-slate-800 font-bold">{meetingDeal.agencyName}</span>
                 </p>
               </div>
-              <button onClick={() => { setMeetingDeal(null); setShowMeetingForm(false) }} className="text-slate-400 hover:text-slate-700 text-lg leading-none p-1">✕</button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleToggleSaveDeal(meetingDeal)}
+                  disabled={savingDealId === meetingDeal.id}
+                  title={meetingDeal.isSaved ? 'Remove from Investor Dashboard (Unsave)' : 'Save to Investor Dashboard'}
+                  className={`p-2 rounded-xl border transition-all duration-200 flex items-center justify-center ${
+                    meetingDeal.isSaved
+                      ? 'bg-rose-50 border-rose-300 text-rose-500 hover:bg-rose-100 shadow-sm'
+                      : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-rose-50 hover:border-rose-300 hover:text-rose-500'
+                  } ${savingDealId === meetingDeal.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <svg
+                    className={`w-4 h-4 transition-all ${meetingDeal.isSaved ? 'fill-rose-500 text-rose-500' : 'text-slate-400'}`}
+                    viewBox="0 0 24 24"
+                    fill={meetingDeal.isSaved ? 'currentColor' : 'none'}
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => { setMeetingDeal(null); setShowMeetingForm(false) }}
+                  className="text-slate-400 hover:text-slate-700 text-lg leading-none p-1 rounded-lg hover:bg-slate-100"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             {/* Property Image & Key Specs */}

@@ -690,6 +690,24 @@ Status             : ${item.status}
                 </div>
               </div>
 
+              {/* Search Filters Row */}
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search by title or location..."
+                  className="flex-1 bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition shadow-sm"
+                />
+                <input
+                  type="text"
+                  value={searchCity}
+                  onChange={(e) => setSearchCity(e.target.value)}
+                  placeholder="Filter by city (Lahore, Karachi...)"
+                  className="flex-1 bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition shadow-sm"
+                />
+              </div>
+
               <div className="flex flex-col gap-4">
                 {filteredDeals.length === 0 ? (
                   <div className="bg-white border border-slate-200 rounded-3xl p-14 text-center flex flex-col items-center gap-4">

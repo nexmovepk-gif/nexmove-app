@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import Script from "next/script";
 import SessionProvider from "@/components/SessionProvider";
@@ -11,15 +10,18 @@ import { CurrencyProvider } from "@/components/CurrencyContext";
 import { LanguageProvider } from "@/components/LanguageContext";
 import { AIEscrowProvider } from "@/components/AIEscrowContext";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -45,9 +47,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${plusJakarta.variable} ${inter.variable}`}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50 text-slate-900 min-h-screen`}
+        className={`${plusJakarta.className} antialiased bg-slate-50 text-slate-900 min-h-screen font-sans`}
       >
         {/* Hidden Container & Initialization for Platform-Wide Google Translation */}
         <div id="google_translate_element" className="hidden absolute" />

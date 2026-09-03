@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { supabase } from '@/lib/supabaseClient';
 import { DealStatus } from '@/generated/client/enums';
-import { sendTestHelloWorldWhatsApp } from '@/lib/whatsapp';
+import { sendTestHelloWorldWhatsApp, sendDealStageNotification } from '@/lib/whatsapp';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -376,6 +376,8 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Deal ID is required' }, { status: 400 });
     }
 
+    const { buyerName, buyerPhone, bayanaAmountPKR, agencyIBAN, notes } = body;
+
     const data: Record<string, unknown> = {};
 
     if (status && Object.values(DealStatus).includes(status.toUpperCase() as DealStatus)) {
@@ -384,9 +386,17 @@ export async function PATCH(req: NextRequest) {
     if (tokenAmount !== undefined && tokenAmount !== null) {
       data.tokenAmount = Number(tokenAmount);
     }
+    if (bayanaAmountPKR !== undefined && bayanaAmountPKR !== null) {
+      data.tokenAmount = Number(bayanaAmountPKR);
+    }
     if (agreementDoc) {
       data.agreementDoc = String(agreementDoc);
     }
+    // Save buyer identity and escrow details when locking Bayana
+    if (buyerName) data.buyerName = String(buyerName);
+    if (buyerPhone) data.buyerPhone = String(buyerPhone);
+    if (agencyIBAN) data.agencyIBAN = String(agencyIBAN);
+    if (notes) data.notes = String(notes);
 
     const updated = await prisma.deal.update({
       where: { id },
@@ -406,6 +416,52 @@ export async function PATCH(req: NextRequest) {
         .maybeSingle();
       return sbUpdated;
     });
+
+    // ─── WhatsApp Stage Transition Notifications ─────────────────────────────
+    // Fire WhatsApp messages whenever deal moves to a key milestone stage
+    if (data.status && ['ESCROW', 'AGREEMENT_SIGNED', 'CLOSED'].includes(String(data.status)) && updated) {
+      try {
+        const notifyPhone = buyerPhone ||
+          (updated as { buyerClient?: { phone?: string } })?.buyerClient?.phone ||
+          (updated as { buyerPhone?: string })?.buyerPhone;
+        const notifyPropertyTitle =
+          (updated as { listing?: { title?: string } })?.listing?.title || `Property Deal #${id.slice(0, 8)}`;
+        const notifyAgencyName =
+          (updated as { agency?: { name?: string } })?.agency?.name || 'NexMove Partner Agency';
+
+        if (notifyPhone) {
+          await sendDealStageNotification({
+            to: notifyPhone,
+            stage: String(data.status) as 'ESCROW' | 'AGREEMENT_SIGNED' | 'CLOSED',
+            dealId: id,
+            propertyTitle: notifyPropertyTitle,
+            bayanaAmountPKR: bayanaAmountPKR ? Number(bayanaAmountPKR) : (tokenAmount ? Number(tokenAmount) : undefined),
+            agencyName: notifyAgencyName,
+          }).catch((waErr) => console.warn('[Deals API] WhatsApp stage notification note:', waErr));
+        } else {
+          console.log(`[Deals API] No buyer phone found for WhatsApp notification on deal ${id}, stage: ${data.status}`);
+        }
+      } catch (waErr) {
+        console.warn('[Deals API] WhatsApp stage notification error:', waErr);
+      }
+    }
+
+    // Also save Bayana escrow record to Supabase deals table (IBAN + amount + buyer details)
+    if (data.status === 'ESCROW' && (bayanaAmountPKR || agencyIBAN || buyerName)) {
+      try {
+        const { supabase: sb } = await import('@/lib/supabaseClient');
+        await sb.from('deals').update({
+          status: 'ESCROW',
+          token_amount: bayanaAmountPKR ? Number(bayanaAmountPKR) : undefined,
+          buyer_name: buyerName || undefined,
+          buyer_phone: buyerPhone || undefined,
+          notes: agencyIBAN ? `Bayana IBAN Record: ${agencyIBAN}${notes ? ' | ' + notes : ''}` : (notes || undefined),
+          updated_at: new Date().toISOString(),
+        }).eq('id', id);
+      } catch (sbErr) {
+        console.warn('[Deals API] Supabase bayana escrow record note:', sbErr);
+      }
+    }
 
     // If deal transitioned to CLOSED, dispatch automated completion email notifications
     if (data.status === 'CLOSED' && updated) {

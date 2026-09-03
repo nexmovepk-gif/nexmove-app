@@ -52,6 +52,24 @@ export default function ShieldedDealsPage() {
   // AI Legal Agreement Generator Modal State
   const [contractDeal, setContractDeal] = useState<DealItem | null>(null);
 
+  // ── Bayana Escrow Lock Modal State ───────────────────────────────────────────
+  interface BayanaModalTarget {
+    dealId: string;
+    dealTitle: string;
+    dealValue: number;
+    propertyTitle: string;
+  }
+  const [bayanaModal, setBayanaModal] = useState<BayanaModalTarget | null>(null);
+  const [bayanaForm, setBayanaForm] = useState({
+    buyerName: '',
+    buyerPhone: '',
+    bayanaAmount: '',
+    agencyIBAN: '',
+    notes: '',
+  });
+  const [bayanaLoading, setBayanaLoading] = useState(false);
+  const [bayanaSuccess, setBayanaSuccess] = useState<string | null>(null);
+
   const loadDeals = async () => {
     try {
       const res = await fetch('/api/deals');
@@ -194,6 +212,61 @@ export default function ShieldedDealsPage() {
   const filteredDeals = selectedStage === 'ALL'
     ? deals
     : deals.filter((d) => d.stage === selectedStage);
+
+  const handleBayanaEscrowLock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bayanaModal) return;
+    setBayanaLoading(true);
+    try {
+      // 1. Update deal stage to ESCROW + save all bayana escrow record fields
+      const res = await fetch('/api/deals', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: bayanaModal.dealId,
+          status: 'ESCROW',
+          bayanaAmountPKR: Number(bayanaForm.bayanaAmount),
+          buyerName: bayanaForm.buyerName.trim(),
+          buyerPhone: bayanaForm.buyerPhone.trim(),
+          agencyIBAN: bayanaForm.agencyIBAN.trim(),
+          notes: bayanaForm.notes.trim(),
+        }),
+      });
+      if (res.ok) {
+        // 2. Update local state — move deal to ESCROW
+        setDeals((prev) =>
+          prev.map((d) =>
+            d.id === bayanaModal.dealId
+              ? {
+                  ...d,
+                  stage: 'ESCROW' as DealItem['stage'],
+                  clientPrivateName: bayanaForm.buyerName || d.clientPrivateName,
+                  clientContact: bayanaForm.buyerPhone || d.clientContact,
+                  tokenAmount: Number(bayanaForm.bayanaAmount),
+                  privateNotes: `Bayana Locked: PKR ${Number(bayanaForm.bayanaAmount).toLocaleString()} | IBAN: ${bayanaForm.agencyIBAN} | Buyer: ${bayanaForm.buyerName}${bayanaForm.notes ? ' | ' + bayanaForm.notes : ''}`,
+                }
+              : d
+          )
+        );
+        setBayanaSuccess(
+          `✅ Bayana of PKR ${Number(bayanaForm.bayanaAmount).toLocaleString()} locked in Escrow Vault for "${bayanaModal.propertyTitle}". WhatsApp receipt sent to ${bayanaForm.buyerPhone}.`
+        );
+        setBayanaForm({ buyerName: '', buyerPhone: '', bayanaAmount: '', agencyIBAN: '', notes: '' });
+        setTimeout(() => {
+          setBayanaModal(null);
+          setBayanaSuccess(null);
+        }, 4000);
+      } else {
+        const errData = await res.json();
+        alert(`Error locking Bayana: ${errData?.error || 'Please try again.'}`);
+      }
+    } catch (err) {
+      console.error('Bayana lock error:', err);
+      alert('Network error. Please try again.');
+    } finally {
+      setBayanaLoading(false);
+    }
+  };
 
   const handleUpdateDealStage = async (dealId: string, newStage: DealItem['stage']) => {
     setDeals((prev) =>
@@ -550,7 +623,16 @@ export default function ShieldedDealsPage() {
 
                         {deal.stage === 'NEGOTIATION' && (
                           <button
-                            onClick={() => handleUpdateDealStage(deal.id, 'ESCROW')}
+                            onClick={() => {
+                              const suggestedBayana = Math.round(deal.value * 0.05);
+                              setBayanaForm((f) => ({ ...f, bayanaAmount: String(suggestedBayana) }));
+                              setBayanaModal({
+                                dealId: deal.id,
+                                dealTitle: deal.title,
+                                dealValue: deal.value,
+                                propertyTitle: deal.property,
+                              });
+                            }}
                             className="text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold px-3.5 py-2 rounded-xl transition shadow flex items-center gap-1.5"
                           >
                             <span>🔒</span> Lock Bayana in Escrow
@@ -700,6 +782,167 @@ export default function ShieldedDealsPage() {
           </Link>
         </nav>
       </div>
+
+      {/* ── BAYANA ESCROW LOCK MODAL ──────────────────────────────────────────── */}
+      {bayanaModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 overflow-y-auto" onClick={() => !bayanaLoading && setBayanaModal(null)}>
+          <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-purple-900 via-purple-800 to-slate-900 px-6 py-5 text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">🔒</span>
+                  <div>
+                    <h3 className="text-lg font-black">Lock Bayana in Escrow Vault</h3>
+                    <p className="text-purple-200 text-xs font-medium mt-0.5">AIEscrowGuard — Secure Deposit Protocol</p>
+                  </div>
+                </div>
+                {!bayanaLoading && (
+                  <button onClick={() => setBayanaModal(null)} className="text-purple-200 hover:text-white text-lg p-1 rounded-lg hover:bg-white/10">✕</button>
+                )}
+              </div>
+            </div>
+
+            {/* Property & Deal Summary */}
+            <div className="bg-purple-50 border-b border-purple-200 px-6 py-3 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-purple-900">📍 Property:</p>
+                <p className="text-sm font-black text-slate-900">{bayanaModal.propertyTitle}</p>
+                <p className="text-xs text-slate-600 font-mono">Deal Ref: NX-{bayanaModal.dealId.slice(-8).toUpperCase()}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs font-bold text-slate-500">Deal Value</p>
+                <p className="text-xl font-black text-emerald-700">PKR {bayanaModal.dealValue.toLocaleString()}</p>
+                <p className="text-[10px] text-purple-700 font-bold">Suggested Bayana: PKR {Math.round(bayanaModal.dealValue * 0.05).toLocaleString()} (5%)</p>
+              </div>
+            </div>
+
+            {/* Success State */}
+            {bayanaSuccess ? (
+              <div className="p-8 text-center flex flex-col items-center gap-4">
+                <span className="text-5xl">✅</span>
+                <div>
+                  <p className="font-black text-emerald-800 text-lg">Escrow Vault Locked!</p>
+                  <p className="text-sm text-slate-600 mt-2 leading-relaxed">{bayanaSuccess}</p>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleBayanaEscrowLock} className="p-6 flex flex-col gap-4">
+                {/* Buyer Details */}
+                <div>
+                  <p className="text-xs font-black text-slate-700 uppercase tracking-wider mb-3">Buyer / Client Details</p>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-slate-600">Full Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={bayanaForm.buyerName}
+                        onChange={(e) => setBayanaForm((f) => ({ ...f, buyerName: e.target.value }))}
+                        placeholder="e.g. Muhammad Ahmed Khan"
+                        className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-slate-600">WhatsApp / Phone Number *</label>
+                      <input
+                        type="tel"
+                        required
+                        value={bayanaForm.buyerPhone}
+                        onChange={(e) => setBayanaForm((f) => ({ ...f, buyerPhone: e.target.value }))}
+                        placeholder="e.g. 03xx-xxxxxxx"
+                        className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition"
+                      />
+                      <p className="text-[10px] text-purple-700 font-semibold">📱 Escrow receipt will be sent via WhatsApp to this number</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bayana Amount */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-black text-slate-700 uppercase tracking-wider">Bayana Amount (PKR) *</label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-500">PKR</span>
+                    <input
+                      type="number"
+                      required
+                      min={1}
+                      value={bayanaForm.bayanaAmount}
+                      onChange={(e) => setBayanaForm((f) => ({ ...f, bayanaAmount: e.target.value }))}
+                      className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-12 pr-4 py-2.5 text-sm font-black text-slate-900 font-mono focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition"
+                    />
+                  </div>
+                </div>
+
+                {/* Agency IBAN for Record */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-black text-slate-700 uppercase tracking-wider">Agency IBAN / Account Number (Escrow Record) *</label>
+                  <input
+                    type="text"
+                    required
+                    value={bayanaForm.agencyIBAN}
+                    onChange={(e) => setBayanaForm((f) => ({ ...f, agencyIBAN: e.target.value }))}
+                    placeholder="PK00XXXX0000000000000000"
+                    className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-mono font-bold text-slate-900 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition"
+                  />
+                  <p className="text-[10px] text-slate-500">This IBAN is stored as the official escrow destination record.</p>
+                </div>
+
+                {/* Optional Notes */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-bold text-slate-600">Deal Notes (Optional)</label>
+                  <textarea
+                    rows={2}
+                    value={bayanaForm.notes}
+                    onChange={(e) => setBayanaForm((f) => ({ ...f, notes: e.target.value }))}
+                    placeholder="e.g. Token cheque #1234 received, pending clearance..."
+                    className="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-900 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition resize-none"
+                  />
+                </div>
+
+                {/* Legal Disclaimer */}
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-[10px] text-amber-900 leading-relaxed">
+                  <strong className="block text-amber-800 mb-0.5">⚖️ Legal Notice:</strong>
+                  By clicking &quot;Confirm &amp; Lock in Escrow&quot;, you confirm that the Bayana deposit details above are accurate. This creates a binding escrow record under NexMove AIEscrowGuard protocol. The buyer will receive an official WhatsApp confirmation receipt.
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-1">
+                  <button
+                    type="button"
+                    disabled={bayanaLoading}
+                    onClick={() => setBayanaModal(null)}
+                    className="flex-1 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={bayanaLoading}
+                    className="flex-1 text-sm bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {bayanaLoading ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                        </svg>
+                        Locking...
+                      </>
+                    ) : (
+                      <>🔒 Confirm &amp; Lock in Escrow</>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── AI LEGAL CONTRACT PREVIEW MODAL ─────────────────────────────────── */}
       {contractDeal && (

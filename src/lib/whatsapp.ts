@@ -136,3 +136,36 @@ export async function sendTestHelloWorldWhatsApp(to: string) {
     languageCode: 'en_US',
   });
 }
+
+/**
+ * Send a deal pipeline stage change notification to buyer or agency via WhatsApp
+ */
+export async function sendDealStageNotification({
+  to,
+  stage,
+  dealId,
+  propertyTitle,
+  bayanaAmountPKR,
+  agencyName = 'NexMove Partner Agency',
+}: {
+  to: string;
+  stage: 'ESCROW' | 'AGREEMENT_SIGNED' | 'CLOSED';
+  dealId: string;
+  propertyTitle: string;
+  bayanaAmountPKR?: number;
+  agencyName?: string;
+}) {
+  const shortId = dealId.slice(-8).toUpperCase();
+  let text = '';
+
+  if (stage === 'ESCROW') {
+    text = `🔒 *NexMove Escrow Vault — Bayana Locked*\n\nDear Client,\n\nYour Bayana (Security Deposit) of *PKR ${(bayanaAmountPKR || 0).toLocaleString()}* has been officially locked in NexMove Escrow Vault for property:\n\n📍 *${propertyTitle}*\n🔖 Deal Ref: NX-${shortId}\n🏢 Agency: ${agencyName}\n\n✅ Funds are fully protected under AIEscrowGuard protocol until property documents are transferred and ratified.\n\nFor queries: support@nexmove.pk`;
+  } else if (stage === 'AGREEMENT_SIGNED') {
+    text = `📄 *NexMove — Sale & Purchase Agreement Signed*\n\nDear Client,\n\nYour official Sale & Purchase Agreement (SPA) has been digitally generated and signed for:\n\n📍 *${propertyTitle}*\n🔖 Contract Ref: SPA-${shortId}\n🏢 Agency: ${agencyName}\n\n⚖️ This agreement is legally binding under NexMove PropTech Standards. Registry/transfer process will now begin.\n\nFor queries: support@nexmove.pk`;
+  } else if (stage === 'CLOSED') {
+    text = `🎉 *NexMove — Deal Closed & Payout Ready!*\n\nDear Client,\n\nCongratulations! Your property deal has been successfully closed:\n\n📍 *${propertyTitle}*\n🔖 Deal Ref: NX-${shortId}\n🏢 Agency: ${agencyName}\n\n✅ Registry transfer complete. Escrow funds have been released. All documents are archived in your NexMove vault.\n\nThank you for trusting NexMove PropTech Ecosystem! 🏠`;
+  }
+
+  if (!text) return { success: false, error: 'Unknown stage' };
+  return sendWhatsAppTextMessage({ to, text });
+}

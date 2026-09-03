@@ -18,46 +18,102 @@ const client = new Client({
 const sql = `
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- ─── Ensure Promotion Table Exists ──────────────────────────────────────────
+-- ─── 1. Ensure Enum Types Exist in PostgreSQL ─────────────────────────────────
+DO $$ BEGIN
+  CREATE TYPE "PromotionType" AS ENUM ('PROPERTY', 'AGENCY_PROFILE');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "PromotionPackage" AS ENUM ('BASIC', 'STANDARD', 'PREMIUM');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE "PromotionStatus" AS ENUM ('PENDING', 'ACTIVE', 'PAUSED', 'EXPIRED', 'REJECTED');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+-- ─── 2. Ensure Promotion Table Exists With Correct Enum Types ─────────────────
 CREATE TABLE IF NOT EXISTS "Promotion" (
-  "id"                    TEXT        PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
-  "type"                  TEXT        NOT NULL DEFAULT 'PROPERTY',
-  "entityId"              TEXT        NOT NULL,
-  "entityTitle"           TEXT        NOT NULL,
+  "id"                    TEXT              PRIMARY KEY DEFAULT gen_random_uuid()::TEXT,
+  "type"                  "PromotionType"   NOT NULL DEFAULT 'PROPERTY',
+  "entityId"              TEXT              NOT NULL,
+  "entityTitle"           TEXT              NOT NULL,
   "entityImage"           TEXT,
   "entityCity"            TEXT,
   "entityPrice"           FLOAT8,
 
-  "ownerId"               TEXT        NOT NULL,
-  "ownerType"             TEXT        NOT NULL DEFAULT 'USER',
+  "ownerId"               TEXT              NOT NULL,
+  "ownerType"             TEXT              NOT NULL DEFAULT 'USER',
   "ownerName"             TEXT,
   "ownerEmail"            TEXT,
 
   "userId"                TEXT,
   "agencyId"              TEXT,
 
-  "package"               TEXT        NOT NULL DEFAULT 'BASIC',
-  "durationDays"          INTEGER     NOT NULL DEFAULT 7,
-  "budgetPKR"             FLOAT8      NOT NULL DEFAULT 1000,
-  "placements"            TEXT[]      NOT NULL DEFAULT ARRAY['HOMEPAGE', 'SEARCH_TOP'],
+  "package"               "PromotionPackage" NOT NULL DEFAULT 'BASIC',
+  "durationDays"          INTEGER           NOT NULL DEFAULT 7,
+  "budgetPKR"             FLOAT8            NOT NULL DEFAULT 1000,
+  "placements"            TEXT[]            NOT NULL DEFAULT ARRAY['HOMEPAGE', 'SEARCH_TOP'],
 
-  "status"                TEXT        NOT NULL DEFAULT 'PENDING',
+  "status"                "PromotionStatus" NOT NULL DEFAULT 'PENDING',
   "startDate"             TIMESTAMPTZ,
   "endDate"               TIMESTAMPTZ,
 
-  "viewsCount"            INTEGER     NOT NULL DEFAULT 0,
-  "clicksCount"           INTEGER     NOT NULL DEFAULT 0,
-  "searchImpressions"     INTEGER     NOT NULL DEFAULT 0,
+  "viewsCount"            INTEGER           NOT NULL DEFAULT 0,
+  "clicksCount"           INTEGER           NOT NULL DEFAULT 0,
+  "searchImpressions"     INTEGER           NOT NULL DEFAULT 0,
 
-  "stripeSessionId"       TEXT        UNIQUE,
+  "stripeSessionId"       TEXT              UNIQUE,
   "stripePaymentIntentId" TEXT,
 
   "adminNote"             TEXT,
-  "createdAt"             TIMESTAMPTZ NOT NULL DEFAULT now(),
-  "updatedAt"             TIMESTAMPTZ NOT NULL DEFAULT now()
+  "createdAt"             TIMESTAMPTZ       NOT NULL DEFAULT now(),
+  "updatedAt"             TIMESTAMPTZ       NOT NULL DEFAULT now()
 );
 
--- ─── Indexes for Super Fast Queries ─────────────────────────────────────────
+-- ─── 3. In Case Table Pre-Existed with TEXT columns, Convert to Enum Types ─────
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'Promotion' AND column_name = 'type' AND data_type = 'text'
+  ) THEN
+    ALTER TABLE "Promotion" 
+      ALTER COLUMN "type" DROP DEFAULT,
+      ALTER COLUMN "type" TYPE "PromotionType" USING "type"::"PromotionType",
+      ALTER COLUMN "type" SET DEFAULT 'PROPERTY'::"PromotionType";
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'Promotion' AND column_name = 'package' AND data_type = 'text'
+  ) THEN
+    ALTER TABLE "Promotion" 
+      ALTER COLUMN "package" DROP DEFAULT,
+      ALTER COLUMN "package" TYPE "PromotionPackage" USING "package"::"PromotionPackage",
+      ALTER COLUMN "package" SET DEFAULT 'BASIC'::"PromotionPackage";
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'Promotion' AND column_name = 'status' AND data_type = 'text'
+  ) THEN
+    ALTER TABLE "Promotion" 
+      ALTER COLUMN "status" DROP DEFAULT,
+      ALTER COLUMN "status" TYPE "PromotionStatus" USING "status"::"PromotionStatus",
+      ALTER COLUMN "status" SET DEFAULT 'PENDING'::"PromotionStatus";
+  END IF;
+END $$;
+
+-- ─── 4. Indexes for Super Fast Queries ───────────────────────────────────────
 CREATE INDEX IF NOT EXISTS idx_promotion_ownerId    ON "Promotion" ("ownerId");
 CREATE INDEX IF NOT EXISTS idx_promotion_ownerType  ON "Promotion" ("ownerType");
 CREATE INDEX IF NOT EXISTS idx_promotion_status     ON "Promotion" ("status");
@@ -69,11 +125,12 @@ CREATE INDEX IF NOT EXISTS idx_promotion_stripeId   ON "Promotion" ("stripeSessi
 try {
   console.log('🚀 Connecting to Supabase PostgreSQL database...');
   await client.connect();
-  console.log('📦 Ensuring Promotion table & indexes exist in PostgreSQL...');
+  console.log('📦 Creating ENUM types and updating Promotion table in PostgreSQL...');
   await client.query(sql);
-  console.log('✅ SUCCESS: Promotion table verified in Supabase PostgreSQL!');
+  console.log('✅ SUCCESS: Promotion ENUM types and table successfully migrated in Supabase PostgreSQL!');
   await client.end();
 } catch (e) {
-  console.error('❌ ERROR creating Promotion table:', e.message);
+  console.error('❌ ERROR migrating Promotion table:', e.message);
   await client.end();
 }
+

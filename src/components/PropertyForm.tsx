@@ -230,6 +230,7 @@ export default function PropertyForm({
   // ── 3. Availability & 1-Month Advance Alert
   const [isAvailable, setIsAvailable] = useState<boolean>(true);
   const [availableDate, setAvailableDate] = useState<string>('');
+  const [isOffMarket, setIsOffMarket] = useState<boolean>(false);
 
   // ── 4. Media Upload Expansion State
   const [galleryImages, setGalleryImages] = useState<Array<{ name: string; url: string; size: number }>>([]);
@@ -749,7 +750,10 @@ export default function PropertyForm({
       videoUrl: videoUrl || undefined,
       panoramaUrl: panoramaPreviewUrl || undefined,
       virtualTourUrl: virtualTourUrl || undefined,
-      features: selectedFeatures,
+      features: isOffMarket
+        ? Array.from(new Set([...selectedFeatures, 'OFF_MARKET', 'INVESTOR_DEAL']))
+        : selectedFeatures,
+      isOffMarket,
       contactName,
       contactPhone,
       contactEmail: contactEmail.trim() || undefined,
@@ -1409,6 +1413,40 @@ export default function PropertyForm({
                   </div>
                 </div>
               )}
+
+              {/* ── Off-Market / Investor Deal (B2B) Toggle ── */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-purple-50/80 border border-purple-200 rounded-2xl gap-4">
+                <div>
+                  <div className="font-extrabold text-sm text-purple-950 flex items-center gap-2">
+                    <span className="text-base">🔒</span>
+                    <span>Mark as Private B2B / Off-Market Investor Deal</span>
+                  </div>
+                  <p className="text-xs text-purple-700 mt-0.5">
+                    Highlights this listing with a <strong>🔒 Off-Market</strong> badge in the Marketplace and routes it into Verified Investor Deal Rooms with Smart Escrow protection.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span className={`text-xs font-bold ${isOffMarket ? 'text-purple-900 font-extrabold' : 'text-gray-500'}`}>
+                    {isOffMarket ? '🔒 Off-Market Deal' : 'Public Listing'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsOffMarket((prev) => !prev)}
+                    className={`relative w-14 h-7 rounded-full transition-colors ${
+                      isOffMarket ? 'bg-purple-600' : 'bg-gray-300'
+                    }`}
+                    role="switch"
+                    aria-checked={isOffMarket}
+                  >
+                    <span
+                      className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${
+                        isOffMarket ? 'left-8' : 'left-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1756,6 +1794,45 @@ export default function PropertyForm({
                   <p className="text-xs text-red-600 font-semibold">{emailError}</p>
                 )}
               </div>
+            </div>
+          </div>
+
+          {/* ── Bottom Off-Market / Investor Deal (B2B) Confirmation Bar ── */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-purple-50/90 border-2 border-purple-300 rounded-2xl gap-4">
+            <div>
+              <div className="font-extrabold text-sm text-purple-950 flex items-center gap-2">
+                <span className="text-base">🔒</span>
+                <span>Private B2B / Off-Market Investor Deal</span>
+                {isOffMarket && (
+                  <span className="text-[10px] font-black uppercase bg-purple-600 text-white px-2.5 py-0.5 rounded-full shadow-sm">
+                    Active
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-purple-700 mt-0.5">
+                Toggle on to publish directly as an Off-Market deal with smart escrow protection for qualified investors.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <span className={`text-xs font-bold ${isOffMarket ? 'text-purple-900 font-black' : 'text-gray-500'}`}>
+                {isOffMarket ? '🔒 Off-Market Deal' : 'Public Listing'}
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsOffMarket((prev) => !prev)}
+                className={`relative w-14 h-7 rounded-full transition-colors ${
+                  isOffMarket ? 'bg-purple-600' : 'bg-gray-300'
+                }`}
+                role="switch"
+                aria-checked={isOffMarket}
+              >
+                <span
+                  className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${
+                    isOffMarket ? 'left-8' : 'left-1'
+                  }`}
+                />
+              </button>
             </div>
           </div>
 

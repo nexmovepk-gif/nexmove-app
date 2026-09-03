@@ -145,53 +145,75 @@ export default function InvestorPortalPage() {
   const [showMeetingForm, setShowMeetingForm] = useState(false)
 
   // ─── API Loaders ────────────────────────────────────────────────────────────
-  const loadDeals = useCallback(async () => {
+  const loadDealsAndSaved = useCallback(async () => {
     try {
-      const res = await fetch('/api/investors/deals')
-      const data = await res.json()
-      if (data.success) setInvestmentDeals(data.deals ?? [])
-    } catch { /* silently ignore — shows empty state */ }
-  }, [])
+      const [dealsRes, savedRes] = await Promise.allSettled([
+        fetch('/api/investors/deals').then((r) => r.json()),
+        fetch('/api/saved-listings').then((r) => r.json()),
+      ]);
 
-  const loadSavedListings = useCallback(async () => {
-    try {
-      const res = await fetch('/api/saved-listings')
-      const data = await res.json()
-      if (data.success && Array.isArray(data.saved)) {
+      const baseDeals: InvestmentDeal[] =
+        dealsRes.status === 'fulfilled' && dealsRes.value?.success
+          ? (dealsRes.value.deals ?? [])
+          : [];
+
+      let savedDeals: InvestmentDeal[] = [];
+      if (savedRes.status === 'fulfilled' && savedRes.value?.success && Array.isArray(savedRes.value.saved)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const mappedSavedDeals: InvestmentDeal[] = data.saved.map((item: any) => {
-          const p = item.publicListing || item.property
-          if (!p) return null
-          const pricePKR = p.price || 0
-          const marketValuationPKR = pricePKR * 1.15
-          return {
-            id: p.id,
-            title: p.title,
-            location: p.address || 'Lahore',
-            city: p.city || 'Lahore',
-            propertyType: String(p.propertyType || 'HOUSE'),
-            pricePKR,
-            marketValuationPKR,
-            discountPct: 13.0,
-            rentalYieldPct: 8.4,
-            capitalGrowth3YrPct: 31,
-            roiScore: 89,
-            isDistress: false,
-            isOffMarket: Boolean(p.isOffMarket),
-            escrowSecured: true,
-            image: (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
-            agencyName: p.agency?.name || p.contactName || 'Verified Marketplace Owner',
-          }
-        }).filter((d: InvestmentDeal | null): d is InvestmentDeal => d !== null)
-
-        setInvestmentDeals((prev) => {
-          const existingIds = new Set(prev.map((d) => d.id))
-          const newDeals = mappedSavedDeals.filter((d) => !existingIds.has(d.id))
-          return [...prev, ...newDeals]
-        })
+        savedDeals = savedRes.value.saved
+          .map((item: any) => {
+            const p = item.publicListing || item.property;
+            if (!p) return null;
+            const pricePKR = p.price || 0;
+            const marketValuationPKR = pricePKR * 1.15;
+            const isOff = Boolean(
+              p.isOffMarket ||
+              (Array.isArray(p.features) && p.features.includes('OFF_MARKET'))
+            );
+            return {
+              id: p.id,
+              title: p.title,
+              location: p.address || 'Pakistan',
+              city: p.city || 'Lahore',
+              propertyType: String(p.propertyType || 'HOUSE'),
+              pricePKR,
+              marketValuationPKR,
+              discountPct: 13.0,
+              rentalYieldPct: 8.4,
+              capitalGrowth3YrPct: 31,
+              roiScore: 89,
+              isDistress: false,
+              isOffMarket: isOff,
+              escrowSecured: true,
+              image: (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+              agencyName: p.agency?.name || p.contactName || 'Verified Marketplace Owner',
+            };
+          })
+          .filter((d: InvestmentDeal | null): d is InvestmentDeal => d !== null);
       }
-    } catch { /* silently ignore */ }
-  }, [])
+
+      // Merge: bookmarked listings first, then pre-vetted deals (prevent duplicate IDs)
+      const seenIds = new Set<string>();
+      const merged: InvestmentDeal[] = [];
+
+      for (const d of savedDeals) {
+        if (!seenIds.has(d.id)) {
+          seenIds.add(d.id);
+          merged.push(d);
+        }
+      }
+      for (const d of baseDeals) {
+        if (!seenIds.has(d.id)) {
+          seenIds.add(d.id);
+          merged.push(d);
+        }
+      }
+
+      setInvestmentDeals(merged);
+    } catch {
+      /* silently ignore */
+    }
+  }, []);
 
   const loadPortfolio = useCallback(async () => {
     try {
@@ -216,13 +238,12 @@ export default function InvestorPortalPage() {
   // Load all data once session is authenticated
   useEffect(() => {
     if (status === 'authenticated') {
-      loadDeals()
-      loadSavedListings()
+      loadDealsAndSaved()
       loadPortfolio()
       loadWallet()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status])
+  }, [status, loadDealsAndSaved])
 
   // ─── Calculations (computed from live state) ─────────────────────────────
   const activeHoldings = portfolio.filter((p) => p.status !== 'EXITED')

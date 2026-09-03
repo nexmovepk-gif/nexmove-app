@@ -38,7 +38,7 @@ export async function GET() {
   }
 }
 
-// ── POST — save a listing ────────────────────────────────────────────────────
+// ── POST — save a listing (supports propertyId, publicListingId, or generic listingId) ──
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -47,29 +47,73 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { propertyId, publicListingId, note } = body as {
+    const { propertyId, publicListingId, listingId, note } = body as {
       propertyId?: string;
       publicListingId?: string;
+      listingId?: string;
       note?: string;
     };
 
-    if (!propertyId && !publicListingId) {
+    const targetId = listingId || publicListingId || propertyId;
+    if (!targetId) {
       return NextResponse.json(
-        { success: false, error: 'Provide either propertyId or publicListingId' },
+        { success: false, error: 'Provide listingId, propertyId, or publicListingId' },
         { status: 400 }
+      );
+    }
+
+    // Determine whether this targetId belongs to PublicListing or Property table
+    let resolvedPublicListingId: string | null = null;
+    let resolvedPropertyId: string | null = null;
+
+    if (publicListingId && !listingId && !propertyId) {
+      // Explicit publicListingId passed
+      const exists = await prisma.publicListing.findUnique({ where: { id: publicListingId }, select: { id: true } });
+      if (exists) {
+        resolvedPublicListingId = publicListingId;
+      } else {
+        const propExists = await prisma.property.findUnique({ where: { id: publicListingId }, select: { id: true } });
+        if (propExists) resolvedPropertyId = publicListingId;
+      }
+    } else if (propertyId && !listingId && !publicListingId) {
+      // Explicit propertyId passed
+      const exists = await prisma.property.findUnique({ where: { id: propertyId }, select: { id: true } });
+      if (exists) {
+        resolvedPropertyId = propertyId;
+      } else {
+        const pubExists = await prisma.publicListing.findUnique({ where: { id: propertyId }, select: { id: true } });
+        if (pubExists) resolvedPublicListingId = propertyId;
+      }
+    } else {
+      // Generic candidate ID
+      const isPublic = await prisma.publicListing.findUnique({ where: { id: targetId }, select: { id: true } });
+      if (isPublic) {
+        resolvedPublicListingId = targetId;
+      } else {
+        const isProp = await prisma.property.findUnique({ where: { id: targetId }, select: { id: true } });
+        if (isProp) {
+          resolvedPropertyId = targetId;
+        }
+      }
+    }
+
+    if (!resolvedPublicListingId && !resolvedPropertyId) {
+      return NextResponse.json(
+        { success: false, error: 'Listing not found in database' },
+        { status: 404 }
       );
     }
 
     // Upsert — if already saved, return existing (idempotent)
     const saved = await prisma.savedListing.upsert({
-      where: propertyId
-        ? { userId_propertyId: { userId: session.user.id, propertyId } }
-        : { userId_publicListingId: { userId: session.user.id, publicListingId: publicListingId! } },
+      where: resolvedPropertyId
+        ? { userId_propertyId: { userId: session.user.id, propertyId: resolvedPropertyId } }
+        : { userId_publicListingId: { userId: session.user.id, publicListingId: resolvedPublicListingId! } },
       update: { note: note ?? undefined },
       create: {
         userId: session.user.id,
-        propertyId: propertyId ?? null,
-        publicListingId: publicListingId ?? null,
+        propertyId: resolvedPropertyId,
+        publicListingId: resolvedPublicListingId,
         note: note ?? null,
       },
     });
@@ -81,7 +125,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// ── DELETE — unsave a listing by savedListing id ─────────────────────────────
+// ── DELETE — unsave a listing by id or target listing ID ─────────────────────
 export async function DELETE(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -91,23 +135,28 @@ export async function DELETE(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
+    const listingId = searchParams.get('listingId');
     const propertyId = searchParams.get('propertyId');
     const publicListingId = searchParams.get('publicListingId');
+
+    const targetId = listingId || propertyId || publicListingId;
 
     if (id) {
       await prisma.savedListing.deleteMany({
         where: { id, userId: session.user.id },
       });
-    } else if (propertyId) {
+    } else if (targetId) {
       await prisma.savedListing.deleteMany({
-        where: { userId: session.user.id, propertyId },
-      });
-    } else if (publicListingId) {
-      await prisma.savedListing.deleteMany({
-        where: { userId: session.user.id, publicListingId },
+        where: {
+          userId: session.user.id,
+          OR: [
+            { propertyId: targetId },
+            { publicListingId: targetId },
+          ],
+        },
       });
     } else {
-      return NextResponse.json({ success: false, error: 'Provide id, propertyId, or publicListingId' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'Provide id, listingId, propertyId, or publicListingId' }, { status: 400 });
     }
 
     return NextResponse.json({ success: true, message: 'Listing unsaved successfully' });

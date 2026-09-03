@@ -70,7 +70,10 @@ export default function MarketplacePage() {
       .then(r => r.json())
       .then(d => {
         if (d.success && Array.isArray(d.saved)) {
-          setSavedIds(new Set(d.saved.map((s: { publicListingId?: string }) => s.publicListingId).filter(Boolean)));
+          const ids = d.saved
+            .map((s: { publicListingId?: string; propertyId?: string }) => s.publicListingId || s.propertyId)
+            .filter(Boolean) as string[];
+          setSavedIds(new Set(ids));
         }
       })
       .catch(() => {});
@@ -84,19 +87,24 @@ export default function MarketplacePage() {
     try {
       if (savedIds.has(listingId)) {
         // Unsave
-        await fetch(`/api/saved-listings?publicListingId=${listingId}`, { method: 'DELETE' });
-        setSavedIds(prev => { const n = new Set(prev); n.delete(listingId); return n; });
+        const res = await fetch(`/api/saved-listings?listingId=${encodeURIComponent(listingId)}`, { method: 'DELETE' });
+        if (res.ok) {
+          setSavedIds(prev => { const n = new Set(prev); n.delete(listingId); return n; });
+        }
       } else {
         // Save
-        await fetch('/api/saved-listings', {
+        const res = await fetch('/api/saved-listings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ publicListingId: listingId }),
+          body: JSON.stringify({ listingId }),
         });
-        setSavedIds(prev => new Set(Array.from(prev).concat(listingId)));
+        const d = await res.json();
+        if (res.ok && d.success) {
+          setSavedIds(prev => new Set(Array.from(prev).concat(listingId)));
+        }
       }
-    } catch {
-      // silent
+    } catch (err) {
+      console.error('Save listing error:', err);
     } finally {
       setSavingId(null);
     }

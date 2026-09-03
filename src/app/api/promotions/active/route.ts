@@ -1,7 +1,8 @@
 // src/app/api/promotions/active/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/client';
+
+type PromotionWhere = NonNullable<Parameters<typeof prisma.promotion.findMany>[0]>['where'];
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     const now = new Date();
 
-    const whereClause: Prisma.PromotionWhereInput = {
+    const whereClause: PromotionWhere = {
       status: 'ACTIVE',
       endDate: { gte: now },
       placements: { has: placement },

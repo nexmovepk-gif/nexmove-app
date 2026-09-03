@@ -3,7 +3,8 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/client';
+
+type PromotionWhere = NonNullable<NonNullable<Parameters<typeof prisma.promotion.findMany>[0]>['where']>;
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +32,7 @@ export async function GET() {
       });
     }
 
-    const orConditions: Prisma.PromotionWhereInput[] = [];
+    const orConditions: PromotionWhere[] = [];
     if (agencyId) orConditions.push({ agencyId }, { ownerId: agencyId });
     if (userId) orConditions.push({ userId }, { ownerId: userId });
     if (userEmail) orConditions.push({ ownerEmail: userEmail });
@@ -53,9 +54,7 @@ export async function GET() {
     }
 
     const promotions = await prisma.promotion.findMany({
-      where: {
-        OR: orConditions,
-      },
+      where: orConditions.length > 0 ? { OR: orConditions } : {},
       orderBy: { createdAt: 'desc' },
     });
 

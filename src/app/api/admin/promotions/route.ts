@@ -1,9 +1,10 @@
-// src/app/api/admin/promotions/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/client';
+
+type PromotionWhere = NonNullable<Parameters<typeof prisma.promotion.findMany>[0]>['where'];
+type PromotionUpdate = NonNullable<Parameters<typeof prisma.promotion.update>[0]>['data'];
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const statusFilter = searchParams.get('status');
 
-    const where: Prisma.PromotionWhereInput = {};
+    const where: PromotionWhere = {};
     if (statusFilter && statusFilter !== 'ALL') {
       where.status = statusFilter as unknown as 'PENDING' | 'ACTIVE' | 'PAUSED' | 'EXPIRED' | 'REJECTED';
     }
@@ -92,7 +93,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Promotion not found' }, { status: 404 });
     }
 
-    const updateData: Prisma.PromotionUpdateInput = {};
+    const updateData: PromotionUpdate = {};
 
     if (status) {
       updateData.status = status;

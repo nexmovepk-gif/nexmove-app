@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/client';
+
+type PromotionUpdate = NonNullable<Parameters<typeof prisma.promotion.update>[0]>['data'];
 
 export const dynamic = 'force-dynamic';
 
@@ -46,7 +47,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'You do not own this promotion' }, { status: 403 });
     }
 
-    const updateData: Prisma.PromotionUpdateInput = {};
+    const updateData: PromotionUpdate = {};
 
     if (action === 'TOGGLE_PAUSE') {
       if (promo.status === 'ACTIVE') {

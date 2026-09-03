@@ -147,6 +147,27 @@ interface ManagedProperty {
   createdAt?: string;
 }
 
+// ─── Admin Promotion ─────────────────────────────────────────────────────────
+
+interface AdminPromotion {
+  id: string;
+  status: string;
+  package: string;
+  durationDays: number;
+  budgetPKR: number;
+  entityTitle: string;
+  entityImage?: string | null;
+  entityCity?: string | null;
+  ownerName?: string | null;
+  ownerEmail?: string | null;
+  ownerType?: string | null;
+  placements?: string[];
+  viewsCount?: number;
+  searchImpressions?: number;
+  clicksCount?: number;
+  stripeSessionId?: string | null;
+}
+
 // ─── Action Toast ─────────────────────────────────────────────────────────────
 
 interface Toast {
@@ -198,7 +219,7 @@ export default function AdminDashboard() {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   // ─── Admin Ads & Promotions Manager State ─────────────────────────────────
-  const [adminPromotions, setAdminPromotions] = useState<Record<string, unknown>[]>([]);
+  const [adminPromotions, setAdminPromotions] = useState<AdminPromotion[]>([]);
   const [promoStats, setPromoStats] = useState<{
     totalAds: number;
     activeAds: number;
@@ -1383,16 +1404,14 @@ export default function AdminDashboard() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {adminPromotions.map((promo) => {
-                  const promoId = String(promo.id ?? '');
-                  const promoStatus = String(promo.status ?? '');
-                  const isActive = promoStatus === "ACTIVE";
-                  const isPending = promoStatus === "PENDING";
-                  const isPaused = promoStatus === "PAUSED";
-                  const isActionLoading = actionLoading?.includes(promoId);
+                  const isActive = promo.status === "ACTIVE";
+                  const isPending = promo.status === "PENDING";
+                  const isPaused = promo.status === "PAUSED";
+                  const isActionLoading = actionLoading?.includes(promo.id);
 
                   return (
                     <div
-                      key={promoId}
+                      key={promo.id}
                       className={`bg-slate-900/60 border rounded-3xl p-5 flex flex-col justify-between gap-4 transition shadow-lg ${
                         isActive
                           ? "border-emerald-500/40"

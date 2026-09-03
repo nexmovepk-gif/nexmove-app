@@ -101,16 +101,22 @@ export default function FeaturedSponsoredSection({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {promotions.map((promo) => (
-            <Link
-              key={promo.id}
-              href={`/marketplace`}
-              onClick={() => handleCardClick(promo.id)}
-              className="group bg-gradient-to-br from-slate-900 to-slate-900/90 border-2 border-amber-500/40 hover:border-amber-400 rounded-2xl p-4 shadow-lg shadow-amber-950/20 transition relative flex flex-col justify-between"
-            >
-              <span className="absolute top-3 right-3 text-[9px] font-black bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full uppercase shadow">
-                ⭐ Featured Ad
-              </span>
+          {promotions.map((promo) => {
+            const targetUrl =
+              promo.type === 'AGENCY_PROFILE'
+                ? `/agencies/${promo.entityId}`
+                : `/marketplace/${promo.entityId}`;
+
+            return (
+              <Link
+                key={promo.id}
+                href={targetUrl}
+                onClick={() => handleCardClick(promo.id)}
+                className="group bg-gradient-to-br from-slate-900 to-slate-900/90 border-2 border-amber-500/40 hover:border-amber-400 rounded-2xl p-4 shadow-lg shadow-amber-950/20 transition relative flex flex-col justify-between"
+              >
+                <span className="absolute top-3 right-3 text-[9px] font-black bg-amber-500 text-slate-950 px-2 py-0.5 rounded-full uppercase shadow">
+                  ⭐ Featured Ad
+                </span>
 
               <div className="flex items-start gap-3">
                 {promo.entityImage ? (
@@ -151,8 +157,9 @@ export default function FeaturedSponsoredSection({
                   </span>
                 </div>
               )}
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     );
@@ -190,14 +197,20 @@ export default function FeaturedSponsoredSection({
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {promotions.map((promo) => (
-          <Link
-            key={promo.id}
-            href={`/marketplace`}
-            onClick={() => handleCardClick(promo.id)}
-            className="group bg-slate-900/90 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/60 rounded-2xl overflow-hidden shadow-lg transition flex flex-col justify-between"
-          >
-            <div className="relative h-44 bg-slate-950 overflow-hidden">
+        {promotions.map((promo) => {
+          const targetUrl =
+            promo.type === 'AGENCY_PROFILE'
+              ? `/agencies/${promo.entityId}`
+              : `/marketplace/${promo.entityId}`;
+
+          return (
+            <Link
+              key={promo.id}
+              href={targetUrl}
+              onClick={() => handleCardClick(promo.id)}
+              className="group bg-slate-900/90 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/60 rounded-2xl overflow-hidden shadow-lg transition flex flex-col justify-between"
+            >
+              <div className="relative h-44 bg-slate-950 overflow-hidden">
               {promo.entityImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -252,7 +265,8 @@ export default function FeaturedSponsoredSection({
               </div>
             </div>
           </Link>
-        ))}
+        );
+      })}
       </div>
     </div>
   );

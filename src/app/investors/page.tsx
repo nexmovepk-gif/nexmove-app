@@ -159,9 +159,26 @@ export default function InvestorPortalPage() {
 
       let savedDeals: InvestmentDeal[] = [];
       if (savedRes.status === 'fulfilled' && savedRes.value?.success && Array.isArray(savedRes.value.saved)) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        savedDeals = savedRes.value.saved
-          .map((item: any) => {
+        interface RawListingSpec {
+          id: string;
+          title: string;
+          price?: number;
+          address?: string;
+          city?: string;
+          propertyType?: string;
+          isOffMarket?: boolean;
+          features?: string[];
+          images?: string[];
+          contactName?: string;
+          agency?: { name?: string };
+        }
+        interface RawSavedItem {
+          publicListing?: RawListingSpec | null;
+          property?: RawListingSpec | null;
+        }
+
+        savedDeals = (savedRes.value.saved as RawSavedItem[])
+          .map((item: RawSavedItem) => {
             const p = item.publicListing || item.property;
             if (!p) return null;
             const pricePKR = p.price || 0;

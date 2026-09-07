@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     const maxPrice = searchParams.get('maxPrice')
     const minBeds = searchParams.get('minBeds')
     const verifiedOnly = searchParams.get('verifiedOnly') === 'true'
+    const sortBy = searchParams.get('sortBy') || 'newest'
 
     const where: Record<string, unknown> = {
       isActive: true,
@@ -159,10 +160,17 @@ export async function GET(req: NextRequest) {
       }
     })
 
-    // Merge and sort newest first
-    const unifiedListings = [...mappedProperties, ...mappedPublic].sort((a, b) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
+    // Merge and sort listings
+    const unifiedListings = [...mappedProperties, ...mappedPublic].sort((a, b) => {
+      if (sortBy === 'price-asc') {
+        return (a.price || 0) - (b.price || 0)
+      }
+      if (sortBy === 'price-desc') {
+        return (b.price || 0) - (a.price || 0)
+      }
+      // Default: newest first
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
     return NextResponse.json({
       listings: unifiedListings,

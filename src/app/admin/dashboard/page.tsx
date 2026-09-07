@@ -1850,20 +1850,29 @@ export default function AdminDashboard() {
                         <Chip color="slate">Applied: {formatDate(arch.createdAt)}</Chip>
                       </div>
                     </div>
-                    {!arch.isVerified && arch.verificationStatus !== "VERIFIED" && (
-                      <div className="flex gap-2 flex-shrink-0 self-start">
-                        <ActionButton
-                          variant="approve"
-                          loading={actionLoading === `architect-${arch.id}-approve`}
-                          onClick={() => handleAction("architect", arch.id, "approve", arch.name)}
-                        />
-                        <ActionButton
-                          variant="reject"
-                          loading={actionLoading === `architect-${arch.id}-reject`}
-                          onClick={() => handleAction("architect", arch.id, "reject", arch.name)}
-                        />
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2 flex-shrink-0 self-start flex-wrap">
+                      {!arch.isVerified && arch.verificationStatus !== "VERIFIED" && (
+                        <>
+                          <ActionButton
+                            variant="approve"
+                            loading={actionLoading === `architect-${arch.id}-approve`}
+                            onClick={() => handleAction("architect", arch.id, "approve", arch.name)}
+                          />
+                          <ActionButton
+                            variant="reject"
+                            loading={actionLoading === `architect-${arch.id}-reject`}
+                            onClick={() => handleAction("architect", arch.id, "reject", arch.name)}
+                          />
+                        </>
+                      )}
+                      <button
+                        onClick={() => setDeleteModalTarget({ type: "architect", id: arch.id, title: arch.name })}
+                        className="text-xs bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1"
+                        title="Permanently Delete Architect"
+                      >
+                        <span>🗑️ Delete</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))

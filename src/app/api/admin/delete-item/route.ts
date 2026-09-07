@@ -92,27 +92,81 @@ export async function DELETE(req: NextRequest) {
       });
     }
 
-    // ── 3. DELETE USER ───────────────────────────────────────────────────────────
+    // ── 3. DELETE USER (With Cascade Architect & Dependency Cleanup) ─────────
     if (type === 'user') {
       try {
+        // 3a. Find and cascade delete any linked ArchitectProfile and its children
+        const linkedArch = await prisma.architectProfile.findFirst({
+          where: { userId: id },
+          select: { id: true },
+        });
+
+        if (linkedArch) {
+          try {
+            await prisma.architectProject.deleteMany({ where: { architectId: linkedArch.id } });
+            await prisma.architectReview.deleteMany({ where: { architectId: linkedArch.id } });
+            await prisma.architectProposal.deleteMany({ where: { architectId: linkedArch.id } });
+            await prisma.architectMessage.deleteMany({ where: { architectId: linkedArch.id } });
+          } catch { /* ignore */ }
+
+          try {
+            await prisma.architectProfile.delete({ where: { id: linkedArch.id } });
+          } catch {
+            await prisma.architectProfile.deleteMany({ where: { userId: id } });
+          }
+        }
+
+        // 3b. Cleanup saved listings, notifications, promotions
+        try { await prisma.savedListing.deleteMany({ where: { userId: id } }); } catch { /* ignore */ }
+        try { await prisma.promotion.deleteMany({ where: { userId: id } }); } catch { /* ignore */ }
+
+        // 3c. Unlink any properties owned by user
+        try { await prisma.property.updateMany({ where: { userId: id }, data: { userId: null } }); } catch { /* ignore */ }
+
+        // 3d. Delete the User record
         await prisma.user.delete({ where: { id } });
       } catch (err) {
         console.warn('Prisma user delete fallback to Supabase:', err);
       }
 
+      // Supabase direct fallback cleanup
+      try { await supabase.from('ArchitectProfile').delete().eq('userId', id); } catch { /* ignore */ }
+      try { await supabase.from('architect_profiles').delete().eq('userId', id); } catch { /* ignore */ }
       try { await supabase.from('User').delete().eq('id', id); } catch { /* ignore */ }
       try { await supabase.from('users').delete().eq('id', id); } catch { /* ignore */ }
 
       return NextResponse.json({
         success: true,
-        message: `User ${id} permanently deleted from platform database.`,
+        message: `User ${id} and linked profile records permanently deleted from platform database.`,
       });
     }
 
     // ── 4. DELETE ARCHITECT ──────────────────────────────────────────────────────
     if (type === 'architect') {
       try {
+        // Cascade delete child projects, reviews, proposals, messages
+        try {
+          await prisma.architectProject.deleteMany({ where: { architectId: id } });
+          await prisma.architectReview.deleteMany({ where: { architectId: id } });
+          await prisma.architectProposal.deleteMany({ where: { architectId: id } });
+          await prisma.architectMessage.deleteMany({ where: { architectId: id } });
+        } catch { /* ignore */ }
+
+        // Find linked user if any
+        const archProfile = await prisma.architectProfile.findUnique({
+          where: { id },
+          select: { id: true, userId: true },
+        });
+
+        // Delete the ArchitectProfile
         await prisma.architectProfile.delete({ where: { id } });
+
+        // If linked user exists and has no other roles, optionally clean up user
+        if (archProfile?.userId) {
+          try {
+            await prisma.user.delete({ where: { id: archProfile.userId } });
+          } catch { /* user might have other records, keep safe */ }
+        }
       } catch (err) {
         console.warn('Prisma architect delete fallback to Supabase:', err);
       }

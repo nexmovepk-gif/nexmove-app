@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
   SubscriptionStatus,
@@ -208,6 +208,10 @@ export default function AdminDashboard() {
   // ─── Properties Management State ───────────────────────────────────────────
   const [managedProperties, setManagedProperties] = useState<ManagedProperty[]>([]);
   const [propertiesLoading, setPropertiesLoading] = useState(false);
+  const [propertySearchQuery, setPropertySearchQuery] = useState("");
+  const [propertyCityFilter, setPropertyCityFilter] = useState("ALL");
+  const [propertyTypeFilter, setPropertyTypeFilter] = useState("ALL");
+  const [propertySortBy, setPropertySortBy] = useState<"newest" | "price-desc" | "price-asc">("newest");
 
   // ─── Permanent Delete Modal State ──────────────────────────────────────────
   interface DeleteModalTarget {
@@ -320,6 +324,66 @@ export default function AdminDashboard() {
       setPropertiesLoading(false);
     }
   }, []);
+
+  // Filtered & Sorted Properties for Properties Vault
+  const availablePropertyCities = useMemo(() => {
+    const cities = new Set<string>();
+    managedProperties.forEach((p) => {
+      if (p.city && p.city.trim()) {
+        cities.add(p.city.trim());
+      }
+    });
+    ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad", "Multan", "Peshawar", "Quetta", "Gujranwala", "Sialkot"].forEach((c) =>
+      cities.add(c)
+    );
+    return Array.from(cities).sort((a, b) => a.localeCompare(b));
+  }, [managedProperties]);
+
+  const filteredProperties = useMemo(() => {
+    return managedProperties
+      .filter((prop) => {
+        if (propertySearchQuery.trim()) {
+          const q = propertySearchQuery.toLowerCase().trim();
+          const matchesTitle = prop.title?.toLowerCase().includes(q);
+          const matchesAddress = prop.address?.toLowerCase().includes(q);
+          const matchesCity = prop.city?.toLowerCase().includes(q);
+          const matchesAgency = prop.agency?.name?.toLowerCase().includes(q);
+          const matchesContact = prop.contactName?.toLowerCase().includes(q);
+          const matchesId = prop.id?.toLowerCase().includes(q);
+          if (!matchesTitle && !matchesAddress && !matchesCity && !matchesAgency && !matchesContact && !matchesId) {
+            return false;
+          }
+        }
+
+        if (propertyCityFilter !== "ALL") {
+          const propCity = (prop.city || "").toLowerCase().trim();
+          const targetCity = propertyCityFilter.toLowerCase().trim();
+          if (!propCity.includes(targetCity) && !targetCity.includes(propCity)) {
+            return false;
+          }
+        }
+
+        if (propertyTypeFilter !== "ALL") {
+          const propType = (prop.propertyType || "").toUpperCase();
+          if (!propType.includes(propertyTypeFilter.toUpperCase())) {
+            return false;
+          }
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (propertySortBy === "price-desc") {
+          return (b.price || 0) - (a.price || 0);
+        }
+        if (propertySortBy === "price-asc") {
+          return (a.price || 0) - (b.price || 0);
+        }
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+  }, [managedProperties, propertySearchQuery, propertyCityFilter, propertyTypeFilter, propertySortBy]);
 
   const handleConfirmPermanentDelete = async () => {
     if (!deleteModalTarget) return;
@@ -1255,17 +1319,129 @@ export default function AdminDashboard() {
                   Inspect all active properties and permanently remove any unverified or violating listing from platform.
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={fetchProperties}
                   disabled={propertiesLoading}
-                  className="text-xs font-bold bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl transition"
+                  className="text-xs font-bold bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5"
                 >
-                  ↻ Refresh Listings
+                  {propertiesLoading ? (
+                    <span className="w-3 h-3 border border-purple-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <span>↻</span>
+                  )}
+                  <span>Refresh</span>
                 </button>
                 <span className="text-xs bg-slate-950 border border-slate-800 text-purple-400 font-bold px-3 py-1.5 rounded-xl font-mono">
-                  Total: {managedProperties.length} Properties
+                  Total: {managedProperties.length}
                 </span>
+                {(propertySearchQuery || propertyCityFilter !== "ALL" || propertyTypeFilter !== "ALL") && (
+                  <span className="text-xs bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 font-bold px-3 py-1.5 rounded-xl font-mono">
+                    Filtered: {filteredProperties.length}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* ── Filter & Search Toolbar ── */}
+            <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3 shadow-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {/* Search Bar */}
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm">🔍</span>
+                  <input
+                    type="text"
+                    value={propertySearchQuery}
+                    onChange={(e) => setPropertySearchQuery(e.target.value)}
+                    placeholder="Search title, address, owner, or ID..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500 transition"
+                  />
+                  {propertySearchQuery && (
+                    <button
+                      onClick={() => setPropertySearchQuery("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs px-1"
+                      title="Clear search"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                {/* City Filter */}
+                <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2">
+                  <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider flex-shrink-0">📍 City:</span>
+                  <select
+                    value={propertyCityFilter}
+                    onChange={(e) => setPropertyCityFilter(e.target.value)}
+                    className="bg-transparent text-xs text-slate-200 focus:outline-none w-full font-medium cursor-pointer"
+                  >
+                    <option value="ALL" className="bg-slate-900 text-slate-200">All Cities</option>
+                    {availablePropertyCities.map((city) => (
+                      <option key={city} value={city} className="bg-slate-900 text-slate-200">
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Property Type Filter */}
+                <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2">
+                  <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider flex-shrink-0">🏠 Type:</span>
+                  <select
+                    value={propertyTypeFilter}
+                    onChange={(e) => setPropertyTypeFilter(e.target.value)}
+                    className="bg-transparent text-xs text-slate-200 focus:outline-none w-full font-medium cursor-pointer"
+                  >
+                    <option value="ALL" className="bg-slate-900 text-slate-200">All Types</option>
+                    <option value="HOUSE" className="bg-slate-900 text-slate-200">House</option>
+                    <option value="APARTMENT" className="bg-slate-900 text-slate-200">Apartment</option>
+                    <option value="PLOT" className="bg-slate-900 text-slate-200">Plot / Land</option>
+                    <option value="COMMERCIAL" className="bg-slate-900 text-slate-200">Commercial</option>
+                    <option value="PENTHOUSE" className="bg-slate-900 text-slate-200">Penthouse</option>
+                    <option value="VILLA" className="bg-slate-900 text-slate-200">Villa</option>
+                    <option value="OFFICE" className="bg-slate-900 text-slate-200">Office</option>
+                  </select>
+                </div>
+
+                {/* Sort Order */}
+                <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2">
+                  <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider flex-shrink-0">⚡ Sort:</span>
+                  <select
+                    value={propertySortBy}
+                    onChange={(e) => setPropertySortBy(e.target.value as "newest" | "price-desc" | "price-asc")}
+                    className="bg-transparent text-xs text-slate-200 focus:outline-none w-full font-medium cursor-pointer"
+                  >
+                    <option value="newest" className="bg-slate-900 text-slate-200">Newest Added</option>
+                    <option value="price-desc" className="bg-slate-900 text-slate-200">Price: High to Low</option>
+                    <option value="price-asc" className="bg-slate-900 text-slate-200">Price: Low to High</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Active Filter Indicators & Reset Button */}
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/60 flex-wrap text-[11px]">
+                <div className="flex items-center gap-1.5 text-slate-400">
+                  <span>Showing <strong className="text-white font-mono">{filteredProperties.length}</strong> of <strong className="text-white font-mono">{managedProperties.length}</strong> listings</span>
+                  {(propertySearchQuery || propertyCityFilter !== "ALL" || propertyTypeFilter !== "ALL" || propertySortBy !== "newest") && (
+                    <span className="text-purple-400 text-[10px] ml-1 bg-purple-950/40 border border-purple-500/20 px-2 py-0.5 rounded-md">
+                      Filter Active
+                    </span>
+                  )}
+                </div>
+
+                {(propertySearchQuery || propertyCityFilter !== "ALL" || propertyTypeFilter !== "ALL" || propertySortBy !== "newest") && (
+                  <button
+                    onClick={() => {
+                      setPropertySearchQuery("");
+                      setPropertyCityFilter("ALL");
+                      setPropertyTypeFilter("ALL");
+                      setPropertySortBy("newest");
+                    }}
+                    className="text-purple-400 hover:text-purple-300 font-semibold hover:underline flex items-center gap-1 transition"
+                  >
+                    <span>↺ Reset Filters</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -1273,9 +1449,28 @@ export default function AdminDashboard() {
               <SkeletonRows count={4} />
             ) : managedProperties.length === 0 ? (
               <EmptyState emoji="🏡" text="No property listings found in database." />
+            ) : filteredProperties.length === 0 ? (
+              <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-3">
+                <span className="text-3xl">🔍</span>
+                <p className="text-sm font-bold text-slate-300">No properties match your current filters</p>
+                <p className="text-xs text-slate-500 max-w-sm">
+                  Try adjusting your search query, selecting another city, or resetting your filters.
+                </p>
+                <button
+                  onClick={() => {
+                    setPropertySearchQuery("");
+                    setPropertyCityFilter("ALL");
+                    setPropertyTypeFilter("ALL");
+                    setPropertySortBy("newest");
+                  }}
+                  className="text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl transition mt-1"
+                >
+                  Clear All Filters
+                </button>
+              </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {managedProperties.map((prop) => (
+                {filteredProperties.map((prop) => (
                   <div key={prop.id} className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex gap-4 shadow-md hover:border-slate-700 transition">
                     <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-slate-950 flex-shrink-0 border border-slate-800">
                       {prop.images && prop.images[0] ? (
@@ -1288,22 +1483,22 @@ export default function AdminDashboard() {
                     <div className="flex flex-col justify-between flex-1 min-w-0">
                       <div>
                         <div className="flex items-center justify-between gap-2">
-                          <h4 className="text-xs font-bold text-white truncate">{prop.title}</h4>
+                          <h4 className="text-xs font-bold text-white truncate" title={prop.title}>{prop.title}</h4>
                           <span className="text-xs font-black text-emerald-400 font-mono whitespace-nowrap">
                             PKR {prop.price.toLocaleString()}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-0.5">
-                          📍 {prop.address || prop.city || 'Pakistan'} · {prop.propertyType || 'Property'}
+                        <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                          📍 {prop.address || prop.city || "Pakistan"} · <span className="text-slate-300 font-medium">{prop.propertyType || "Property"}</span>
                         </p>
                         <p className="text-[10px] text-slate-500">
-                          Owner/Agency: <strong className="text-slate-300">{prop.agency?.name || prop.contactName || 'Marketplace Seller'}</strong>
+                          Owner/Agency: <strong className="text-slate-300">{prop.agency?.name || prop.contactName || "Marketplace Seller"}</strong>
                         </p>
                       </div>
                       <div className="flex items-center justify-between pt-2 border-t border-slate-800/60 mt-2">
-                        <span className="text-[10px] font-mono text-slate-500">ID: {prop.id.slice(0, 8)}...</span>
+                        <span className="text-[10px] font-mono text-slate-500" title={prop.id}>ID: {prop.id.slice(0, 8)}...</span>
                         <button
-                          onClick={() => setDeleteModalTarget({ type: 'property', id: prop.id, title: prop.title })}
+                          onClick={() => setDeleteModalTarget({ type: "property", id: prop.id, title: prop.title })}
                           className="text-[11px] font-bold bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-500/30 px-3 py-1 rounded-xl transition flex items-center gap-1"
                         >
                           <span>🗑️ Permanent Delete</span>

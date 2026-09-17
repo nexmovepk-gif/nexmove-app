@@ -73,7 +73,14 @@ export const ModelName = {
   InvestorCashflow: 'InvestorCashflow',
   InvestorWallet: 'InvestorWallet',
   PasswordResetToken: 'PasswordResetToken',
-  Promotion: 'Promotion'
+  Promotion: 'Promotion',
+  PrivateSellerLead: 'PrivateSellerLead',
+  AgencyValuationProposal: 'AgencyValuationProposal',
+  ExclusiveListingMandate: 'ExclusiveListingMandate',
+  PropertyDocumentVault: 'PropertyDocumentVault',
+  DealRoom: 'DealRoom',
+  DealMilestone: 'DealMilestone',
+  OverseasPoaRecord: 'OverseasPoaRecord'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -613,6 +620,144 @@ export const PromotionScalarFieldEnum = {
 } as const
 
 export type PromotionScalarFieldEnum = (typeof PromotionScalarFieldEnum)[keyof typeof PromotionScalarFieldEnum]
+
+
+export const PrivateSellerLeadScalarFieldEnum = {
+  id: 'id',
+  society: 'society',
+  phase: 'phase',
+  block: 'block',
+  propertyType: 'propertyType',
+  plotNumber: 'plotNumber',
+  areaSqFt: 'areaSqFt',
+  demandPKR: 'demandPKR',
+  features: 'features',
+  sellerName: 'sellerName',
+  sellerWhatsApp: 'sellerWhatsApp',
+  whatsappOtpVerified: 'whatsappOtpVerified',
+  status: 'status',
+  assignedAgencyId: 'assignedAgencyId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PrivateSellerLeadScalarFieldEnum = (typeof PrivateSellerLeadScalarFieldEnum)[keyof typeof PrivateSellerLeadScalarFieldEnum]
+
+
+export const AgencyValuationProposalScalarFieldEnum = {
+  id: 'id',
+  leadId: 'leadId',
+  agencyId: 'agencyId',
+  agencyName: 'agencyName',
+  estimatedMinPKR: 'estimatedMinPKR',
+  estimatedMaxPKR: 'estimatedMaxPKR',
+  sellingDaysEstimate: 'sellingDaysEstimate',
+  marketingStrategy: 'marketingStrategy',
+  commissionRate: 'commissionRate',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgencyValuationProposalScalarFieldEnum = (typeof AgencyValuationProposalScalarFieldEnum)[keyof typeof AgencyValuationProposalScalarFieldEnum]
+
+
+export const ExclusiveListingMandateScalarFieldEnum = {
+  id: 'id',
+  leadId: 'leadId',
+  sellerId: 'sellerId',
+  agencyId: 'agencyId',
+  agencyName: 'agencyName',
+  agreedMinPrice: 'agreedMinPrice',
+  commissionPct: 'commissionPct',
+  validityDays: 'validityDays',
+  sellerSignatureDate: 'sellerSignatureDate',
+  agencySignatureDate: 'agencySignatureDate',
+  mouPdfUrl: 'mouPdfUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExclusiveListingMandateScalarFieldEnum = (typeof ExclusiveListingMandateScalarFieldEnum)[keyof typeof ExclusiveListingMandateScalarFieldEnum]
+
+
+export const PropertyDocumentVaultScalarFieldEnum = {
+  id: 'id',
+  propertyId: 'propertyId',
+  leadId: 'leadId',
+  docType: 'docType',
+  originalFileUrl: 'originalFileUrl',
+  watermarkedFileUrl: 'watermarkedFileUrl',
+  verifiedByAgencyId: 'verifiedByAgencyId',
+  sightedAt: 'sightedAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropertyDocumentVaultScalarFieldEnum = (typeof PropertyDocumentVaultScalarFieldEnum)[keyof typeof PropertyDocumentVaultScalarFieldEnum]
+
+
+export const DealRoomScalarFieldEnum = {
+  id: 'id',
+  dealNumber: 'dealNumber',
+  propertyId: 'propertyId',
+  buyerId: 'buyerId',
+  buyerName: 'buyerName',
+  sellerId: 'sellerId',
+  sellerName: 'sellerName',
+  agencyId: 'agencyId',
+  agencyName: 'agencyName',
+  totalAgreedPrice: 'totalAgreedPrice',
+  status: 'status',
+  currentMilestone: 'currentMilestone',
+  buyerFbrStatus: 'buyerFbrStatus',
+  sellerFbrStatus: 'sellerFbrStatus',
+  buyerTaxPKR: 'buyerTaxPKR',
+  sellerTaxPKR: 'sellerTaxPKR',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DealRoomScalarFieldEnum = (typeof DealRoomScalarFieldEnum)[keyof typeof DealRoomScalarFieldEnum]
+
+
+export const DealMilestoneScalarFieldEnum = {
+  id: 'id',
+  dealRoomId: 'dealRoomId',
+  stepNumber: 'stepNumber',
+  title: 'title',
+  status: 'status',
+  proofAttachmentUrl: 'proofAttachmentUrl',
+  cprNumber: 'cprNumber',
+  psidNumber: 'psidNumber',
+  appointmentDate: 'appointmentDate',
+  verifiedBy: 'verifiedBy',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DealMilestoneScalarFieldEnum = (typeof DealMilestoneScalarFieldEnum)[keyof typeof DealMilestoneScalarFieldEnum]
+
+
+export const OverseasPoaRecordScalarFieldEnum = {
+  id: 'id',
+  dealRoomId: 'dealRoomId',
+  userId: 'userId',
+  countryOfOrigin: 'countryOfOrigin',
+  embassyCity: 'embassyCity',
+  poaAttorneyName: 'poaAttorneyName',
+  poaAttorneyCnic: 'poaAttorneyCnic',
+  mofaReceiptNumber: 'mofaReceiptNumber',
+  status: 'status',
+  documentUrl: 'documentUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OverseasPoaRecordScalarFieldEnum = (typeof OverseasPoaRecordScalarFieldEnum)[keyof typeof OverseasPoaRecordScalarFieldEnum]
 
 
 export const SortOrder = {

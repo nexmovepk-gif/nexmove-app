@@ -1,296 +1,228 @@
 'use client'
 // src/components/AIAssistant.tsx
-// NexMove Support AI — Autonomous, context-aware, tri-language PropTech assistant
+// NexMove Brain — Minimalist Off-White Real-Time AI Chatbot
 
 import React, { useState, useRef, useEffect } from 'react'
-import { processQuery, type Language } from '@/lib/chatEngine'
 
 interface ChatMessage {
-  sender: 'ai' | 'user'
-  text: string
-  timestamp: string
-  lang?: Language
-  intent?: string
-}
-
-const LANG_BADGE: Record<Language, { label: string; color: string }> = {
-  en: { label: 'EN', color: 'bg-sky-600' },
-  roman_urdu: { label: 'RU', color: 'bg-violet-600' },
-  urdu_script: { label: 'UR', color: 'bg-amber-600' },
-}
-
-const QUICK_CHIPS = [
-  { label: '💰 Pricing Plans', query: 'What are the subscription plans and pricing?' },
-  { label: '🏦 How to Pay', query: 'How do I pay via Meezan Bank?' },
-  { label: '🛡️ Deal Shielding', query: 'How does deal shielding and privacy work?' },
-  { label: '🔒 Escrow Vault', query: 'Explain the smart escrow milestone system' },
-  { label: '🌐 Investor Portal', query: 'Tell me about the Investor Portal for overseas Pakistanis' },
-  { label: '🏢 Register Agency', query: 'How do I register my agency on NexMove?' },
-  { label: '📄 AI Contracts', query: 'How does the AI Legal Contract generator work?' },
-  { label: '🧮 FBR Tax', query: 'How does FBR tax integration work?' },
-]
-
-const INITIAL_MESSAGE: ChatMessage = {
-  sender: 'ai',
-  text: `Hello! I'm your NexMove Support AI — powered by full platform knowledge. 🏙️\n\nI can answer any question about:\n• Subscription Plans (PKR 5k / 15k / 40k)\n• Meezan Bank payment process\n• Agency / Investor / Architect registration\n• Escrow Vault & KYC verification\n• Deal Shielding & data privacy\n\nYou can also ask me in Roman Urdu or Urdu script — I'll respond in your language! 🇵🇰`,
-  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-  lang: 'en',
-}
-
-function TypingIndicator() {
-  return (
-    <div className="flex gap-1.5 items-center px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-none w-fit">
-      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '300ms' }} />
-    </div>
-  )
-}
-
-function MessageBubble({ msg }: { msg: ChatMessage }) {
-  const isUser = msg.sender === 'user'
-  const badge = msg.lang && !isUser ? LANG_BADGE[msg.lang] : null
-
-  return (
-    <div className={`flex flex-col max-w-[88%] ${isUser ? 'self-end items-end' : 'self-start items-start'}`}>
-      <div
-        className={`relative p-3 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
-          isUser
-            ? 'bg-emerald-600 text-white rounded-br-none shadow-md shadow-emerald-900/30'
-            : 'bg-slate-800 text-slate-100 border border-slate-700/80 rounded-bl-none shadow'
-        }`}
-      >
-        {msg.text}
-      </div>
-      <div className="flex items-center gap-1.5 mt-1 px-1">
-        {badge && (
-          <span className={`text-[8px] font-black px-1.5 py-0.5 rounded-md text-white ${badge.color}`}>
-            {badge.label}
-          </span>
-        )}
-        <span className="text-[9px] text-slate-500">{msg.timestamp}</span>
-      </div>
-    </div>
-  )
+  role: 'user' | 'assistant'
+  content: string
+  timestamp?: string
 }
 
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE])
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      role: 'assistant',
+      content: 'Assalam o Alaikum! I am **NexMove Brain**. How can I assist you today?',
+    },
+  ])
   const [input, setInput] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const [chipsCollapsed, setChipsCollapsed] = useState(false)
+  const [isStreaming, setIsStreaming] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isTyping])
-
-  useEffect(() => {
-    if (isOpen) setTimeout(() => inputRef.current?.focus(), 300)
-  }, [isOpen])
-
-  const handleSend = (textToSend?: string) => {
-    const query = (textToSend ?? input).trim()
-    if (!query) return
-    if (!textToSend) setInput('')
-
-    const userMsg: ChatMessage = {
-      sender: 'user',
-      text: query,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    }
-    setMessages((prev) => [...prev, userMsg])
-    setIsTyping(true)
-
-    // Simulate AI thinking delay proportional to response complexity
-    const thinkMs = 600 + Math.min(query.length * 6, 900)
-    setTimeout(() => {
-      const { response, detectedLanguage, intent } = processQuery(query)
-      const aiMsg: ChatMessage = {
-        sender: 'ai',
-        text: response,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        lang: detectedLanguage,
-        intent,
-      }
-      setIsTyping(false)
-      setMessages((prev) => [...prev, aiMsg])
-    }, thinkMs)
   }
 
-  const chatHeight = isExpanded ? 'h-[520px]' : 'h-72'
-  const chatWidth = isExpanded ? 'w-[420px] sm:w-[480px]' : 'w-80 sm:w-96'
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom()
+      setTimeout(() => inputRef.current?.focus(), 150)
+    }
+  }, [isOpen, messages])
+
+  const handleSend = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    const trimmed = input.trim()
+    if (!trimmed || isStreaming) return
+
+    const userMsg: ChatMessage = { role: 'user', content: trimmed }
+    const updatedMessages = [...messages, userMsg]
+    setMessages(updatedMessages)
+    setInput('')
+    setIsStreaming(true)
+
+    // Add empty assistant response placeholder
+    setMessages((prev) => [...prev, { role: 'assistant', content: '' }])
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: updatedMessages }),
+      })
+
+      if (!response.ok || !response.body) {
+        throw new Error('Failed to get response')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const textChunk = decoder.decode(value, { stream: true })
+        accumulated += textChunk
+
+        setMessages((prev) => {
+          const next = [...prev]
+          if (next.length > 0) {
+            next[next.length - 1] = {
+              role: 'assistant',
+              content: accumulated,
+            }
+          }
+          return next
+        })
+      }
+    } catch {
+      setMessages((prev) => {
+        const next = [...prev]
+        if (next.length > 0) {
+          next[next.length - 1] = {
+            role: 'assistant',
+            content: 'Sorry, I encountered an issue connecting to the AI engine. Please try again.',
+          }
+        }
+        return next
+      })
+    } finally {
+      setIsStreaming(false)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <>
+      {/* Minimal Floating Launcher Button */}
+      {!isOpen && (
+        <button
+          id="nexmove-brain-open-btn"
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 bg-[#FAF9F6] text-slate-800 rounded-full shadow-lg border border-stone-200 hover:border-emerald-500 hover:shadow-xl transition-all duration-200 group"
+          title="Open NexMove Brain AI"
+        >
+          <div className="w-7 h-7 rounded-full overflow-hidden bg-white shadow-sm flex items-center justify-center">
+            <img src="/logo.png" alt="NexMove" className="w-full h-full object-cover" />
+          </div>
+          <span className="text-xs font-semibold tracking-wide text-stone-700 group-hover:text-emerald-700">
+            NexMove Brain
+          </span>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        </button>
+      )}
 
-      {/* ── Expanded Chat Window ──────────────────────────────────────────── */}
+      {/* Minimal Off-White Chat Window */}
       {isOpen && (
         <div
-          className={`${chatWidth} bg-slate-950 border border-slate-700/80 shadow-2xl shadow-black/60 rounded-3xl overflow-hidden flex flex-col mb-4 transition-all duration-300`}
-          style={{ animation: 'slideUpFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1)' }}
+          id="nexmove-brain-window"
+          className="fixed bottom-6 right-6 z-50 w-[380px] sm:w-[420px] h-[580px] max-h-[85vh] bg-[#F8F9FA] rounded-2xl shadow-2xl border border-stone-200/90 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200"
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
         >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-teal-950 via-slate-900 to-emerald-950 px-5 py-3.5 border-b border-slate-700/60 flex items-center justify-between flex-shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-500/30 to-emerald-600/20 border border-teal-500/40 flex items-center justify-center text-lg">
-                  🤖
-                </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-slate-900" />
+          {/* Minimal Header */}
+          <div className="flex items-center justify-between px-4 py-3 bg-[#FAF9F6] border-b border-stone-200/70">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg overflow-hidden bg-white shadow-sm flex items-center justify-center">
+                <img src="/logo.png" alt="NexMove Brain" className="w-full h-full object-cover" />
               </div>
               <div>
-                <h3 className="text-sm font-black text-white leading-tight tracking-tight">NexMove Support AI</h3>
-                <span className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Autonomous PropTech Specialist
-                </span>
+                <h3 className="text-xs font-semibold text-stone-800">NexMove Brain</h3>
+                <p className="text-[10px] text-stone-500 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" /> Online
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              {/* Expand/Collapse toggle */}
-              <button
-                onClick={() => setIsExpanded((v) => !v)}
-                title={isExpanded ? 'Compact view' : 'Expand view'}
-                className="text-slate-500 hover:text-slate-200 w-7 h-7 rounded-lg flex items-center justify-center transition hover:bg-slate-800"
-              >
-                {isExpanded ? '⊡' : '⊞'}
-              </button>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-slate-500 hover:text-white w-7 h-7 rounded-lg flex items-center justify-center transition hover:bg-slate-800 ml-1"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
 
-          {/* Language Capability Badge */}
-          <div className="bg-slate-900/80 border-b border-slate-800 px-4 py-1.5 flex items-center gap-2">
-            <span className="text-[9px] text-slate-500 font-semibold uppercase tracking-wider">Auto Language:</span>
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-sky-600 text-white font-bold">EN</span>
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-violet-600 text-white font-bold">Roman Urdu</span>
-            <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-600 text-white font-bold">اردو</span>
-            <span className="text-[9px] text-slate-600 ml-auto">Full codebase context ✓</span>
-          </div>
-
-          {/* Quick Chip Topics */}
-          {!chipsCollapsed && (
-            <div className="bg-slate-950/90 px-3 py-2 border-b border-slate-800/60 flex-shrink-0">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Quick Topics</span>
-                <button
-                  onClick={() => setChipsCollapsed(true)}
-                  className="text-[9px] text-slate-600 hover:text-slate-400 transition"
-                >
-                  Hide ↑
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto">
-                {QUICK_CHIPS.map((chip) => (
-                  <button
-                    key={chip.label}
-                    onClick={() => handleSend(chip.query)}
-                    className="text-[10px] px-2 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-teal-600 text-slate-300 hover:text-teal-300 rounded-lg transition whitespace-nowrap font-medium"
-                  >
-                    {chip.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-          {chipsCollapsed && (
             <button
-              onClick={() => setChipsCollapsed(false)}
-              className="bg-slate-900/80 border-b border-slate-800 px-4 py-1 text-[9px] text-slate-600 hover:text-slate-400 transition text-center w-full"
+              onClick={() => setIsOpen(false)}
+              className="w-7 h-7 rounded-lg hover:bg-stone-200/70 text-stone-500 hover:text-stone-800 flex items-center justify-center transition-colors text-sm"
+              title="Close Chat"
             >
-              Show quick topics ↓
+              ✕
             </button>
-          )}
+          </div>
 
-          {/* Message List */}
-          <div className={`p-4 ${chatHeight} overflow-y-auto flex flex-col gap-3 bg-slate-950/60 transition-all duration-300`}>
-            {messages.map((m, idx) => (
-              <MessageBubble key={idx} msg={m} />
-            ))}
-            {isTyping && (
-              <div className="self-start flex flex-col gap-1">
-                <TypingIndicator />
-                <span className="text-[9px] text-slate-600 px-1">NexMove AI is thinking...</span>
-              </div>
-            )}
+          {/* Chatplace (Conversation Area) */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#F8F9FA]">
+            {messages.map((msg, i) => {
+              const isUser = msg.role === 'user'
+              return (
+                <div
+                  key={i}
+                  className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[90%] ${
+                    isUser ? 'ml-auto' : 'mr-auto'
+                  }`}
+                >
+                  <div
+                    className={`px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
+                      isUser
+                        ? 'bg-stone-900 text-white rounded-br-sm shadow-sm'
+                        : 'bg-white text-stone-800 border border-stone-200/80 rounded-bl-sm shadow-sm'
+                    }`}
+                  >
+                    {msg.content ? (
+                      msg.content
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-stone-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-stone-400 animate-bounce" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-stone-400 animate-bounce [animation-delay:0.2s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-stone-400 animate-bounce [animation-delay:0.4s]" />
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Privacy Assurance Strip */}
-          <div className="bg-slate-900/60 border-t border-slate-800/60 px-4 py-1.5 flex items-center gap-2">
-            <span className="text-[9px] text-slate-600">🔐</span>
-            <span className="text-[9px] text-slate-600 leading-tight">
-              All deal data, client identities &amp; negotiations are 100% encrypted and isolated.
-            </span>
-          </div>
+          {/* Chat Enging (Input & Send Area) */}
+          <div className="p-3 bg-[#FAF9F6] border-t border-stone-200/80">
+            <form onSubmit={handleSend} className="relative flex items-center">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask anything about Pakistan real estate, taxes, deals..."
+                rows={1}
+                disabled={isStreaming}
+                className="w-full pl-3.5 pr-12 py-2.5 bg-white text-stone-900 text-xs rounded-xl border border-stone-300/80 focus:outline-none focus:border-stone-500 focus:ring-1 focus:ring-stone-400 resize-none transition-all placeholder:text-stone-400 disabled:opacity-60"
+                style={{ minHeight: '40px', maxHeight: '100px' }}
+              />
 
-          {/* Input Footer */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              handleSend()
-            }}
-            className="p-3 bg-slate-900 border-t border-slate-800 flex items-center gap-2 flex-shrink-0"
-          >
-            <input
-              ref={inputRef}
-              id="nexmove-ai-input"
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask in English, Roman Urdu, or اردو..."
-              disabled={isTyping}
-              className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 transition disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={isTyping || !input.trim()}
-              className="bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow disabled:opacity-50"
-            >
-              {isTyping ? '...' : 'Send'}
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={!input.trim() || isStreaming}
+                className="absolute right-2 w-7 h-7 rounded-lg bg-stone-900 hover:bg-stone-800 text-white disabled:bg-stone-300 disabled:cursor-not-allowed flex items-center justify-center transition-colors shadow-sm"
+                title="Send Message"
+              >
+                {isStreaming ? (
+                  <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                  </svg>
+                )}
+              </button>
+            </form>
+            <div className="mt-1 text-center">
+              <span className="text-[10px] text-stone-400">Press Enter to send • Shift+Enter for new line</span>
+            </div>
+          </div>
         </div>
       )}
-
-      {/* ── Floating Toggle Button ───────────────────────────────────────── */}
-      <button
-        id="nexmove-ai-toggle"
-        onClick={() => setIsOpen((v) => !v)}
-        className={`group relative bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-5 py-3 rounded-full shadow-2xl shadow-emerald-900/50 flex items-center gap-2.5 border border-emerald-500/30 transition-all duration-200 hover:scale-105`}
-      >
-        <span className="text-xl">{isOpen ? '✕' : '🤖'}</span>
-        {!isOpen && (
-          <>
-            <div className="flex flex-col items-start">
-              <span className="text-xs font-black leading-tight">NexMove AI</span>
-              <span className="text-[9px] text-emerald-200 leading-tight">PropTech Specialist</span>
-            </div>
-            {/* Unread pulse indicator */}
-            <span className="relative flex">
-              <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-white opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
-            </span>
-          </>
-        )}
-      </button>
-
-      {/* CSS animation keyframe injected inline */}
-      <style>{`
-        @keyframes slideUpFadeIn {
-          from { opacity: 0; transform: translateY(16px) scale(0.97); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-      `}</style>
-    </div>
+    </>
   )
 }

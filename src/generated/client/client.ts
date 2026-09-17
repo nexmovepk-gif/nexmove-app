@@ -156,3 +156,38 @@ export type PasswordResetToken = Prisma.PasswordResetTokenModel
  * Self-serve Property & Agency promotions (Ads Manager)
  */
 export type Promotion = Prisma.PromotionModel
+/**
+ * Model PrivateSellerLead
+ * 
+ */
+export type PrivateSellerLead = Prisma.PrivateSellerLeadModel
+/**
+ * Model AgencyValuationProposal
+ * 
+ */
+export type AgencyValuationProposal = Prisma.AgencyValuationProposalModel
+/**
+ * Model ExclusiveListingMandate
+ * 
+ */
+export type ExclusiveListingMandate = Prisma.ExclusiveListingMandateModel
+/**
+ * Model PropertyDocumentVault
+ * 
+ */
+export type PropertyDocumentVault = Prisma.PropertyDocumentVaultModel
+/**
+ * Model DealRoom
+ * 
+ */
+export type DealRoom = Prisma.DealRoomModel
+/**
+ * Model DealMilestone
+ * 
+ */
+export type DealMilestone = Prisma.DealMilestoneModel
+/**
+ * Model OverseasPoaRecord
+ * 
+ */
+export type OverseasPoaRecord = Prisma.OverseasPoaRecordModel

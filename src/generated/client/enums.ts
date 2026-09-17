@@ -171,3 +171,57 @@ export const PromotionStatus = {
 } as const
 
 export type PromotionStatus = (typeof PromotionStatus)[keyof typeof PromotionStatus]
+
+
+export const PrivateLeadStatus = {
+  SUBMITTED: 'SUBMITTED',
+  MATCHED: 'MATCHED',
+  VALUATIONS_RECEIVED: 'VALUATIONS_RECEIVED',
+  AGENCY_ASSIGNED: 'AGENCY_ASSIGNED',
+  LISTED: 'LISTED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type PrivateLeadStatus = (typeof PrivateLeadStatus)[keyof typeof PrivateLeadStatus]
+
+
+export const ValuationProposalStatus = {
+  SUBMITTED: 'SUBMITTED',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type ValuationProposalStatus = (typeof ValuationProposalStatus)[keyof typeof ValuationProposalStatus]
+
+
+export const DealMilestoneStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DOCUMENT_UPLOADED: 'DOCUMENT_UPLOADED',
+  VERIFIED: 'VERIFIED',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type DealMilestoneStatus = (typeof DealMilestoneStatus)[keyof typeof DealMilestoneStatus]
+
+
+export const TaxPayerStatus = {
+  ACTIVE_FILER: 'ACTIVE_FILER',
+  LATE_FILER: 'LATE_FILER',
+  NON_FILER: 'NON_FILER',
+  EXEMPT: 'EXEMPT'
+} as const
+
+export type TaxPayerStatus = (typeof TaxPayerStatus)[keyof typeof TaxPayerStatus]
+
+
+export const PoaStatus = {
+  NOT_APPLICABLE: 'NOT_APPLICABLE',
+  EMBASSY_SUBMITTED: 'EMBASSY_SUBMITTED',
+  MOFA_ATTESTED: 'MOFA_ATTESTED',
+  SOCIETY_REGISTERED: 'SOCIETY_REGISTERED',
+  VERIFIED: 'VERIFIED'
+} as const
+
+export type PoaStatus = (typeof PoaStatus)[keyof typeof PoaStatus]

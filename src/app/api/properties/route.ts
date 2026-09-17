@@ -134,8 +134,12 @@ export async function POST(req: NextRequest) {
       contactEmail,
       agencyId,
       userId: bodyUserId,
-      status = 'ACTIVE',
     } = body;
+
+    // ── PRIVATE LISTING POLICY ──────────────────────────────────────────────────
+    // All seller-submitted properties are SHIELDED (private) by default.
+    // They only go public when an agency explicitly publishes them.
+    const status = 'SHIELDED';
 
     // Auto-attach userId from the authenticated session if not provided in body
     const session = await getServerSession(authOptions);
@@ -264,10 +268,36 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // ── NOTIFY TOP 3 AGENCIES ────────────────────────────────────────────────
+    let notifiedAgencies: { id: string; name: string }[] = [];
+    try {
+      const baseUrl = req.nextUrl.origin;
+      const notifyRes = await fetch(`${baseUrl}/api/notify-agencies`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          propertyId: (property as { id: string }).id,
+          city: propertyData.city || '',
+          sellerName: propertyData.contactName,
+          propertyTitle: propertyData.title,
+          price: propertyData.price,
+        }),
+      });
+      if (notifyRes.ok) {
+        const notifyData = await notifyRes.json();
+        notifiedAgencies = notifyData.agencies || [];
+      }
+    } catch (notifyErr) {
+      console.warn('[Properties API] Agency notification warning:', notifyErr);
+    }
+
     return NextResponse.json({
       success: true,
       property,
-      message: 'Property listing created successfully!',
+      status: 'SHIELDED',
+      notifiedAgencies,
+      notifiedCount: notifiedAgencies.length,
+      message: `Your property has been listed privately. ${notifiedAgencies.length} top agenc${notifiedAgencies.length === 1 ? 'y has' : 'ies have'} been notified.`,
     }, { status: 201 });
 
   } catch (err) {

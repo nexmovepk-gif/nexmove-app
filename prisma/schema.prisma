@@ -753,3 +753,176 @@ model Promotion {
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
 }
+
+// ─── Implementation Plan: Private Seller, Valuation, Deal Room, FBR ─────────
+
+enum PrivateLeadStatus {
+  SUBMITTED
+  MATCHED
+  VALUATIONS_RECEIVED
+  AGENCY_ASSIGNED
+  LISTED
+  EXPIRED
+}
+
+enum ValuationProposalStatus {
+  SUBMITTED
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum DealMilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  DOCUMENT_UPLOADED
+  VERIFIED
+  COMPLETED
+}
+
+enum TaxPayerStatus {
+  ACTIVE_FILER
+  LATE_FILER
+  NON_FILER
+  EXEMPT
+}
+
+enum PoaStatus {
+  NOT_APPLICABLE
+  EMBASSY_SUBMITTED
+  MOFA_ATTESTED
+  SOCIETY_REGISTERED
+  VERIFIED
+}
+
+model PrivateSellerLead {
+  id                   String                      @id @default(cuid())
+  society              String
+  phase                String?
+  block                String?
+  propertyType         String                      @default("PLOT")
+  plotNumber           String?
+  areaSqFt             Float?
+  demandPKR            Decimal                     @db.Decimal(15, 2)
+  features             String?
+  sellerName           String
+  sellerWhatsApp       String
+  whatsappOtpVerified  Boolean                     @default(false)
+  status               PrivateLeadStatus           @default(SUBMITTED)
+  assignedAgencyId     String?
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+
+  valuationProposals   AgencyValuationProposal[]
+  exclusiveMandate     ExclusiveListingMandate?
+}
+
+model AgencyValuationProposal {
+  id                   String                  @id @default(cuid())
+  leadId               String
+  agencyId             String
+  agencyName           String                  @default("Verified Agency")
+  estimatedMinPKR      Decimal                 @db.Decimal(15, 2)
+  estimatedMaxPKR      Decimal                 @db.Decimal(15, 2)
+  sellingDaysEstimate  Int                     @default(30)
+  marketingStrategy    String?
+  commissionRate       Float                   @default(1.0)
+  status               ValuationProposalStatus @default(SUBMITTED)
+  notes                String?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+
+  lead                 PrivateSellerLead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model ExclusiveListingMandate {
+  id                  String            @id @default(cuid())
+  leadId              String            @unique
+  sellerId            String?
+  agencyId            String
+  agencyName          String            @default("Agency Partner")
+  agreedMinPrice      Decimal           @db.Decimal(15, 2)
+  commissionPct       Float             @default(1.0)
+  validityDays        Int               @default(30)
+  sellerSignatureDate DateTime?
+  agencySignatureDate DateTime?
+  mouPdfUrl           String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  lead                PrivateSellerLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model PropertyDocumentVault {
+  id                  String    @id @default(cuid())
+  propertyId          String?
+  leadId              String?
+  docType             String    // ALLOTMENT_LETTER, CNIC, NDC, TRANSFER_SLIP
+  originalFileUrl     String
+  watermarkedFileUrl  String?
+  verifiedByAgencyId  String?
+  sightedAt           DateTime?
+  status              String    @default("PENDING")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+model DealRoom {
+  id                  String               @id @default(cuid())
+  dealNumber          String               @unique
+  propertyId          String?
+  buyerId             String?
+  buyerName           String               @default("Buyer")
+  sellerId            String?
+  sellerName          String               @default("Seller")
+  agencyId            String?
+  agencyName          String               @default("Facilitating Agency")
+  totalAgreedPrice    Decimal              @db.Decimal(15, 2)
+  status              String               @default("ACTIVE")
+  currentMilestone    Int                  @default(1)
+  buyerFbrStatus      TaxPayerStatus       @default(ACTIVE_FILER)
+  sellerFbrStatus     TaxPayerStatus       @default(ACTIVE_FILER)
+  buyerTaxPKR         Decimal              @default(0) @db.Decimal(15, 2)
+  sellerTaxPKR        Decimal              @default(0) @db.Decimal(15, 2)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  milestones          DealMilestone[]
+  overseasPoa         OverseasPoaRecord[]
+}
+
+model DealMilestone {
+  id                  String              @id @default(cuid())
+  dealRoomId          String
+  stepNumber          Int                 // 1: Bayana, 2: NDC, 3: FBR Tax, 4: Transfer Desk
+  title               String
+  status              DealMilestoneStatus @default(PENDING)
+  proofAttachmentUrl  String?
+  cprNumber           String?
+  psidNumber          String?
+  appointmentDate     DateTime?
+  verifiedBy          String?
+  completedAt         DateTime?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  dealRoom            DealRoom            @relation(fields: [dealRoomId], references: [id], onDelete: Cascade)
+}
+
+model OverseasPoaRecord {
+  id                  String    @id @default(cuid())
+  dealRoomId          String
+  userId              String?
+  countryOfOrigin     String
+  embassyCity         String?
+  poaAttorneyName     String
+  poaAttorneyCnic     String
+  mofaReceiptNumber   String?
+  status              PoaStatus @default(EMBASSY_SUBMITTED)
+  documentUrl         String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  dealRoom            DealRoom  @relation(fields: [dealRoomId], references: [id], onDelete: Cascade)
+}
+

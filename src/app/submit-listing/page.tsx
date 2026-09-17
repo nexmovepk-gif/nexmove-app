@@ -4,8 +4,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'List Your Property — NexMove Development',
-  description: 'Submit your property directly to the NexMove public marketplace. Our AI automatically extracts details from your uploaded documents.',
+  title: 'List Your Property Privately — NexMove',
+  description: 'Submit your property privately to top 3 verified agencies in your area. Your listing stays off the public marketplace until an agency publishes it.',
 }
 
 export default function SubmitListingPage() {
@@ -17,7 +17,7 @@ export default function SubmitListingPage() {
           NexMove
         </Link>
         <div className="flex items-center gap-3">
-          <Link href="/marketplace" className="text-xs text-slate-400 hover:text-slate-200 transition">Marketplace</Link>
+          <Link href="/dashboard" className="text-xs text-slate-400 hover:text-slate-200 transition">My Dashboard</Link>
           <Link href="/agencies" className="text-xs text-slate-400 hover:text-slate-200 transition">Agencies</Link>
         </div>
       </nav>
@@ -25,21 +25,38 @@ export default function SubmitListingPage() {
       <div className="max-w-lg mx-auto px-4 py-8 flex flex-col gap-6">
         {/* Hero */}
         <div className="flex flex-col gap-3">
-          <div className="text-[10px] font-bold uppercase tracking-widest text-teal-400 bg-teal-500/10 border border-teal-500/20 px-3 py-1 rounded-full w-fit">
-            Free Listing
+          <div className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full w-fit">
+            🔒 Private & Secure
           </div>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-100">
-            List Your Property
+            List Your Property Privately
           </h1>
           <p className="text-sm text-slate-400">
-            Reach thousands of verified buyers and tenants. Upload your property documents — our AI will auto-extract details in seconds.
+            Your listing goes directly to the <span className="text-emerald-400 font-medium">top 3 verified agencies</span> in your area — not the public marketplace. Agencies review, value, and handle the sale for you.
           </p>
           {/* Key USPs */}
           <div className="flex flex-wrap gap-2 mt-1">
-            {['AI Auto-Fill', 'Free Forever', 'Verified Buyers', 'WhatsApp Inquiries'].map((tag) => (
+            {['AI Auto-Fill', 'Free to List', 'Top 3 Agencies Notified', 'Not on Marketplace'].map((tag) => (
               <span key={tag} className="text-[10px] bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-lg font-medium">
                 ✓ {tag}
               </span>
+            ))}
+          </div>
+
+          {/* How it works */}
+          <div className="flex flex-col gap-2 mt-1">
+            {[
+              { step: '1', text: 'Fill in your property details below' },
+              { step: '2', text: 'Top 3 agencies in your city are notified instantly' },
+              { step: '3', text: 'Agencies contact you with valuations & offers' },
+              { step: '4', text: 'You choose the agency — they handle everything' },
+            ].map(({ step, text }) => (
+              <div key={step} className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                  {step}
+                </div>
+                <p className="text-xs text-slate-400">{text}</p>
+              </div>
             ))}
           </div>
         </div>
@@ -52,3 +69,4 @@ export default function SubmitListingPage() {
     </main>
   )
 }
+

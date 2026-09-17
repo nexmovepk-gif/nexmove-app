@@ -17,7 +17,6 @@ interface FormData {
   contactName: string
   contactPhone: string
   contactEmail: string
-  isOffMarket: boolean
 }
 
 interface AIPreview {
@@ -34,7 +33,6 @@ const INITIAL_FORM: FormData = {
   title: '', description: '', propertyType: 'HOUSE',
   price: '', address: '', city: '', areaSqFt: '',
   bedrooms: '', bathrooms: '', contactName: '', contactPhone: '', contactEmail: '',
-  isOffMarket: false,
 }
 
 const PROPERTY_TYPES = ['HOUSE', 'APARTMENT', 'PLOT', 'COMMERCIAL', 'VILLA']
@@ -48,6 +46,7 @@ export default function PublicListingForm() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [submittedData, setSubmittedData] = useState<{ notifiedCount?: number; agencies?: { name: string }[] } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -127,7 +126,7 @@ export default function PublicListingForm() {
         });
       }
 
-      const res = await fetch('/api/public/listings', {
+      const res = await fetch('/api/properties', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -140,10 +139,12 @@ export default function PublicListingForm() {
           uploadedFileName: uploadedFile?.name,
           uploadedFileType: uploadedFile?.type,
           uploadedFileSizeBytes: uploadedFile?.size,
+          // Status is always SHIELDED (private) — set server-side
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Submission failed')
+      setSubmittedData({ notifiedCount: data.notifiedCount, agencies: data.notifiedAgencies })
       setSubmitted(true)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong.')
@@ -158,16 +159,31 @@ export default function PublicListingForm() {
     return (
       <div className="flex flex-col items-center gap-5 py-10 text-center">
         <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-3xl shadow-[0_0_30px_rgba(16,185,129,0.15)]">
-          🏠
+          🔒
         </div>
         <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-          Listing Submitted!
+          Property Listed Privately!
         </h2>
         <p className="text-sm text-slate-400 max-w-xs">
-          Your property has been submitted for review. It will appear on the public marketplace shortly.
+          Your property is now under <span className="text-emerald-400 font-semibold">Agency Review</span>. It will NOT appear on the public marketplace.
         </p>
+        {submittedData && submittedData.notifiedCount != null && submittedData.notifiedCount > 0 && (
+          <div className="bg-emerald-950/40 border border-emerald-500/20 rounded-2xl px-5 py-4 flex flex-col gap-2 w-full max-w-xs">
+            <p className="text-xs font-bold text-emerald-400">
+              ✅ {submittedData.notifiedCount} Top {submittedData.notifiedCount === 1 ? 'Agency' : 'Agencies'} Notified
+            </p>
+            {submittedData.agencies?.map((a) => (
+              <p key={a.name} className="text-[11px] text-slate-400">• {a.name}</p>
+            ))}
+          </div>
+        )}
+        {(!submittedData || !submittedData.notifiedCount) && (
+          <div className="bg-slate-900/40 border border-slate-700 rounded-2xl px-5 py-3 text-xs text-slate-400">
+            Agencies in your area will be notified shortly.
+          </div>
+        )}
         <button
-          onClick={() => { setSubmitted(false); setForm(INITIAL_FORM); setStep(1); setAiPreview(null) }}
+          onClick={() => { setSubmitted(false); setSubmittedData(null); setForm(INITIAL_FORM); setStep(1); setAiPreview(null) }}
           className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2.5 rounded-xl transition"
         >
           Submit Another Listing
@@ -318,32 +334,6 @@ export default function PublicListingForm() {
               <option value="">Select city...</option>
               {CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-          </div>
-
-          <div className="flex flex-col gap-1.5 bg-slate-950/80 border border-emerald-500/30 p-3.5 rounded-2xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <label className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 cursor-pointer">
-                  🔒 Mark as Private B2B / Investor Deal
-                </label>
-                <p className="text-[10px] text-slate-400 mt-0.5">
-                  Exclusive deal for verified investors with AI ROI &amp; Escrow protection features.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setForm((prev) => ({ ...prev, isOffMarket: !prev.isOffMarket }))}
-                className={`w-11 h-6 rounded-full relative transition-colors duration-200 focus:outline-none flex-shrink-0 ${
-                  form.isOffMarket ? 'bg-emerald-500' : 'bg-slate-800'
-                }`}
-              >
-                <span
-                  className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all duration-200 ${
-                    form.isOffMarket ? 'left-6' : 'left-1'
-                  }`}
-                />
-              </button>
-            </div>
           </div>
 
           <div className="flex flex-col gap-1.5">

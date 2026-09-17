@@ -56,8 +56,9 @@ export default function ValuationComparisonModal({
       if (!res.ok) throw new Error(data.error || 'Failed to assign agency')
 
       setAssignedSuccess(data.message)
-    } catch (err: any) {
-      alert(err.message)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'An error occurred';
+      alert(msg)
     } finally {
       setIsAssigning(false)
     }
@@ -151,7 +152,7 @@ export default function ValuationComparisonModal({
                         <div>
                           <span className="text-stone-500 block">Strategy:</span>
                           <span className="text-stone-600 italic line-clamp-2">
-                            "{prop.marketingStrategy}"
+                            &ldquo;{prop.marketingStrategy}&rdquo;
                           </span>
                         </div>
                       )}

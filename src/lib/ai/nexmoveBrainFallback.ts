@@ -77,7 +77,7 @@ function extractAmount(text: string): number | null {
 
 export async function generateFallbackResponse(
   userQuery: string,
-  history: ChatMessageInput[] = []
+  _history: ChatMessageInput[] = []
 ): Promise<string> {
   const q = userQuery.toLowerCase().trim()
   const lang = detectLanguage(userQuery)
@@ -138,7 +138,7 @@ Batao aaj kis mamlay mein rehnumai chahiye? Koi property dekh rahe ho, DHA/Bahri
   const isTaxQuery = /tax|fbr|filer|non-filer|nonfiler|236k|236c|iris|psid|cpr/i.test(q)
   if (isTaxQuery) {
     const amount = extractAmount(userQuery)
-    const isSeller = /seller|bech|frokt|sell/i.test(q)
+    const _isSeller = /seller|bech|frokt|sell/i.test(q)
 
     if (amount) {
       const buyerFilerRate = 0.03

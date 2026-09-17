@@ -55,6 +55,7 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
 
   useEffect(() => {
     fetchDealRoom()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dealRoomId])
 
   const handleCompleteMilestone = async (milestone: Milestone) => {
@@ -77,7 +78,7 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
         setProofInput('')
         fetchDealRoom()
       }
-    } catch (err) {
+    } catch (_err) {
       alert('Failed to update milestone')
     } finally {
       setIsUpdating(false)

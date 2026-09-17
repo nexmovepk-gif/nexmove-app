@@ -55,8 +55,9 @@ export default function AgencyValuationSubmissionModal({
 
       if (onSuccess) onSuccess()
       onClose()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to submit proposal';
+      setError(msg)
     } finally {
       setIsSubmitting(false)
     }

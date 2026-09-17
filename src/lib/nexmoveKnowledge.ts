@@ -59,7 +59,7 @@ export const NEXMOVE_CONTEXT = {
     freePortals: [
       'Public Property Marketplace (/marketplace) — 100% free forever',
       'Architecture & Design Portal (/architects) — 100% free and open',
-      'Public Property Listing Submission (/submit-listing) — 100% free',
+      'Seller Property Listing Portal (/dashboard/add-property) — 100% free & private',
     ],
     paidAccess: [
       'Investor Escrow Vault & Dashboard (/investors)',
@@ -174,7 +174,7 @@ export const NEXMOVE_CONTEXT = {
       'Search and filter properties by city, type, price',
       'View detailed property listings with AI-extracted specs',
       'Send direct WhatsApp inquiries to agencies',
-      'Submit public property listings for free at /submit-listing',
+      'List property privately to top agencies at /dashboard/add-property',
     ],
   },
 

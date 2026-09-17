@@ -17,7 +17,7 @@ export default function Home() {
 
   const phase2Features = [
     { title: 'Public Verified Marketplace', desc: 'Browse active listings filtered by city, type, and price', href: '/marketplace' },
-    { title: 'AI Document Extraction', desc: 'Upload Title Deeds/Blueprints → AI auto-parses specs & market valuations', href: '/submit-listing' },
+    { title: 'AI Document Extraction', desc: 'Upload Title Deeds/Blueprints → AI auto-parses specs & market valuations', href: '/dashboard/add-property' },
     { title: 'Verified Agency Badge System', desc: 'Trade license & RERA/DLD broker certificate verification' },
     { title: 'Agency Leaderboard & Directory', desc: 'Performance analytics, financial ledgers, and verified agency profiles', href: '/agencies' },
   ];

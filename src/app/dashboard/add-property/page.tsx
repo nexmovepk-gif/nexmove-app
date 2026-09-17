@@ -12,16 +12,16 @@ export default function DashboardAddPropertyPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-4 border-b border-gray-200 gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full uppercase tracking-wider">
-                PORTAL LISTING
+              <span className="text-xs font-black bg-amber-100 text-amber-800 px-3 py-1 rounded-full uppercase tracking-wider">
+                🔒 PRIVATE LISTING
               </span>
-              <span className="text-xs font-bold text-gray-500">• Comprehensive Property Form</span>
+              <span className="text-xs font-bold text-gray-500">• Top 3 Agencies Notified</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-1">
-              Add New Property Listing
+              List Your Property Privately
             </h1>
             <p className="text-sm text-gray-600 mt-1 font-medium">
-              Publish your property with dynamic pricing, categorized types, media uploads, and 1-month early match alerts.
+              Your property is securely shielded from the public marketplace. Top 3 verified local agencies are instantly notified to review and facilitate your listing.
             </p>
           </div>
           <Link

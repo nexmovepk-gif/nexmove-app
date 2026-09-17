@@ -769,11 +769,13 @@ export default function PropertyForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to submit property listing.');
 
-      await fetch('/api/public/listings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      }).catch(() => {});
+      if (isAgencyPortal && !isOffMarket) {
+        await fetch('/api/public/listings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }).catch(() => {});
+      }
 
       setSubmitted(true);
     } catch (err) {
@@ -837,10 +839,20 @@ export default function PropertyForm({
             ✓
           </div>
           <div>
-            <h2 className="text-3xl font-black text-gray-900">Property Listing Published!</h2>
+            <h2 className="text-3xl font-black text-gray-900">
+              {isAgencyPortal ? 'Property Listing Published!' : 'Property Listed Privately! 🔒'}
+            </h2>
             <p className="text-gray-600 mt-1 max-w-md">
-              Your property <span className="font-bold text-gray-900">&quot;{title}&quot;</span> is now live with purpose{' '}
-              <span className="font-bold text-emerald-600 uppercase">[{purpose.replace('_', ' ')}]</span>.
+              {isAgencyPortal ? (
+                <>
+                  Your property <span className="font-bold text-gray-900">&quot;{title}&quot;</span> is now live with purpose{' '}
+                  <span className="font-bold text-emerald-600 uppercase">[{purpose.replace('_', ' ')}]</span>.
+                </>
+              ) : (
+                <>
+                  Your property <span className="font-bold text-gray-900">&quot;{title}&quot;</span> is listed privately (SHIELDED). The Top 3 Verified Agencies in your city have been notified to review and facilitate your deal.
+                </>
+              )}
             </p>
           </div>
 
@@ -1414,39 +1426,56 @@ export default function PropertyForm({
                 </div>
               )}
 
-              {/* ── Off-Market / Investor Deal (B2B) Toggle ── */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-purple-50/80 border border-purple-200 rounded-2xl gap-4">
-                <div>
-                  <div className="font-extrabold text-sm text-purple-950 flex items-center gap-2">
-                    <span className="text-base">🔒</span>
-                    <span>Mark as Private B2B / Off-Market Investor Deal</span>
+              {/* ── Off-Market / Investor Deal (B2B) Toggle for Agency OR Private Notice for Seller ── */}
+              {isAgencyPortal ? (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-purple-50/80 border border-purple-200 rounded-2xl gap-4">
+                  <div>
+                    <div className="font-extrabold text-sm text-purple-950 flex items-center gap-2">
+                      <span className="text-base">🔒</span>
+                      <span>Mark as Private B2B / Off-Market Investor Deal</span>
+                    </div>
+                    <p className="text-xs text-purple-700 mt-0.5">
+                      Highlights this listing with a <strong>🔒 Off-Market</strong> badge in the Marketplace and routes it into Verified Investor Deal Rooms with Smart Escrow protection.
+                    </p>
                   </div>
-                  <p className="text-xs text-purple-700 mt-0.5">
-                    Highlights this listing with a <strong>🔒 Off-Market</strong> badge in the Marketplace and routes it into Verified Investor Deal Rooms with Smart Escrow protection.
-                  </p>
-                </div>
 
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className={`text-xs font-bold ${isOffMarket ? 'text-purple-900 font-extrabold' : 'text-gray-500'}`}>
-                    {isOffMarket ? '🔒 Off-Market Deal' : 'Public Listing'}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsOffMarket((prev) => !prev)}
-                    className={`relative w-14 h-7 rounded-full transition-colors ${
-                      isOffMarket ? 'bg-purple-600' : 'bg-gray-300'
-                    }`}
-                    role="switch"
-                    aria-checked={isOffMarket}
-                  >
-                    <span
-                      className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${
-                        isOffMarket ? 'left-8' : 'left-1'
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className={`text-xs font-bold ${isOffMarket ? 'text-purple-900 font-extrabold' : 'text-gray-500'}`}>
+                      {isOffMarket ? '🔒 Off-Market Deal' : 'Public Listing'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsOffMarket((prev) => !prev)}
+                      className={`relative w-14 h-7 rounded-full transition-colors ${
+                        isOffMarket ? 'bg-purple-600' : 'bg-gray-300'
                       }`}
-                    />
-                  </button>
+                      role="switch"
+                      aria-checked={isOffMarket}
+                    >
+                      <span
+                        className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${
+                          isOffMarket ? 'left-8' : 'left-1'
+                        }`}
+                      />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-center gap-3 p-4 bg-amber-50/90 border border-amber-200 rounded-2xl">
+                  <span className="text-xl">🔒</span>
+                  <div>
+                    <div className="font-extrabold text-sm text-amber-950 flex items-center gap-2">
+                      <span>Private Off-Market Listing</span>
+                      <span className="text-[10px] font-black uppercase bg-amber-600 text-white px-2 py-0.5 rounded-full">
+                        Shielded
+                      </span>
+                    </div>
+                    <p className="text-xs text-amber-700 mt-0.5">
+                      Your property is securely shielded from the public marketplace. The <strong>Top 3 Verified Agencies</strong> in your city will be notified immediately to review your deal.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1797,44 +1826,56 @@ export default function PropertyForm({
             </div>
           </div>
 
-          {/* ── Bottom Off-Market / Investor Deal (B2B) Confirmation Bar ── */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-purple-50/90 border-2 border-purple-300 rounded-2xl gap-4">
-            <div>
-              <div className="font-extrabold text-sm text-purple-950 flex items-center gap-2">
-                <span className="text-base">🔒</span>
-                <span>Private B2B / Off-Market Investor Deal</span>
-                {isOffMarket && (
-                  <span className="text-[10px] font-black uppercase bg-purple-600 text-white px-2.5 py-0.5 rounded-full shadow-sm">
-                    Active
-                  </span>
-                )}
+          {/* ── Bottom Bar: Agency gets B2B toggle; Seller gets Private confirmation ── */}
+          {isAgencyPortal ? (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-purple-50/90 border-2 border-purple-300 rounded-2xl gap-4">
+              <div>
+                <div className="font-extrabold text-sm text-purple-950 flex items-center gap-2">
+                  <span className="text-base">🔒</span>
+                  <span>Private B2B / Off-Market Investor Deal</span>
+                  {isOffMarket && (
+                    <span className="text-[10px] font-black uppercase bg-purple-600 text-white px-2.5 py-0.5 rounded-full shadow-sm">
+                      Active
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-purple-700 mt-0.5">
+                  Toggle on to publish directly as an Off-Market deal with smart escrow protection for qualified investors.
+                </p>
               </div>
-              <p className="text-xs text-purple-700 mt-0.5">
-                Toggle on to publish directly as an Off-Market deal with smart escrow protection for qualified investors.
-              </p>
-            </div>
 
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <span className={`text-xs font-bold ${isOffMarket ? 'text-purple-900 font-black' : 'text-gray-500'}`}>
-                {isOffMarket ? '🔒 Off-Market Deal' : 'Public Listing'}
-              </span>
-              <button
-                type="button"
-                onClick={() => setIsOffMarket((prev) => !prev)}
-                className={`relative w-14 h-7 rounded-full transition-colors ${
-                  isOffMarket ? 'bg-purple-600' : 'bg-gray-300'
-                }`}
-                role="switch"
-                aria-checked={isOffMarket}
-              >
-                <span
-                  className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${
-                    isOffMarket ? 'left-8' : 'left-1'
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <span className={`text-xs font-bold ${isOffMarket ? 'text-purple-900 font-black' : 'text-gray-500'}`}>
+                  {isOffMarket ? '🔒 Off-Market Deal' : 'Public Listing'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsOffMarket((prev) => !prev)}
+                  className={`relative w-14 h-7 rounded-full transition-colors ${
+                    isOffMarket ? 'bg-purple-600' : 'bg-gray-300'
                   }`}
-                />
-              </button>
+                  role="switch"
+                  aria-checked={isOffMarket}
+                >
+                  <span
+                    className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${
+                      isOffMarket ? 'left-8' : 'left-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center gap-3 p-4 bg-amber-50/90 border-2 border-amber-300 rounded-2xl">
+              <span className="text-2xl">🔒</span>
+              <div>
+                <div className="font-extrabold text-sm text-amber-950">Your Listing is 100% Private (Shielded)</div>
+                <p className="text-xs text-amber-700 mt-0.5">
+                  This property will <strong>NOT</strong> appear on the public marketplace. Top 3 Verified Agencies in your city will be notified immediately to review and facilitate your deal.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Submit Error Banner */}
           {submitError && (
@@ -1861,12 +1902,12 @@ export default function PropertyForm({
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Publishing Property...</span>
+                  <span>{isAgencyPortal ? 'Publishing Property...' : 'Listing Privately...'}</span>
                 </>
               ) : (
                 <>
-                  <span>🚀</span>
-                  <span>Publish Property Listing</span>
+                  <span>{isAgencyPortal ? '🚀' : '🔒'}</span>
+                  <span>{isAgencyPortal ? 'Publish Property Listing' : 'List Property Privately'}</span>
                 </>
               )}
             </button>

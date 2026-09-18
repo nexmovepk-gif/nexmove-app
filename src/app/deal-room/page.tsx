@@ -17,8 +17,13 @@ import {
   RefreshCw,
   Search,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Printer,
+  Share2,
+  MessageSquare
 } from 'lucide-react'
+import DealClosingSlipModal from '@/components/deal-room/DealClosingSlipModal'
+import DealWhatsAppModal from '@/components/deal-room/DealWhatsAppModal'
 
 interface DealSummary {
   id: string
@@ -34,7 +39,11 @@ interface DealSummary {
     id: string
     stepNumber: number
     title: string
-    status: string
+    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED'
+    cprNumber?: string
+    psidNumber?: string
+    proofAttachmentUrl?: string
+    completedAt?: string
   }[]
 }
 
@@ -44,6 +53,8 @@ export default function DealRoomsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [search, setSearch] = useState('')
+  const [selectedClosingDeal, setSelectedClosingDeal] = useState<DealSummary | null>(null)
+  const [selectedWhatsAppDeal, setSelectedWhatsAppDeal] = useState<DealSummary | null>(null)
 
   // Form state for creating new deal room
   const [formData, setFormData] = useState({
@@ -309,6 +320,26 @@ export default function DealRoomsPage() {
                     </div>
                   </div>
 
+                  {/* Quick Action Bar for Print Slip & WhatsApp */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedClosingDeal(deal)}
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold transition shadow-xs"
+                    >
+                      <Printer className="w-3.5 h-3.5 text-stone-700" />
+                      <span>Print Slip / PDF</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedWhatsAppDeal(deal)}
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold transition shadow-xs"
+                    >
+                      <Share2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>WhatsApp</span>
+                    </button>
+                  </div>
+
                   {/* Enter Button */}
                   <Link
                     href={`/deal-room/${deal.id}`}
@@ -420,6 +451,26 @@ export default function DealRoomsPage() {
               </form>
             </div>
           </div>
+        )}
+
+        {/* Printable Deal Closing Slip Modal */}
+        {selectedClosingDeal && (
+          <DealClosingSlipModal
+            deal={selectedClosingDeal as any}
+            onClose={() => setSelectedClosingDeal(null)}
+            onOpenWhatsApp={() => {
+              setSelectedWhatsAppDeal(selectedClosingDeal)
+              setSelectedClosingDeal(null)
+            }}
+          />
+        )}
+
+        {/* WhatsApp Notification Modal */}
+        {selectedWhatsAppDeal && (
+          <DealWhatsAppModal
+            deal={selectedWhatsAppDeal as any}
+            onClose={() => setSelectedWhatsAppDeal(null)}
+          />
         )}
       </div>
     </div>

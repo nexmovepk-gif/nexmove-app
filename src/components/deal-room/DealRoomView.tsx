@@ -19,8 +19,13 @@ import {
   AlertCircle,
   RefreshCw,
   Stamp,
-  Receipt
+  Receipt,
+  Printer,
+  Share2,
+  MessageSquare
 } from 'lucide-react'
+import DealClosingSlipModal from './DealClosingSlipModal'
+import DealWhatsAppModal from './DealWhatsAppModal'
 
 interface Milestone {
   id: string
@@ -55,6 +60,8 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
   const [proofInput, setProofInput] = useState('')
   const [isUpdating, setIsUpdating] = useState(false)
   const [activeTab, setActiveTab] = useState<'MILESTONES' | 'TAX_BREAKDOWN' | 'VAULT'>('MILESTONES')
+  const [showClosingSlip, setShowClosingSlip] = useState(false)
+  const [showWhatsApp, setShowWhatsApp] = useState(false)
 
   const fetchDealRoom = async () => {
     try {
@@ -179,7 +186,7 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
             </p>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex flex-col sm:items-end justify-center min-w-[240px]">
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex flex-col sm:items-end justify-center min-w-[260px]">
             <span className="text-[11px] uppercase tracking-wider font-semibold text-stone-400 block mb-1">
               Agreed Transaction Value
             </span>
@@ -189,6 +196,26 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
             <span className="text-[11px] text-stone-400 mt-1">
               Estimated 10% Bayana: PKR {tokenBayanaEst.toLocaleString('en-PK')}
             </span>
+
+            {/* Quick Action Bar for WhatsApp & Print PDF */}
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/10 w-full justify-end">
+              <button
+                type="button"
+                onClick={() => setShowClosingSlip(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-stone-100 text-stone-950 rounded-xl text-xs font-bold transition shadow-sm"
+              >
+                <Printer className="w-3.5 h-3.5 text-stone-900" />
+                <span>Print Slip / PDF</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowWhatsApp(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-sm"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>WhatsApp</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -236,46 +263,104 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
       </div>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex border-b border-stone-200 bg-stone-50/80 px-6 gap-2 sm:gap-4 overflow-x-auto text-xs font-bold">
-        <button
-          onClick={() => setActiveTab('MILESTONES')}
-          className={`py-3.5 px-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'MILESTONES'
-              ? 'border-emerald-600 text-emerald-900 bg-white shadow-sm'
-              : 'border-transparent text-stone-600 hover:text-stone-900'
-          }`}
-        >
-          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          4-Stage Milestones
-        </button>
+      <div className="flex items-center justify-between border-b border-stone-200 bg-stone-50/80 px-6 overflow-x-auto text-xs font-bold">
+        <div className="flex gap-2 sm:gap-4">
+          <button
+            onClick={() => setActiveTab('MILESTONES')}
+            className={`py-3.5 px-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
+              activeTab === 'MILESTONES'
+                ? 'border-emerald-600 text-emerald-900 bg-white shadow-sm'
+                : 'border-transparent text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            4-Stage Milestones
+          </button>
 
-        <button
-          onClick={() => setActiveTab('TAX_BREAKDOWN')}
-          className={`py-3.5 px-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'TAX_BREAKDOWN'
-              ? 'border-emerald-600 text-emerald-900 bg-white shadow-sm'
-              : 'border-transparent text-stone-600 hover:text-stone-900'
-          }`}
-        >
-          <Receipt className="w-4 h-4 text-indigo-600" />
-          FBR Tax & Challan Guide (Sec 236C / 236K)
-        </button>
+          <button
+            onClick={() => setActiveTab('TAX_BREAKDOWN')}
+            className={`py-3.5 px-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
+              activeTab === 'TAX_BREAKDOWN'
+                ? 'border-emerald-600 text-emerald-900 bg-white shadow-sm'
+                : 'border-transparent text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Receipt className="w-4 h-4 text-indigo-600" />
+            FBR Tax & Challan Guide (Sec 236C / 236K)
+          </button>
 
-        <button
-          onClick={() => setActiveTab('VAULT')}
-          className={`py-3.5 px-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
-            activeTab === 'VAULT'
-              ? 'border-emerald-600 text-emerald-900 bg-white shadow-sm'
-              : 'border-transparent text-stone-600 hover:text-stone-900'
-          }`}
-        >
-          <Stamp className="w-4 h-4 text-amber-600" />
-          Document Watermark Vault
-        </button>
+          <button
+            onClick={() => setActiveTab('VAULT')}
+            className={`py-3.5 px-3 border-b-2 flex items-center gap-2 transition-all whitespace-nowrap ${
+              activeTab === 'VAULT'
+                ? 'border-emerald-600 text-emerald-900 bg-white shadow-sm'
+                : 'border-transparent text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Stamp className="w-4 h-4 text-amber-600" />
+            Document Watermark Vault
+          </button>
+        </div>
+
+        {/* Tab-Level Direct Action Triggers */}
+        <div className="hidden md:flex items-center gap-2 py-2">
+          <button
+            type="button"
+            onClick={() => setShowClosingSlip(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 hover:bg-stone-100 text-stone-800 rounded-xl text-xs font-bold transition shadow-xs"
+          >
+            <Printer className="w-3.5 h-3.5 text-emerald-700" />
+            <span>Official Slip</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowWhatsApp(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold transition shadow-xs"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-emerald-700" />
+            <span>WhatsApp Stakeholders</span>
+          </button>
+        </div>
       </div>
 
       {activeTab === 'MILESTONES' && (
         <div>
+          {/* Closed Deal Success Banner */}
+          {deal.status === 'CLOSED' && (
+            <div className="p-5 bg-gradient-to-r from-emerald-700 via-emerald-800 to-teal-900 text-white flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-emerald-600">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-amber-300" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-white">Deal Successfully Closed & Settled!</h4>
+                  <p className="text-xs text-emerald-100">
+                    All 4 milestones verified, tax paid, and property biometrics executed.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setShowClosingSlip(true)}
+                  className="px-4 py-2 bg-white hover:bg-stone-100 text-emerald-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md"
+                >
+                  <Printer className="w-3.5 h-3.5 text-emerald-800" />
+                  Print Official Closing Slip
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowWhatsApp(true)}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-white/20 shadow-sm"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  WhatsApp Certificate
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* 4-Step Interactive Milestone Stepper */}
           <div className="p-6 bg-[#FAF9F6] border-b border-stone-200/90">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -400,21 +485,37 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
                 </div>
 
                 {currentStepData.status === 'COMPLETED' ? (
-                  <div className="mt-5 p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl text-xs font-medium flex items-center justify-between">
+                  <div className="mt-5 p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl text-xs font-medium flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                       <div>
                         <strong>Milestone Completed & Verified</strong>
                         <p className="text-[11px] text-emerald-700">
-                          {currentStepData.cprNumber && `Receipt/CPR: ${currentStepData.cprNumber}`}
-                          {currentStepData.psidNumber && `PSID: ${currentStepData.psidNumber}`}
-                          {currentStepData.proofAttachmentUrl && `Doc Reference: ${currentStepData.proofAttachmentUrl}`}
+                          {currentStepData.cprNumber && `Receipt/CPR: ${currentStepData.cprNumber} `}
+                          {currentStepData.psidNumber && `| PSID: ${currentStepData.psidNumber} `}
+                          {currentStepData.proofAttachmentUrl && `| Doc: ${currentStepData.proofAttachmentUrl}`}
                         </p>
                       </div>
                     </div>
-                    <span className="text-[10px] uppercase font-bold text-emerald-800 bg-white px-2 py-1 rounded-md border border-emerald-200">
-                      Approved
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setShowClosingSlip(true)}
+                        className="text-[10px] uppercase font-bold text-stone-800 bg-white hover:bg-stone-100 px-2.5 py-1.5 rounded-lg border border-stone-200 transition shadow-xs flex items-center gap-1"
+                      >
+                        <Printer className="w-3 h-3 text-stone-700" /> Print Slip
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowWhatsApp(true)}
+                        className="text-[10px] uppercase font-bold text-emerald-800 bg-white hover:bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-300 transition shadow-xs flex items-center gap-1"
+                      >
+                        <Share2 className="w-3 h-3 text-emerald-600" /> WhatsApp
+                      </button>
+                      <span className="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1.5 rounded-lg">
+                        Approved
+                      </span>
+                    </div>
                   </div>
                 ) : (
                   <div className="mt-6 space-y-4">
@@ -594,6 +695,27 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
           </div>
         </div>
       )}
+
+      {/* Printable Official Closing Slip & Audit Certificate Modal */}
+      {showClosingSlip && (
+        <DealClosingSlipModal
+          deal={deal}
+          onClose={() => setShowClosingSlip(false)}
+          onOpenWhatsApp={() => {
+            setShowClosingSlip(false)
+            setShowWhatsApp(true)
+          }}
+        />
+      )}
+
+      {/* Interactive WhatsApp Stakeholder Notification Modal */}
+      {showWhatsApp && (
+        <DealWhatsAppModal
+          deal={deal}
+          onClose={() => setShowWhatsApp(false)}
+        />
+      )}
     </div>
   )
 }
+

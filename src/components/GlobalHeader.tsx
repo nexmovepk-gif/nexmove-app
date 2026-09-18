@@ -188,6 +188,14 @@ export default function GlobalHeader() {
           Marketplace
         </Link>
         <Link
+          href="/deal-room"
+          className="text-xs text-emerald-400 hover:text-emerald-300 font-bold transition flex items-center gap-1"
+          title="Digital Deal Room & Escrow Closing Desk"
+        >
+          <span>🤝</span>
+          <span>Deal Room</span>
+        </Link>
+        <Link
           href="/agencies"
           className="text-xs text-slate-400 hover:text-slate-200 transition hidden lg:inline"
         >

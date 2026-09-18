@@ -386,6 +386,35 @@ export default function ShieldedDealsPage() {
           </Link>
         </div>
 
+        {/* Tri-Party Closing Deal Room Direct Access */}
+        <div className="bg-gradient-to-r from-stone-900 via-stone-800 to-slate-900 rounded-2xl p-6 text-white shadow-xl mb-8 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-2xl shrink-0">
+              🤝
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-sm font-black text-white">
+                  Tri-Party Digital Deal Rooms & 4-Milestone Closing Desk
+                </span>
+                <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                  Live SBP Escrow
+                </span>
+              </div>
+              <p className="text-xs text-stone-300 max-w-xl">
+                Track live Bayana earnest money deposits, DHA/Society NDC applications, FBR CPR tax receipts (236C & 236K), and Housing Authority biometric transfers.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/deal-room"
+            className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-950/40 transition whitespace-nowrap self-stretch sm:self-auto text-center flex items-center justify-center gap-2"
+          >
+            <span>Open Deal Rooms</span>
+            <span>→</span>
+          </Link>
+        </div>
+
         {/* AIEscrowGuard Escrow Protection Banner */}
         <AIEscrowGuard mode="escrow_protection" className="mb-8" title="Escrow Vault & Deal Protection Matrix" subtitle="State Bank of Pakistan Trustee compliance — all deposits and contracts are locked under AIEscrowGuard security." />
 

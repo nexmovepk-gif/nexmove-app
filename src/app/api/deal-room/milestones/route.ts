@@ -13,7 +13,20 @@ const DEFAULT_MILESTONES = [
 
 export async function POST(req: NextRequest) {
   try {
-    const { action, dealRoomId, milestoneId, proofUrl, cprNumber, psidNumber, appointmentDate, totalAgreedPrice } = await req.json()
+    const {
+      action,
+      dealRoomId,
+      milestoneId,
+      proofUrl,
+      cprNumber,
+      psidNumber,
+      appointmentDate,
+      totalAgreedPrice,
+      buyerName,
+      sellerName,
+      agencyName,
+      propertyId,
+    } = await req.json()
 
     // ACTION: INITIALIZE A NEW DEAL ROOM
     if (action === 'create') {
@@ -24,6 +37,10 @@ export async function POST(req: NextRequest) {
         data: {
           dealNumber,
           totalAgreedPrice: price,
+          buyerName: buyerName || 'Hamza Tariq (Buyer)',
+          sellerName: sellerName || 'Kamran Ali (Seller)',
+          agencyName: agencyName || 'NexMove Premier Agency',
+          propertyId: propertyId || undefined,
           status: 'ACTIVE',
           currentMilestone: 1,
           milestones: {
@@ -106,6 +123,64 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
     const dealRoomId = searchParams.get('dealRoomId')
+    const listOnly = searchParams.get('list') === 'true'
+
+    if (listOnly) {
+      const deals = await prisma.dealRoom.findMany({
+        orderBy: { createdAt: 'desc' },
+        include: {
+          milestones: { orderBy: { stepNumber: 'asc' } },
+          overseasPoa: true,
+        },
+      })
+
+      // If no deals exist, seed a sample deal so the list is not empty
+      if (deals.length === 0) {
+        const sampleDeal = await prisma.dealRoom.create({
+          data: {
+            dealNumber: 'NX-DEAL-782914',
+            totalAgreedPrice: 45000000,
+            currentMilestone: 2,
+            buyerName: 'Hamza Tariq (Lahore)',
+            sellerName: 'Kamran Ali (Overseas - UK)',
+            agencyName: 'Zameen Experts & Associates',
+            milestones: {
+              create: [
+                {
+                  stepNumber: 1,
+                  title: 'Bayana / Token Escrow Locker',
+                  status: 'COMPLETED',
+                  cprNumber: 'CPR-2026-981723',
+                  completedAt: new Date(),
+                },
+                {
+                  stepNumber: 2,
+                  title: 'DHA / Society NDC Clearance',
+                  status: 'IN_PROGRESS',
+                },
+                {
+                  stepNumber: 3,
+                  title: 'FBR Tax Challans & CPR Receipts',
+                  status: 'PENDING',
+                },
+                {
+                  stepNumber: 4,
+                  title: 'Final Transfer Desk & Biometric Appointment',
+                  status: 'PENDING',
+                },
+              ],
+            },
+          },
+          include: {
+            milestones: { orderBy: { stepNumber: 'asc' } },
+            overseasPoa: true,
+          },
+        })
+        return NextResponse.json({ success: true, deals: [sampleDeal] })
+      }
+
+      return NextResponse.json({ success: true, deals })
+    }
 
     if (dealRoomId) {
       const dealRoom = await prisma.dealRoom.findUnique({

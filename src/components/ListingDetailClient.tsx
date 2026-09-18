@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import AIEscrowGuard from '@/components/AIEscrowGuard';
+import FbrTaxCalculatorWidget from '@/components/FbrTaxCalculatorWidget';
 
 export interface PublicListingItem {
   id: string;
@@ -968,6 +969,56 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
             )}
           </div>
         </div>
+
+        {/* ── FBR Tax Compliance Calculator ─────────────────────────── */}
+        {listing.purpose === 'FOR_SALE' && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xs font-black uppercase tracking-wider text-slate-500">
+                  📋 FBR Real Estate Tax Compliance
+                </h2>
+                <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                  Advance tax estimate for buyer (Sec. 236K) & seller (Sec. 236C) — Finance Act 2024–2026
+                </p>
+              </div>
+            </div>
+
+            <FbrTaxCalculatorWidget
+              initialPrice={listing.price}
+              className="border-slate-200 shadow-sm"
+            />
+
+            {/* ── Tri-Party Deal Room CTA ─────────────────────────────── */}
+            <div className="bg-gradient-to-r from-stone-900 via-stone-800 to-slate-900 rounded-3xl p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg">
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-2xl shrink-0">
+                  🤝
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                    <span className="text-sm font-black text-white">
+                      Ready to Buy? Open a Tri-Party Closing Desk
+                    </span>
+                    <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                      SBP Escrow Compliant
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-300 max-w-lg">
+                    Track Bayana pay order, DHA/Society NDC clearance, upload FBR CPR tax receipts, and schedule the biometric transfer appointment — all in one secure desk.
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/deal-room"
+                className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-bold shadow-lg shadow-emerald-950/40 transition whitespace-nowrap self-stretch sm:self-auto text-center flex items-center justify-center gap-2"
+              >
+                <span>Start Deal Room</span>
+                <span>→</span>
+              </Link>
+            </div>
+          </div>
+        )}
 
       </div>
 

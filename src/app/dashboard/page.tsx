@@ -257,6 +257,15 @@ function UserDashboardContent() {
             </button>
 
             <Link
+              href="/deal-room"
+              className="bg-stone-900 hover:bg-stone-800 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5"
+              title="Enter Tri-Party Deal Room & Escrow Closing Desk"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>Deal Rooms</span>
+            </Link>
+
+            <Link
               href="/dashboard/add-property"
               className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5"
             >
@@ -270,6 +279,34 @@ function UserDashboardContent() {
               <LogOut className="w-3.5 h-3.5" /> Sign Out
             </Link>
           </div>
+        </div>
+
+        {/* ── Tri-Party Deal Room Quick Banner ────────────────────────────── */}
+        <div className="mb-6 p-4 bg-gradient-to-r from-stone-900 via-stone-800 to-slate-900 text-white rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-black flex-shrink-0 text-lg">
+              🤝
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-xs font-black text-white">
+                  Tri-Party Digital Deal Room & Escrow Desks Active
+                </p>
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
+                  SBP Compliant
+                </span>
+              </div>
+              <p className="text-[11px] text-stone-300 font-medium mt-0.5">
+                Track 4 closing milestones: Bayana pay order, DHA NDC clearance, FBR CPR tax receipts, and final biometric transfer.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/deal-room"
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition shadow-sm whitespace-nowrap self-stretch sm:self-auto text-center"
+          >
+            Enter Deal Rooms →
+          </Link>
         </div>
 
         {/* ── Authorization Notice Banner (if redirected from restricted portal) ── */}

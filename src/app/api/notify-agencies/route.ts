@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 import { prisma } from "@/lib/prisma";
-import { sendWhatsAppTextMessage } from "@/lib/whatsapp";
+import { sendWhatsAppUniversalAlert } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -97,8 +97,14 @@ export async function POST(req: NextRequest) {
       if (agency.phone) {
         try {
           const waText = `🔔 *NexMove Private Property Alert!*\n\nAssalam-o-Alaikum *${agency.name}*,\n\nEk nayi private property list hui hai:\n📍 *Area / City:* ${city || "Pakistan"} - ${propertyTitle || "Property"}\n🏷️ *Demand:* PKR ${price ? Number(price).toLocaleString() : "Contact for Price"}\n👤 *Seller:* ${sellerName || "Direct Seller"}\n🔒 *Status:* Off-Market (Exclusive to Top 3 Verified Agencies)\n\n👉 Lead claim karein: https://nexmove.pk/agency/dashboard`;
-          
-          const waRes = await sendWhatsAppTextMessage({ to: agency.phone, text: waText });
+
+          const waRes = await sendWhatsAppUniversalAlert({
+            to: agency.phone,
+            title: 'Exclusive Property Alert',
+            message: `Assalam-o-Alaikum ${agency.name}, ek nayi private property "${propertyTitle || 'Property'}" list hui hai. Exclusive to Verified Agencies.`,
+            details: `Area: ${city || 'Pakistan'} | Price: PKR ${price ? Number(price).toLocaleString() : 'N/A'} | Seller: ${sellerName || 'Direct Seller'}`,
+            fallbackText: waText,
+          });
           whatsappResults.push({
             agencyName: agency.name,
             phone: agency.phone,

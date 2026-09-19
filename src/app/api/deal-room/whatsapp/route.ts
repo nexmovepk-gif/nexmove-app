@@ -2,12 +2,12 @@
 // Digital Deal Room WhatsApp Notification Dispatcher
 
 import { NextRequest, NextResponse } from 'next/server'
-import { sendWhatsAppTextMessage, formatPhoneNumber } from '@/lib/whatsapp'
+import { sendWhatsAppUniversalAlert, formatPhoneNumber } from '@/lib/whatsapp'
 import prisma from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
-    const { dealRoomId, recipientPhone, recipientRole, messageText } = await req.json()
+    const { dealRoomId, recipientPhone, recipientRole, messageText, title, summary, details } = await req.json()
 
     if (!recipientPhone) {
       return NextResponse.json({ error: 'Phone number is required' }, { status: 400 })
@@ -19,10 +19,17 @@ export async function POST(req: NextRequest) {
 
     const formattedPhone = formatPhoneNumber(recipientPhone)
 
-    // Attempt to send via Meta WhatsApp Business Cloud API if configured
-    const apiResult = await sendWhatsAppTextMessage({
+    const alertTitle = title || (recipientRole ? `Deal Room Alert (${recipientRole})` : 'Deal Room Status Update')
+    const alertMessage = summary || 'Aapki transaction deal room ki official update digitally generate ho chuki hai.'
+    const alertDetails = details || (dealRoomId ? `Deal Ref: NX-${dealRoomId.slice(-6).toUpperCase()}` : 'NexMove Closing Desk')
+
+    // Attempt to send via Meta WhatsApp Business Cloud API (Universal Template or fallback)
+    const apiResult = await sendWhatsAppUniversalAlert({
       to: formattedPhone,
-      text: messageText,
+      title: alertTitle,
+      message: alertMessage,
+      details: alertDetails,
+      fallbackText: messageText,
     })
 
     // Prepare client-side web WhatsApp direct fallback link

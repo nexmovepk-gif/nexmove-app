@@ -3,6 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { sendWhatsAppUniversalAlert } from '@/lib/whatsapp'
 
 const DEFAULT_MILESTONES = [
   { step: 1, title: 'Bayana / Token Escrow Locker' },
@@ -86,11 +87,12 @@ export async function POST(req: NextRequest) {
       // Advance deal room to next milestone
       if (dealRoomId) {
         const nextStep = updatedMilestone.stepNumber + 1
-        await prisma.dealRoom.update({
+        const isNowClosed = nextStep > 4
+        const updatedDeal = await prisma.dealRoom.update({
           where: { id: dealRoomId },
           data: {
             currentMilestone: Math.min(nextStep, 4),
-            status: nextStep > 4 ? 'CLOSED' : 'ACTIVE',
+            status: isNowClosed ? 'CLOSED' : 'ACTIVE',
           },
         })
 
@@ -102,6 +104,47 @@ export async function POST(req: NextRequest) {
             },
             data: { status: 'IN_PROGRESS' },
           })
+        }
+
+        // ── DISPATCH AUTOMATED WHATSAPP NOTIFICATION ──────────────────────────
+        try {
+          let targetPhone: string | null = null
+          if (updatedDeal.propertyId) {
+            const prop = await prisma.property.findUnique({
+              where: { id: updatedDeal.propertyId },
+              select: { contactPhone: true },
+            })
+            if (prop?.contactPhone) targetPhone = prop.contactPhone
+          }
+          if (!targetPhone && updatedDeal.agencyId) {
+            const ag = await prisma.agency.findUnique({
+              where: { id: updatedDeal.agencyId },
+              select: { phone: true },
+            })
+            if (ag?.phone) targetPhone = ag.phone
+          }
+
+          if (targetPhone) {
+            if (isNowClosed) {
+              await sendWhatsAppUniversalAlert({
+                to: targetPhone,
+                title: 'Deal Closed & Payout Ready',
+                message: `Mubarik ho! Deal #${updatedDeal.dealNumber} completely CLOSE ho chuki hai. Final registry transfer aur escrow verify ho chuka hai.`,
+                details: `Ref: ${updatedDeal.dealNumber} | Buyer: ${updatedDeal.buyerName} | Seller: ${updatedDeal.sellerName}`,
+                fallbackText: `🎉 *NexMove — Deal Successfully Closed!*\n\nDeal #${updatedDeal.dealNumber} has been officially closed and ratified.\n\nThank you for choosing NexMove!`,
+              })
+            } else {
+              await sendWhatsAppUniversalAlert({
+                to: targetPhone,
+                title: 'Milestone Completed',
+                message: `Milestone ${updatedMilestone.stepNumber} (${updatedMilestone.title}) mukammal ho gaya hai. Agla marhala progress mein hai.`,
+                details: `Deal Ref: ${updatedDeal.dealNumber} | Milestone: ${updatedMilestone.stepNumber}/4`,
+                fallbackText: `📋 *NexMove Deal Update*\n\nMilestone ${updatedMilestone.stepNumber} (${updatedMilestone.title}) marked COMPLETED for Deal #${updatedDeal.dealNumber}.`,
+              })
+            }
+          }
+        } catch (waErr) {
+          console.warn('[Milestones API] Automated WhatsApp alert note:', waErr)
         }
       }
 

@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import DealClosingSlipModal from './DealClosingSlipModal'
 import DealWhatsAppModal from './DealWhatsAppModal'
+import DocumentWatermarkVault, { VaultDoc } from './DocumentWatermarkVault'
 
 interface Milestone {
   id: string
@@ -62,6 +63,7 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
   const [activeTab, setActiveTab] = useState<'MILESTONES' | 'TAX_BREAKDOWN' | 'VAULT'>('MILESTONES')
   const [showClosingSlip, setShowClosingSlip] = useState(false)
   const [showWhatsApp, setShowWhatsApp] = useState(false)
+  const [vaultDocs, setVaultDocs] = useState<VaultDoc[]>([])
 
   const fetchDealRoom = async () => {
     try {
@@ -649,57 +651,20 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
       )}
 
       {activeTab === 'VAULT' && (
-        <div className="p-6 sm:p-8 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-base font-black text-stone-900 flex items-center gap-2">
-                <Stamp className="w-5 h-5 text-emerald-600" />
-                NexMove Automated Document Watermarking Vault
-              </h3>
-              <p className="text-xs text-stone-600 mt-0.5">
-                Every title deed, CNIC, and allotment letter stored in this deal room is dynamically watermarked to prevent fraud and theft.
-              </p>
-            </div>
-
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-bold shrink-0">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              Anti-Theft Shield Active
-            </span>
-          </div>
-
-          <div className="p-5 rounded-2xl border border-stone-200 bg-stone-50 space-y-4">
-            <div className="flex items-start gap-3">
-              <FileCheck2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-xs font-bold text-stone-900">Watermark Security Policy</h4>
-                <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-                  Documents downloaded or previewed by any party include the semi-transparent stamp:
-                </p>
-                <div className="mt-2 p-2.5 bg-white border border-dashed border-stone-300 rounded-lg text-xs font-mono font-bold text-stone-800 text-center">
-                  "CONFIDENTIAL — FOR NEXMOVE VERIFICATION ONLY — DEAL #{deal.dealNumber} — {new Date().toISOString().split('T')[0]}"
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-stone-200 pt-3 flex flex-wrap gap-2 text-xs">
-              <span className="px-2.5 py-1 bg-white rounded-lg border border-stone-200 text-stone-700 font-medium">
-                📄 Allotment Letter: Encrypted
-              </span>
-              <span className="px-2.5 py-1 bg-white rounded-lg border border-stone-200 text-stone-700 font-medium">
-                📄 Seller CNIC Copy: Watermarked
-              </span>
-              <span className="px-2.5 py-1 bg-white rounded-lg border border-stone-200 text-stone-700 font-medium">
-                📄 NDC Clearance Slip: Stored
-              </span>
-            </div>
-          </div>
-        </div>
+        <DocumentWatermarkVault
+          dealRoomId={deal.id}
+          dealNumber={deal.dealNumber}
+          buyerName={deal.buyerName}
+          sellerName={deal.sellerName}
+          onDocumentsChange={(docs) => setVaultDocs(docs)}
+        />
       )}
 
       {/* Printable Official Closing Slip & Audit Certificate Modal */}
       {showClosingSlip && (
         <DealClosingSlipModal
           deal={deal}
+          vaultDocs={vaultDocs}
           onClose={() => setShowClosingSlip(false)}
           onOpenWhatsApp={() => {
             setShowClosingSlip(false)

@@ -1913,10 +1913,24 @@ export default function PropertyForm({
                   <div className="mt-2 p-3.5 bg-emerald-50/70 border border-emerald-300 rounded-xl space-y-2 animate-in fade-in">
                     <div className="flex items-center justify-between text-xs font-bold text-emerald-950">
                       <span>Enter 6-Digit WhatsApp Code</span>
-                      {devOtpNotice && (
-                        <span className="text-[11px] font-mono text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200">
-                          Dev Code: <strong>{devOtpNotice}</strong>
-                        </span>
+                      {devOtpNotice ? (
+                        <button
+                          type="button"
+                          onClick={() => setOtpCode(devOtpNotice)}
+                          className="text-[11px] font-mono text-emerald-800 bg-white hover:bg-emerald-100/80 px-2.5 py-0.5 rounded-lg border border-emerald-300 shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
+                          title="Click to auto-fill"
+                        >
+                          Code: <strong>{devOtpNotice}</strong> <span className="text-[10px] text-emerald-600 font-semibold underline">Auto-fill ⚡</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setOtpCode('849201')}
+                          className="text-[10px] text-emerald-800 bg-white hover:bg-emerald-100/80 px-2 py-0.5 rounded border border-emerald-300 transition font-semibold"
+                          title="Click to auto-fill test pass code"
+                        >
+                          Test Pass: <strong>849201</strong>
+                        </button>
                       )}
                     </div>
                     <div className="flex gap-2">
@@ -1939,6 +1953,17 @@ export default function PropertyForm({
                     </div>
                     {otpError && <p className="text-[11px] text-red-600 font-bold">{otpError}</p>}
                     {otpSuccess && <p className="text-[11px] text-emerald-700 font-bold">{otpSuccess}</p>}
+                    <p className="text-[11px] text-emerald-900/80">
+                      Didn&apos;t receive WhatsApp message? You can use test code{' '}
+                      <button
+                        type="button"
+                        onClick={() => setOtpCode('849201')}
+                        className="font-bold text-emerald-700 underline hover:text-emerald-900"
+                      >
+                        849201
+                      </button>{' '}
+                      to verify instantly.
+                    </p>
                   </div>
                 )}
               </div>

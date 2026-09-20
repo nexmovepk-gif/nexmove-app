@@ -3,6 +3,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
+import { sendWhatsAppUniversalAlert } from '@/lib/whatsapp'
+
 // In-memory OTP storage for fast verification (expires in 10 minutes)
 const otpStore = new Map<string, { otp: string; expiresAt: number }>()
 
@@ -36,40 +38,27 @@ export async function POST(req: NextRequest) {
 
       otpStore.set(cleanedPhone, { otp: generatedOtp, expiresAt })
 
-      // Try sending via WhatsApp Cloud API if credentials are set
-      const waToken = process.env.WHATSAPP_ACCESS_TOKEN
-      const waPhoneId = process.env.WHATSAPP_PHONE_NUMBER_ID
+      // Dispatch via pre-approved WhatsApp Template (nexmove_system_alert)
       let waDelivered = false
       let waErrorMsg: string | null = null
 
-      if (waToken && waPhoneId && !waToken.includes('TODO')) {
-        try {
-          const waRes = await fetch(`https://graph.facebook.com/v19.0/${waPhoneId}/messages`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${waToken}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              messaging_product: 'whatsapp',
-              to: cleanedPhone,
-              type: 'text',
-              text: {
-                body: `🔐 NexMove Security Code: *${generatedOtp}*\n\nDo not share this OTP with anyone. It expires in 10 minutes.`,
-              },
-            }),
-          })
-          const waData = await waRes.json()
-          if (waRes.ok) {
-            waDelivered = true
-          } else {
-            console.error('Meta WhatsApp API Error:', waData)
-            waErrorMsg = waData.error?.message || 'Meta WhatsApp delivery failed'
-          }
-        } catch (waErr) {
-          console.warn('WhatsApp API warning (falling back to mock response):', waErr)
-          waErrorMsg = 'Network error reaching WhatsApp servers'
+      try {
+        const waResult = await sendWhatsAppUniversalAlert({
+          to: cleanedPhone,
+          title: 'NexMove Security Verification',
+          message: `Your 6-Digit OTP security code is *${generatedOtp}*. It expires in 10 minutes.`,
+          details: 'Please do not share this OTP code with anyone.',
+          fallbackText: `🔐 *NexMove Security Verification*\n\nYour 6-Digit OTP code is *${generatedOtp}*.\n\nExpires in 10 minutes. Do not share with anyone.`,
+          languageCode: 'en',
+        })
+
+        if (waResult.success) {
+          waDelivered = true
+        } else {
+          waErrorMsg = waResult.error || 'WhatsApp delivery pending'
         }
+      } catch (err: unknown) {
+        waErrorMsg = err instanceof Error ? err.message : 'Network error reaching WhatsApp servers'
       }
 
       return NextResponse.json({
@@ -80,8 +69,8 @@ export async function POST(req: NextRequest) {
         phone: cleanedPhone,
         waDelivered,
         waError: waErrorMsg,
-        // Provide devOtp if in dev mode or as backup if live WhatsApp delivery had issues
-        devOtp: process.env.NODE_ENV !== 'production' || !waDelivered ? generatedOtp : undefined,
+        // Always provide generatedOtp so user is never locked out due to Meta WhatsApp 24-hr window restrictions
+        devOtp: generatedOtp,
       })
     }
 

@@ -674,13 +674,6 @@ Status             : ${item.status}
               )}
             </button>
           ))}
-          <button
-            type="button"
-            onClick={() => setShowBankModal(true)}
-            className="text-xs font-bold py-3 px-4 rounded-xl bg-purple-700 hover:bg-purple-800 text-white transition flex items-center justify-center gap-1.5 shadow"
-          >
-            <span>🏦</span> Upgrade Plan (Meezan Bank)
-          </button>
         </div>
 
         {/* TAB 1: OVERVIEW & DEALS */}

@@ -92,11 +92,58 @@ export default function PrivacyPage() {
               The &apos;Verified Agency&apos; badge is awarded solely to agencies submitting authentic commercial trade licenses, RERA/DLD broker certificates, and audited tax IDs. NexMove reserves the right to revoke verified badges for policy violations.
             </p>
           </section>
+          {/* Section 5: Contact Us */}
+          <section className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <span className="text-emerald-600">5.</span> Contact Us
+            </h2>
+            <p className="leading-relaxed text-xs sm:text-sm text-slate-600">
+              For questions, privacy inquiries, or support, please reach out to our team:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-start gap-3">
+                <span className="text-lg">✉️</span>
+                <div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Mail</div>
+                  <a href="mailto:nexmove.pk@gmail.com" className="text-xs font-bold text-slate-900 hover:text-emerald-600 transition break-all">
+                    nexmove.pk@gmail.com
+                  </a>
+                </div>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-start gap-3">
+                <span className="text-lg">🌐</span>
+                <div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Website</div>
+                  <a href="https://nexmove.com" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-slate-900 hover:text-emerald-600 transition">
+                    nexmove.com
+                  </a>
+                </div>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-start gap-3">
+                <span className="text-lg">📞</span>
+                <div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Call</div>
+                  <a href="tel:+923204326715" className="text-xs font-bold text-slate-900 hover:text-emerald-600 transition">
+                    +92320 4326715
+                  </a>
+                </div>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-start gap-3">
+                <span className="text-lg">💬</span>
+                <div>
+                  <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">WhatsApp</div>
+                  <a href="https://wa.me/923225673541" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-slate-900 hover:text-emerald-600 transition">
+                    +92 322 5673541
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
 
         {/* Footer */}
         <div className="border-t border-slate-200 pt-6 text-center text-xs text-slate-500 font-medium">
-          <p>© 2026 NexMove PropTech Systems. All rights reserved. For compliance inquiries, contact compliance@nexmove.com</p>
+          <p>© 2026 NexMove PropTech Systems. All rights reserved. For compliance inquiries, contact nexmove.pk@gmail.com</p>
         </div>
       </div>
     </main>

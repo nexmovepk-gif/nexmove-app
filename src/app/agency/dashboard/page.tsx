@@ -54,10 +54,7 @@ export default function AgencyDashboardPage() {
   const [listings, setListings] = useState<AIListingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [agencyTier, setAgencyTier] = useState<VerificationTier>('GOLD');
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [showBankCheckout, setShowBankCheckout] = useState(false);
-  const [checkoutPlanTitle, setCheckoutPlanTitle] = useState('Professional Plan');
-  const [checkoutPlanPrice, setCheckoutPlanPrice] = useState(15000);
+
   const [promoteItem, setPromoteItem] = useState<PromoteTargetItem | null>(null);
 
   // Subscription status for 5-day advance renewal notification
@@ -272,16 +269,6 @@ export default function AgencyDashboardPage() {
 
                 <div className="flex items-center gap-2 self-start sm:self-auto flex-shrink-0">
                   <button
-                    onClick={() => {
-                      setCheckoutPlanTitle('Professional Plan (Renewal)');
-                      setCheckoutPlanPrice(15000);
-                      setShowBankCheckout(true);
-                    }}
-                    className="text-xs font-black bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-4 py-2.5 rounded-xl shadow-md transition"
-                  >
-                    Renew Now
-                  </button>
-                  <button
                     onClick={() => setRenewalBannerDismissed(true)}
                     title="Dismiss warning"
                     className="text-amber-800 hover:text-amber-950 text-xs font-bold w-8 h-8 rounded-xl flex items-center justify-center hover:bg-amber-200/60 transition"
@@ -305,12 +292,7 @@ export default function AgencyDashboardPage() {
                   tier={agencyTier}
                   size="md"
                 />
-                <button
-                  onClick={() => setShowUpgradeModal(true)}
-                  className="text-[11px] font-bold text-purple-700 border border-purple-300 bg-purple-50 hover:bg-purple-100 px-3 py-1 rounded-full transition"
-                >
-                  ⬆ Upgrade Tier
-                </button>
+
               </div>
               <p className="text-sm text-slate-500 font-medium mt-1">
                 {displayName
@@ -675,118 +657,7 @@ export default function AgencyDashboardPage() {
         </div>
       </section>
 
-      {/* ── Upgrade Tier Modal ──────────────────────────────────────────── */}
-      {showUpgradeModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 max-w-2xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setShowUpgradeModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg font-bold w-8 h-8 rounded-full flex items-center justify-center"
-            >
-              ✕
-            </button>
 
-            <div className="mb-5">
-              <h3 className="text-xl font-black text-slate-900">Upgrade Verification Badge</h3>
-              <p className="text-xs text-slate-600 font-medium mt-1">
-                Unlock premium agency trust signals. Current tier: <strong>{agencyTier}</strong>
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Starter */}
-              <div className={`border-2 rounded-2xl p-5 flex flex-col gap-3 cursor-pointer transition ${
-                agencyTier === 'SILVER' ? 'border-slate-500 bg-slate-50' : 'border-slate-200 hover:border-slate-400'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl">🥈</span>
-                  {agencyTier === 'SILVER' && <span className="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-full">Current</span>}
-                </div>
-                <div>
-                  <p className="font-black text-slate-900 text-base">Starter Plan</p>
-                  <p className="text-xl font-black text-slate-700 mt-0.5">PKR 5,000<span className="text-xs font-semibold text-slate-500">/mo</span></p>
-                </div>
-                <ul className="text-xs text-slate-600 space-y-1.5 flex-1">
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Trade License Verified</li>
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Basic Listing Indexing</li>
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Standard Visibility</li>
-                </ul>
-                <button
-                  onClick={() => { setAgencyTier('SILVER'); setShowUpgradeModal(false); setCheckoutPlanTitle('Starter Plan'); setCheckoutPlanPrice(5000); setShowBankCheckout(true); }}
-                  className="mt-auto text-xs bg-slate-700 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl transition"
-                >
-                  Pay PKR 5,000
-                </button>
-              </div>
-
-              {/* Professional */}
-              <div className={`border-2 rounded-2xl p-5 flex flex-col gap-3 cursor-pointer transition relative ${
-                agencyTier === 'GOLD' ? 'border-amber-500 bg-amber-50' : 'border-amber-200 hover:border-amber-400'
-              }`}>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="text-[10px] bg-amber-500 text-white font-black px-3 py-1 rounded-full shadow">MOST POPULAR</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl">🥇</span>
-                  {agencyTier === 'GOLD' && <span className="text-[10px] bg-amber-200 text-amber-800 font-bold px-2 py-0.5 rounded-full">Current</span>}
-                </div>
-                <div>
-                  <p className="font-black text-amber-900 text-base">Professional Plan</p>
-                  <p className="text-xl font-black text-amber-700 mt-0.5">PKR 15,000<span className="text-xs font-semibold text-amber-600">/mo</span></p>
-                </div>
-                <ul className="text-xs text-slate-600 space-y-1.5 flex-1">
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> RERA / DLD Verified Badge</li>
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Full AIEscrowGuard Suite</li>
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> 50% Co-Broker Priority</li>
-                </ul>
-                <button
-                  onClick={() => { setAgencyTier('GOLD'); setShowUpgradeModal(false); setCheckoutPlanTitle('Professional Plan'); setCheckoutPlanPrice(15000); setShowBankCheckout(true); }}
-                  className="mt-auto text-xs bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl transition"
-                >
-                  Pay PKR 15,000
-                </button>
-              </div>
-
-              {/* Enterprise */}
-              <div className={`border-2 rounded-2xl p-5 flex flex-col gap-3 cursor-pointer transition ${
-                agencyTier === 'PLATINUM' ? 'border-purple-500 bg-purple-50' : 'border-purple-200 hover:border-purple-400'
-              }`}>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl">💎</span>
-                  {agencyTier === 'PLATINUM' && <span className="text-[10px] bg-purple-200 text-purple-800 font-bold px-2 py-0.5 rounded-full">Current</span>}
-                </div>
-                <div>
-                  <p className="font-black text-purple-900 text-base">Enterprise Plan</p>
-                  <p className="text-xl font-black text-purple-700 mt-0.5">PKR 40,000<span className="text-xs font-semibold text-purple-500">/mo</span></p>
-                </div>
-                <ul className="text-xs text-slate-600 space-y-1.5 flex-1">
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Full Audit Verified Badge</li>
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Priority AI Cross-Matching</li>
-                  <li className="flex items-center gap-2"><span className="text-emerald-600 font-bold">✓</span> Unlimited Team Access</li>
-                </ul>
-                <button
-                  onClick={() => { setAgencyTier('PLATINUM'); setShowUpgradeModal(false); setCheckoutPlanTitle('Enterprise Plan'); setCheckoutPlanPrice(40000); setShowBankCheckout(true); }}
-                  className="mt-auto text-xs bg-purple-700 hover:bg-purple-800 text-white font-bold py-2.5 rounded-xl transition"
-                >
-                  Pay PKR 40,000
-                </button>
-              </div>
-            </div>
-
-            <p className="text-[11px] text-slate-400 text-center mt-5">
-              All plans support direct bank transfer into Meezan Bank. Receipts are verified manually by admin.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Bank Transfer Checkout Modal */}
-      <BankTransferCheckoutModal
-        isOpen={showBankCheckout}
-        onClose={() => setShowBankCheckout(false)}
-        selectedPlanTitle={checkoutPlanTitle}
-        selectedPlanPricePKR={checkoutPlanPrice}
-      />
     </SubscriptionGuard>
   );
 }

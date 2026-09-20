@@ -64,6 +64,7 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
   const [showClosingSlip, setShowClosingSlip] = useState(false)
   const [showWhatsApp, setShowWhatsApp] = useState(false)
   const [vaultDocs, setVaultDocs] = useState<VaultDoc[]>([])
+  const [paymentMode, setPaymentMode] = useState<'BANK_PAY_ORDER' | 'ONLINE_RAAST' | 'CASH_OFFICE'>('BANK_PAY_ORDER')
 
   const fetchDealRoom = async () => {
     try {
@@ -519,17 +520,123 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
                       </span>
                     </div>
                   </div>
+                ) : currentStepData.stepNumber === 1 ? (
+                  /* ── MILESTONE 1: DEDICATED PAKISTANI TOKEN / PAY ORDER & SELLER AGENCY CONFIRMATION FLOW ── */
+                  <div className="mt-6 space-y-4">
+                    {/* 1. Buyer Submission Box */}
+                    <div className="p-4 bg-stone-50 border border-stone-200 rounded-2xl space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-stone-900 flex items-center gap-1.5">
+                          <span>📄</span> Step A: Buyer Token Pay Order Submission
+                        </span>
+                        <span className="text-[10px] font-bold text-stone-500 bg-white border border-stone-200 px-2 py-0.5 rounded">
+                          Manual / Bank Settlement
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[11px] font-bold text-stone-700 block mb-1">
+                            Payment Instrument *
+                          </label>
+                          <select
+                            value={paymentMode}
+                            onChange={(e) => setPaymentMode(e.target.value as any)}
+                            className="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs font-medium text-stone-900 focus:outline-none focus:border-emerald-600"
+                          >
+                            <option value="BANK_PAY_ORDER">Bank Pay Order (DHA / Society Standard)</option>
+                            <option value="ONLINE_RAAST">Direct Bank Wire / Raast (Meezan/HBL)</option>
+                            <option value="CASH_OFFICE">Cash Deposit / Office Cheque Receipt</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="text-[11px] font-bold text-stone-700 block mb-1">
+                            Pay Order / Transaction Slip Number *
+                          </label>
+                          <input
+                            type="text"
+                            value={proofInput}
+                            onChange={(e) => setProofInput(e.target.value)}
+                            placeholder="e.g. PO-MEEZAN-849102"
+                            className="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs text-stone-900 font-mono font-bold focus:outline-none focus:border-emerald-600"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setProofInput(`PO-HBL-${Date.now().toString().slice(-6)}`)}
+                          className="text-[10px] text-emerald-700 font-bold hover:underline"
+                        >
+                          + Autofill Sample Pay Order No
+                        </button>
+                        <span className="text-[11px] text-stone-500">
+                          Agreed Bayana Amount: <strong>PKR {tokenBayanaEst.toLocaleString('en-PK')}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 2. Dedicated Seller Agency Confirmation Desk */}
+                    <div className="p-4 bg-emerald-50/80 border-2 border-emerald-300 rounded-2xl space-y-3 shadow-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">🏢</span>
+                          <div>
+                            <h4 className="text-xs font-black text-emerald-950">
+                              Step B: Seller Agency Confirmation Desk
+                            </h4>
+                            <p className="text-[11px] text-emerald-800">
+                              Facilitating Agency: <strong>{deal.agencyName}</strong>
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-bold text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full">
+                          Requires Agency Seal
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-stone-700 leading-relaxed">
+                        Once the Pay Order is physically sighted or funds reflect in the designated bank account, the Facilitating Agency confirms receipt to officially lock the transaction and unlock <strong>Milestone 2 (DHA / Society NDC Clearance)</strong>.
+                      </p>
+
+                      <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-emerald-200">
+                        <span className="text-xs text-emerald-900 font-bold font-mono">
+                          Verified Instrument: {proofInput || 'PO-Awaiting-Submission'}
+                        </span>
+
+                        <button
+                          onClick={() => handleCompleteMilestone(currentStepData)}
+                          disabled={isUpdating || !proofInput.trim()}
+                          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-700/20 transition-all disabled:opacity-50"
+                        >
+                          {isUpdating ? (
+                            <>
+                              <RefreshCw className="w-4 h-4 animate-spin" />
+                              Confirming & Advancing to NDC...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 className="w-4 h-4" />
+                              <span>✓ Confirm Pay Order Received (Advance to NDC)</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
+                  /* Milestones 2, 3, 4 Standard Verification */
                   <div className="mt-6 space-y-4">
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <label className="text-xs font-bold text-stone-800">
-                          Reference / CPR / Pay Order Slip
+                          Reference / CPR / Society Slip
                         </label>
                         <button
                           type="button"
                           onClick={() => {
-                            if (currentStepData.stepNumber === 1) setProofInput(`PO-HBL-${Date.now().toString().slice(-6)}`)
                             if (currentStepData.stepNumber === 2) setProofInput(`NDC-DHA-LHR-${Date.now().toString().slice(-6)}`)
                             if (currentStepData.stepNumber === 3) setProofInput(`CPR-2026-FBR-${Date.now().toString().slice(-6)}`)
                             if (currentStepData.stepNumber === 4) setProofInput(`TRANSFER-DESK-SLIP-${Date.now().toString().slice(-6)}`)
@@ -544,9 +651,7 @@ export default function DealRoomView({ dealRoomId }: { dealRoomId?: string }) {
                         value={proofInput}
                         onChange={(e) => setProofInput(e.target.value)}
                         placeholder={
-                          currentStepData.stepNumber === 1
-                            ? 'e.g. PO-789123 or Pay Order Scanned URL'
-                            : currentStepData.stepNumber === 2
+                          currentStepData.stepNumber === 2
                             ? 'e.g. NDC-DHA-98214'
                             : currentStepData.stepNumber === 3
                             ? 'e.g. CPR-2026-8812903 (17-digit)'

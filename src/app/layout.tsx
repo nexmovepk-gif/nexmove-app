@@ -79,6 +79,17 @@ export default function RootLayout({
                 <GlobalHeader />
                 {children}
                 <AIAssistant />
+                {/* ── Privacy Policy Footer Toggle (Hidden / Subtle) ── */}
+                <footer className="w-full text-center py-3 border-t border-slate-200/60 bg-white/40 backdrop-blur-sm">
+                  <a
+                    href="/privacy-policy"
+                    className="text-[10px] text-slate-400 hover:text-emerald-600 transition-colors font-medium tracking-wide"
+                  >
+                    Privacy Policy
+                  </a>
+                  <span className="text-slate-300 mx-2 text-[10px]">·</span>
+                  <span className="text-[10px] text-slate-300">© {new Date().getFullYear()} NexMove</span>
+                </footer>
               </AIEscrowProvider>
             </CurrencyProvider>
           </LanguageProvider>

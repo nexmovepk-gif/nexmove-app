@@ -255,6 +255,16 @@ export default function PropertyForm({
   const [contactEmail, setContactEmail] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
 
+  // ── WhatsApp OTP Verification State (for Private Sellers)
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpVerifying, setOtpVerifying] = useState(false);
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpSuccess, setOtpSuccess] = useState<string | null>(null);
+  const [devOtpNotice, setDevOtpNotice] = useState<string | null>(null);
+
   // ── AI Extraction & Title Deed State
   const [isAiExtracting, setIsAiExtracting] = useState(false);
   const [aiExtracted, setAiExtracted] = useState(false);
@@ -324,6 +334,71 @@ export default function PropertyForm({
       setEmailError('Please enter a valid email address (e.g. agent@example.com)');
     } else {
       setEmailError(null);
+    }
+  };
+
+  // ── Send WhatsApp OTP Handler
+  const handleSendOtp = async () => {
+    if (!contactPhone.trim()) {
+      setOtpError('Please enter a phone number first.');
+      return;
+    }
+    setOtpLoading(true);
+    setOtpError(null);
+    setOtpSuccess(null);
+    setDevOtpNotice(null);
+
+    try {
+      const res = await fetch('/api/leads/private/otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'send', phone: contactPhone.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOtpSent(true);
+        setOtpSuccess('OTP sent successfully to your WhatsApp!');
+        if (data.devOtp) {
+          setDevOtpNotice(data.devOtp);
+        }
+        showToast('OTP sent! Please check your WhatsApp.', 'success');
+      } else {
+        setOtpError(data.error || 'Failed to send WhatsApp OTP.');
+      }
+    } catch {
+      setOtpError('Network error while sending OTP.');
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  // ── Verify WhatsApp OTP Handler
+  const handleVerifyOtp = async () => {
+    if (!otpCode.trim() || otpCode.length !== 6) {
+      setOtpError('Please enter the 6-digit OTP code.');
+      return;
+    }
+    setOtpVerifying(true);
+    setOtpError(null);
+
+    try {
+      const res = await fetch('/api/leads/private/otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify', phone: contactPhone.trim(), otp: otpCode.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.verified) {
+        setIsPhoneVerified(true);
+        setOtpSuccess('✓ WhatsApp number verified successfully!');
+        showToast('Mobile number verified!', 'success');
+      } else {
+        setOtpError(data.error || 'Invalid OTP code. Please try again.');
+      }
+    } catch {
+      setOtpError('Network error while verifying OTP.');
+    } finally {
+      setOtpVerifying(false);
     }
   };
 
@@ -716,6 +791,12 @@ export default function PropertyForm({
     e.preventDefault();
     if (emailError) {
       setSubmitError('Please fix the email address error before submitting.');
+      return;
+    }
+
+    if (!isAgencyPortal && !isPhoneVerified) {
+      setSubmitError('Please verify your Contact Phone / WhatsApp number with OTP before listing your property privately.');
+      showToast('WhatsApp OTP verification is required.', 'warning');
       return;
     }
 
@@ -1779,20 +1860,87 @@ export default function PropertyForm({
                 />
               </div>
 
-              {/* Phone / WhatsApp */}
+              {/* Phone / WhatsApp with OTP Verification */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor={contactPhoneId} className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-                  Contact Phone / WhatsApp *
-                </label>
-                <input
-                  id={contactPhoneId}
-                  type="tel"
-                  value={contactPhone}
-                  onChange={(e) => setContactPhone(e.target.value)}
-                  placeholder="e.g. +92 300 1234567"
-                  required
-                  className="bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
+                <div className="flex items-center justify-between">
+                  <label htmlFor={contactPhoneId} className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    Contact Phone / WhatsApp *
+                  </label>
+                  {isPhoneVerified ? (
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span>✓</span> Verified Number
+                    </span>
+                  ) : !isAgencyPortal ? (
+                    <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+                      OTP Required
+                    </span>
+                  ) : null}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    id={contactPhoneId}
+                    type="tel"
+                    value={contactPhone}
+                    disabled={isPhoneVerified}
+                    onChange={(e) => {
+                      setContactPhone(e.target.value);
+                      setIsPhoneVerified(false);
+                      setOtpSent(false);
+                      setOtpCode('');
+                      setOtpError(null);
+                      setOtpSuccess(null);
+                    }}
+                    placeholder="e.g. 03001234567 or +923001234567"
+                    required
+                    className={`bg-white border rounded-xl px-4 py-2.5 text-gray-900 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none flex-1 ${
+                      isPhoneVerified ? 'border-emerald-500 bg-emerald-50/30' : 'border-gray-300'
+                    }`}
+                  />
+                  {!isAgencyPortal && !isPhoneVerified && (
+                    <button
+                      type="button"
+                      disabled={otpLoading || !contactPhone.trim()}
+                      onClick={handleSendOtp}
+                      className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition disabled:opacity-50 whitespace-nowrap"
+                    >
+                      {otpLoading ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                    </button>
+                  )}
+                </div>
+
+                {/* OTP Input Box if OTP is sent and not yet verified */}
+                {!isAgencyPortal && otpSent && !isPhoneVerified && (
+                  <div className="mt-2 p-3.5 bg-emerald-50/70 border border-emerald-300 rounded-xl space-y-2 animate-in fade-in">
+                    <div className="flex items-center justify-between text-xs font-bold text-emerald-950">
+                      <span>Enter 6-Digit WhatsApp Code</span>
+                      {devOtpNotice && (
+                        <span className="text-[11px] font-mono text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                          Dev Code: <strong>{devOtpNotice}</strong>
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        maxLength={6}
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                        placeholder="e.g. 849201"
+                        className="w-36 text-center font-mono text-sm tracking-widest px-3 py-2 bg-white border border-emerald-400 rounded-lg text-emerald-950 font-black focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                      />
+                      <button
+                        type="button"
+                        disabled={otpVerifying || otpCode.length !== 6}
+                        onClick={handleVerifyOtp}
+                        className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold transition disabled:opacity-50"
+                      >
+                        {otpVerifying ? 'Verifying...' : 'Verify OTP'}
+                      </button>
+                    </div>
+                    {otpError && <p className="text-[11px] text-red-600 font-bold">{otpError}</p>}
+                    {otpSuccess && <p className="text-[11px] text-emerald-700 font-bold">{otpSuccess}</p>}
+                  </div>
+                )}
               </div>
 
               {/* Email Address with Validation */}

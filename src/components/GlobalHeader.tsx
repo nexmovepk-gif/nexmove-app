@@ -207,13 +207,6 @@ export default function GlobalHeader() {
         >
           Architects & Designers
         </Link>
-        <Link
-          href="/pricing"
-          className="text-xs text-emerald-400 hover:text-emerald-300 font-bold transition hidden sm:inline"
-        >
-          Pricing
-        </Link>
-
         {/* 👤 Logged In User Profile & Bank Settings */}
         {!isGuest && (
           <Link

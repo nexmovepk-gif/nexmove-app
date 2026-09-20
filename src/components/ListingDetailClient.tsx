@@ -373,6 +373,7 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
     setIsProcessingToken(true);
 
     try {
+      /* ── Stripe Online Checkout (Temporarily commented for manual pay order / bank transfer) ──
       if (paymentMethod === 'CARD') {
         const response = await fetch('/api/escrow/create-checkout', {
           method: 'POST',
@@ -396,6 +397,7 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
           return;
         }
       }
+      ── End Stripe Online Checkout ── */
 
       // Record buyer token payment and deal directly in Supabase deals table
       const dealRes = await fetch('/api/deals', {
@@ -1122,15 +1124,16 @@ export default function ListingDetailClient({ listing }: { listing: PublicListin
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-slate-900 block mb-1">Escrow Payment Method</label>
+                    <label className="text-xs font-bold text-slate-900 block mb-1">Token Payment Mode</label>
                     <select
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value as 'ESCROW_BANK' | 'CARD' | 'CRYPTO')}
                       className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500"
                     >
-                      <option value="CARD">💳 Credit / Debit Card (Stripe Checkout)</option>
-                      <option value="ESCROW_BANK">🏦 NexMove Escrow Bank Wire</option>
-                      <option value="CRYPTO">🪙 Crypto / USDT Escrow</option>
+                      {/* Stripe Online Card Checkout temporarily commented out for manual Bank / Pay Order settlement */}
+                      {/* <option value="CARD">💳 Credit / Debit Card (Stripe Checkout)</option> */}
+                      <option value="ESCROW_BANK">🏦 Bank Pay Order / Direct Bank Wire (Recommended)</option>
+                      {/* <option value="CRYPTO">🪙 Crypto / USDT Escrow</option> */}
                     </select>
                   </div>
 

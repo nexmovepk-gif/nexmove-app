@@ -14,6 +14,8 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const city = searchParams.get('city')
     const type = searchParams.get('type')
+    const purpose = searchParams.get('purpose')
+    const search = searchParams.get('search')
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
     const minBeds = searchParams.get('minBeds')
@@ -27,8 +29,18 @@ export async function GET(req: NextRequest) {
     if (city) {
       where.city = { contains: city, mode: 'insensitive' }
     }
+    if (purpose && ['FOR_SALE', 'FOR_RENT', 'LEASE'].includes(purpose.toUpperCase())) {
+      where.purpose = purpose.toUpperCase()
+    }
     if (type && Object.values(PropertyType).includes(type.toUpperCase() as PropertyType)) {
       where.propertyType = type.toUpperCase() as PropertyType
+    }
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { address: { contains: search, mode: 'insensitive' } },
+      ]
     }
     if (minPrice || maxPrice) {
       where.price = {
@@ -67,8 +79,19 @@ export async function GET(req: NextRequest) {
     if (city) {
       propWhere.city = { contains: city, mode: 'insensitive' }
     }
+    if (purpose && ['FOR_SALE', 'FOR_RENT', 'LEASE'].includes(purpose.toUpperCase())) {
+      propWhere.purpose = purpose.toUpperCase()
+    }
     if (type) {
       propWhere.propertyType = { contains: type, mode: 'insensitive' }
+    }
+    if (search) {
+      propWhere.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { address: { contains: search, mode: 'insensitive' } },
+        { propertyType: { contains: search, mode: 'insensitive' } },
+      ]
     }
     if (minPrice || maxPrice) {
       propWhere.price = {
@@ -78,6 +101,9 @@ export async function GET(req: NextRequest) {
     }
     if (minBeds) {
       propWhere.bedrooms = { gte: Number(minBeds) }
+    }
+    if (verifiedOnly) {
+      propWhere.agency = { verified: true }
     }
 
     let properties: Awaited<ReturnType<typeof prisma.property.findMany<{ include: { agency: true } }>>> = []

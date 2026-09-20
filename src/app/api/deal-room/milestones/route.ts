@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
                 title: 'Deal Closed & Payout Ready',
                 message: `Mubarik ho! Deal #${updatedDeal.dealNumber} completely CLOSE ho chuki hai. Final registry transfer aur escrow verify ho chuka hai.`,
                 details: `Ref: ${updatedDeal.dealNumber} | Buyer: ${updatedDeal.buyerName} | Seller: ${updatedDeal.sellerName}`,
-                fallbackText: `🎉 *NexMove — Deal Successfully Closed!*\n\nDeal #${updatedDeal.dealNumber} has been officially closed and ratified.\n\nThank you for choosing NexMove!`,
+                fallbackText: ` *NexMove — Deal Successfully Closed!*\n\nDeal #${updatedDeal.dealNumber} has been officially closed and ratified.\n\nThank you for choosing NexMove!`,
               })
             } else {
               await sendWhatsAppUniversalAlert({
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
                 title: 'Milestone Completed',
                 message: `Milestone ${updatedMilestone.stepNumber} (${updatedMilestone.title}) mukammal ho gaya hai. Agla marhala progress mein hai.`,
                 details: `Deal Ref: ${updatedDeal.dealNumber} | Milestone: ${updatedMilestone.stepNumber}/4`,
-                fallbackText: `📋 *NexMove Deal Update*\n\nMilestone ${updatedMilestone.stepNumber} (${updatedMilestone.title}) marked COMPLETED for Deal #${updatedDeal.dealNumber}.`,
+                fallbackText: ` *NexMove Deal Update*\n\nMilestone ${updatedMilestone.stepNumber} (${updatedMilestone.title}) marked COMPLETED for Deal #${updatedDeal.dealNumber}.`,
               })
             }
           }

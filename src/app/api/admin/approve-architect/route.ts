@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       try {
         const recipientEmail = updated.user?.email || "bjarchitects.pk@gmail.com";
         const apiKey = process.env.RESEND_API_KEY;
-        const subject = "🎉 Your NexMove Architect Profile is Approved!";
+        const subject = " Your NexMove Architect Profile is Approved!";
         const html = `
           <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #0f172a; color: #f8fafc; border-radius: 16px;">
             <div style="text-align: center; margin-bottom: 20px;">
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
                 Verified Professional
               </span>
             </div>
-            <h2 style="color: #14b8a6; text-align: center; margin-top: 10px;">🎉 Congratulations, ${updated.name}!</h2>
+            <h2 style="color: #14b8a6; text-align: center; margin-top: 10px;"> Congratulations, ${updated.name}!</h2>
             <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
               Your professional architect profile on <strong>NexMove PropTech</strong> has been reviewed and officially <strong>APPROVED</strong>!
             </p>

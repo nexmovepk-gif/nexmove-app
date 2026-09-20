@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
     for (const agency of topAgencies) {
       if (agency.phone) {
         try {
-          const waText = `🔔 *NexMove Private Property Alert!*\n\nAssalam-o-Alaikum *${agency.name}*,\n\nEk nayi private property list hui hai:\n📍 *Area / City:* ${city || "Pakistan"} - ${propertyTitle || "Property"}\n🏷️ *Demand:* PKR ${price ? Number(price).toLocaleString() : "Contact for Price"}\n👤 *Seller:* ${sellerName || "Direct Seller"}\n🔒 *Status:* Off-Market (Exclusive to Top 3 Verified Agencies)\n\n👉 Lead claim karein: https://nexmove.pk/agency/dashboard`;
+          const waText = ` *NexMove Private Property Alert!*\n\nAssalam-o-Alaikum *${agency.name}*,\n\nEk nayi private property list hui hai:\n *Area / City:* ${city || "Pakistan"} - ${propertyTitle || "Property"}\n️ *Demand:* PKR ${price ? Number(price).toLocaleString() : "Contact for Price"}\n *Seller:* ${sellerName || "Direct Seller"}\n *Status:* Off-Market (Exclusive to Top 3 Verified Agencies)\n\n Lead claim karein: https://nexmove.pk/agency/dashboard`;
 
           const waRes = await sendWhatsAppUniversalAlert({
             to: agency.phone,

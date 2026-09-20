@@ -7,12 +7,12 @@ import KYCVerificationModal from '@/components/KYCVerificationModal';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
-  Globe2, ShieldCheck, BadgeCheck, TrendingUp,
-  Building2, MapPin, Bed, Bath, SquareArrowOutUpRight, Video,
-  MessageCircle, Calculator, ChevronRight, RefreshCw, LogOut,
-  Landmark, FileCheck2, Lock, CheckCircle2,
-  Clock, RotateCcw, ArrowUpRight,
-  Wallet, PieChart, Star, ChevronDown, ChevronUp, Loader2, Plus, Download
+ Globe2, ShieldCheck, BadgeCheck, TrendingUp,
+ Building2, MapPin, Bed, Bath, SquareArrowOutUpRight, Video,
+ MessageCircle, Calculator, ChevronRight, RefreshCw, LogOut,
+ Landmark, FileCheck2, Lock, CheckCircle2,
+ Clock, RotateCcw, ArrowUpRight,
+ Wallet, PieChart, Star, ChevronDown, ChevronUp, Loader2, Plus, Download
 } from 'lucide-react';
 import { CURRENCIES, CurrencyCode, formatCurrencyPrice } from '@/lib/currency';
 import { generateEscrowContractPDF } from '@/lib/services/escrowContractPdf';
@@ -20,926 +20,926 @@ import { generateEscrowContractPDF } from '@/lib/services/escrowContractPdf';
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 interface SavedProperty {
-  id: string;
-  title: string;
-  location: string;
-  city: string;
-  propertyType: string;
-  pricePKR: number;
-  areaSqFt: number | null;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  rentalYieldPct: number;
-  capitalGrowth3YrPct: number;
-  escrowSecured: boolean;
-  verifiedAgent: boolean;
-  agentPhone: string;
+ id: string;
+ title: string;
+ location: string;
+ city: string;
+ propertyType: string;
+ pricePKR: number;
+ areaSqFt: number | null;
+ bedrooms: number | null;
+ bathrooms: number | null;
+ rentalYieldPct: number;
+ capitalGrowth3YrPct: number;
+ escrowSecured: boolean;
+ verifiedAgent: boolean;
+ agentPhone: string;
 }
 
 interface EscrowMilestone {
-  key: string;
-  label: string;
-  sublabel: string;
-  icon: React.ReactNode;
-  status: 'complete' | 'active' | 'pending';
+ key: string;
+ label: string;
+ sublabel: string;
+ icon: React.ReactNode;
+ status: 'complete' | 'active' | 'pending';
 }
 
 const ESCROW_MILESTONES: EscrowMilestone[] = [
-  {
-    key: 'token',
-    label: 'Token Reserved',
-    sublabel: 'Earnest money deposited securely',
-    icon: <Lock className="w-4 h-4" />,
-    status: 'complete',
-  },
-  {
-    key: 'title',
-    label: 'Title Verification',
-    sublabel: 'AI & Legal title deed scan passed',
-    icon: <FileCheck2 className="w-4 h-4" />,
-    status: 'complete',
-  },
-  {
-    key: 'escrow',
-    label: 'FBR / SBP Escrow Guard',
-    sublabel: 'Funds in regulated escrow account',
-    icon: <ShieldCheck className="w-4 h-4" />,
-    status: 'active',
-  },
-  {
-    key: 'registry',
-    label: 'Registry Complete',
-    sublabel: 'Property transferred & deed signed',
-    icon: <BadgeCheck className="w-4 h-4" />,
-    status: 'pending',
-  },
+ {
+ key: 'token',
+ label: 'Token Reserved',
+ sublabel: 'Earnest money deposited securely',
+ icon: <Lock className="w-4 h-4" />,
+ status: 'complete',
+ },
+ {
+ key: 'title',
+ label: 'Title Verification',
+ sublabel: 'AI & Legal title deed scan passed',
+ icon: <FileCheck2 className="w-4 h-4" />,
+ status: 'complete',
+ },
+ {
+ key: 'escrow',
+ label: 'FBR / SBP Escrow Guard',
+ sublabel: 'Funds in regulated escrow account',
+ icon: <ShieldCheck className="w-4 h-4" />,
+ status: 'active',
+ },
+ {
+ key: 'registry',
+ label: 'Registry Complete',
+ sublabel: 'Property transferred & deed signed',
+ icon: <BadgeCheck className="w-4 h-4" />,
+ status: 'pending',
+ },
 ];
 
 // ── ROI Calculator ─────────────────────────────────────────────────────────────
 
 function ROICalculator({ activeCurrency }: { activeCurrency: CurrencyCode }) {
-  const [purchasePKR, setPurchasePKR] = useState(35_000_000);
-  const [yieldPct, setYieldPct] = useState(7);
-  const [growthPct, setGrowthPct] = useState(12);
-  const [holdYears, setHoldYears] = useState(3);
-  const [showBreakdown, setShowBreakdown] = useState(false);
+ const [purchasePKR, setPurchasePKR] = useState(35_000_000);
+ const [yieldPct, setYieldPct] = useState(7);
+ const [growthPct, setGrowthPct] = useState(12);
+ const [holdYears, setHoldYears] = useState(3);
+ const [showBreakdown, setShowBreakdown] = useState(false);
 
-  const monthlyRentalPKR = useMemo(
-    () => (purchasePKR * yieldPct) / 100 / 12,
-    [purchasePKR, yieldPct]
-  );
-  const annualRentalPKR = monthlyRentalPKR * 12;
-  const futureValuePKR = purchasePKR * Math.pow(1 + growthPct / 100, holdYears);
-  const capitalGainPKR = futureValuePKR - purchasePKR;
-  const totalReturnPKR = annualRentalPKR * holdYears + capitalGainPKR;
-  const totalReturnPct = (totalReturnPKR / purchasePKR) * 100;
+ const monthlyRentalPKR = useMemo(
+ () => (purchasePKR * yieldPct) / 100 / 12,
+ [purchasePKR, yieldPct]
+ );
+ const annualRentalPKR = monthlyRentalPKR * 12;
+ const futureValuePKR = purchasePKR * Math.pow(1 + growthPct / 100, holdYears);
+ const capitalGainPKR = futureValuePKR - purchasePKR;
+ const totalReturnPKR = annualRentalPKR * holdYears + capitalGainPKR;
+ const totalReturnPct = (totalReturnPKR / purchasePKR) * 100;
 
-  const fmt = (pkr: number) => formatCurrencyPrice(pkr, activeCurrency);
+ const fmt = (pkr: number) => formatCurrencyPrice(pkr, activeCurrency);
 
-  return (
-    <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center shadow-md">
-            <Calculator className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-base font-black text-slate-900">Investment ROI Calculator</h3>
-            <p className="text-xs text-slate-500 font-medium">Estimate returns in your preferred currency</p>
-          </div>
-        </div>
-        <button
-          onClick={() => setShowBreakdown(!showBreakdown)}
-          className="text-xs text-violet-700 font-bold flex items-center gap-1 hover:underline"
-        >
-          {showBreakdown ? 'Hide' : 'Detailed'} Breakdown
-          {showBreakdown ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-        </button>
-      </div>
+ return (
+ <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+ <div className="flex items-center justify-between mb-5">
+ <div className="flex items-center gap-3">
+ <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center shadow-md">
+ <Calculator className="w-5 h-5 text-white" />
+ </div>
+ <div>
+ <h3 className="text-base font-black text-slate-900">Investment ROI Calculator</h3>
+ <p className="text-xs text-slate-500 font-medium">Estimate returns in your preferred currency</p>
+ </div>
+ </div>
+ <button
+ onClick={() => setShowBreakdown(!showBreakdown)}
+ className="text-xs text-violet-700 font-bold flex items-center gap-1 hover:underline"
+ >
+ {showBreakdown ? 'Hide' : 'Detailed'} Breakdown
+ {showBreakdown ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+ </button>
+ </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
-        {[
-          { label: 'Purchase Price (PKR)', value: purchasePKR, setter: setPurchasePKR, step: 500000, min: 1000000, max: undefined },
-          { label: 'Annual Yield %', value: yieldPct, setter: setYieldPct, step: 0.5, min: 1, max: 25 },
-          { label: 'Capital Growth % / Yr', value: growthPct, setter: setGrowthPct, step: 1, min: 1, max: 50 },
-          { label: 'Hold Period (Years)', value: holdYears, setter: setHoldYears, step: 1, min: 1, max: 20 },
-        ].map(({ label, value, setter, step, min, max }) => (
-          <div key={label} className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{label}</label>
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => setter(Number(e.target.value))}
-              className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
-              step={step}
-              min={min}
-              max={max}
-            />
-          </div>
-        ))}
-      </div>
+ <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+ {[
+ { label: 'Purchase Price (PKR)', value: purchasePKR, setter: setPurchasePKR, step: 500000, min: 1000000, max: undefined },
+ { label: 'Annual Yield %', value: yieldPct, setter: setYieldPct, step: 0.5, min: 1, max: 25 },
+ { label: 'Capital Growth % / Yr', value: growthPct, setter: setGrowthPct, step: 1, min: 1, max: 50 },
+ { label: 'Hold Period (Years)', value: holdYears, setter: setHoldYears, step: 1, min: 1, max: 20 },
+ ].map(({ label, value, setter, step, min, max }) => (
+ <div key={label} className="flex flex-col gap-1">
+ <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{label}</label>
+ <input
+ type="number"
+ value={value}
+ onChange={(e) => setter(Number(e.target.value))}
+ className="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/30"
+ step={step}
+ min={min}
+ max={max}
+ />
+ </div>
+ ))}
+ </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-2xl p-4 text-center">
-          <p className="text-[10px] text-violet-600 font-bold uppercase tracking-wider mb-1">Monthly Rental</p>
-          <p className="text-base font-black text-violet-900">{fmt(monthlyRentalPKR)}</p>
-        </div>
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 text-center">
-          <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mb-1">Annual Income</p>
-          <p className="text-base font-black text-emerald-900">{fmt(annualRentalPKR)}</p>
-        </div>
-        <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4 text-center">
-          <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider mb-1">Capital Gain ({holdYears}yr)</p>
-          <p className="text-base font-black text-amber-900">{fmt(capitalGainPKR)}</p>
-        </div>
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-4 text-center">
-          <p className="text-[10px] text-slate-300 font-bold uppercase tracking-wider mb-1">Total ROI</p>
-          <p className="text-base font-black text-emerald-400">+{totalReturnPct.toFixed(1)}%</p>
-        </div>
-      </div>
+ <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+ <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-2xl p-4 text-center">
+ <p className="text-[10px] text-violet-600 font-bold uppercase tracking-wider mb-1">Monthly Rental</p>
+ <p className="text-base font-black text-violet-900">{fmt(monthlyRentalPKR)}</p>
+ </div>
+ <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 text-center">
+ <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mb-1">Annual Income</p>
+ <p className="text-base font-black text-emerald-900">{fmt(annualRentalPKR)}</p>
+ </div>
+ <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4 text-center">
+ <p className="text-[10px] text-amber-600 font-bold uppercase tracking-wider mb-1">Capital Gain ({holdYears}yr)</p>
+ <p className="text-base font-black text-amber-900">{fmt(capitalGainPKR)}</p>
+ </div>
+ <div className="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-4 text-center">
+ <p className="text-[10px] text-slate-300 font-bold uppercase tracking-wider mb-1">Total ROI</p>
+ <p className="text-base font-black text-emerald-400">+{totalReturnPct.toFixed(1)}%</p>
+ </div>
+ </div>
 
-      {showBreakdown && (
-        <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-medium text-slate-600 space-y-2">
-          <div className="flex justify-between"><span>Purchase Price</span><span className="font-bold text-slate-800">{fmt(purchasePKR)}</span></div>
-          <div className="flex justify-between"><span>Total Rental Income ({holdYears} yrs)</span><span className="font-bold text-emerald-700">+{fmt(annualRentalPKR * holdYears)}</span></div>
-          <div className="flex justify-between"><span>Future Property Value</span><span className="font-bold text-slate-800">{fmt(futureValuePKR)}</span></div>
-          <div className="flex justify-between"><span>Capital Gain</span><span className="font-bold text-emerald-700">+{fmt(capitalGainPKR)}</span></div>
-          <div className="border-t border-slate-200 pt-2 flex justify-between">
-            <span className="font-black text-slate-900">Total Return</span>
-            <span className="font-black text-emerald-700">+{fmt(totalReturnPKR)} ({totalReturnPct.toFixed(1)}%)</span>
-          </div>
-          <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            * Live Market Rates via ExchangeRate-API. PKR → {activeCurrency} rate: {CURRENCIES[activeCurrency].rateInPKR}.
-          </p>
-        </div>
-      )}
-    </div>
-  );
+ {showBreakdown && (
+ <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-medium text-slate-600 space-y-2">
+ <div className="flex justify-between"><span>Purchase Price</span><span className="font-bold text-slate-800">{fmt(purchasePKR)}</span></div>
+ <div className="flex justify-between"><span>Total Rental Income ({holdYears} yrs)</span><span className="font-bold text-emerald-700">+{fmt(annualRentalPKR * holdYears)}</span></div>
+ <div className="flex justify-between"><span>Future Property Value</span><span className="font-bold text-slate-800">{fmt(futureValuePKR)}</span></div>
+ <div className="flex justify-between"><span>Capital Gain</span><span className="font-bold text-emerald-700">+{fmt(capitalGainPKR)}</span></div>
+ <div className="border-t border-slate-200 pt-2 flex justify-between">
+ <span className="font-black text-slate-900">Total Return</span>
+ <span className="font-black text-emerald-700">+{fmt(totalReturnPKR)} ({totalReturnPct.toFixed(1)}%)</span>
+ </div>
+ <p className="text-[10px] text-slate-500 mt-1 flex items-center gap-1.5">
+ <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+ * Live Market Rates via ExchangeRate-API. PKR → {activeCurrency} rate: {CURRENCIES[activeCurrency].rateInPKR}.
+ </p>
+ </div>
+ )}
+ </div>
+ );
 }
 
 // ── Property Card ──────────────────────────────────────────────────────────────
 
 function SavedPropertyCard({
-  property,
-  activeCurrency,
+ property,
+ activeCurrency,
 }: {
-  property: SavedProperty;
-  activeCurrency: CurrencyCode;
+ property: SavedProperty;
+ activeCurrency: CurrencyCode;
 }) {
-  const [expanded, setExpanded] = useState(false);
+ const [expanded, setExpanded] = useState(false);
 
-  const fmt = useCallback((pkr: number) => formatCurrencyPrice(pkr, activeCurrency), [activeCurrency]);
-  const monthlyRentEstPKR = (property.pricePKR * property.rentalYieldPct) / 100 / 12;
+ const fmt = useCallback((pkr: number) => formatCurrencyPrice(pkr, activeCurrency), [activeCurrency]);
+ const monthlyRentEstPKR = (property.pricePKR * property.rentalYieldPct) / 100 / 12;
 
-  const handleWhatsApp = () => {
-    const phone = property.agentPhone.replace(/\D/g, '');
-    const text = encodeURIComponent(
-      `Hello! I am an Overseas Buyer interested in: "${property.title}" (${property.city}). Price: ${fmt(property.pricePKR)}. Please share more details.`
-    );
-    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
-  };
+ const handleWhatsApp = () => {
+ const phone = property.agentPhone.replace(/\D/g, '');
+ const text = encodeURIComponent(
+ `Hello! I am an Overseas Buyer interested in: "${property.title}" (${property.city}). Price: ${fmt(property.pricePKR)}. Please share more details.`
+ );
+ window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+ };
 
-  return (
-    <div className="bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
-      <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-2 mb-3">
-          <div className="flex-1">
-            <div className="flex flex-wrap items-center gap-1.5 mb-1">
-              <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                {property.propertyType}
-              </span>
-              {property.escrowSecured && (
-                <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <ShieldCheck className="w-2.5 h-2.5" /> Escrow Secured
-                </span>
-              )}
-              {property.verifiedAgent && (
-                <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-300 px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <BadgeCheck className="w-2.5 h-2.5" /> Verified Agent
-                </span>
-              )}
-            </div>
-            <h3 className="text-sm font-black text-slate-900 leading-snug">{property.title}</h3>
-            <p className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-0.5">
-              <MapPin className="w-3 h-3" /> {property.location}, {property.city}
-            </p>
-          </div>
-          <div className="text-right flex-shrink-0">
-            <p className="text-lg font-black text-slate-900">{fmt(property.pricePKR)}</p>
-            {activeCurrency !== 'PKR' && (
-              <p className="text-[10px] text-slate-400 font-medium">
-                ≈ Rs {(property.pricePKR / 10_000_000).toFixed(2)} Cr
-              </p>
-            )}
-          </div>
-        </div>
+ return (
+ <div className="bg-white border border-slate-200 rounded-3xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+ <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+ <div className="p-5">
+ <div className="flex items-start justify-between gap-2 mb-3">
+ <div className="flex-1">
+ <div className="flex flex-wrap items-center gap-1.5 mb-1">
+ <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full uppercase tracking-wider">
+ {property.propertyType}
+ </span>
+ {property.escrowSecured && (
+ <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1">
+ <ShieldCheck className="w-2.5 h-2.5" /> Escrow Secured
+ </span>
+ )}
+ {property.verifiedAgent && (
+ <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-300 px-2 py-0.5 rounded-full flex items-center gap-1">
+ <BadgeCheck className="w-2.5 h-2.5" /> Verified Agent
+ </span>
+ )}
+ </div>
+ <h3 className="text-sm font-black text-slate-900 leading-snug">{property.title}</h3>
+ <p className="text-xs text-slate-500 font-medium flex items-center gap-1 mt-0.5">
+ <MapPin className="w-3 h-3" /> {property.location}, {property.city}
+ </p>
+ </div>
+ <div className="text-right flex-shrink-0">
+ <p className="text-lg font-black text-slate-900">{fmt(property.pricePKR)}</p>
+ {activeCurrency !== 'PKR' && (
+ <p className="text-[10px] text-slate-400 font-medium">
+ ≈ Rs {(property.pricePKR / 10_000_000).toFixed(2)} Cr
+ </p>
+ )}
+ </div>
+ </div>
 
-        <div className="flex flex-wrap items-center gap-3 mb-4 text-xs text-slate-600 font-medium">
-          {property.bedrooms !== null && (
-            <span className="flex items-center gap-1"><Bed className="w-3.5 h-3.5 text-slate-400" />{property.bedrooms} Beds</span>
-          )}
-          {property.bathrooms !== null && (
-            <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5 text-slate-400" />{property.bathrooms} Baths</span>
-          )}
-          {property.areaSqFt !== null && (
-            <span className="flex items-center gap-1"><SquareArrowOutUpRight className="w-3.5 h-3.5 text-slate-400" />{property.areaSqFt.toLocaleString()} sqft</span>
-          )}
-        </div>
+ <div className="flex flex-wrap items-center gap-3 mb-4 text-xs text-slate-600 font-medium">
+ {property.bedrooms !== null && (
+ <span className="flex items-center gap-1"><Bed className="w-3.5 h-3.5 text-slate-400" />{property.bedrooms} Beds</span>
+ )}
+ {property.bathrooms !== null && (
+ <span className="flex items-center gap-1"><Bath className="w-3.5 h-3.5 text-slate-400" />{property.bathrooms} Baths</span>
+ )}
+ {property.areaSqFt !== null && (
+ <span className="flex items-center gap-1"><SquareArrowOutUpRight className="w-3.5 h-3.5 text-slate-400" />{property.areaSqFt.toLocaleString()} sqft</span>
+ )}
+ </div>
 
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold">
-            <TrendingUp className="w-3.5 h-3.5" />{property.rentalYieldPct}% Rental Yield
-          </div>
-          <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 px-3 py-1.5 rounded-xl text-xs font-bold">
-            <ArrowUpRight className="w-3.5 h-3.5" />{property.capitalGrowth3YrPct}% 3-Yr Growth
-          </div>
-          <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-xl text-xs font-bold">
-            <Wallet className="w-3.5 h-3.5" />{fmt(monthlyRentEstPKR)} / mo est.
-          </div>
-        </div>
+ <div className="flex flex-wrap items-center gap-2 mb-4">
+ <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl text-xs font-bold">
+ <TrendingUp className="w-3.5 h-3.5" />{property.rentalYieldPct}% Rental Yield
+ </div>
+ <div className="flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 px-3 py-1.5 rounded-xl text-xs font-bold">
+ <ArrowUpRight className="w-3.5 h-3.5" />{property.capitalGrowth3YrPct}% 3-Yr Growth
+ </div>
+ <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-xl text-xs font-bold">
+ <Wallet className="w-3.5 h-3.5" />{fmt(monthlyRentEstPKR)} / mo est.
+ </div>
+ </div>
 
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="flex flex-col items-center gap-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-800 font-bold text-[10px] px-2 py-2.5 rounded-2xl transition"
-          >
-            <Video className="w-4 h-4" />
-            <span>Live Walkthrough</span>
-          </button>
-          <Link
-            href={`/marketplace/${property.id}`}
-            className="flex flex-col items-center gap-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-[10px] px-2 py-2.5 rounded-2xl transition text-center"
-          >
-            <Globe2 className="w-4 h-4" />
-            <span>360 Drone Vault</span>
-          </Link>
-          <button
-            onClick={handleWhatsApp}
-            className="flex flex-col items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] px-2 py-2.5 rounded-2xl transition"
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>WhatsApp Agent</span>
-          </button>
-        </div>
+ <div className="grid grid-cols-3 gap-2">
+ <button
+ onClick={() => setExpanded(!expanded)}
+ className="flex flex-col items-center gap-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-800 font-bold text-[10px] px-2 py-2.5 rounded-2xl transition"
+ >
+ <Video className="w-4 h-4" />
+ <span>Live Walkthrough</span>
+ </button>
+ <Link
+ href={`/marketplace/${property.id}`}
+ className="flex flex-col items-center gap-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-[10px] px-2 py-2.5 rounded-2xl transition text-center"
+ >
+ <Globe2 className="w-4 h-4" />
+ <span>360 Drone Vault</span>
+ </Link>
+ <button
+ onClick={handleWhatsApp}
+ className="flex flex-col items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] px-2 py-2.5 rounded-2xl transition"
+ >
+ <MessageCircle className="w-4 h-4" />
+ <span>WhatsApp Agent</span>
+ </button>
+ </div>
 
-        {expanded && (
-          <div className="mt-4 p-4 bg-indigo-50 border border-indigo-200 rounded-2xl text-xs space-y-3 animate-in fade-in">
-            <p className="font-bold text-indigo-800">📹 Request Live Video Walkthrough</p>
-            <p className="text-indigo-700">Our verified agent will schedule a live video tour at your preferred time. Fill in your contact and we will confirm within 24 hours.</p>
-            <input type="text" placeholder="Your Name" className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40" />
-            <input type="text" placeholder="Your WhatsApp / Phone Number" className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40" />
-            <button onClick={handleWhatsApp} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 rounded-xl transition">
-              Request Video Walkthrough →
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+ {expanded && (
+ <div className="mt-4 p-4 bg-indigo-50 border border-indigo-200 rounded-2xl text-xs space-y-3 animate-in fade-in">
+ <p className="font-bold text-indigo-800"> Request Live Video Walkthrough</p>
+ <p className="text-indigo-700">Our verified agent will schedule a live video tour at your preferred time. Fill in your contact and we will confirm within 24 hours.</p>
+ <input type="text" placeholder="Your Name" className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40" />
+ <input type="text" placeholder="Your WhatsApp / Phone Number" className="w-full px-3 py-2 bg-white border border-indigo-200 rounded-xl text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400/40" />
+ <button onClick={handleWhatsApp} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 rounded-xl transition">
+ Request Video Walkthrough →
+ </button>
+ </div>
+ )}
+ </div>
+ </div>
+ );
 }
 
 // ── Main Dashboard ─────────────────────────────────────────────────────────────
 
 export default function OverseasBuyerDashboard() {
-  const { t } = useLanguage();
-  const [isKycOpen, setIsKycOpen] = useState(false);
-  const router = useRouter();
-  const { data: session, status: sessionStatus } = useSession();
-  const user = session?.user;
+ const { t } = useLanguage();
+ const [isKycOpen, setIsKycOpen] = useState(false);
+ const router = useRouter();
+ const { data: session, status: sessionStatus } = useSession();
+ const user = session?.user;
 
-  // Display name: prefer full name from session
-  const displayName = user?.name || null;
+ // Display name: prefer full name from session
+ const displayName = user?.name || null;
 
-  const [activeCurrency, setActiveCurrency] = useState<CurrencyCode>('USD');
-  const [savedProperties, setSavedProperties] = useState<SavedProperty[]>([]);
-  const [activeDeals, setActiveDeals] = useState<Array<{
-    id: string;
-    title: string;
-    city: string;
-    tokenAmount: number;
-    propertyPrice?: number;
-    agencyName?: string;
-    status: string;
-    step: number;
-  }>>([]);
-  const [dbUserData, setDbUserData] = useState<Record<string, unknown> | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+ const [activeCurrency, setActiveCurrency] = useState<CurrencyCode>('USD');
+ const [savedProperties, setSavedProperties] = useState<SavedProperty[]>([]);
+ const [activeDeals, setActiveDeals] = useState<Array<{
+ id: string;
+ title: string;
+ city: string;
+ tokenAmount: number;
+ propertyPrice?: number;
+ agencyName?: string;
+ status: string;
+ step: number;
+ }>>([]);
+ const [dbUserData, setDbUserData] = useState<Record<string, unknown> | null>(null);
+ const [loading, setLoading] = useState(true);
+ const [error, setError] = useState<string | null>(null);
 
-  // KYC status initialized from session, synchronized with DB
-  const [isKycVerified, setIsKycVerified] = useState<boolean>(Boolean(user?.isKycVerified));
-  const [liveRates, setLiveRates] = useState<Record<string, number>>({});
+ // KYC status initialized from session, synchronized with DB
+ const [isKycVerified, setIsKycVerified] = useState<boolean>(Boolean(user?.isKycVerified));
+ const [liveRates, setLiveRates] = useState<Record<string, number>>({});
 
-  useEffect(() => {
-    if (user?.isKycVerified !== undefined) {
-      setIsKycVerified(Boolean(user.isKycVerified));
-    }
-  }, [user?.isKycVerified]);
+ useEffect(() => {
+ if (user?.isKycVerified !== undefined) {
+ setIsKycVerified(Boolean(user.isKycVerified));
+ }
+ }, [user?.isKycVerified]);
 
-  // Fetch live Forex rates from /api/forex/rates
-  useEffect(() => {
-    fetch('/api/forex/rates')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.success && d?.rates) {
-          const rMap: Record<string, number> = {};
-          Object.keys(d.rates).forEach((k) => {
-            rMap[k] = d.rates[k].rateInPKR;
-          });
-          setLiveRates(rMap);
-        }
-      })
-      .catch(() => {});
-  }, []);
+ // Fetch live Forex rates from /api/forex/rates
+ useEffect(() => {
+ fetch('/api/forex/rates')
+ .then((r) => r.json())
+ .then((d) => {
+ if (d?.success && d?.rates) {
+ const rMap: Record<string, number> = {};
+ Object.keys(d.rates).forEach((k) => {
+ rMap[k] = d.rates[k].rateInPKR;
+ });
+ setLiveRates(rMap);
+ }
+ })
+ .catch(() => {});
+ }, []);
 
-  // Fetch real portfolio and deals for this overseas user from database
-  const fetchProperties = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
+ // Fetch real portfolio and deals for this overseas user from database
+ const fetchProperties = useCallback(async () => {
+ try {
+ setLoading(true);
+ setError(null);
 
-      const res = await fetch('/api/overseas/portfolio');
-      const data = await res.json();
+ const res = await fetch('/api/overseas/portfolio');
+ const data = await res.json();
 
-      if (data?.success) {
-        if (data.user) {
-          setDbUserData(data.user);
-          if (data.user?.isKycVerified !== undefined) {
-            setIsKycVerified(Boolean(data.user.isKycVerified || data.user.isOverseasVerified));
-          }
-        }
+ if (data?.success) {
+ if (data.user) {
+ setDbUserData(data.user);
+ if (data.user?.isKycVerified !== undefined) {
+ setIsKycVerified(Boolean(data.user.isKycVerified || data.user.isOverseasVerified));
+ }
+ }
 
-        if (Array.isArray(data.properties)) {
-          const mapped: SavedProperty[] = data.properties.map((p: Record<string, unknown>) => ({
-            id: String(p.id || ''),
-            title: String(p.title || 'Untitled Property'),
-            location: String(p.address || ''),
-            city: String(p.city || 'Pakistan'),
-            propertyType: String(p.propertyType || p.property_type || 'Property'),
-            pricePKR: Number(p.price || 0),
-            areaSqFt: p.areaSqFt ? Number(p.areaSqFt) : (p.area_sqft ? Number(p.area_sqft) : null),
-            bedrooms: p.bedrooms ? Number(p.bedrooms) : null,
-            bathrooms: p.bathrooms ? Number(p.bathrooms) : null,
-            rentalYieldPct: p.price ? parseFloat((Math.min(8.5, Math.max(5.5, 6.5 + (Number(p.price) % 1000000) / 1000000))).toFixed(1)) : 6.8,
-            capitalGrowth3YrPct: p.price ? parseFloat((Math.min(32.0, Math.max(20.0, 25.0 + (Number(p.price) % 5000000) / 1000000))).toFixed(1)) : 28.5,
-            escrowSecured: Boolean((p as Record<string, unknown>).agency) || true,
-            verifiedAgent: Boolean((p as Record<string, unknown>).agency) || true,
-            agentPhone: String(p.contactPhone || p.contact_phone || '').replace(/\D/g, ''),
-          }));
-          setSavedProperties(mapped);
-        }
+ if (Array.isArray(data.properties)) {
+ const mapped: SavedProperty[] = data.properties.map((p: Record<string, unknown>) => ({
+ id: String(p.id || ''),
+ title: String(p.title || 'Untitled Property'),
+ location: String(p.address || ''),
+ city: String(p.city || 'Pakistan'),
+ propertyType: String(p.propertyType || p.property_type || 'Property'),
+ pricePKR: Number(p.price || 0),
+ areaSqFt: p.areaSqFt ? Number(p.areaSqFt) : (p.area_sqft ? Number(p.area_sqft) : null),
+ bedrooms: p.bedrooms ? Number(p.bedrooms) : null,
+ bathrooms: p.bathrooms ? Number(p.bathrooms) : null,
+ rentalYieldPct: p.price ? parseFloat((Math.min(8.5, Math.max(5.5, 6.5 + (Number(p.price) % 1000000) / 1000000))).toFixed(1)) : 6.8,
+ capitalGrowth3YrPct: p.price ? parseFloat((Math.min(32.0, Math.max(20.0, 25.0 + (Number(p.price) % 5000000) / 1000000))).toFixed(1)) : 28.5,
+ escrowSecured: Boolean((p as Record<string, unknown>).agency) || true,
+ verifiedAgent: Boolean((p as Record<string, unknown>).agency) || true,
+ agentPhone: String(p.contactPhone || p.contact_phone || '').replace(/\D/g, ''),
+ }));
+ setSavedProperties(mapped);
+ }
 
-        if (Array.isArray(data.deals) && data.deals.length > 0) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const mappedDeals = data.deals.map((d: any) => {
-            const st = String(d.status || 'ESCROW').toUpperCase();
-            let step = 2;
-            if (st === 'PENDING') step = 1;
-            else if (st === 'ESCROW') step = 3;
-            else if (st === 'LOCKED') step = 3;
-            else if (st === 'CLOSED') step = 4;
-            return {
-              id: String(d.id || ''),
-              title: String(d.listing?.title || (d.buyer_name ? `Escrow Deal: ${d.id.slice(0, 8)}` : 'Active Escrow Property')),
-              city: String(d.listing?.address?.split(',')[1]?.trim() || 'Islamabad'),
-              tokenAmount: Number(d.tokenAmount || d.token_amount || 2000000),
-              propertyPrice: Number(d.listing?.price || 35000000),
-              agencyName: String(d.agency?.name || 'NexMove Certified Partner Agency'),
-              status: st,
-              step,
-            };
-          });
-          setActiveDeals(mappedDeals);
-        }
-      }
-    } catch (err) {
-      console.error('Error fetching overseas portfolio:', err);
-      setError('Failed to load your property portfolio. Please try again.');
-      setSavedProperties([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+ if (Array.isArray(data.deals) && data.deals.length > 0) {
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ const mappedDeals = data.deals.map((d: any) => {
+ const st = String(d.status || 'ESCROW').toUpperCase();
+ let step = 2;
+ if (st === 'PENDING') step = 1;
+ else if (st === 'ESCROW') step = 3;
+ else if (st === 'LOCKED') step = 3;
+ else if (st === 'CLOSED') step = 4;
+ return {
+ id: String(d.id || ''),
+ title: String(d.listing?.title || (d.buyer_name ? `Escrow Deal: ${d.id.slice(0, 8)}` : 'Active Escrow Property')),
+ city: String(d.listing?.address?.split(',')[1]?.trim() || 'Islamabad'),
+ tokenAmount: Number(d.tokenAmount || d.token_amount || 2000000),
+ propertyPrice: Number(d.listing?.price || 35000000),
+ agencyName: String(d.agency?.name || 'NexMove Certified Partner Agency'),
+ status: st,
+ step,
+ };
+ });
+ setActiveDeals(mappedDeals);
+ }
+ }
+ } catch (err) {
+ console.error('Error fetching overseas portfolio:', err);
+ setError('Failed to load your property portfolio. Please try again.');
+ setSavedProperties([]);
+ } finally {
+ setLoading(false);
+ }
+ }, []);
 
-  useEffect(() => {
-    if (sessionStatus === 'authenticated' && user) {
-      const isSuperAdmin =
-        user.email?.toLowerCase() === 'nexmove.pk@gmail.com' ||
-        user.role === 'SUPER_ADMIN' ||
-        user.role === 'ADMIN';
+ useEffect(() => {
+ if (sessionStatus === 'authenticated' && user) {
+ const isSuperAdmin =
+ user.email?.toLowerCase() === 'nexmove.pk@gmail.com' ||
+ user.role === 'SUPER_ADMIN' ||
+ user.role === 'ADMIN';
 
-      const isOverseasBuyer =
-        user.accountRoleType === 'OVERSEAS_BUYER' ||
-        user.role === 'OVERSEAS_BUYER';
+ const isOverseasBuyer =
+ user.accountRoleType === 'OVERSEAS_BUYER' ||
+ user.role === 'OVERSEAS_BUYER';
 
-      const isInvestor =
-        user.accountRoleType === 'OVERSEAS_INVESTOR' ||
-        user.accountRoleType === 'INVESTOR' ||
-        user.role === 'INVESTOR';
+ const isInvestor =
+ user.accountRoleType === 'OVERSEAS_INVESTOR' ||
+ user.accountRoleType === 'INVESTOR' ||
+ user.role === 'INVESTOR';
 
-      const isAgency =
-        user.role === 'AGENCY_MANAGER' ||
-        user.role === 'AGENCY_AGENT' ||
-        user.accountRoleType === 'AGENCY_ADMIN' ||
-        user.accountRoleType === 'AGENCY_AGENT' ||
-        user.accountRoleType === 'AGENCY_MANAGER' ||
-        user.accountRoleType === 'OVERSEAS_AGENCY' ||
-        Boolean(user.agencyId);
+ const isAgency =
+ user.role === 'AGENCY_MANAGER' ||
+ user.role === 'AGENCY_AGENT' ||
+ user.accountRoleType === 'AGENCY_ADMIN' ||
+ user.accountRoleType === 'AGENCY_AGENT' ||
+ user.accountRoleType === 'AGENCY_MANAGER' ||
+ user.accountRoleType === 'OVERSEAS_AGENCY' ||
+ Boolean(user.agencyId);
 
-      // Strict RBAC Guard: Deny local public users and agencies
-      if (!isSuperAdmin && !isOverseasBuyer && !isInvestor) {
-        if (isAgency) {
-          router.replace(
-            '/agency/dashboard?unauthorized=overseas_portal_restricted&reason=This+portal+is+reserved+for+Overseas+NICOP+buyers'
-          );
-        } else {
-          router.replace(
-            '/dashboard?unauthorized=overseas_portal_restricted&reason=This+portal+is+reserved+for+Overseas+NICOP+buyers'
-          );
-        }
-        return;
-      }
+ // Strict RBAC Guard: Deny local public users and agencies
+ if (!isSuperAdmin && !isOverseasBuyer && !isInvestor) {
+ if (isAgency) {
+ router.replace(
+ '/agency/dashboard?unauthorized=overseas_portal_restricted&reason=This+portal+is+reserved+for+Overseas+NICOP+buyers'
+ );
+ } else {
+ router.replace(
+ '/dashboard?unauthorized=overseas_portal_restricted&reason=This+portal+is+reserved+for+Overseas+NICOP+buyers'
+ );
+ }
+ return;
+ }
 
-      fetchProperties();
-    } else if (sessionStatus === 'unauthenticated') {
-      router.replace('/login?role=overseas_buyer&callbackUrl=/overseas/dashboard');
-    }
-  }, [sessionStatus, user, router, fetchProperties]);
+ fetchProperties();
+ } else if (sessionStatus === 'unauthenticated') {
+ router.replace('/login?role=overseas_buyer&callbackUrl=/overseas/dashboard');
+ }
+ }, [sessionStatus, user, router, fetchProperties]);
 
-  const totalAssetsPKR = useMemo(
-    () => savedProperties.reduce((acc, p) => acc + p.pricePKR, 0),
-    [savedProperties]
-  );
-  const avgYield = useMemo(
-    () => savedProperties.length > 0
-      ? savedProperties.reduce((acc, p) => acc + p.rentalYieldPct, 0) / savedProperties.length
-      : 0,
-    [savedProperties]
-  );
-  const avg3YrGrowth = useMemo(
-    () => savedProperties.length > 0
-      ? savedProperties.reduce((acc, p) => acc + p.capitalGrowth3YrPct, 0) / savedProperties.length
-      : 0,
-    [savedProperties]
-  );
+ const totalAssetsPKR = useMemo(
+ () => savedProperties.reduce((acc, p) => acc + p.pricePKR, 0),
+ [savedProperties]
+ );
+ const avgYield = useMemo(
+ () => savedProperties.length > 0
+ ? savedProperties.reduce((acc, p) => acc + p.rentalYieldPct, 0) / savedProperties.length
+ : 0,
+ [savedProperties]
+ );
+ const avg3YrGrowth = useMemo(
+ () => savedProperties.length > 0
+ ? savedProperties.reduce((acc, p) => acc + p.capitalGrowth3YrPct, 0) / savedProperties.length
+ : 0,
+ [savedProperties]
+ );
 
-  const fmt = useCallback((pkr: number) => formatCurrencyPrice(pkr, activeCurrency), [activeCurrency]);
+ const fmt = useCallback((pkr: number) => formatCurrencyPrice(pkr, activeCurrency), [activeCurrency]);
 
-  const hasProperties = savedProperties.length > 0;
+ const hasProperties = savedProperties.length > 0;
 
-  // Generate and download real legal Escrow Agreement PDF based on live deal and partner details
-  const handleDownloadAgreement = useCallback(() => {
-    const currentDeal = activeDeals[0];
-    const currentProp = savedProperties[0];
+ // Generate and download real legal Escrow Agreement PDF based on live deal and partner details
+ const handleDownloadAgreement = useCallback(() => {
+ const currentDeal = activeDeals[0];
+ const currentProp = savedProperties[0];
 
-    const buyerName = (dbUserData?.name as string) || (session?.user?.name as string) || 'Overseas Buyer';
-    const nicopPassport = (dbUserData?.nicopNumber as string) || (dbUserData?.passportNumber as string) || (isKycVerified ? 'NICOP-VERIFIED' : 'PENDING-VERIFICATION');
-    const country = (dbUserData?.overseasCountry as string) || 'Overseas Investor (UK/UAE/US)';
-    const agency = currentDeal?.agencyName || 'NexMove Certified Partner Agency';
-    const propertyTitle = currentDeal?.title || currentProp?.title || 'Luxury Residential Property';
-    const city = currentDeal?.city || currentProp?.city || 'Lahore';
-    const pricePKR = currentDeal?.propertyPrice || currentProp?.pricePKR || 35000000;
-    const dealId = currentDeal?.id ? currentDeal.id.slice(0, 8).toUpperCase() : 'NXM-ESC-2026';
+ const buyerName = (dbUserData?.name as string) || (session?.user?.name as string) || 'Overseas Buyer';
+ const nicopPassport = (dbUserData?.nicopNumber as string) || (dbUserData?.passportNumber as string) || (isKycVerified ? 'NICOP-VERIFIED' : 'PENDING-VERIFICATION');
+ const country = (dbUserData?.overseasCountry as string) || 'Overseas Investor (UK/UAE/US)';
+ const agency = currentDeal?.agencyName || 'NexMove Certified Partner Agency';
+ const propertyTitle = currentDeal?.title || currentProp?.title || 'Luxury Residential Property';
+ const city = currentDeal?.city || currentProp?.city || 'Lahore';
+ const pricePKR = currentDeal?.propertyPrice || currentProp?.pricePKR || 35000000;
+ const dealId = currentDeal?.id ? currentDeal.id.slice(0, 8).toUpperCase() : 'NXM-ESC-2026';
 
-    generateEscrowContractPDF({
-      contractId: dealId,
-      investorName: buyerName,
-      nicopOrPassport: nicopPassport,
-      countryResidence: country,
-      investorCategory: 'OVERSEAS_FILER',
-      propertyTitle: propertyTitle,
-      location: currentProp?.location || `Phase 6, ${city}`,
-      city: city,
-      agencyName: agency,
-      propertyType: currentProp?.propertyType || 'House',
-      propertyPricePKR: pricePKR,
-      activeCurrency: activeCurrency,
-      riskScore: 'Low Risk (98.6% SBP Title Clearance)',
-      kycVerificationStatus: isKycVerified ? 'Escrow Secure & SBP NICOP Verified' : 'Escrow Protected',
-    });
-  }, [activeDeals, savedProperties, dbUserData, session, isKycVerified, activeCurrency]);
+ generateEscrowContractPDF({
+ contractId: dealId,
+ investorName: buyerName,
+ nicopOrPassport: nicopPassport,
+ countryResidence: country,
+ investorCategory: 'OVERSEAS_FILER',
+ propertyTitle: propertyTitle,
+ location: currentProp?.location || `Phase 6, ${city}`,
+ city: city,
+ agencyName: agency,
+ propertyType: currentProp?.propertyType || 'House',
+ propertyPricePKR: pricePKR,
+ activeCurrency: activeCurrency,
+ riskScore: 'Low Risk (98.6% SBP Title Clearance)',
+ kycVerificationStatus: isKycVerified ? 'Escrow Secure & SBP NICOP Verified' : 'Escrow Protected',
+ });
+ }, [activeDeals, savedProperties, dbUserData, session, isKycVerified, activeCurrency]);
 
-  return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
+ return (
+ <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
 
-      {/* ── Hero Header ─────────────────────────────────────────────────── */}
-      <div style={{ backgroundColor: '#0F172A' }} className="relative overflow-hidden border-b border-slate-800 text-slate-100">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
-        </div>
+ {/* ── Hero Header ─────────────────────────────────────────────────── */}
+ <div style={{ backgroundColor: '#0F172A' }} className="relative overflow-hidden border-b border-slate-800 text-slate-100">
+ <div className="absolute inset-0 pointer-events-none">
+ <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl" />
+ <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
+ </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div>
-              <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
-                  <Globe2 className="w-3 h-3" /> Overseas Buyer Portal
-                </span>
-                <button
-                  onClick={() => setIsKycOpen(true)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                    isKycVerified === true
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'
-                      : isKycVerified === false
-                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20'
-                      : 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20'
-                  }`}>
-                  <BadgeCheck className="w-3 h-3" />
-                  {isKycVerified === true
-                    ? '✓ NICOP Verified'
-                    : isKycVerified === false
-                    ? '⏳ NICOP Pending'
-                    : t('nicopVerification', 'NICOP Verified Gateway')}
-                </button>
-                <span className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
-                  <ShieldCheck className="w-3 h-3" /> SBP Escrow Protected
-                </span>
-              </div>
-              <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
-                {displayName
-                  ? `Welcome, ${displayName}`
-                  : t('overseasHeroTitle', 'Overseas Investment Command Centre')}
-              </h1>
-              <p className="text-slate-400 text-sm mt-2 max-w-xl">
-                {displayName
-                  ? `${displayName} — Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.`
-                  : t('overseasHeroSubtitle', 'Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.')}
-              </p>
-            </div>
+ <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+ <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+ <div>
+ <div className="flex flex-wrap items-center gap-2 mb-3">
+ <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
+ <Globe2 className="w-3 h-3" /> Overseas Buyer Portal
+ </span>
+ <button
+ onClick={() => setIsKycOpen(true)}
+ className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+ isKycVerified === true
+ ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'
+ : isKycVerified === false
+ ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/20'
+ : 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20'
+ }`}>
+ <BadgeCheck className="w-3 h-3" />
+ {isKycVerified === true
+ ? ' NICOP Verified'
+ : isKycVerified === false
+ ? ' NICOP Pending'
+ : t('nicopVerification', 'NICOP Verified Gateway')}
+ </button>
+ <span className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
+ <ShieldCheck className="w-3 h-3" /> SBP Escrow Protected
+ </span>
+ </div>
+ <h1 className="text-3xl lg:text-4xl font-black text-white tracking-tight">
+ {displayName
+ ? `Welcome, ${displayName}`
+ : t('overseasHeroTitle', 'Overseas Investment Command Centre')}
+ </h1>
+ <p className="text-slate-400 text-sm mt-2 max-w-xl">
+ {displayName
+ ? `${displayName} — Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.`
+ : t('overseasHeroSubtitle', 'Track your Pakistan property portfolio with multi-currency analytics, AI-powered legal protection & live agent access.')}
+ </p>
+ </div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              {/* Multi-Currency Switcher */}
-              <div className="flex flex-wrap gap-1.5">
-                {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => {
-                  const c = CURRENCIES[code];
-                  const isActive = activeCurrency === code;
-                  return (
-                    <button
-                      key={code}
-                      onClick={() => setActiveCurrency(code)}
-                      className={`text-[10px] font-black px-3 py-1.5 rounded-xl border transition-all duration-150 flex items-center gap-1 ${isActive
-                        ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40'
-                        : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
-                        }`}
-                    >
-                      <span>{c.flag}</span><span>{c.code}</span>
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => fetchProperties()}
-                  title="Refresh"
-                  className="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-400 transition"
-                >
-                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
-                </button>
-                <Link
-                  href="/api/auth/signout"
-                  className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Sign Out</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+ <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+ {/* Multi-Currency Switcher */}
+ <div className="flex flex-wrap gap-1.5">
+ {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => {
+ const c = CURRENCIES[code];
+ const isActive = activeCurrency === code;
+ return (
+ <button
+ key={code}
+ onClick={() => setActiveCurrency(code)}
+ className={`text-[10px] font-black px-3 py-1.5 rounded-xl border transition-all duration-150 flex items-center gap-1 ${isActive
+ ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40'
+ : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+ }`}
+ >
+ <span>{c.code}</span>
+ </button>
+ );
+ })}
+ </div>
+ <div className="flex items-center gap-2">
+ <button
+ onClick={() => fetchProperties()}
+ title="Refresh"
+ className="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-400 transition"
+ >
+ <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
+ </button>
+ <Link
+ href="/api/auth/signout"
+ className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5"
+ >
+ <LogOut className="w-3.5 h-3.5" />
+ <span className="hidden sm:inline">Sign Out</span>
+ </Link>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-      {/* ── Main Lower Dashboard Content (Off-White Background) ───────── */}
-      <main className="flex-1 bg-[#F8FAFC]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+ {/* ── Main Lower Dashboard Content (Off-White Background) ───────── */}
+ <main className="flex-1 bg-[#F8FAFC]">
+ <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-          {/* ── KPI Cards ────────────────────────────────────────────────── */}
-          <section>
-            <div className="flex items-center gap-2 mb-4">
-              <PieChart className="w-4 h-4 text-emerald-600" />
-              <h2 className="text-base font-black text-slate-900">
-                {t('analyticsHub', 'Investment Analytics Hub')}
-              </h2>
-              <span className="text-[10px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded-full">
-                Live {activeCurrency} View
-              </span>
-            </div>
+ {/* ── KPI Cards ────────────────────────────────────────────────── */}
+ <section>
+ <div className="flex items-center gap-2 mb-4">
+ <PieChart className="w-4 h-4 text-emerald-600" />
+ <h2 className="text-base font-black text-slate-900">
+ {t('analyticsHub', 'Investment Analytics Hub')}
+ </h2>
+ <span className="text-[10px] font-bold bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded-full">
+ Live {activeCurrency} View
+ </span>
+ </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Card 1: Total Assets */}
-              <div className="relative bg-white border border-slate-200 rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20">
-                    <Wallet className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                      {t('totalReserved', 'Total Reserved Assets')}
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-medium">
-                      {hasProperties
-                        ? `${savedProperties.length} ${t('propertiesText', 'Properties')}`
-                        : t('noPropertiesYet', 'No properties yet')
-                      }
-                    </p>
-                  </div>
-                </div>
-                {loading ? (
-                  <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-5 h-5 animate-spin text-emerald-600" /><span className="text-sm">Loading…</span></div>
-                ) : (
-                  <p className="text-3xl font-black text-slate-900 mb-1">
-                    {hasProperties ? fmt(totalAssetsPKR) : <span className="text-slate-400 text-xl">—</span>}
-                  </p>
-                )}
-                <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
-                  <span>Rate: {CURRENCIES[activeCurrency].symbol}1 = Rs{liveRates[activeCurrency] || CURRENCIES[activeCurrency].rateInPKR}</span>
-                  <span className="inline-flex items-center gap-1 text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded border border-emerald-200">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Live API
-                  </span>
-                </p>
-                <div className="mt-4 flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${hasProperties ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
-                  <span className="text-[10px] text-emerald-700 font-bold">
-                    {hasProperties ? 'NICOP Buyer Portfolio Active' : 'Portfolio empty — add your first property'}
-                  </span>
-                </div>
-              </div>
+ <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+ {/* Card 1: Total Assets */}
+ <div className="relative bg-white border border-slate-200 rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
+ <div className="flex items-center gap-3 mb-4">
+ <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md shadow-emerald-500/20">
+ <Wallet className="w-5 h-5 text-white" />
+ </div>
+ <div>
+ <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+ {t('totalReserved', 'Total Reserved Assets')}
+ </p>
+ <p className="text-[10px] text-slate-400 font-medium">
+ {hasProperties
+ ? `${savedProperties.length} ${t('propertiesText', 'Properties')}`
+ : t('noPropertiesYet', 'No properties yet')
+ }
+ </p>
+ </div>
+ </div>
+ {loading ? (
+ <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-5 h-5 animate-spin text-emerald-600" /><span className="text-sm">Loading…</span></div>
+ ) : (
+ <p className="text-3xl font-black text-slate-900 mb-1">
+ {hasProperties ? fmt(totalAssetsPKR) : <span className="text-slate-400 text-xl">—</span>}
+ </p>
+ )}
+ <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+ <span>Rate: {CURRENCIES[activeCurrency].symbol}1 = Rs{liveRates[activeCurrency] || CURRENCIES[activeCurrency].rateInPKR}</span>
+ <span className="inline-flex items-center gap-1 text-[9px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded border border-emerald-200">
+ <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+ Live API
+ </span>
+ </p>
+ <div className="mt-4 flex items-center gap-2">
+ <span className={`w-2 h-2 rounded-full ${hasProperties ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
+ <span className="text-[10px] text-emerald-700 font-bold">
+ {hasProperties ? 'NICOP Buyer Portfolio Active' : 'Portfolio empty — add your first property'}
+ </span>
+ </div>
+ </div>
 
-              {/* Card 2: Projected Returns */}
-              <div className="relative bg-white border border-slate-200 rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md shadow-indigo-500/20">
-                    <TrendingUp className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                      {t('projectedReturns', 'Projected Returns')}
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-medium">
-                      {t('yieldCapitalGain', 'Yield & 3-Year Capital Gain')}
-                    </p>
-                  </div>
-                </div>
-                {loading ? (
-                  <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-5 h-5 animate-spin text-indigo-600" /><span className="text-sm">Loading…</span></div>
-                ) : (
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <p className="text-3xl font-black text-slate-900">
-                      {hasProperties ? `${avgYield.toFixed(1)}%` : <span className="text-slate-400 text-xl">—</span>}
-                    </p>
-                    {hasProperties && <span className="text-sm font-bold text-indigo-600">avg. rental yield</span>}
-                  </div>
-                )}
-                {hasProperties && (
-                  <div className="flex items-center gap-2 text-xs mt-2">
-                    <span className="bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold px-2.5 py-1 rounded-lg flex items-center gap-1">
-                      <ArrowUpRight className="w-3 h-3" />{avg3YrGrowth.toFixed(1)}% 3-Yr Capital Growth
-                    </span>
-                  </div>
-                )}
-                <p className="text-[11px] text-slate-500 font-medium mt-3">
-                  {hasProperties ? 'AI market growth forecast based on DHA / Capital Smart City index' : 'Post your first property to see AI forecasts'}
-                </p>
-              </div>
+ {/* Card 2: Projected Returns */}
+ <div className="relative bg-white border border-slate-200 rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
+ <div className="flex items-center gap-3 mb-4">
+ <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md shadow-indigo-500/20">
+ <TrendingUp className="w-5 h-5 text-white" />
+ </div>
+ <div>
+ <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+ {t('projectedReturns', 'Projected Returns')}
+ </p>
+ <p className="text-[10px] text-slate-400 font-medium">
+ {t('yieldCapitalGain', 'Yield & 3-Year Capital Gain')}
+ </p>
+ </div>
+ </div>
+ {loading ? (
+ <div className="flex items-center gap-2 text-slate-500"><Loader2 className="w-5 h-5 animate-spin text-indigo-600" /><span className="text-sm">Loading…</span></div>
+ ) : (
+ <div className="flex items-baseline gap-2 mb-1">
+ <p className="text-3xl font-black text-slate-900">
+ {hasProperties ? `${avgYield.toFixed(1)}%` : <span className="text-slate-400 text-xl">—</span>}
+ </p>
+ {hasProperties && <span className="text-sm font-bold text-indigo-600">avg. rental yield</span>}
+ </div>
+ )}
+ {hasProperties && (
+ <div className="flex items-center gap-2 text-xs mt-2">
+ <span className="bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold px-2.5 py-1 rounded-lg flex items-center gap-1">
+ <ArrowUpRight className="w-3 h-3" />{avg3YrGrowth.toFixed(1)}% 3-Yr Capital Growth
+ </span>
+ </div>
+ )}
+ <p className="text-[11px] text-slate-500 font-medium mt-3">
+ {hasProperties ? 'AI market growth forecast based on DHA / Capital Smart City index' : 'Post your first property to see AI forecasts'}
+ </p>
+ </div>
 
-              {/* Card 3: SBP Escrow Status */}
-              <div className="relative bg-white border border-slate-200 rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-md shadow-amber-500/20">
-                    <ShieldCheck className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                      {t('escrowProtection', 'Escrow Protection')}
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-medium">
-                      {t('fbrSbpCompliance', 'FBR & SBP Compliance')}
-                    </p>                  </div>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { label: 'NICOP Verification', icon: <CheckCircle2 className="w-2.5 h-2.5" />, status: 'Verified', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
-                    { label: 'Escrow Account', icon: <Lock className="w-2.5 h-2.5" />, status: 'Active', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
-                    { label: 'Documents Verified', icon: <Clock className="w-2.5 h-2.5" />, status: 'In Review', cls: 'bg-amber-50 border-amber-200 text-amber-800' },
-                    { label: 'SBP Remittance', icon: <Landmark className="w-2.5 h-2.5" />, status: 'Approved', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
-                  ].map(({ label, icon, status, cls }) => (
-                    <div key={label} className="flex items-center justify-between">
-                      <span className="text-xs text-slate-600 font-medium">{label}</span>
-                      <span className={`text-[10px] font-black border px-2 py-0.5 rounded-full flex items-center gap-1 ${cls}`}>
-                        {icon} {status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
+ {/* Card 3: SBP Escrow Status */}
+ <div className="relative bg-white border border-slate-200 rounded-3xl p-6 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+ <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full -translate-y-8 translate-x-8 blur-2xl pointer-events-none" />
+ <div className="flex items-center gap-3 mb-4">
+ <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-md shadow-amber-500/20">
+ <ShieldCheck className="w-5 h-5 text-white" />
+ </div>
+ <div>
+ <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+ {t('escrowProtection', 'Escrow Protection')}
+ </p>
+ <p className="text-[10px] text-slate-400 font-medium">
+ {t('fbrSbpCompliance', 'FBR & SBP Compliance')}
+ </p> </div>
+ </div>
+ <div className="space-y-2">
+ {[
+ { label: 'NICOP Verification', icon: <CheckCircle2 className="w-2.5 h-2.5" />, status: 'Verified', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
+ { label: 'Escrow Account', icon: <Lock className="w-2.5 h-2.5" />, status: 'Active', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
+ { label: 'Documents Verified', icon: <Clock className="w-2.5 h-2.5" />, status: 'In Review', cls: 'bg-amber-50 border-amber-200 text-amber-800' },
+ { label: 'SBP Remittance', icon: <Landmark className="w-2.5 h-2.5" />, status: 'Approved', cls: 'bg-emerald-50 border-emerald-200 text-emerald-700' },
+ ].map(({ label, icon, status, cls }) => (
+ <div key={label} className="flex items-center justify-between">
+ <span className="text-xs text-slate-600 font-medium">{label}</span>
+ <span className={`text-[10px] font-black border px-2 py-0.5 rounded-full flex items-center gap-1 ${cls}`}>
+ {icon} {status}
+ </span>
+ </div>
+ ))}
+ </div>
+ </div>
+ </div>
+ </section>
 
-          {/* ── Escrow Deal Progress Tracker ─────────────────────────────── */}
-          <section>
-            <div className="flex items-center gap-2 mb-4">
-              <FileCheck2 className="w-4 h-4 text-indigo-600" />
-              <h2 className="text-base font-black text-slate-900">Legal & Escrow Deal Progress Tracker</h2>
-            </div>
+ {/* ── Escrow Deal Progress Tracker ─────────────────────────────── */}
+ <section>
+ <div className="flex items-center gap-2 mb-4">
+ <FileCheck2 className="w-4 h-4 text-indigo-600" />
+ <h2 className="text-base font-black text-slate-900">Legal & Escrow Deal Progress Tracker</h2>
+ </div>
 
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-              {activeDeals.length > 0 || hasProperties ? (
-                <>
-                  <div className="flex items-center gap-3 mb-6 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
-                    <Building2 className="w-5 h-5 text-indigo-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs font-black text-slate-900">
-                        {activeDeals[0]?.title || savedProperties[0]?.title} — {activeDeals[0]?.city || savedProperties[0]?.city}
-                      </p>
-                      <p className="text-[10px] text-slate-500 font-medium">
-                        Active Escrow Deal · Token Deposit: PKR {(activeDeals[0]?.tokenAmount || 2000000).toLocaleString()}
-                      </p>
-                    </div>
-                    <span className="ml-auto text-[10px] font-black bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1 rounded-full whitespace-nowrap">
-                      Step {activeDeals[0]?.step || 3} of 4
-                    </span>
-                  </div>
+ <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+ {activeDeals.length > 0 || hasProperties ? (
+ <>
+ <div className="flex items-center gap-3 mb-6 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+ <Building2 className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+ <div>
+ <p className="text-xs font-black text-slate-900">
+ {activeDeals[0]?.title || savedProperties[0]?.title} — {activeDeals[0]?.city || savedProperties[0]?.city}
+ </p>
+ <p className="text-[10px] text-slate-500 font-medium">
+ Active Escrow Deal · Token Deposit: PKR {(activeDeals[0]?.tokenAmount || 2000000).toLocaleString()}
+ </p>
+ </div>
+ <span className="ml-auto text-[10px] font-black bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1 rounded-full whitespace-nowrap">
+ Step {activeDeals[0]?.step || 3} of 4
+ </span>
+ </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                    {ESCROW_MILESTONES.map((milestone, idx) => {
-                      const currentStep = activeDeals[0]?.step || 3;
-                      const milestoneStatus = (idx + 1) < currentStep ? 'complete' : (idx + 1) === currentStep ? 'active' : 'pending';
+ <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+ {ESCROW_MILESTONES.map((milestone, idx) => {
+ const currentStep = activeDeals[0]?.step || 3;
+ const milestoneStatus = (idx + 1) < currentStep ? 'complete' : (idx + 1) === currentStep ? 'active' : 'pending';
 
-                      const styleMap = {
-                        complete: { icon: 'bg-emerald-600 text-white', label: 'text-emerald-700', card: 'border-emerald-200 bg-emerald-50/40', badge: 'bg-emerald-50 border-emerald-200 text-emerald-700', badgeText: '✓ Complete' },
-                        active: { icon: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', label: 'text-amber-700', card: 'border-amber-300 bg-amber-50/60 shadow-sm', badge: 'bg-amber-100 border-amber-300 text-amber-800', badgeText: '⟳ In Progress' },
-                        pending: { icon: 'bg-slate-100 text-slate-400 border border-slate-200', label: 'text-slate-400', card: 'border-slate-200 bg-slate-50/50', badge: 'bg-slate-100 border-slate-200 text-slate-500', badgeText: '○ Pending' },
-                      }[milestoneStatus];
+ const styleMap = {
+ complete: { icon: 'bg-emerald-600 text-white', label: 'text-emerald-700', card: 'border-emerald-200 bg-emerald-50/40', badge: 'bg-emerald-50 border-emerald-200 text-emerald-700', badgeText: ' Complete' },
+ active: { icon: 'bg-amber-500 text-white shadow-md shadow-amber-500/20', label: 'text-amber-700', card: 'border-amber-300 bg-amber-50/60 shadow-sm', badge: 'bg-amber-100 border-amber-300 text-amber-800', badgeText: '⟳ In Progress' },
+ pending: { icon: 'bg-slate-100 text-slate-400 border border-slate-200', label: 'text-slate-400', card: 'border-slate-200 bg-slate-50/50', badge: 'bg-slate-100 border-slate-200 text-slate-500', badgeText: '○ Pending' },
+ }[milestoneStatus];
 
-                      return (
-                        <div key={milestone.key} className={`border rounded-2xl p-4 flex flex-col gap-2 transition ${styleMap.card}`}>
-                          <div className="flex items-center gap-3 sm:flex-col sm:items-start">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${styleMap.icon}`}>
-                              {milestoneStatus === 'active' ? (
-                                <div className="relative">
-                                  {milestone.icon}
-                                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping" />
-                                </div>
-                              ) : milestone.icon}
-                            </div>
-                            <div>
-                              <p className={`text-xs font-black ${styleMap.label}`}>Step {idx + 1}</p>
-                              <p className={`text-sm font-black leading-tight ${milestoneStatus === 'pending' ? 'text-slate-500' : 'text-slate-900'}`}>{milestone.label}</p>
-                            </div>
-                          </div>
-                          <p className={`text-[11px] font-medium ${milestoneStatus === 'pending' ? 'text-slate-400' : 'text-slate-600'}`}>{milestone.sublabel}</p>
-                          <span className={`self-start text-[10px] font-black border px-2 py-0.5 rounded-full ${styleMap.badge}`}>
-                            {styleMap.badgeText}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+ return (
+ <div key={milestone.key} className={`border rounded-2xl p-4 flex flex-col gap-2 transition ${styleMap.card}`}>
+ <div className="flex items-center gap-3 sm:flex-col sm:items-start">
+ <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${styleMap.icon}`}>
+ {milestoneStatus === 'active' ? (
+ <div className="relative">
+ {milestone.icon}
+ <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping" />
+ </div>
+ ) : milestone.icon}
+ </div>
+ <div>
+ <p className={`text-xs font-black ${styleMap.label}`}>Step {idx + 1}</p>
+ <p className={`text-sm font-black leading-tight ${milestoneStatus === 'pending' ? 'text-slate-500' : 'text-slate-900'}`}>{milestone.label}</p>
+ </div>
+ </div>
+ <p className={`text-[11px] font-medium ${milestoneStatus === 'pending' ? 'text-slate-400' : 'text-slate-600'}`}>{milestone.sublabel}</p>
+ <span className={`self-start text-[10px] font-black border px-2 py-0.5 rounded-full ${styleMap.badge}`}>
+ {styleMap.badgeText}
+ </span>
+ </div>
+ );
+ })}
+ </div>
 
-                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <button
-                        onClick={handleDownloadAgreement}
-                        id="download-escrow-agreement-btn"
-                        className={`flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer ${
-                          (activeDeals[0]?.step || 3) === 4
-                            ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20 ring-2 ring-emerald-400/40'
-                            : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                        }`}
-                        title="Download official digital stamped Escrow Agreement PDF with both partners' details"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        {(activeDeals[0]?.step || 3) === 4
-                          ? '✅ Download Final Stamped Agreement (Completed)'
-                          : `📄 Download Escrow Agreement (Step ${activeDeals[0]?.step || 3} of 4 · PDF)`
-                        }
-                      </button>
+ <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100">
+ <div className="flex flex-wrap items-center gap-2.5">
+ <button
+ onClick={handleDownloadAgreement}
+ id="download-escrow-agreement-btn"
+ className={`flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer ${
+ (activeDeals[0]?.step || 3) === 4
+ ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20 ring-2 ring-emerald-400/40'
+ : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+ }`}
+ title="Download official digital stamped Escrow Agreement PDF with both partners' details"
+ >
+ <Download className="w-3.5 h-3.5" />
+ {(activeDeals[0]?.step || 3) === 4
+ ? ' Download Final Stamped Agreement (Completed)'
+ : ` Download Escrow Agreement (Step ${activeDeals[0]?.step || 3} of 4 · PDF)`
+ }
+ </button>
 
-                      <button className="flex items-center gap-2 text-xs bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition">
-                        <FileCheck2 className="w-3.5 h-3.5" />Upload SBP Remittance Proof
-                      </button>
-                    </div>
+ <button className="flex items-center gap-2 text-xs bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition">
+ <FileCheck2 className="w-3.5 h-3.5" />Upload SBP Remittance Proof
+ </button>
+ </div>
 
-                    <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
-                      <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                      <span>Legally Binding Digital Contract · SECP & SBP Regulated</span>
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <FileCheck2 className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-                  <p className="text-sm font-bold text-slate-700">No active escrow deals yet</p>
-                  <p className="text-xs text-slate-500 mt-1">Save a property from the marketplace to start a deal.</p>
-                </div>
-              )}
-            </div>
-          </section>
+ <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
+ <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+ <span>Legally Binding Digital Contract · SECP & SBP Regulated</span>
+ </span>
+ </div>
+ </>
+ ) : (
+ <div className="text-center py-8">
+ <FileCheck2 className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+ <p className="text-sm font-bold text-slate-700">No active escrow deals yet</p>
+ <p className="text-xs text-slate-500 mt-1">Save a property from the marketplace to start a deal.</p>
+ </div>
+ )}
+ </div>
+ </section>
 
-          {/* ── Saved Properties Grid ─────────────────────────────────────── */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-amber-500" />
-                <h2 className="text-base font-black text-slate-900">Saved & Tracked Properties</h2>
-                {hasProperties && (
-                  <span className="text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-700 px-2 py-0.5 rounded-full">
-                    {savedProperties.length} Shortlisted
-                  </span>
-                )}
-              </div>
-              <Link
-                href="/marketplace"
-                className="text-xs bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm"
-              >
-                Browse Marketplace <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+ {/* ── Saved Properties Grid ─────────────────────────────────────── */}
+ <section>
+ <div className="flex items-center justify-between mb-4">
+ <div className="flex items-center gap-2">
+ <Star className="w-4 h-4 text-amber-500" />
+ <h2 className="text-base font-black text-slate-900">Saved & Tracked Properties</h2>
+ {hasProperties && (
+ <span className="text-[10px] font-bold bg-amber-50 border border-amber-200 text-amber-700 px-2 py-0.5 rounded-full">
+ {savedProperties.length} Shortlisted
+ </span>
+ )}
+ </div>
+ <Link
+ href="/marketplace"
+ className="text-xs bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm"
+ >
+ Browse Marketplace <ChevronRight className="w-3.5 h-3.5" />
+ </Link>
+ </div>
 
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
-                <p className="text-sm font-bold text-slate-600">Loading your property portfolio…</p>
-              </div>
-            ) : error ? (
-              <div className="bg-rose-50 border border-rose-200 rounded-3xl p-8 text-center">
-                <p className="text-sm font-bold text-rose-700">{error}</p>
-                <button onClick={fetchProperties} className="mt-3 text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl transition shadow-sm">
-                  Try Again
-                </button>
-              </div>
-            ) : !hasProperties ? (
-              <div className="bg-white border border-slate-200 border-dashed rounded-3xl p-12 text-center shadow-sm">
-                <Building2 className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-                <p className="text-base font-black text-slate-900 mb-2">No saved investment assets yet</p>
-                <p className="text-xs text-slate-500 font-medium max-w-md mx-auto mb-6">
-                  Explore Marketplace to add verified properties to your overseas investment portfolio.
-                </p>
-                <div className="flex items-center justify-center gap-3 flex-wrap">
-                  <Link
-                    href="/marketplace"
-                    className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-5 py-3 rounded-2xl transition shadow-sm"
-                  >
-                    <Globe2 className="w-4 h-4" /> Explore Marketplace
-                  </Link>
-                  <Link
-                    href="/dashboard/add-property"
-                    className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold px-5 py-3 rounded-2xl transition"
-                  >
-                    <Plus className="w-4 h-4" /> Post a Property
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                {savedProperties.map((prop) => (
-                  <SavedPropertyCard key={prop.id} property={prop} activeCurrency={activeCurrency} />
-                ))}
-              </div>
-            )}
-          </section>
+ {loading ? (
+ <div className="flex flex-col items-center justify-center py-16 gap-3">
+ <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+ <p className="text-sm font-bold text-slate-600">Loading your property portfolio…</p>
+ </div>
+ ) : error ? (
+ <div className="bg-rose-50 border border-rose-200 rounded-3xl p-8 text-center">
+ <p className="text-sm font-bold text-rose-700">{error}</p>
+ <button onClick={fetchProperties} className="mt-3 text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl transition shadow-sm">
+ Try Again
+ </button>
+ </div>
+ ) : !hasProperties ? (
+ <div className="bg-white border border-slate-200 border-dashed rounded-3xl p-12 text-center shadow-sm">
+ <Building2 className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+ <p className="text-base font-black text-slate-900 mb-2">No saved investment assets yet</p>
+ <p className="text-xs text-slate-500 font-medium max-w-md mx-auto mb-6">
+ Explore Marketplace to add verified properties to your overseas investment portfolio.
+ </p>
+ <div className="flex items-center justify-center gap-3 flex-wrap">
+ <Link
+ href="/marketplace"
+ className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-5 py-3 rounded-2xl transition shadow-sm"
+ >
+ <Globe2 className="w-4 h-4" /> Explore Marketplace
+ </Link>
+ <Link
+ href="/dashboard/add-property"
+ className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold px-5 py-3 rounded-2xl transition"
+ >
+ <Plus className="w-4 h-4" /> Post a Property
+ </Link>
+ </div>
+ </div>
+ ) : (
+ <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+ {savedProperties.map((prop) => (
+ <SavedPropertyCard key={prop.id} property={prop} activeCurrency={activeCurrency} />
+ ))}
+ </div>
+ )}
+ </section>
 
-          {/* ── ROI Calculator ───────────────────────────────────────────── */}
-          <section>
-            <ROICalculator activeCurrency={activeCurrency} />
-          </section>
+ {/* ── ROI Calculator ───────────────────────────────────────────── */}
+ <section>
+ <ROICalculator activeCurrency={activeCurrency} />
+ </section>
 
-          {/* ── Quick Access Tools ──────────────────────────────────────────── */}
-          <section className="pb-8">
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-              <h2 className="text-sm font-black text-slate-900 mb-4">Quick Access Tools</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {[
-                  { href: '/investors', label: 'Investment Deals', icon: <TrendingUp className="w-4 h-4" />, cls: 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600' },
-                  { href: '/marketplace', label: 'Browse Marketplace', icon: <Globe2 className="w-4 h-4" />, cls: 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200' },
-                  { href: '/agencies', label: 'Find Verified Agents', icon: <BadgeCheck className="w-4 h-4" />, cls: 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200' },
-                  { href: '/dashboard', label: 'Local Dashboard', icon: <RotateCcw className="w-4 h-4" />, cls: 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200' },
-                ].map(({ href, label, icon, cls }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={`flex items-center gap-2 text-xs font-bold px-4 py-3 rounded-2xl border transition shadow-sm ${cls}`}
-                  >
-                    {icon}<span>{label}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
+ {/* ── Quick Access Tools ──────────────────────────────────────────── */}
+ <section className="pb-8">
+ <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+ <h2 className="text-sm font-black text-slate-900 mb-4">Quick Access Tools</h2>
+ <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+ {[
+ { href: '/investors', label: 'Investment Deals', icon: <TrendingUp className="w-4 h-4" />, cls: 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600' },
+ { href: '/marketplace', label: 'Browse Marketplace', icon: <Globe2 className="w-4 h-4" />, cls: 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200' },
+ { href: '/agencies', label: 'Find Verified Agents', icon: <BadgeCheck className="w-4 h-4" />, cls: 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200' },
+ { href: '/dashboard', label: 'Local Dashboard', icon: <RotateCcw className="w-4 h-4" />, cls: 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200' },
+ ].map(({ href, label, icon, cls }) => (
+ <Link
+ key={href}
+ href={href}
+ className={`flex items-center gap-2 text-xs font-bold px-4 py-3 rounded-2xl border transition shadow-sm ${cls}`}
+ >
+ {icon}<span>{label}</span>
+ </Link>
+ ))}
+ </div>
+ </div>
+ </section>
 
-        </div>
-      </main>
-      <KYCVerificationModal
-        isOpen={isKycOpen}
-        onClose={() => setIsKycOpen(false)}
-        onVerified={() => setIsKycOpen(false)}
-      />
-    </div>
-  );
+ </div>
+ </main>
+ <KYCVerificationModal
+ isOpen={isKycOpen}
+ onClose={() => setIsKycOpen(false)}
+ onVerified={() => setIsKycOpen(false)}
+ />
+ </div>
+ );
 }

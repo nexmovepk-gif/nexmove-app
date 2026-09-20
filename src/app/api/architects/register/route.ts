@@ -174,10 +174,10 @@ export async function POST(req: Request) {
     // ── 3. Email Notification to Super Admin (non-blocking) ──────────────────
     try {
       const apiKey = process.env.RESEND_API_KEY;
-      const subject = `🚨 New Architect Verification Required - ${actualName}${companyName ? ` (${companyName})` : ""}`;
+      const subject = ` New Architect Verification Required - ${actualName}${companyName ? ` (${companyName})` : ""}`;
       const emailHtml = `
         <div style="font-family: Arial, sans-serif; padding: 20px; background: #0f172a; color: #f8fafc; border-radius: 12px;">
-          <h2 style="color: #14b8a6; border-bottom: 2px solid #0d9488; padding-bottom: 10px;">🚨 New Architect Verification Required</h2>
+          <h2 style="color: #14b8a6; border-bottom: 2px solid #0d9488; padding-bottom: 10px;"> New Architect Verification Required</h2>
           <p style="color: #cbd5e1; font-size: 14px;">A new architect profile application has been submitted and requires admin review.</p>
           <table style="width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 14px;">
             <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">Name:</td><td style="padding: 8px; color: #f8fafc;">${actualName}</td></tr>
@@ -185,7 +185,7 @@ export async function POST(req: Request) {
             <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">Phone:</td><td style="padding: 8px; color: #f8fafc;">${actualPhone}</td></tr>
             <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">Company:</td><td style="padding: 8px; color: #f8fafc;">${companyName || "N/A"}</td></tr>
             <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">PCATP / License No:</td><td style="padding: 8px; color: #f8fafc;">${finalPcatpNo || "N/A"}</td></tr>
-            <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">Overseas Status:</td><td style="padding: 8px; color: #f8fafc;">${isOverseas ? "🌐 YES (International Practice)" : "🇵🇰 NO (Pakistan)"}</td></tr>
+            <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">Overseas Status:</td><td style="padding: 8px; color: #f8fafc;">${isOverseas ? " YES (International Practice)" : " NO (Pakistan)"}</td></tr>
             <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">Location:</td><td style="padding: 8px; color: #f8fafc;">${finalCity ? `${finalCity}, ` : ""}${finalCountry}</td></tr>
             <tr style="border-bottom: 1px solid #334155;"><td style="padding: 8px; font-weight: bold; color: #94a3b8;">Specialization:</td><td style="padding: 8px; color: #f8fafc;">${specialization || "Architecture"}</td></tr>
           </table>

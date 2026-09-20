@@ -151,7 +151,7 @@ export const authOptions: NextAuthOptions = {
         token.id = u.id
         token.email = u.email
 
-        // 👑 Master Super Admin Override (nexmove.pk@gmail.com)
+        //  Master Super Admin Override (nexmove.pk@gmail.com)
         if (u.email?.toLowerCase() === 'nexmove.pk@gmail.com' || u.role === 'SUPER_ADMIN') {
           token.role = 'SUPER_ADMIN'
         } else {

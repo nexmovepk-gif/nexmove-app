@@ -24,10 +24,10 @@ const CATEGORY_CONFIG: Record<
   ActivityNotification['category'],
   { icon: string; badgeClass: string; labelClass: string; label: string }
 > = {
-  DEAL:    { icon: '🛡️', badgeClass: 'bg-purple-100 border-purple-200', labelClass: 'text-purple-700', label: 'Deal'    },
-  RENT:    { icon: '💳', badgeClass: 'bg-blue-100 border-blue-200',     labelClass: 'text-blue-700',   label: 'Rent'    },
-  LISTING: { icon: '🏠', badgeClass: 'bg-emerald-100 border-emerald-200', labelClass: 'text-emerald-700', label: 'Listing' },
-  SYSTEM:  { icon: '⚙️', badgeClass: 'bg-gray-100 border-gray-200',     labelClass: 'text-gray-600',   label: 'System'  },
+  DEAL:    { icon: '', badgeClass: 'bg-purple-100 border-purple-200', labelClass: 'text-purple-700', label: 'Deal'    },
+  RENT:    { icon: '', badgeClass: 'bg-blue-100 border-blue-200',     labelClass: 'text-blue-700',   label: 'Rent'    },
+  LISTING: { icon: '', badgeClass: 'bg-emerald-100 border-emerald-200', labelClass: 'text-emerald-700', label: 'Listing' },
+  SYSTEM:  { icon: '', badgeClass: 'bg-gray-100 border-gray-200',     labelClass: 'text-gray-600',   label: 'System'  },
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────

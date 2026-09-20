@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Sparkles, MapPin, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Sparkles, MapPin, ExternalLink, ShieldCheck, Building2 } from 'lucide-react';
 
 interface ActivePromotion {
   id: string;
@@ -127,8 +127,8 @@ export default function FeaturedSponsoredSection({
                     className="w-20 h-16 object-cover rounded-xl border border-slate-700 flex-shrink-0 group-hover:scale-105 transition"
                   />
                 ) : (
-                  <div className="w-20 h-16 bg-slate-800 rounded-xl flex items-center justify-center text-2xl border border-slate-700 flex-shrink-0">
-                    🏢
+                  <div className="w-20 h-16 bg-slate-800 rounded-xl flex items-center justify-center border border-slate-700 flex-shrink-0">
+                    <Building2 className="w-7 h-7 text-slate-500" />
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
@@ -179,7 +179,7 @@ export default function FeaturedSponsoredSection({
               Verified Promoted Ads
             </span>
             <span className="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-bold">
-              🔥 Top Priority
+              Top Priority
             </span>
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-white mt-2">{title}</h3>
@@ -219,12 +219,12 @@ export default function FeaturedSponsoredSection({
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-slate-900 to-slate-800">
-                  🏢
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+                  <Building2 className="w-10 h-10 text-slate-500" />
                 </div>
               )}
               <div className="absolute top-3 left-3 bg-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider shadow">
-                ⭐ Featured
+                Featured
               </div>
               {promo.entityCity && (
                 <div className="absolute bottom-3 left-3 bg-slate-950/80 backdrop-blur-sm text-slate-200 text-xs px-2.5 py-1 rounded-lg flex items-center gap-1 border border-slate-700">

@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
           title: 'NexMove Security Verification',
           message: `Your 6-Digit OTP security code is *${generatedOtp}*. It expires in 10 minutes.`,
           details: 'Please do not share this OTP code with anyone.',
-          fallbackText: `🔐 *NexMove Security Verification*\n\nYour 6-Digit OTP code is *${generatedOtp}*.\n\nExpires in 10 minutes. Do not share with anyone.`,
+          fallbackText: ` *NexMove Security Verification*\n\nYour 6-Digit OTP code is *${generatedOtp}*.\n\nExpires in 10 minutes. Do not share with anyone.`,
           languageCode: 'en',
         })
 

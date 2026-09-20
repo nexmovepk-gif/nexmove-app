@@ -87,7 +87,7 @@ export default function ImpersonationBanner() {
           </div>
           <div className="flex items-center gap-2 flex-wrap min-w-0">
             <span className="text-xs font-semibold text-slate-200">
-              👁️ You are currently inspecting{' '}
+               You are currently inspecting{' '}
               <span className="font-black text-amber-300 underline decoration-amber-400">
                 {target.name || target.email}
               </span>
@@ -98,7 +98,7 @@ export default function ImpersonationBanner() {
             </span>
             {target.agencyName && (
               <span className="text-[10px] bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
-                🏢 {target.agencyName}
+                 {target.agencyName}
               </span>
             )}
           </div>

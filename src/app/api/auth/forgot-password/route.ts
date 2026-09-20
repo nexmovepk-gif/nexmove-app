@@ -68,7 +68,7 @@ export async function POST(request: Request) {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#064e3b,#059669);padding:32px 40px;text-align:center;">
-              <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:800;letter-spacing:-0.5px;">🏢 NexMove</h1>
+              <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:800;letter-spacing:-0.5px;"> NexMove</h1>
               <p style="margin:6px 0 0;color:#a7f3d0;font-size:13px;font-weight:500;">Pakistan's Premier PropTech Platform</p>
             </td>
           </tr>
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
                   <td align="center" style="padding:8px 0 28px;">
                     <a href="${resetUrl}"
                        style="display:inline-block;background:linear-gradient(135deg,#059669,#047857);color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 36px;border-radius:12px;letter-spacing:0.2px;">
-                      🔐 Reset My Password
+                       Reset My Password
                     </a>
                   </td>
                 </tr>
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
               <!-- Security Note -->
               <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
                 <p style="margin:0;color:#475569;font-size:12px;line-height:1.7;">
-                  <strong style="color:#0f172a;">🛡️ Security Notice:</strong><br/>
+                  <strong style="color:#0f172a;">️ Security Notice:</strong><br/>
                   • This link will <strong>expire in 1 hour</strong><br/>
                   • If you did not request this reset, please <strong>ignore this email</strong> — your account remains secure<br/>
                   • Never share this link with anyone
@@ -147,7 +147,7 @@ export async function POST(request: Request) {
       await transporter.sendMail({
         from: `"NexMove PropTech" <${smtpUser}>`,
         to: user.email,
-        subject: '🔐 NexMove — Password Reset Request',
+        subject: ' NexMove — Password Reset Request',
         html: emailHtml,
       })
       console.log(`[forgot-password] Reset email successfully dispatched via Gmail SMTP to: ${user.email}`)
@@ -157,7 +157,7 @@ export async function POST(request: Request) {
       await resend.emails.send({
         from: 'NexMove PropTech <onboarding@resend.dev>',
         to: [user.email],
-        subject: '🔐 NexMove — Password Reset Request',
+        subject: ' NexMove — Password Reset Request',
         html: emailHtml,
       })
     } else {

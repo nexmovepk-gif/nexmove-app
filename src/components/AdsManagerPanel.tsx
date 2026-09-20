@@ -344,7 +344,7 @@ export default function AdsManagerPanel({
       ) : filteredPromotions.length === 0 ? (
         <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-12 text-center flex flex-col items-center justify-center gap-4">
           <div className="w-16 h-16 rounded-3xl bg-slate-800 flex items-center justify-center text-3xl">
-            🚀
+            
           </div>
           <div className="max-w-md">
             <h3 className="text-base font-black text-slate-200">No Ads Found in this filter</h3>
@@ -440,14 +440,14 @@ export default function AdsManagerPanel({
                       />
                     ) : (
                       <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl border border-slate-700 flex-shrink-0">
-                        🏢
+                        
                       </div>
                     )}
 
                     <div className="min-w-0 flex-1">
                       <h4 className="text-sm font-black text-slate-100 truncate">{promo.entityTitle}</h4>
                       <div className="flex items-center gap-2 mt-1 text-xs text-slate-400 flex-wrap">
-                        {promo.entityCity && <span>📍 {promo.entityCity}</span>}
+                        {promo.entityCity && <span> {promo.entityCity}</span>}
                         {promo.entityPrice && (
                           <span className="font-bold text-emerald-400">
                             Rs. {promo.entityPrice.toLocaleString('en-PK')}
@@ -463,10 +463,10 @@ export default function AdsManagerPanel({
                             className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-slate-800/80 text-teal-300 border border-teal-500/20"
                           >
                             {pl === 'HOMEPAGE'
-                              ? '🏠 Homepage'
+                              ? ' Homepage'
                               : pl === 'SEARCH_TOP'
-                              ? '🔍 Search #1'
-                              : '📌 Sidebar'}
+                              ? ' Search #1'
+                              : ' Sidebar'}
                           </span>
                         ))}
                       </div>

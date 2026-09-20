@@ -321,7 +321,7 @@ export async function POST(req: NextRequest) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: sellerEmail,
-          subject: `🤝 New Co-Brokered Deal Initiated: ${listingTitle}`,
+          subject: ` New Co-Brokered Deal Initiated: ${listingTitle}`,
           body: `Great news! A partner agency has initiated a Co-Brokered Deal (Ref #${dealIdStr}) for your property listing "${listingTitle}".<br/><br/>
           <strong>Key Deal Details:</strong><br/>
           • <strong>Commission Split:</strong> 50/50 Profit Split Standard<br/>
@@ -337,7 +337,7 @@ export async function POST(req: NextRequest) {
     // 4. Dispatch automated WhatsApp notification to recipient
     try {
       const recipientPhone = buyerPhone || '03225673641';
-      console.log(`📱 Sending WhatsApp Deal Initiation alert to ${recipientPhone}...`);
+      console.log(` Sending WhatsApp Deal Initiation alert to ${recipientPhone}...`);
       await sendTestHelloWorldWhatsApp(recipientPhone).catch((waErr) =>
         console.warn('[Deals API] WhatsApp initiation error:', waErr)
       );
@@ -477,7 +477,7 @@ export async function PATCH(req: NextRequest) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             to: recipientEmail,
-            subject: `🎉 Deal Successfully Closed: ${dealTitle}`,
+            subject: ` Deal Successfully Closed: ${dealTitle}`,
             body: `Congratulations! Deal Ref #${id} for "${dealTitle}" has been marked as CLOSED. Ownership transfer is ratified, and commission payout settlements are finalized under NexMove AIEscrowGuard.`,
           }),
         }).catch((emailErr) => console.warn('[Deals API] Email notification note:', emailErr));

@@ -301,7 +301,7 @@ export async function POST(req: NextRequest) {
           title: 'Property Listed Successfully',
           message: `Aapki property "${propertyData.title}" NexMove par live ho chuki hai. Verified agencies ko notify kar dia gaya hai.`,
           details: `Ref: NX-${propId} | Price: PKR ${propertyData.price ? Number(propertyData.price).toLocaleString() : 'N/A'} | City: ${propertyData.city || 'Pakistan'}`,
-          fallbackText: `🎉 *NexMove Property Listed!*\n\nAssalam-o-Alaikum ${propertyData.contactName},\n\nAapki property "${propertyData.title}" NexMove par live ho chuki hai.\n\n📍 City: ${propertyData.city || 'Pakistan'}\n🏷️ Demand: PKR ${propertyData.price ? Number(propertyData.price).toLocaleString() : 'N/A'}\n\nTop verified agencies ko notify kar dia gaya hai.`,
+          fallbackText: ` *NexMove Property Listed!*\n\nAssalam-o-Alaikum ${propertyData.contactName},\n\nAapki property "${propertyData.title}" NexMove par live ho chuki hai.\n\n City: ${propertyData.city || 'Pakistan'}\n️ Demand: PKR ${propertyData.price ? Number(propertyData.price).toLocaleString() : 'N/A'}\n\nTop verified agencies ko notify kar dia gaya hai.`,
         });
       } catch (waErr) {
         console.warn('[Properties API] Seller WhatsApp notification note:', waErr);
@@ -368,7 +368,7 @@ export async function PATCH(req: NextRequest) {
           title: 'Property Sold Alert',
           message: `Mubarik ho! Aapki property "${updated.title}" successfully SOLD mark ho chuki hai.`,
           details: `Ref: NX-${updated.id.slice(-6).toUpperCase()} | Price: PKR ${updated.price ? Number(updated.price).toLocaleString() : 'N/A'}`,
-          fallbackText: `🎉 *NexMove — Property Sold!*\n\nAssalam-o-Alaikum ${updated.contactName},\n\nMubarik ho! Aapki property "${updated.title}" successfully mark as SOLD ho chuki hai.\n\nNexMove PropTech Ecosystem par trust karne ka shukriya!`,
+          fallbackText: ` *NexMove — Property Sold!*\n\nAssalam-o-Alaikum ${updated.contactName},\n\nMubarik ho! Aapki property "${updated.title}" successfully mark as SOLD ho chuki hai.\n\nNexMove PropTech Ecosystem par trust karne ka shukriya!`,
         });
       } catch (waErr) {
         console.warn('[Properties API] Sold WhatsApp notification note:', waErr);

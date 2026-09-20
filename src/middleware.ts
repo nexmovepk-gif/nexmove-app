@@ -80,7 +80,7 @@ export async function middleware(req: NextRequest) {
 
     const isSuperAdmin = userEmail === 'nexmove.pk@gmail.com' || userRole === 'SUPER_ADMIN';
 
-    // 👑 3. Super Admin Override: Full cross-portal access
+    //  3. Super Admin Override: Full cross-portal access
     if (isSuperAdmin) {
       return NextResponse.next();
     }

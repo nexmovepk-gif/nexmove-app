@@ -11,11 +11,11 @@ export interface CurrencyConfig {
 }
 
 export const CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
-  PKR: { code: 'PKR', symbol: 'Rs', name: 'Pakistani Rupee', flag: '🇵🇰', rateInPKR: 1 },
-  USD: { code: 'USD', symbol: '$', name: 'US Dollar', flag: '🇺🇸', rateInPKR: 276.3 },
-  AED: { code: 'AED', symbol: 'AED', name: 'UAE Dirham', flag: '🇦🇪', rateInPKR: 75.2 },
-  GBP: { code: 'GBP', symbol: '£', name: 'British Pound', flag: '🇬🇧', rateInPKR: 376.9 },
-  EUR: { code: 'EUR', symbol: '€', name: 'Euro', flag: '🇪🇺', rateInPKR: 322.8 },
+  PKR: { code: 'PKR', symbol: 'Rs', name: 'Pakistani Rupee', flag: '', rateInPKR: 1 },
+  USD: { code: 'USD', symbol: '$', name: 'US Dollar', flag: '', rateInPKR: 276.3 },
+  AED: { code: 'AED', symbol: 'AED', name: 'UAE Dirham', flag: '', rateInPKR: 75.2 },
+  GBP: { code: 'GBP', symbol: '£', name: 'British Pound', flag: '', rateInPKR: 376.9 },
+  EUR: { code: 'EUR', symbol: '€', name: 'Euro', flag: '', rateInPKR: 322.8 },
 }
 
 /**

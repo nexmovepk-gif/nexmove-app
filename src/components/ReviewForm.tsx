@@ -52,7 +52,9 @@ export default function ReviewForm({ agencyId, agencyName, onSuccess }: ReviewFo
   if (submitted) {
     return (
       <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 text-center flex flex-col items-center gap-2">
-        <div className="text-2xl">⭐</div>
+        <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+          <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+        </div>
         <p className="text-sm font-bold text-emerald-400">Review Submitted!</p>
         <p className="text-xs text-slate-400">
           Thanks for your feedback. It will appear after moderation.
